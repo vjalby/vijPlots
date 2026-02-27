@@ -45,6 +45,8 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData <- jmvcore::naOmit(plotData)
                 image <- self$results$plot
                 image$setState(plotData)
+            } else {
+                vijWarningMessage(self, .("Pie charts are for educational use only. Please do not use Pie charts!"))
             }
         },
         .plot = function(image, ggtheme, theme, ...) {

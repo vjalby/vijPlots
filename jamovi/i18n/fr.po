@@ -50,6 +50,7 @@ msgstr "{var} n'a pas un format de date valide."
 #: histogram/options/facetNumber.title
 #: lollipop/options/facetNumber.title
 #: piechart/options/facetNumber.title
+#: scatterplot/options/facetNumber.title
 msgid "# of rows/columns"
 msgstr "Nbre de lignes/colonnes"
 
@@ -1887,6 +1888,8 @@ msgstr "Couleurs & Options"
 #: lollipop/ui[4][0][0][0][0]/facetBy_column.label
 #: piechart/options/facetBy/column.title
 #: piechart/ui[4][0][1][0][0]/facetBy_column.label
+#: scatterplot/options/facetBy/column.title
+#: scatterplot/ui[2][0][1][0][0]/facetBy_column.label
 msgid "Column"
 msgstr "Colonne"
 
@@ -2330,10 +2333,13 @@ msgid "Eigenvalues"
 msgstr "Valeurs propres"
 
 #: principal/ui[4][0][0][1].label
-#: scatterplot/ui[2].label
 #: scatterplot/ui[2][0][0][0].label
 msgid "Element Sizes"
 msgstr "Taille des éléments"
+
+#: scatterplot/ui[2].label
+msgid "Element Sizes & Facets"
+msgstr "Taille des éléments & facettes"
 
 #: qqplot/options/methodQQ/ell.title
 #: qqplot/options/methodPP/ell.title
@@ -2382,6 +2388,8 @@ msgstr "F"
 #: lollipop/ui[0][2].label
 #: piechart/options/facet.title
 #: piechart/ui[0][1].label
+#: scatterplot/options/facet.title
+#: scatterplot/ui[0][5].label
 msgid "Facet"
 msgstr "Facette"
 
@@ -2393,6 +2401,8 @@ msgstr "Facette"
 #: lollipop/ui[4][0][0][0].label
 #: piechart/options/facetBy.title
 #: piechart/ui[4][0][1][0].label
+#: scatterplot/options/facetBy.title
+#: scatterplot/ui[2][0][1][0].label
 msgid "Facets"
 msgstr "Facettes"
 
@@ -4122,6 +4132,10 @@ msgstr "Pourcentages"
 msgid "Pie Chart"
 msgstr "Diagramme en secteurs"
 
+#: R/piechart.b.R
+msgid "Pie charts are for educational use only. Please do not use Pie charts!"
+msgstr "Les diagrammes en secteurs sont réservés à un usage pédagogique. Veuillez ne pas les utiliser !"
+
 #: corresp/options/rowColor/hotpink.title
 #: corresp/options/colColor/hotpink.title
 #: histogram/options/fillColor/#F781BF.title
@@ -4726,6 +4740,8 @@ msgstr "Rotation"
 #: lollipop/ui[4][0][0][0][0]/facetBy_row.label
 #: piechart/options/facetBy/row.title
 #: piechart/ui[4][0][1][0][0]/facetBy_row.label
+#: scatterplot/options/facetBy/row.title
+#: scatterplot/ui[2][0][1][0][0]/facetBy_row.label
 msgid "Row"
 msgstr "Ligne"
 

@@ -54,6 +54,15 @@ options:
       permitted:
         - numeric
 
+    - name: facet
+      title: Facet
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+
     - name: keepNA
       title: Show points with missing group/label
       type: Bool
@@ -88,6 +97,23 @@ options:
       title: ""
       type: Number
       default: 0
+
+    - name: facetBy
+      title: Facets
+      type: List
+      options:
+        - title: Row
+          name:  row
+        - title: Column
+          name:  column
+      default: column
+
+    - name: facetNumber
+      type: Number
+      title: "# of rows/columns"
+      min: 1
+      max: 10
+      default: 1
 
     - name: pointSize
       title: Point

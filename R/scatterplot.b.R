@@ -7,8 +7,21 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     private = list(
         .init = function() {
             # Stretchable dimensions
-            width <- 450
-            height <- 450
+            if (!is.null(self$options$facet)) {
+                nbOfFacet <- nlevels(self$data[[self$options$facet]])
+                if (self$options$facetBy == "column") {
+                    nbOfColumn <- self$options$facetNumber
+                    nbOfRow <- ceiling(nbOfFacet / nbOfColumn)
+                } else {
+                    nbOfRow <- self$options$facetNumber
+                    nbOfColumn <- ceiling(nbOfFacet / nbOfRow)
+                }
+                width <- max(350, 350*nbOfColumn)
+                height <- max(350,350*nbOfRow)
+            } else {
+                width <- 450
+                height <- 450
+            }
             # Fixed dimensions
             fixed_height <- 50 # X-Axis legend
             fixed_width <- 75 # Y-Axis legend
@@ -40,7 +53,7 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if ( is.null(xaxis) || is.null(yaxis))
                 return(FALSE)
 
-            data <- jmvcore::select(self$data, c(xaxis,yaxis,groupVar,labelVar,sizeVar))
+            data <- jmvcore::select(self$data, c(xaxis,yaxis,groupVar,labelVar,sizeVar, self$options$facet))
             data[[xaxis]] <- jmvcore::toNumeric(data[[xaxis]])
             data[[yaxis]] <- jmvcore::toNumeric(data[[yaxis]])
             if(!is.null(sizeVar))
@@ -61,6 +74,13 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             groupVar <- self$options$group
             labelVar <- self$options$labelVar
             sizeVar <- self$options$ptSize
+
+            if (!is.null(self$options$facet)) {
+                facetVar <- self$options$facet
+                facetVar <- ensym(facetVar)
+            } else {
+                facetVar <- NULL
+            }
 
             xaxis <- ensym(xaxis)
             yaxis <- ensym(yaxis)
@@ -130,6 +150,15 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if( self$options$plotBorder ) {
                 plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, size = 1))
             }
+
+            # Facet
+            if (!is.null(facetVar)) {
+                if (self$options$facetBy == "column")
+                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                else
+                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+            }
+
 
             # Titles & Labels
             defaults <- list(y = yaxis, x = xaxis, legend = groupVar, sizeLegend = sizeVar)

@@ -47,6 +47,13 @@ children:
             name: ptSize
             maxItemCount: 1
             isTarget: true
+      - type: TargetLayoutBox
+        label: Facet
+        children:
+          - type: VariablesListBox
+            name: facet
+            maxItemCount: 1
+            isTarget: true
   - type: LayoutBox
     margin: large
     stretchFactor: 1
@@ -131,7 +138,7 @@ children:
                     name: lineSE
                     enable: (regLine)
   - type: CollapseBox
-    label: Element Sizes
+    label: Element Sizes & Facets
     collapsed: true
     stretchFactor: 1
     children:
@@ -156,6 +163,35 @@ children:
                     name: lineSize
                     format: number
                     enable: (hline || vline || regLine)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facets
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: RadioButton
+                        name: facetBy_row
+                        optionName: facetBy
+                        optionPart: row
+                        label: Row
+                        enable: (!(!facet))
+                      - type: RadioButton
+                        name: facetBy_column
+                        optionName: facetBy
+                        optionPart: column
+                        label: Column
+                        enable: (!(!facet))
+                  - type: TextBox
+                    name: facetNumber
+                    format: number
+                    enable: (!(!facet))
+
   - type: CollapseBox
     label: Axes
     collapsed: true

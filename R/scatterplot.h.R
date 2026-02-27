@@ -11,6 +11,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             group = NULL,
             labelVar = NULL,
             ptSize = NULL,
+            facet = NULL,
             keepNA = FALSE,
             overlap = FALSE,
             plotBorder = FALSE,
@@ -18,6 +19,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             yinter = 0,
             vline = FALSE,
             xinter = 0,
+            facetBy = "column",
+            facetNumber = 1,
             pointSize = 3,
             lineSize = 1,
             regLine = FALSE,
@@ -101,6 +104,14 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                     "continuous"),
                 permitted=list(
                     "numeric"))
+            private$..facet <- jmvcore::OptionVariable$new(
+                "facet",
+                facet,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"))
             private$..keepNA <- jmvcore::OptionBool$new(
                 "keepNA",
                 keepNA,
@@ -129,6 +140,19 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 "xinter",
                 xinter,
                 default=0)
+            private$..facetBy <- jmvcore::OptionList$new(
+                "facetBy",
+                facetBy,
+                options=list(
+                    "row",
+                    "column"),
+                default="column")
+            private$..facetNumber <- jmvcore::OptionNumber$new(
+                "facetNumber",
+                facetNumber,
+                min=1,
+                max=10,
+                default=1)
             private$..pointSize <- jmvcore::OptionNumber$new(
                 "pointSize",
                 pointSize,
@@ -453,6 +477,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..group)
             self$.addOption(private$..labelVar)
             self$.addOption(private$..ptSize)
+            self$.addOption(private$..facet)
             self$.addOption(private$..keepNA)
             self$.addOption(private$..overlap)
             self$.addOption(private$..plotBorder)
@@ -460,6 +485,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..yinter)
             self$.addOption(private$..vline)
             self$.addOption(private$..xinter)
+            self$.addOption(private$..facetBy)
+            self$.addOption(private$..facetNumber)
             self$.addOption(private$..pointSize)
             self$.addOption(private$..lineSize)
             self$.addOption(private$..regLine)
@@ -505,6 +532,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         group = function() private$..group$value,
         labelVar = function() private$..labelVar$value,
         ptSize = function() private$..ptSize$value,
+        facet = function() private$..facet$value,
         keepNA = function() private$..keepNA$value,
         overlap = function() private$..overlap$value,
         plotBorder = function() private$..plotBorder$value,
@@ -512,6 +540,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         yinter = function() private$..yinter$value,
         vline = function() private$..vline$value,
         xinter = function() private$..xinter$value,
+        facetBy = function() private$..facetBy$value,
+        facetNumber = function() private$..facetNumber$value,
         pointSize = function() private$..pointSize$value,
         lineSize = function() private$..lineSize$value,
         regLine = function() private$..regLine$value,
@@ -556,6 +586,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..group = NA,
         ..labelVar = NA,
         ..ptSize = NA,
+        ..facet = NA,
         ..keepNA = NA,
         ..overlap = NA,
         ..plotBorder = NA,
@@ -563,6 +594,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..yinter = NA,
         ..vline = NA,
         ..xinter = NA,
+        ..facetBy = NA,
+        ..facetNumber = NA,
         ..pointSize = NA,
         ..lineSize = NA,
         ..regLine = NA,
@@ -653,6 +686,7 @@ scatterplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param labelVar .
 #' @param ptSize .
+#' @param facet .
 #' @param keepNA .
 #' @param overlap .
 #' @param plotBorder .
@@ -660,6 +694,8 @@ scatterplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yinter .
 #' @param vline .
 #' @param xinter .
+#' @param facetBy .
+#' @param facetNumber .
 #' @param pointSize .
 #' @param lineSize .
 #' @param regLine .
@@ -711,6 +747,7 @@ scatterplot <- function(
     group,
     labelVar,
     ptSize,
+    facet,
     keepNA = FALSE,
     overlap = FALSE,
     plotBorder = FALSE,
@@ -718,6 +755,8 @@ scatterplot <- function(
     yinter = 0,
     vline = FALSE,
     xinter = 0,
+    facetBy = "column",
+    facetNumber = 1,
     pointSize = 3,
     lineSize = 1,
     regLine = FALSE,
@@ -765,6 +804,7 @@ scatterplot <- function(
     if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if ( ! missing(labelVar)) labelVar <- jmvcore::resolveQuo(jmvcore::enquo(labelVar))
     if ( ! missing(ptSize)) ptSize <- jmvcore::resolveQuo(jmvcore::enquo(ptSize))
+    if ( ! missing(facet)) facet <- jmvcore::resolveQuo(jmvcore::enquo(facet))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
@@ -772,9 +812,11 @@ scatterplot <- function(
             `if`( ! missing(yaxis), yaxis, NULL),
             `if`( ! missing(group), group, NULL),
             `if`( ! missing(labelVar), labelVar, NULL),
-            `if`( ! missing(ptSize), ptSize, NULL))
+            `if`( ! missing(ptSize), ptSize, NULL),
+            `if`( ! missing(facet), facet, NULL))
 
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in facet) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- scatterplotOptions$new(
         xaxis = xaxis,
@@ -782,6 +824,7 @@ scatterplot <- function(
         group = group,
         labelVar = labelVar,
         ptSize = ptSize,
+        facet = facet,
         keepNA = keepNA,
         overlap = overlap,
         plotBorder = plotBorder,
@@ -789,6 +832,8 @@ scatterplot <- function(
         yinter = yinter,
         vline = vline,
         xinter = xinter,
+        facetBy = facetBy,
+        facetNumber = facetNumber,
         pointSize = pointSize,
         lineSize = lineSize,
         regLine = regLine,

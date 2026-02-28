@@ -69,11 +69,12 @@ Principal component analysis and (Multiple) Correspondence analysis.
 
 ## Version history
 
-### 2026-02-25 / 0.99.4
+### 2026-02-27 / 0.99.4
 
 -   Axis options to set axis label sizes, rotation, range
 -   Regression line in scatter plot
 -   Density line in histogram
+-   Faceting added to scatter plot
 -   Bar plot reworked with labels and percent by group/category
 -   Pie chart label options
 -   Option to show % labels in MR Frequencies & Crosstabs plots

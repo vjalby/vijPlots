@@ -4134,7 +4134,7 @@ msgstr "Diagramme en secteurs"
 
 #: R/piechart.b.R
 msgid "Pie charts are for educational use only. Please do not use Pie charts!"
-msgstr "Les diagrammes en secteurs sont réservés à un usage pédagogique. Veuillez ne pas les utiliser !"
+msgstr "Les diagrammes en secteurs sont réservés à un usage pédagogique.\n Veuillez ne pas les utiliser !"
 
 #: corresp/options/rowColor/hotpink.title
 #: corresp/options/colColor/hotpink.title

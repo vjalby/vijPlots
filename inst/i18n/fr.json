@@ -706,6 +706,9 @@
             "Element Sizes": [
                 "Taille des éléments"
             ],
+            "Element Sizes & Facets": [
+                "Taille des éléments & facettes"
+            ],
             "Equal Local Levels": [
                 "Equal Local Levels"
             ],
@@ -1392,6 +1395,9 @@
             ],
             "Pie Chart": [
                 "Diagramme en secteurs"
+            ],
+            "Pie charts are for educational use only. Please do not use Pie charts!": [
+                "Les diagrammes en secteurs sont réservés à un usage pédagogique.\n Veuillez ne pas les utiliser !"
             ],
             "Pink": [
                 "Rose"

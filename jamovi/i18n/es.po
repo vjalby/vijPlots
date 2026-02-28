@@ -4454,7 +4454,7 @@ msgstr "Gráfico Q-Q"
 
 #: multcorresp/results/categories.columns.title
 msgid "QLT"
-msgstr "QLT"
+msgstr "Calidad"
 
 #: principal/options/rotation/quartimax.title
 msgid "Quartimax"

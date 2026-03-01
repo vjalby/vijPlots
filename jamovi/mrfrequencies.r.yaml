@@ -8,11 +8,6 @@ items:
     #   title: Debug
     #   type:  Preformatted
 
-    - name:  helpMessage
-      title: ""
-      type:  Html
-      visible: false
-
     - name:  responses
       title: Frequencies
       type: Table

@@ -113,14 +113,6 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     outlierVar <- paste0(".outliers_",varName)
                     outlierVar <- ensym(outlierVar)
                     varName <- ensym(varName)
-                    # if (is.null(groupVar)) {
-                    #     plotData <- plotData %>%
-                    #         dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
-                    # } else {
-                    #     plotData <- plotData %>%
-                    #         dplyr::group_by(!!groupVar) %>%
-                    #         dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
-                    # }
                     plotData <- plotData |>
                         dplyr::group_by(!!groupVar, !!facetVar) |>
                         dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))

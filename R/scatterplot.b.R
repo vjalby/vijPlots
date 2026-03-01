@@ -159,7 +159,6 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
-
             # Titles & Labels
             defaults <- list(y = yaxis, x = xaxis, legend = groupVar, sizeLegend = sizeVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)

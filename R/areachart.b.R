@@ -63,7 +63,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 timeVar <- self$options$timeVar1
                 if (length(self$options$vars) > 0 && !is.null(timeVar)) {
-                    plotData <- plotData %>%
+                    plotData <- plotData |>
                                     tidyr::gather(key = "Variables", value = "Values", -timeVar)
                     # Transform "Variables" as factor to keep the variable order.
                     plotData$Variables <- factor(plotData$Variables, levels = self$options$vars)

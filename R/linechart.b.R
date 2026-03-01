@@ -34,14 +34,14 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(depVars) == 0 || is.null(timeVar))
                 return()
             data <- jmvcore::select(self$data, varNames)
+            # Be sure dep var are numeric
+            for (aVar in depVars)
+                data[[aVar]] <- jmvcore::toNumeric(data[[aVar]])
             # Delete row with missing time
             data <- subset(data, !is.na(data[timeVar]))
             # Ignore NA
             if (!is.null(groupVar) && self$options$ignoreNA)
                 data <- subset(data, !is.na(data[groupVar]))
-            # Be sure dep var are numeric
-            for (aVar in depVars)
-                data[[aVar]] <- jmvcore::toNumeric(data[[aVar]])
             image <- self$results$plot
             image$setState(data)
         },

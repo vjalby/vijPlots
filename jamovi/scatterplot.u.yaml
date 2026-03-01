@@ -191,7 +191,6 @@ children:
                     name: facetNumber
                     format: number
                     enable: (!(!facet))
-
   - type: CollapseBox
     label: Axes
     collapsed: true

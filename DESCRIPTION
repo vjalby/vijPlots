@@ -1,7 +1,7 @@
 Package: vijPlots
 Type: Package
 Title: vijPlots: Yet Another jamovi Plotting Module
-Version: 0.99.4
+Version: 1.0.0
 Author: Vincent Jalby
 Maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
 Description: Main statistical charts (histogram, boxplot, point, bar, line, 

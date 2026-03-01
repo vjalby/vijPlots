@@ -69,12 +69,12 @@ Principal component analysis and (Multiple) Correspondence analysis.
 
 ## Version history
 
-### 2026-02-27 / 0.99.4
+### 2026-03-01 / 1.0.0
 
 -   Axis options to set axis label sizes, rotation, range
 -   Regression line in scatter plot
 -   Density line in histogram
--   Faceting added to scatter plot
+-   Faceting added to scatter plot and box plot
 -   Bar plot reworked with labels and percent by group/category
 -   Pie chart label options
 -   Option to show % labels in MR Frequencies & Crosstabs plots
@@ -84,7 +84,7 @@ Principal component analysis and (Multiple) Correspondence analysis.
 -   More color palettes
 -   Tidy up Option UI
 -   French translation completed
--   Spanish translation (second draft)
+-   Spanish translation completed
 -   Plot sizing options removed (built in jamovi 2.7.16+)
 -   Module icon (with jamovi 2.7.19+)
 

@@ -24,6 +24,19 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     height <- 400
                 }
             }
+            # Facet
+            if (!is.null(self$options$facet)) {
+                nbOfFacet <- nlevels(self$data[[self$options$facet]])
+                if (self$options$facetBy == "column") {
+                    nbOfColumn <- self$options$facetNumber
+                    nbOfRow <- ceiling(nbOfFacet / nbOfColumn)
+                } else {
+                    nbOfRow <- self$options$facetNumber
+                    nbOfColumn <- ceiling(nbOfFacet / nbOfRow)
+                }
+                width <- max(width, (width-100)*nbOfColumn)
+                height <- max(height, (height-75)*nbOfRow)
+            }
             # Fixed dimension
             fixed_width <- 50 # Y-Axis legend
             fixed_height <- 50 # X-Axis legend
@@ -44,19 +57,18 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .run = function() {
             if( length(self$options$vars) == 0 || nrow(self$data) == 0)
                 return()
-            labelVarName <- self$options$label
-            groupVarName <- self$options$group
-            depVarNames <- self$options$vars
-            varNames <- c(labelVarName,groupVarName, depVarNames)
-            #data <- jmvcore::select(self$data, varNames)
-            data <- self$data[varNames]
-            # Remove case with missing group
-            if (!is.null(groupVarName) & self$options$ignoreNA) {
-                data <- subset(data, !is.na(data[groupVarName]))
-            }
+            varNames <- c(self$options$label,self$options$group,self$options$facet,self$options$vars)
+            data <- jmvcore::select(self$data, varNames)
             # Be sure dep var are numeric
-            for (varName in depVarNames)
+            for (varName in self$options$vars)
                 data[[varName]] <- jmvcore::toNumeric(data[[varName]])
+            # Remove case with missing group
+            if (!is.null(self$options$group) & self$options$ignoreNA) {
+                data <- subset(data, !is.na(data[self$options$group]))
+            }
+            if (!is.null(self$options$facet) & self$options$ignoreNA) {
+                data <- subset(data, !is.na(data[self$options$facet]))
+            }
             image <- self$results$plot
             image$setState(data)
         },
@@ -88,20 +100,30 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 groupVar <- ensym(groupVarName)
             }
 
+            if (!is.null(self$options$facet)) {
+                facetVar <- self$options$facet
+                facetVar <- ensym(facetVar)
+            } else {
+                facetVar <- NULL
+            }
+
             # Compute the outliers
             if (!is.null(labelVar)) {
                 for (varName in depVarNames) {
                     outlierVar <- paste0(".outliers_",varName)
                     outlierVar <- ensym(outlierVar)
                     varName <- ensym(varName)
-                    if (is.null(groupVar)) {
-                        plotData <- plotData %>%
-                            dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
-                    } else {
-                        plotData <- plotData %>%
-                            dplyr::group_by(!!groupVar) %>%
-                            dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
-                    }
+                    # if (is.null(groupVar)) {
+                    #     plotData <- plotData %>%
+                    #         dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
+                    # } else {
+                    #     plotData <- plotData %>%
+                    #         dplyr::group_by(!!groupVar) %>%
+                    #         dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
+                    # }
+                    plotData <- plotData |>
+                        dplyr::group_by(!!groupVar, !!facetVar) |>
+                        dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!varName), as.character(!!labelVar), NA))
                 }
             }
 
@@ -111,9 +133,14 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 labAngle = 0
 
             if (self$options$horizontal)
-                nudgeX <- (400/image$height)*0.06
+                 nudgeX <- 0.02
             else
-                nudgeX <- (400/image$width)*0.04
+                 nudgeX <- 0.015
+
+            if(is.null(groupVar) || length(depVarNames) > 1)
+                nudgeX <- nudgeX * length(depVarNames)
+            else
+                nudgeX <- nudgeX * max(1,nlevels(plotData[[groupVar]]))
 
             # One color only
             if (self$options$singleColor) {
@@ -140,7 +167,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         outlierVar <- paste0(".outliers_",varName)
                         outlierVar <- ensym(outlierVar)
                         plot <- plot + geom_text(aes(x = !!varName, y = !!aVar, label = !!outlierVar), na.rm = TRUE, hjust = 0,
-                                                 nudge_x = nudgeX, angle = labAngle)
+                                                 nudge_x = nudgeX, angle = labAngle, size = self$options$labSize / .pt)
                     }
 
                     plot <- plot + guides(fill = FALSE)
@@ -161,7 +188,8 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             outlierVar <- paste0(".outliers_",varName)
                             outlierVar <- ensym(outlierVar)
                             plot <- plot + geom_text(aes(x = !!varName,y = !!aVar, label = !!outlierVar, group = !!groupVar), na.rm = TRUE,
-                                                     hjust = 0, position = ggpp::position_dodgenudge(x = nudgeX, width = .75), angle = labAngle)
+                                                     hjust = 0, position = ggpp::position_dodgenudge(x = nudgeX, width = .75), angle = labAngle,
+                                                     size = self$options$labSize / .pt)
                         }
                     } else { # single var & several groups
                         if (self$options$singleColor) {
@@ -182,7 +210,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             outlierVar <- paste0(".outliers_",varName)
                             outlierVar <- ensym(outlierVar)
                             plot <- plot + geom_text(aes(x = !!groupVar, y = !!aVar, label = !!outlierVar), na.rm = TRUE,
-                                                     hjust = 0, nudge_x = nudgeX, angle = labAngle)
+                                                     hjust = 0, nudge_x = nudgeX, angle = labAngle, size = self$options$labSize / .pt)
                         }
                     }
                 }
@@ -220,6 +248,14 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
 
+            # Facet
+            if (!is.null(facetVar)) {
+                if (self$options$facetBy == "column")
+                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                else
+                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+            }
+
             # Titles & Labels
             defaults <- list(legend = groupVar)
             if (!is.null(groupVar) && length(depVarNames) == 1) {
@@ -241,7 +277,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .isOutlier = function(x) {
             q1 <- quantile(x, .25, na.rm=T)
             q3 <- quantile(x, .75, na.rm=T)
-            iqr <- IQR(x, na.rm=T)
+            iqr <- q3-q1
             return(x < q1 - 1.5*iqr | x > q3 + 1.5*iqr)
         }
 

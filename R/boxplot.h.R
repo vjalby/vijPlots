@@ -9,12 +9,16 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             group = NULL,
             label = NULL,
+            facet = NULL,
             showOutliers = TRUE,
             showMean = FALSE,
             staple = FALSE,
             notches = FALSE,
             ignoreNA = TRUE,
             horizontal = FALSE,
+            labSize = 12,
+            facetBy = "column",
+            facetNumber = 1,
             colorPalette = "jmv",
             singleColor = FALSE,
             colorNo = 1,
@@ -83,6 +87,14 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "id",
                     "factor"))
+            private$..facet <- jmvcore::OptionVariable$new(
+                "facet",
+                facet,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"))
             private$..showOutliers <- jmvcore::OptionBool$new(
                 "showOutliers",
                 showOutliers,
@@ -107,6 +119,25 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "horizontal",
                 horizontal,
                 default=FALSE)
+            private$..labSize <- jmvcore::OptionNumber$new(
+                "labSize",
+                labSize,
+                min=8,
+                max=24,
+                default=12)
+            private$..facetBy <- jmvcore::OptionList$new(
+                "facetBy",
+                facetBy,
+                options=list(
+                    "row",
+                    "column"),
+                default="column")
+            private$..facetNumber <- jmvcore::OptionNumber$new(
+                "facetNumber",
+                facetNumber,
+                min=1,
+                max=10,
+                default=1)
             private$..colorPalette <- jmvcore::OptionList$new(
                 "colorPalette",
                 colorPalette,
@@ -410,12 +441,16 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..vars)
             self$.addOption(private$..group)
             self$.addOption(private$..label)
+            self$.addOption(private$..facet)
             self$.addOption(private$..showOutliers)
             self$.addOption(private$..showMean)
             self$.addOption(private$..staple)
             self$.addOption(private$..notches)
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..horizontal)
+            self$.addOption(private$..labSize)
+            self$.addOption(private$..facetBy)
+            self$.addOption(private$..facetNumber)
             self$.addOption(private$..colorPalette)
             self$.addOption(private$..singleColor)
             self$.addOption(private$..colorNo)
@@ -458,12 +493,16 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         vars = function() private$..vars$value,
         group = function() private$..group$value,
         label = function() private$..label$value,
+        facet = function() private$..facet$value,
         showOutliers = function() private$..showOutliers$value,
         showMean = function() private$..showMean$value,
         staple = function() private$..staple$value,
         notches = function() private$..notches$value,
         ignoreNA = function() private$..ignoreNA$value,
         horizontal = function() private$..horizontal$value,
+        labSize = function() private$..labSize$value,
+        facetBy = function() private$..facetBy$value,
+        facetNumber = function() private$..facetNumber$value,
         colorPalette = function() private$..colorPalette$value,
         singleColor = function() private$..singleColor$value,
         colorNo = function() private$..colorNo$value,
@@ -505,12 +544,16 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..vars = NA,
         ..group = NA,
         ..label = NA,
+        ..facet = NA,
         ..showOutliers = NA,
         ..showMean = NA,
         ..staple = NA,
         ..notches = NA,
         ..ignoreNA = NA,
         ..horizontal = NA,
+        ..labSize = NA,
+        ..facetBy = NA,
+        ..facetNumber = NA,
         ..colorPalette = NA,
         ..singleColor = NA,
         ..colorNo = NA,
@@ -598,12 +641,16 @@ boxplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param vars .
 #' @param group .
 #' @param label .
+#' @param facet .
 #' @param showOutliers .
 #' @param showMean .
 #' @param staple .
 #' @param notches .
 #' @param ignoreNA .
 #' @param horizontal .
+#' @param labSize .
+#' @param facetBy .
+#' @param facetNumber .
 #' @param colorPalette .
 #' @param singleColor .
 #' @param colorNo .
@@ -652,12 +699,16 @@ boxplot <- function(
     vars,
     group,
     label,
+    facet,
     showOutliers = TRUE,
     showMean = FALSE,
     staple = FALSE,
     notches = FALSE,
     ignoreNA = TRUE,
     horizontal = FALSE,
+    labSize = 12,
+    facetBy = "column",
+    facetNumber = 1,
     colorPalette = "jmv",
     singleColor = FALSE,
     colorNo = 1,
@@ -702,25 +753,32 @@ boxplot <- function(
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
     if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
     if ( ! missing(label)) label <- jmvcore::resolveQuo(jmvcore::enquo(label))
+    if ( ! missing(facet)) facet <- jmvcore::resolveQuo(jmvcore::enquo(facet))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
             `if`( ! missing(group), group, NULL),
-            `if`( ! missing(label), label, NULL))
+            `if`( ! missing(label), label, NULL),
+            `if`( ! missing(facet), facet, NULL))
 
     for (v in group) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in facet) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- boxplotOptions$new(
         vars = vars,
         group = group,
         label = label,
+        facet = facet,
         showOutliers = showOutliers,
         showMean = showMean,
         staple = staple,
         notches = notches,
         ignoreNA = ignoreNA,
         horizontal = horizontal,
+        labSize = labSize,
+        facetBy = facetBy,
+        facetNumber = facetNumber,
         colorPalette = colorPalette,
         singleColor = singleColor,
         colorNo = colorNo,

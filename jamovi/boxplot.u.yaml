@@ -32,6 +32,13 @@ children:
             name: label
             maxItemCount: 1
             isTarget: true
+      - type: TargetLayoutBox
+        label: Facet
+        children:
+          - type: VariablesListBox
+            name: facet
+            maxItemCount: 1
+            isTarget: true
   - type: LayoutBox
     margin: large
     style: inline
@@ -48,7 +55,7 @@ children:
             children:
               - type: CheckBox
                 name: ignoreNA
-                enable: (!(!group))
+                enable: (!(!group) || !(!facet))
               - type: CheckBox
                 name: showOutliers
               - type: CheckBox
@@ -105,6 +112,7 @@ children:
                     name: singleColor
                     label: Use color No.
                     style: inline
+                    enable: (!group)
                     verticalAlignment: center
                     children:
                       - type: TextBox
@@ -112,7 +120,7 @@ children:
                         label: ''
                         suffix: only
                         format: number
-                        enable: (singleColor)
+                        enable: (singleColor && !group)
           - type: LayoutBox
             cell:
               column: 1
@@ -136,6 +144,56 @@ children:
                         name: notchWidth
                         format: number
                         enable: (notches)
+  - type: CollapseBox
+    label: Text Size & Facets
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Text Size
+                children:
+                  - type: TextBox
+                    name: labSize
+                    format: number
+                    enable: (!(!label))
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facets
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: RadioButton
+                        name: facetBy_row
+                        optionName: facetBy
+                        optionPart: row
+                        label: Row
+                        enable: (!(!facet))
+                      - type: RadioButton
+                        name: facetBy_column
+                        optionName: facetBy
+                        optionPart: column
+                        label: Column
+                        enable: (!(!facet))
+                  - type: TextBox
+                    name: facetNumber
+                    format: number
+                    enable: (!(!facet))
   - type: CollapseBox
     label: Axes
     collapsed: true

@@ -38,6 +38,15 @@ options:
         - id
         - factor
 
+    - name: facet
+      title: Facet
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+
     - name: showOutliers
       title: Show outliers
       type: Bool
@@ -67,6 +76,30 @@ options:
       title: Horizontal plot
       type: Bool
       default: false
+
+    - name: labSize
+      type: Number
+      title: Label
+      min: 8
+      max: 24
+      default: 12
+
+    - name: facetBy
+      title: Facets
+      type: List
+      options:
+        - title: Row
+          name:  row
+        - title: Column
+          name:  column
+      default: column
+
+    - name: facetNumber
+      type: Number
+      title: "# of rows/columns"
+      min: 1
+      max: 10
+      default: 1
 
     - name: colorPalette
       title: Palette

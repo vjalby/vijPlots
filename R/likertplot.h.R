@@ -567,7 +567,6 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "likertplotResults",
     inherit = jmvcore::Group,
     active = list(
-        helpMessage = function() private$.items[["helpMessage"]],
         frequencies = function() private$.items[["frequencies"]],
         comp = function() private$.items[["comp"]],
         plot = function() private$.items[["plot"]]),
@@ -580,11 +579,6 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Likert Plot",
                 refs=list(
                     "ggplots"))
-            self$add(jmvcore::Html$new(
-                options=options,
-                name="helpMessage",
-                title="",
-                visible=FALSE))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="frequencies",
@@ -826,7 +820,6 @@ likertplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param xAxisLabelRotation .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$helpMessage} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$frequencies} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp$uTestTable} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$comp$kwTable} \tab \tab \tab \tab \tab a table \cr

@@ -6,11 +6,6 @@ refs:
     - ggplots
 
 items:
-    - name: helpMessage
-      title: ""
-      type: Html
-      visible: false
-
     - name: frequencies
       title: Frequency Table
       type: Table

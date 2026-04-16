@@ -4,37 +4,80 @@ jus: '3.0'
 stage: 0
 compilerMode: tame
 children:
-  - type: VariableSupplier
-    persistentItems: false
+  - type: ModeSelector
+    name: mode
     stretchFactor: 1
     children:
-      - type: TargetLayoutBox
-        label: Rows
+      - type: Content
+        name: obsTable
         children:
-          - type: VariablesListBox
-            name: rows
-            maxItemCount: 1
-            isTarget: true
-      - type: TargetLayoutBox
-        label: Columns
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: VariableSupplier
+                persistentItems: false
+                stretchFactor: 1
+                children:
+                  - type: TargetLayoutBox
+                    label: Rows
+                    children:
+                      - type: VariablesListBox
+                        name: rows
+                        maxItemCount: 1
+                        isTarget: true
+                  - type: TargetLayoutBox
+                    label: Columns
+                    children:
+                      - type: VariablesListBox
+                        name: cols
+                        maxItemCount: 1
+                        isTarget: true
+                  - type: TargetLayoutBox
+                    label: Counts (optional)
+                    children:
+                      - type: VariablesListBox
+                        name: counts
+                        maxItemCount: 1
+                        isTarget: true
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: CheckBox
+                name: descAsVarName
+      - type: Content
+        name: contTable
         children:
-          - type: VariablesListBox
-            name: cols
-            maxItemCount: 1
-            isTarget: true
-      - type: TargetLayoutBox
-        label: Counts (optional)
-        children:
-          - type: VariablesListBox
-            name: counts
-            maxItemCount: 1
-            isTarget: true
-  - type: LayoutBox
-    margin: large
-    stretchFactor: 1
-    children:
-      - type: CheckBox
-        name: descAsVarName
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: VariableSupplier
+                persistentItems: false
+                stretchFactor: 1
+                children:
+                  - type: TargetLayoutBox
+                    label: Columns
+                    children:
+                      - type: VariablesListBox
+                        name: columns
+                        isTarget: true
+                  - type: TargetLayoutBox
+                    label: Row Labels
+                    children:
+                      - type: VariablesListBox
+                        name: rowLabels
+                        maxItemCount: 1
+                        isTarget: true
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: TextBox
+                name: columnTitle
+                format: string
+                width: large
   - type: LayoutBox
     margin: large
     style: inline

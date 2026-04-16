@@ -69,6 +69,9 @@ Principal component analysis and (Multiple) Correspondence analysis.
 
 ## Version history
 
+### 2026-04-16 / 1.2.0
+-   Option to use contingency table (instead of observation table) for Correspondence analysis
+
 ### 2026-03-21 / 1.1.0
 -   Axis tick option
 

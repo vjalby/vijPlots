@@ -8,13 +8,8 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: mrcrosstabs/options/separator.default
-#: mrfrequencies/options/separator.default
-msgid ";"
-msgstr ""
-
-#: piechart/ui[2][0][1][0]/labOffset.suffix
-msgid "[0-9]"
+#: R/qqplot.b.R
+msgid "{distrib} distribution requires positive (>0) data."
 msgstr ""
 
 #: R/qqplot.b.R
@@ -37,18 +32,18 @@ msgstr ""
 msgid "{rotation} rotation with Kaiser normalization was used."
 msgstr ""
 
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid "{var} doesn't have a valid date format."
+msgstr ""
+
 #: barplot/options/facetNumber.title
+#: boxplot/options/facetNumber.title
 #: histogram/options/facetNumber.title
 #: lollipop/options/facetNumber.title
 #: piechart/options/facetNumber.title
+#: scatterplot/options/facetNumber.title
 msgid "# of rows/columns"
-msgstr ""
-
-#: R/barplot.b.R
-#: R/mrcrosstabs.b.R
-#: R/mrfrequencies.b.R
-#: R/piechart.b.R
-msgid "%"
 msgstr ""
 
 #: barplot/options/accuracy.title
@@ -115,281 +110,232 @@ msgstr ""
 msgid "% within"
 msgstr ""
 
-#: areachart/ui[2][0][0][0]/xAxisLabelRotation.suffix
-#: areachart/ui[2][0][1][0]/yAxisLabelRotation.suffix
-#: barplot/ui[5][0][0][0]/xAxisLabelRotation.suffix
-#: barplot/ui[5][0][1][0]/yAxisLabelRotation.suffix
-#: boxplot/ui[3][0][0][0]/xAxisLabelRotation.suffix
-#: boxplot/ui[3][0][1][0]/yAxisLabelRotation.suffix
-#: histogram/ui[5][0][0][0]/xAxisLabelRotation.suffix
-#: histogram/ui[5][0][1][0]/yAxisLabelRotation.suffix
-#: likertplot/ui[6][0][0][0]/xAxisLabelRotation.suffix
-#: likertplot/ui[6][0][1][0]/yAxisLabelRotation.suffix
-#: linechart/ui[2][0][0][0]/xAxisLabelRotation.suffix
-#: linechart/ui[2][0][1][0]/yAxisLabelRotation.suffix
-#: lollipop/ui[5][0][0][0]/xAxisLabelRotation.suffix
-#: lollipop/ui[5][0][1][0]/yAxisLabelRotation.suffix
-#: mrcrosstabs/ui[4][0][0][0]/xAxisLabelRotation.suffix
-#: mrcrosstabs/ui[4][0][1][0]/yAxisLabelRotation.suffix
-#: mrfrequencies/ui[4][0][0][0]/xAxisLabelRotation.suffix
-#: mrfrequencies/ui[4][0][1][0]/yAxisLabelRotation.suffix
-#: qqplot/ui[5][0][0][0]/xAxisLabelRotation.suffix
-#: qqplot/ui[5][0][1][0]/yAxisLabelRotation.suffix
-#: raincloud/ui[2][0][0][0]/xAxisLabelRotation.suffix
-#: raincloud/ui[2][0][1][0]/yAxisLabelRotation.suffix
-#: scatterplot/ui[3][0][0][0]/xAxisLabelRotation.suffix
-#: scatterplot/ui[3][0][1][0]/yAxisLabelRotation.suffix
-msgid "°"
-msgstr ""
-
 #: R/likertplot.b.R
-msgid "<h3>Data & Sorting</h3>\n"
+msgid ""
+"<h3>Data & Sorting</h3>\n"
 "<ul>\n"
-"<li>Likert variables must be of ordinal measure-type. (Continuous measure-type works as well.)</li>\n"
-"<li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>\n"
-"<li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>\n"
-"<li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>\n"
-"<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>\n"
+"<li>Likert variables must be of ordinal measure-type. (Continuous "
+"measure-type works as well.)</li>\n"
+"<li>If you plan to compute mean/median/sd or to use comparison tests, they "
+"must be of integer data-type.</li>\n"
+"<li><strong>Tidy up levels:</strong> when checked, try to fix the labels "
+"order in table and graph (when some variables miss some levels).</li>\n"
+"<li><strong>Convert variables to integer:</strong> when checked, the level "
+"labels are ignored and only integer values are used.</li>\n"
+"<li><strong>Sort Variables by Median:</strong> orders the list of Likert "
+"variables by median.</li>\n"
 "</ul>\n"
 "<h3>Comparison Tests</h3>\n"
 "<p>When using a group variable, several tests are available:</p>\n"
 "<ul>\n"
 "<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n"
 "<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n"
-"<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) paiwise comparisons tests.</li>\n"
+"<li><strong>Post Hoc Tests:</strong> Dunn, Conover and "
+"Dwass-Steel-Critchlow-Fligner (DSCF) paiwise comparisons tests.</li>\n"
 "</ul>\n"
-"<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for MannWithney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>"
+"<p>The p-values can be adjusted <strong>groupwise</strong> (for each "
+"question) for post hoc tests or <strong>overall</strong> (groupwise and "
+"questionwise) for MannWithney U, Kruskal-Wallis and post hoc tests. DSCF "
+"p-values are already adjusted (groupwise); no other adjustment is "
+"possible.</p>\n"
+"<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>"
 msgstr ""
 
 #: R/corresp.b.R
-msgid "<p>This module computes <strong>Correspondence Analysis (CA)</strong> for two categorical variables. Computations are based on <a href = \"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>\n"
-"<p>The data may be weighted using <em>jamovi</em> built-in weight system or using the \"Counts\" variable.</p>\n"
-"<p><strong>Supplementary row or column</strong> numbers may be entered as integer lists : 1,3,6</p>\n"
-"<p>Four normalizations (scaling of row and column scores before plotting) are avalaible :\n"
+msgid ""
+"<p>This module computes <strong>Correspondence Analysis (CA)</strong> for "
+"two categorical variables. Computations are based on <a href = "
+"\"https://CRAN.R-project.org/package=FactoMineR\" "
+"target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, "
+"S.&nbsp;Le, J.&nbsp;Mazet.</p>\n"
+"<p>The data may be weighted using <em>jamovi</em> built-in weight system or "
+"using the \"Counts\" variable.</p>\n"
+"<p><strong>Supplementary row or column</strong> numbers may be entered as "
+"integer lists : 1,3,6</p>\n"
+"<p>Four normalizations (scaling of row and column scores before plotting) "
+"are avalaible :</p>\n"
 "<ul>\n"
-"<li><strong>Principal:</strong> Row an columns scores are scaled by eigenvalues.</li>\n"
-"<li><strong>Symmetric:</strong> Row an columns scores are scaled by the square root of eigenvalues. </li>\n"
-"<li><strong>Row Principal:</strong> Only row scores are scaled by eigenvalues.</li>\n"
-"<li><strong>Column Principal:</strong> Only column scores are scaled by eigenvalues.</li>\n"
-"<li><strong>Standard:</strong> The raw coordinates without normalization.</li>\n"
-"</ul></p>\n"
+"<li><strong>Principal:</strong> Row an columns scores are scaled by "
+"eigenvalues.</li>\n"
+"<li><strong>Symmetric:</strong> Row an columns scores are scaled by the "
+"square root of eigenvalues. </li>\n"
+"<li><strong>Row Principal:</strong> Only row scores are scaled by "
+"eigenvalues.</li>\n"
+"<li><strong>Column Principal:</strong> Only column scores are scaled by "
+"eigenvalues.</li>\n"
+"<li><strong>Standard:</strong> The raw coordinates without "
+"normalization.</li>\n"
+"</ul>\n"
 "<p>A sample file is included at Open > Data Library > vijPlots > Smoking</p>"
 msgstr ""
 
 #: R/multcorresp.b.R
-msgid "<p>This module computes <strong>Multiple Correspondence Analysis (MCA)</strong> for several categorical variables. Computations are based on <a href = \"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>\n"
+msgid ""
+"<p>This module computes <strong>Multiple Correspondence Analysis "
+"(MCA)</strong> for several categorical variables. Computations are based on "
+"<a href = \"https://CRAN.R-project.org/package=FactoMineR\" "
+"target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, "
+"S.&nbsp;Le, J.&nbsp;Mazet.</p>\n"
 "<p>Both classic methods are available:</p>\n"
 "<ul>\n"
 "<li><strong>Indicator matrix:</strong> CA of the indicator matrix</li>\n"
-"<li><strong>Burt matrix:</strong> CA of the Burt matrix. The eigenvalues are the squares of those of the indicator matrix method. </li>\n"
+"<li><strong>Burt matrix:</strong> CA of the Burt matrix. The eigenvalues are "
+"the squares of those of the indicator matrix method. </li>\n"
 "</ul>\n"
-"<p>Both methods give the same <em>standard</em> coordinates (but different <em>principal</em> coordinates).</p>\n"
-"<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are applied to eigenvalues only (<strong>Summary</strong> table). Coordinates (and inertia) of categories and observations are computed from the original eigenvalues of the Burt matrix.</p>\n"
-"<p>The <strong>Normalization</strong> options specify how the coordinates are scaled (by eigenvalues):</p>\n"
+"<p>Both methods give the same <em>standard</em> coordinates (but different "
+"<em>principal</em> coordinates).</p>\n"
+"<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are "
+"applied to eigenvalues only (<strong>Summary</strong> table). Coordinates "
+"(and inertia) of categories and observations are computed from the original "
+"eigenvalues of the Burt matrix.</p>\n"
+"<p>The <strong>Normalization</strong> options specify how the coordinates "
+"are scaled (by eigenvalues):</p>\n"
 "<ul>\n"
-"<li><strong>Principal:</strong> Both category and observation coordinates are scaled.</li>\n"
-"<li><strong>Category principal:</strong> Only category coordinates are scaled.</li>\n"
-"<li><strong>Observation principal:</strong> Only observation coordinates are scaled.</li>\n"
-"<li><strong>Standard:</strong> Both category and observation coordinates are standard.</li>\n"
+"<li><strong>Principal:</strong> Both category and observation coordinates "
+"are scaled.</li>\n"
+"<li><strong>Category principal:</strong> Only category coordinates are "
+"scaled.</li>\n"
+"<li><strong>Observation principal:</strong> Only observation coordinates are "
+"scaled.</li>\n"
+"<li><strong>Standard:</strong> Both category and observation coordinates are "
+"standard.</li>\n"
 "</ul>\n"
 "<p>A sample file is included at Open > Data Library > vijPlots > Cars</p>"
 msgstr ""
 
 #: R/principal.b.R
-msgid "<p>This module computes <strong>Principal Component Analysis (PCA)</strong> for several continuous variables. Computations are based on <tt>stats::prcomp</tt> function.</p>\n"
-"<p>Although rotated components are not principal components, they are widely used. Only orthogonal rotations are available (from GPArotation package).</p>\n"
-"<p>Loadings (variable coordinates) and scores (observation coordinates) are principal (scaled by the squareroot of eigenvalues).</p>\n"
+msgid ""
+"<p>This module computes <strong>Principal Component Analysis (PCA)</strong> "
+"for several continuous variables. Computations are based on "
+"<tt>stats::prcomp</tt> function.</p>\n"
+"<p>Although rotated components are not principal components, they are widely "
+"used. Only orthogonal rotations are available (from GPArotation "
+"package).</p>\n"
+"<p>Loadings (variable coordinates) and scores (observation coordinates) are "
+"principal (scaled by the squareroot of eigenvalues).</p>\n"
 "<p>Biplot follows \"Biplots in Practice\" (Michael Greenacre, 2010):</p>\n"
 "<ul>\n"
-"<li><strong>Form biplot:</strong> Scores are principal (scaled by eigenvalues) while loadings are standard.</li>\n"
-"<li><strong>Covariance biplot:</strong> Loadings are principal while scores are standard. </li>\n"
+"<li><strong>Form biplot:</strong> Scores are principal (scaled by "
+"eigenvalues) while loadings are standard.</li>\n"
+"<li><strong>Covariance biplot:</strong> Loadings are principal while scores "
+"are standard. </li>\n"
 "</ul>\n"
 "<p><strong>Advanced options</strong>:</p>\n"
 "<ul>\n"
-"<li><strong>Standardize loadings:</strong> loadings are normalized with sums of squared equal to 1 (instead of eigenvalues)</li>\n"
-"<li><strong>Standardize scores:</strong> scores are normalized with variances equal to 1 (instead of eigenvalues)</li>\n"
-"<li><strong>Rotate eigenvectors:</strong> the rotation (varimax, etc) is applied to eigenvectors (standard loadings) instead of principal loadings (STATA way).</li>\n"
+"<li><strong>Standardize loadings:</strong> loadings are normalized with sums "
+"of squared equal to 1 (instead of eigenvalues)</li>\n"
+"<li><strong>Standardize scores:</strong> scores are normalized with "
+"variances equal to 1 (instead of eigenvalues)</li>\n"
+"<li><strong>Rotate eigenvectors:</strong> the rotation (varimax, etc) is "
+"applied to eigenvectors (standard loadings) instead of principal loadings "
+"(STATA way).</li>\n"
 "</ul>\n"
 "<p>A sample file is included at Open > Data Library > vijPlots > Iris</p>"
 msgstr ""
 
 #: R/mrfrequencies.b.R
-msgid "<p>This module computes frequencies for multiple response questions, also known as \"Check All That Apply\" (CATA) questions.</p>\n"
-"<p>Questions may be coded as:\n"
+msgid ""
+"<p>This module computes frequencies for multiple response questions, also "
+"known as \"Check All That Apply\" (CATA) questions.</p>\n"
+"<p>Questions may be coded as:</p>\n"
 "<ul>\n"
-"<li>several <strong>dummy (or indicator) variables</strong> using 0/1, 1/2, Y/N for each possible answer;</li>\n"
-"<li>a single <strong>multi-valued variable</strong> containing the checked answers, separated by a symbol (usually \",\" or \";\").</li>\n"
-"</ul></p>\n"
-"<p>A sample file is included at Open > Data Library > vijPlots > Credit Cards</p>"
+"<li>several <strong>dummy (or indicator) variables</strong> using 0/1, 1/2, "
+"Y/N for each possible answer;</li>\n"
+"<li>a single <strong>multi-valued variable</strong> containing the checked "
+"answers, separated by a symbol (usually \",\" or \";\").</li>\n"
+"</ul>\n"
+"<p>A sample file is included at Open > Data Library > vijPlots > Credit "
+"Cards</p>"
 msgstr ""
 
 #: R/mrcrosstabs.b.R
-msgid "<p>This module computes two-way frequencies for multiple response questions, also known as \"Check All That Apply\" (CATA) questions.</p>\n"
-"<p>Questions may be coded as:\n"
+msgid ""
+"<p>This module computes two-way frequencies for multiple response questions, "
+"also known as \"Check All That Apply\" (CATA) questions.</p>\n"
+"<p>Questions may be coded as:</p>\n"
 "<ul>\n"
-"<li>several <strong>dummy (or indicator) variables</strong> using 0/1, 1/2, Y/N for each possible answer;</li>\n"
-"<li>a single <strong>multi-valued variable</strong> containing the checked answers, separated by a symbol (usually \",\" or \";\").</li>\n"
-"</ul></p>\n"
-"<p>A sample file is included at Open > Data Library > vijPlots > Credit Cards</p>"
+"<li>several <strong>dummy (or indicator) variables</strong> using 0/1, 1/2, "
+"Y/N for each possible answer;</li>\n"
+"<li>a single <strong>multi-valued variable</strong> containing the checked "
+"answers, separated by a symbol (usually \",\" or \";\").</li>\n"
+"</ul>\n"
+"<p>A sample file is included at Open > Data Library > vijPlots > Credit "
+"Cards</p>"
 msgstr ""
 
 #: R/qqplot.b.R
-msgid "<p>This module uses <a href = \"https://CRAN.R-project.org/package=qqplotr\" target=\"_blank\">qqplotr R package<a/> by Alexandre Almeida, Adam Loy and Heike Hofmann. In-depth information can be found in the package documentation on CRAN site.</p>\n"
-"<p><strong>Reference line:</strong> Draws either the <em>identity line</em> (y = x) or the commonly-used <em>Q-Q line</em> that intercepts two data quantiles (Q<sub>0.25</sub> and Q<sub>0.75</sub>). P-P plot only supports identity line.</p>\n"
-"<p><strong>Confidence band:</strong> Draws a confidence band around the reference line. qqplotr package provides several methods to compute the confidence band:</p>\n"
+msgid ""
+"<p>This module uses <a href = \"https://CRAN.R-project.org/package=qqplotr\" "
+"target=\"_blank\">qqplotr R package<a/> by Alexandre Almeida, Adam Loy and "
+"Heike Hofmann. In-depth information can be found in the package "
+"documentation on CRAN site.</p>\n"
+"<p><strong>Reference line:</strong> Draws either the <em>identity line</em> "
+"(y = x) or the commonly-used <em>Q-Q line</em> that intercepts two data "
+"quantiles (Q<sub>0.25</sub> and Q<sub>0.75</sub>). P-P plot only supports "
+"identity line.</p>\n"
+"<p><strong>Confidence band:</strong> Draws a confidence band around the "
+"reference line. qqplotr package provides several methods to compute the "
+"confidence band:</p>\n"
 "<ul>\n"
-"<li><strong><em>Pointwise</em></strong> constructs pointwise confidence bands based on Normal confidence intervals;</li>\n"
-"<li><strong><em>Bootstrap</em></strong> creates pointwise confidence bands based on a parametric bootstrap;</li>\n"
-"<li><strong><em>Kolmogorov-Smirnov</em></strong> band is based on the Kolmogorov-Smirnov test;</li>\n"
-"<li><strong><em>Tail-Sensitive</em></strong> constructs a tail-sensitive confidence bands but is only implemented for Normal Q-Q plots;</li>\n"
-"<li><strong><em>Equal Local Levels (ELL)</em></strong> constructs simultaneous bands using the equal local levels.</li>\n"
+"<li><strong><em>Pointwise</em></strong> constructs pointwise confidence "
+"bands based on Normal confidence intervals;</li>\n"
+"<li><strong><em>Bootstrap</em></strong> creates pointwise confidence bands "
+"based on a parametric bootstrap;</li>\n"
+"<li><strong><em>Kolmogorov-Smirnov</em></strong> band is based on the "
+"Kolmogorov-Smirnov test;</li>\n"
+"<li><strong><em>Tail-Sensitive</em></strong> constructs a tail-sensitive "
+"confidence bands but is only implemented for Normal Q-Q plots;</li>\n"
+"<li><strong><em>Equal Local Levels (ELL)</em></strong> constructs "
+"simultaneous bands using the equal local levels.</li>\n"
 "</ul>\n"
 "<p>P-P plots only support \"ELL\" and \"Bootstrap\" methods.</p>\n"
-"<p><strong>Detrended plot:</strong> The objects are <em>detrended</em> according to the reference line. This procedure may help reducing visual bias caused by the orthogonal distances from the points to the reference line.</p>\n"
-"<p><strong>Parameter values:</strong> The distribution parameters can be estimated from data using:</p>\n"
+"<p><strong>Detrended plot:</strong> The objects are <em>detrended</em> "
+"according to the reference line. This procedure may help reducing visual "
+"bias caused by the orthogonal distances from the points to the reference "
+"line.</p>\n"
+"<p><strong>Parameter values:</strong> The distribution parameters can be "
+"estimated from data using:</p>\n"
 "<ul>\n"
-"<li><strong>Maximum Likelihood Method</strong> (using MASS package) : it should work with all distributions but \"t\" and \"uniform\";</li>\n"
-"<li><strong>Method of Moments</strong> for moment based parameters : it should work with \"normal\", \"log-normal\", \"Beta\", \"Exponential\", \"Gamma\", \"Logistic\" and \"Uniform\" distributions;</li>\n"
+"<li><strong>Maximum Likelihood Method</strong> (using MASS package) : it "
+"should work with all distributions but \"t\" and \"uniform\";</li>\n"
+"<li><strong>Method of Moments</strong> for moment based parameters : it "
+"should work with \"normal\", \"log-normal\", \"Beta\", \"Exponential\", "
+"\"Gamma\", \"Logistic\" and \"Uniform\" distributions;</li>\n"
 "</ul>\n"
 "<p>or entered by user:</p>\n"
 "<ul>\n"
-"<li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 (F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>\n"
-"<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 (Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma, Weibull) and max (Uniform).</li>\n"
+"<li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), "
+"shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 "
+"(F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>\n"
+"<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 "
+"(Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma, Weibull) and max "
+"(Uniform).</li>\n"
 "</ul>\n"
 "</p>"
 msgstr ""
 
-#: barplot/options/accuracy/0.01.title
-#: barplot/ui[2][0][2][0]/accuracy_001.label
-#: mrcrosstabs/options/accuracy/0.01.title
-#: mrcrosstabs/ui[2][0][2][0]/accuracy_001.label
-#: mrfrequencies/options/accuracy/0.01.title
-#: mrfrequencies/ui[2][0][2][0]/accuracy_001.label
-#: piechart/options/accuracy/0.01.title
-#: piechart/ui[2][0][2][0]/accuracy_001.label
-msgid "0.01"
-msgstr ""
-
-#: barplot/options/accuracy/0.1.title
-#: barplot/ui[2][0][2][0]/accuracy_01.label
-#: likertplot/options/accuracy/0.1.title
-#: likertplot/ui[4][0][2][0]/accuracy_01.label
-#: mrcrosstabs/options/accuracy/0.1.title
-#: mrcrosstabs/ui[2][0][2][0]/accuracy_01.label
-#: mrfrequencies/options/accuracy/0.1.title
-#: mrfrequencies/ui[2][0][2][0]/accuracy_01.label
-#: piechart/options/accuracy/0.1.title
-#: piechart/ui[2][0][2][0]/accuracy_01.label
-msgid "0.1"
-msgstr ""
-
-#: barplot/options/accuracy/1.title
-#: barplot/ui[2][0][2][0]/accuracy_1.label
-#: likertplot/options/accuracy/1.title
-#: likertplot/ui[4][0][2][0]/accuracy_1.label
-#: mrcrosstabs/options/accuracy/1.title
-#: mrcrosstabs/ui[2][0][2][0]/accuracy_1.label
-#: mrfrequencies/options/accuracy/1.title
-#: mrfrequencies/ui[2][0][2][0]/accuracy_1.label
-#: piechart/options/accuracy/1.title
-#: piechart/ui[2][0][2][0]/accuracy_1.label
-msgid "1"
-msgstr ""
-
-#: areachart/options/dateBreak/1 day.title
-#: linechart/options/dateBreak/1 day.title
+#: areachart/options/dateBreak/1day.title
+#: linechart/options/dateBreak/1day.title
 msgid "1 day"
 msgstr ""
 
-#: areachart/options/dateBreak/1 month.title
-#: linechart/options/dateBreak/1 month.title
+#: areachart/options/dateBreak/1month.title
+#: linechart/options/dateBreak/1month.title
 msgid "1 month"
 msgstr ""
 
-#: areachart/options/dateBreak/1 week.title
-#: linechart/options/dateBreak/1 week.title
+#: areachart/options/dateBreak/1week.title
+#: linechart/options/dateBreak/1week.title
 msgid "1 week"
 msgstr ""
 
-#: areachart/options/dateBreak/1 year.title
-#: linechart/options/dateBreak/1 year.title
+#: areachart/options/dateBreak/1year.title
+#: linechart/options/dateBreak/1year.title
 msgid "1 year"
 msgstr ""
 
-#: areachart/options/subtitleFontSize/10.title
-#: areachart/options/captionFontSize/10.title
-#: areachart/options/legendFontSize/10.title
-#: areachart/options/xAxisFontSize/10.title
-#: areachart/options/yAxisFontSize/10.title
-#: barplot/options/subtitleFontSize/10.title
-#: barplot/options/captionFontSize/10.title
-#: barplot/options/legendFontSize/10.title
-#: barplot/options/xAxisFontSize/10.title
-#: barplot/options/yAxisFontSize/10.title
-#: boxplot/options/subtitleFontSize/10.title
-#: boxplot/options/captionFontSize/10.title
-#: boxplot/options/legendFontSize/10.title
-#: boxplot/options/xAxisFontSize/10.title
-#: boxplot/options/yAxisFontSize/10.title
-#: corresp/options/xAxisFontSize/10.title
-#: corresp/options/yAxisFontSize/10.title
-#: histogram/options/subtitleFontSize/10.title
-#: histogram/options/captionFontSize/10.title
-#: histogram/options/legendFontSize/10.title
-#: histogram/options/xAxisFontSize/10.title
-#: histogram/options/yAxisFontSize/10.title
-#: likertplot/options/vLabelWrap/10.title
-#: likertplot/options/hLabelWrap/10.title
-#: likertplot/options/subtitleFontSize/10.title
-#: likertplot/options/captionFontSize/10.title
-#: likertplot/options/legendFontSize/10.title
-#: linechart/options/subtitleFontSize/10.title
-#: linechart/options/captionFontSize/10.title
-#: linechart/options/legendFontSize/10.title
-#: linechart/options/xAxisFontSize/10.title
-#: linechart/options/yAxisFontSize/10.title
-#: lollipop/options/subtitleFontSize/10.title
-#: lollipop/options/captionFontSize/10.title
-#: lollipop/options/xAxisFontSize/10.title
-#: lollipop/options/yAxisFontSize/10.title
-#: mrcrosstabs/options/subtitleFontSize/10.title
-#: mrcrosstabs/options/captionFontSize/10.title
-#: mrcrosstabs/options/legendFontSize/10.title
-#: mrcrosstabs/options/xAxisFontSize/10.title
-#: mrcrosstabs/options/yAxisFontSize/10.title
-#: mrfrequencies/options/subtitleFontSize/10.title
-#: mrfrequencies/options/captionFontSize/10.title
-#: mrfrequencies/options/xAxisFontSize/10.title
-#: mrfrequencies/options/yAxisFontSize/10.title
-#: multcorresp/options/legendFontSize/10.title
-#: multcorresp/options/xAxisFontSize/10.title
-#: multcorresp/options/yAxisFontSize/10.title
-#: piechart/options/subtitleFontSize/10.title
-#: piechart/options/captionFontSize/10.title
-#: piechart/options/legendFontSize/10.title
-#: principal/options/legendFontSize/10.title
-#: principal/options/xAxisFontSize/10.title
-#: principal/options/yAxisFontSize/10.title
-#: qqplot/options/subtitleFontSize/10.title
-#: qqplot/options/captionFontSize/10.title
-#: qqplot/options/legendFontSize/10.title
-#: qqplot/options/xAxisFontSize/10.title
-#: qqplot/options/yAxisFontSize/10.title
-#: raincloud/options/subtitleFontSize/10.title
-#: raincloud/options/captionFontSize/10.title
-#: raincloud/options/legendFontSize/10.title
-#: raincloud/options/xAxisFontSize/10.title
-#: raincloud/options/yAxisFontSize/10.title
-#: scatterplot/options/subtitleFontSize/10.title
-#: scatterplot/options/captionFontSize/10.title
-#: scatterplot/options/legendFontSize/10.title
-#: scatterplot/options/xAxisFontSize/10.title
-#: scatterplot/options/yAxisFontSize/10.title
-msgid "10"
-msgstr ""
-
-#: areachart/options/dateBreak/10 year.title
-#: linechart/options/dateBreak/10 year.title
+#: areachart/options/dateBreak/10year.title
+#: linechart/options/dateBreak/10year.title
 msgid "10 years"
 msgstr ""
 
@@ -403,439 +349,13 @@ msgstr ""
 msgid "10/20/35"
 msgstr ""
 
-#: likertplot/options/legendFontSize/11.title
-msgid "11"
-msgstr ""
-
-#: areachart/options/titleFontSize/12.title
-#: areachart/options/subtitleFontSize/12.title
-#: areachart/options/captionFontSize/12.title
-#: areachart/options/legendFontSize/12.title
-#: areachart/options/xAxisFontSize/12.title
-#: areachart/options/yAxisFontSize/12.title
-#: barplot/options/titleFontSize/12.title
-#: barplot/options/subtitleFontSize/12.title
-#: barplot/options/captionFontSize/12.title
-#: barplot/options/legendFontSize/12.title
-#: barplot/options/xAxisFontSize/12.title
-#: barplot/options/yAxisFontSize/12.title
-#: boxplot/options/titleFontSize/12.title
-#: boxplot/options/subtitleFontSize/12.title
-#: boxplot/options/captionFontSize/12.title
-#: boxplot/options/legendFontSize/12.title
-#: boxplot/options/xAxisFontSize/12.title
-#: boxplot/options/yAxisFontSize/12.title
-#: corresp/options/xAxisFontSize/12.title
-#: corresp/options/yAxisFontSize/12.title
-#: histogram/options/titleFontSize/12.title
-#: histogram/options/subtitleFontSize/12.title
-#: histogram/options/captionFontSize/12.title
-#: histogram/options/legendFontSize/12.title
-#: histogram/options/xAxisFontSize/12.title
-#: histogram/options/yAxisFontSize/12.title
-#: likertplot/options/titleFontSize/12.title
-#: likertplot/options/subtitleFontSize/12.title
-#: likertplot/options/captionFontSize/12.title
-#: likertplot/options/legendFontSize/12.title
-#: linechart/options/titleFontSize/12.title
-#: linechart/options/subtitleFontSize/12.title
-#: linechart/options/captionFontSize/12.title
-#: linechart/options/legendFontSize/12.title
-#: linechart/options/xAxisFontSize/12.title
-#: linechart/options/yAxisFontSize/12.title
-#: lollipop/options/titleFontSize/12.title
-#: lollipop/options/subtitleFontSize/12.title
-#: lollipop/options/captionFontSize/12.title
-#: lollipop/options/xAxisFontSize/12.title
-#: lollipop/options/yAxisFontSize/12.title
-#: mrcrosstabs/options/titleFontSize/12.title
-#: mrcrosstabs/options/subtitleFontSize/12.title
-#: mrcrosstabs/options/captionFontSize/12.title
-#: mrcrosstabs/options/legendFontSize/12.title
-#: mrcrosstabs/options/xAxisFontSize/12.title
-#: mrcrosstabs/options/yAxisFontSize/12.title
-#: mrfrequencies/options/titleFontSize/12.title
-#: mrfrequencies/options/subtitleFontSize/12.title
-#: mrfrequencies/options/captionFontSize/12.title
-#: mrfrequencies/options/xAxisFontSize/12.title
-#: mrfrequencies/options/yAxisFontSize/12.title
-#: multcorresp/options/legendFontSize/12.title
-#: multcorresp/options/xAxisFontSize/12.title
-#: multcorresp/options/yAxisFontSize/12.title
-#: piechart/options/titleFontSize/12.title
-#: piechart/options/subtitleFontSize/12.title
-#: piechart/options/captionFontSize/12.title
-#: piechart/options/legendFontSize/12.title
-#: principal/options/legendFontSize/12.title
-#: principal/options/xAxisFontSize/12.title
-#: principal/options/yAxisFontSize/12.title
-#: qqplot/options/titleFontSize/12.title
-#: qqplot/options/subtitleFontSize/12.title
-#: qqplot/options/captionFontSize/12.title
-#: qqplot/options/legendFontSize/12.title
-#: qqplot/options/xAxisFontSize/12.title
-#: qqplot/options/yAxisFontSize/12.title
-#: raincloud/options/titleFontSize/12.title
-#: raincloud/options/subtitleFontSize/12.title
-#: raincloud/options/captionFontSize/12.title
-#: raincloud/options/legendFontSize/12.title
-#: raincloud/options/xAxisFontSize/12.title
-#: raincloud/options/yAxisFontSize/12.title
-#: scatterplot/options/titleFontSize/12.title
-#: scatterplot/options/subtitleFontSize/12.title
-#: scatterplot/options/captionFontSize/12.title
-#: scatterplot/options/legendFontSize/12.title
-#: scatterplot/options/xAxisFontSize/12.title
-#: scatterplot/options/yAxisFontSize/12.title
-msgid "12"
-msgstr ""
-
-#: likertplot/options/legendFontSize/13.title
-msgid "13"
-msgstr ""
-
-#: areachart/options/titleFontSize/14.title
-#: areachart/options/subtitleFontSize/14.title
-#: areachart/options/captionFontSize/14.title
-#: areachart/options/legendFontSize/14.title
-#: areachart/options/xAxisFontSize/14.title
-#: areachart/options/yAxisFontSize/14.title
-#: barplot/options/titleFontSize/14.title
-#: barplot/options/subtitleFontSize/14.title
-#: barplot/options/captionFontSize/14.title
-#: barplot/options/legendFontSize/14.title
-#: barplot/options/xAxisFontSize/14.title
-#: barplot/options/yAxisFontSize/14.title
-#: boxplot/options/titleFontSize/14.title
-#: boxplot/options/subtitleFontSize/14.title
-#: boxplot/options/captionFontSize/14.title
-#: boxplot/options/legendFontSize/14.title
-#: boxplot/options/xAxisFontSize/14.title
-#: boxplot/options/yAxisFontSize/14.title
-#: corresp/options/xAxisFontSize/14.title
-#: corresp/options/yAxisFontSize/14.title
-#: histogram/options/titleFontSize/14.title
-#: histogram/options/subtitleFontSize/14.title
-#: histogram/options/captionFontSize/14.title
-#: histogram/options/legendFontSize/14.title
-#: histogram/options/xAxisFontSize/14.title
-#: histogram/options/yAxisFontSize/14.title
-#: likertplot/options/titleFontSize/14.title
-#: likertplot/options/subtitleFontSize/14.title
-#: likertplot/options/captionFontSize/14.title
-#: likertplot/options/legendFontSize/14.title
-#: linechart/options/titleFontSize/14.title
-#: linechart/options/subtitleFontSize/14.title
-#: linechart/options/captionFontSize/14.title
-#: linechart/options/legendFontSize/14.title
-#: linechart/options/xAxisFontSize/14.title
-#: linechart/options/yAxisFontSize/14.title
-#: lollipop/options/titleFontSize/14.title
-#: lollipop/options/subtitleFontSize/14.title
-#: lollipop/options/captionFontSize/14.title
-#: lollipop/options/xAxisFontSize/14.title
-#: lollipop/options/yAxisFontSize/14.title
-#: mrcrosstabs/options/titleFontSize/14.title
-#: mrcrosstabs/options/subtitleFontSize/14.title
-#: mrcrosstabs/options/captionFontSize/14.title
-#: mrcrosstabs/options/legendFontSize/14.title
-#: mrcrosstabs/options/xAxisFontSize/14.title
-#: mrcrosstabs/options/yAxisFontSize/14.title
-#: mrfrequencies/options/titleFontSize/14.title
-#: mrfrequencies/options/subtitleFontSize/14.title
-#: mrfrequencies/options/captionFontSize/14.title
-#: mrfrequencies/options/xAxisFontSize/14.title
-#: mrfrequencies/options/yAxisFontSize/14.title
-#: multcorresp/options/legendFontSize/14.title
-#: multcorresp/options/xAxisFontSize/14.title
-#: multcorresp/options/yAxisFontSize/14.title
-#: piechart/options/titleFontSize/14.title
-#: piechart/options/subtitleFontSize/14.title
-#: piechart/options/captionFontSize/14.title
-#: piechart/options/legendFontSize/14.title
-#: principal/options/legendFontSize/14.title
-#: principal/options/xAxisFontSize/14.title
-#: principal/options/yAxisFontSize/14.title
-#: qqplot/options/titleFontSize/14.title
-#: qqplot/options/subtitleFontSize/14.title
-#: qqplot/options/captionFontSize/14.title
-#: qqplot/options/legendFontSize/14.title
-#: qqplot/options/xAxisFontSize/14.title
-#: qqplot/options/yAxisFontSize/14.title
-#: raincloud/options/titleFontSize/14.title
-#: raincloud/options/subtitleFontSize/14.title
-#: raincloud/options/captionFontSize/14.title
-#: raincloud/options/legendFontSize/14.title
-#: raincloud/options/xAxisFontSize/14.title
-#: raincloud/options/yAxisFontSize/14.title
-#: scatterplot/options/titleFontSize/14.title
-#: scatterplot/options/subtitleFontSize/14.title
-#: scatterplot/options/captionFontSize/14.title
-#: scatterplot/options/legendFontSize/14.title
-#: scatterplot/options/xAxisFontSize/14.title
-#: scatterplot/options/yAxisFontSize/14.title
-msgid "14"
-msgstr ""
-
-#: likertplot/options/vLabelWrap/15.title
-msgid "15"
-msgstr ""
-
-#: areachart/options/titleFontSize/16.title
-#: areachart/options/subtitleFontSize/16.title
-#: areachart/options/captionFontSize/16.title
-#: areachart/options/legendFontSize/16.title
-#: areachart/options/xAxisFontSize/16.title
-#: areachart/options/yAxisFontSize/16.title
-#: barplot/options/titleFontSize/16.title
-#: barplot/options/subtitleFontSize/16.title
-#: barplot/options/captionFontSize/16.title
-#: barplot/options/legendFontSize/16.title
-#: barplot/options/xAxisFontSize/16.title
-#: barplot/options/yAxisFontSize/16.title
-#: boxplot/options/titleFontSize/16.title
-#: boxplot/options/subtitleFontSize/16.title
-#: boxplot/options/captionFontSize/16.title
-#: boxplot/options/legendFontSize/16.title
-#: boxplot/options/xAxisFontSize/16.title
-#: boxplot/options/yAxisFontSize/16.title
-#: corresp/options/xAxisFontSize/16.title
-#: corresp/options/yAxisFontSize/16.title
-#: histogram/options/titleFontSize/16.title
-#: histogram/options/subtitleFontSize/16.title
-#: histogram/options/captionFontSize/16.title
-#: histogram/options/legendFontSize/16.title
-#: histogram/options/xAxisFontSize/16.title
-#: histogram/options/yAxisFontSize/16.title
-#: likertplot/options/titleFontSize/16.title
-#: likertplot/options/subtitleFontSize/16.title
-#: likertplot/options/captionFontSize/16.title
-#: linechart/options/titleFontSize/16.title
-#: linechart/options/subtitleFontSize/16.title
-#: linechart/options/captionFontSize/16.title
-#: linechart/options/legendFontSize/16.title
-#: linechart/options/xAxisFontSize/16.title
-#: linechart/options/yAxisFontSize/16.title
-#: lollipop/options/titleFontSize/16.title
-#: lollipop/options/subtitleFontSize/16.title
-#: lollipop/options/captionFontSize/16.title
-#: lollipop/options/xAxisFontSize/16.title
-#: lollipop/options/yAxisFontSize/16.title
-#: mrcrosstabs/options/titleFontSize/16.title
-#: mrcrosstabs/options/subtitleFontSize/16.title
-#: mrcrosstabs/options/captionFontSize/16.title
-#: mrcrosstabs/options/legendFontSize/16.title
-#: mrcrosstabs/options/xAxisFontSize/16.title
-#: mrcrosstabs/options/yAxisFontSize/16.title
-#: mrfrequencies/options/titleFontSize/16.title
-#: mrfrequencies/options/subtitleFontSize/16.title
-#: mrfrequencies/options/captionFontSize/16.title
-#: mrfrequencies/options/xAxisFontSize/16.title
-#: mrfrequencies/options/yAxisFontSize/16.title
-#: multcorresp/options/legendFontSize/16.title
-#: multcorresp/options/xAxisFontSize/16.title
-#: multcorresp/options/yAxisFontSize/16.title
-#: piechart/options/titleFontSize/16.title
-#: piechart/options/subtitleFontSize/16.title
-#: piechart/options/captionFontSize/16.title
-#: piechart/options/legendFontSize/16.title
-#: principal/options/legendFontSize/16.title
-#: principal/options/xAxisFontSize/16.title
-#: principal/options/yAxisFontSize/16.title
-#: qqplot/options/titleFontSize/16.title
-#: qqplot/options/subtitleFontSize/16.title
-#: qqplot/options/captionFontSize/16.title
-#: qqplot/options/legendFontSize/16.title
-#: qqplot/options/xAxisFontSize/16.title
-#: qqplot/options/yAxisFontSize/16.title
-#: raincloud/options/titleFontSize/16.title
-#: raincloud/options/subtitleFontSize/16.title
-#: raincloud/options/captionFontSize/16.title
-#: raincloud/options/legendFontSize/16.title
-#: raincloud/options/xAxisFontSize/16.title
-#: raincloud/options/yAxisFontSize/16.title
-#: scatterplot/options/titleFontSize/16.title
-#: scatterplot/options/subtitleFontSize/16.title
-#: scatterplot/options/captionFontSize/16.title
-#: scatterplot/options/legendFontSize/16.title
-#: scatterplot/options/xAxisFontSize/16.title
-#: scatterplot/options/yAxisFontSize/16.title
-msgid "16"
-msgstr ""
-
-#: areachart/options/titleFontSize/18.title
-#: areachart/options/subtitleFontSize/18.title
-#: areachart/options/captionFontSize/18.title
-#: areachart/options/legendFontSize/18.title
-#: areachart/options/xAxisFontSize/18.title
-#: areachart/options/yAxisFontSize/18.title
-#: barplot/options/titleFontSize/18.title
-#: barplot/options/subtitleFontSize/18.title
-#: barplot/options/captionFontSize/18.title
-#: barplot/options/legendFontSize/18.title
-#: barplot/options/xAxisFontSize/18.title
-#: barplot/options/yAxisFontSize/18.title
-#: boxplot/options/titleFontSize/18.title
-#: boxplot/options/subtitleFontSize/18.title
-#: boxplot/options/captionFontSize/18.title
-#: boxplot/options/legendFontSize/18.title
-#: boxplot/options/xAxisFontSize/18.title
-#: boxplot/options/yAxisFontSize/18.title
-#: corresp/options/xAxisFontSize/18.title
-#: corresp/options/yAxisFontSize/18.title
-#: histogram/options/titleFontSize/18.title
-#: histogram/options/subtitleFontSize/18.title
-#: histogram/options/captionFontSize/18.title
-#: histogram/options/legendFontSize/18.title
-#: histogram/options/xAxisFontSize/18.title
-#: histogram/options/yAxisFontSize/18.title
-#: likertplot/options/titleFontSize/18.title
-#: likertplot/options/subtitleFontSize/18.title
-#: likertplot/options/captionFontSize/18.title
-#: linechart/options/titleFontSize/18.title
-#: linechart/options/subtitleFontSize/18.title
-#: linechart/options/captionFontSize/18.title
-#: linechart/options/legendFontSize/18.title
-#: linechart/options/xAxisFontSize/18.title
-#: linechart/options/yAxisFontSize/18.title
-#: lollipop/options/titleFontSize/18.title
-#: lollipop/options/subtitleFontSize/18.title
-#: lollipop/options/captionFontSize/18.title
-#: lollipop/options/xAxisFontSize/18.title
-#: lollipop/options/yAxisFontSize/18.title
-#: mrcrosstabs/options/titleFontSize/18.title
-#: mrcrosstabs/options/subtitleFontSize/18.title
-#: mrcrosstabs/options/captionFontSize/18.title
-#: mrcrosstabs/options/legendFontSize/18.title
-#: mrcrosstabs/options/xAxisFontSize/18.title
-#: mrcrosstabs/options/yAxisFontSize/18.title
-#: mrfrequencies/options/titleFontSize/18.title
-#: mrfrequencies/options/subtitleFontSize/18.title
-#: mrfrequencies/options/captionFontSize/18.title
-#: mrfrequencies/options/xAxisFontSize/18.title
-#: mrfrequencies/options/yAxisFontSize/18.title
-#: multcorresp/options/legendFontSize/18.title
-#: multcorresp/options/xAxisFontSize/18.title
-#: multcorresp/options/yAxisFontSize/18.title
-#: piechart/options/titleFontSize/18.title
-#: piechart/options/subtitleFontSize/18.title
-#: piechart/options/captionFontSize/18.title
-#: piechart/options/legendFontSize/18.title
-#: principal/options/legendFontSize/18.title
-#: principal/options/xAxisFontSize/18.title
-#: principal/options/yAxisFontSize/18.title
-#: qqplot/options/titleFontSize/18.title
-#: qqplot/options/subtitleFontSize/18.title
-#: qqplot/options/captionFontSize/18.title
-#: qqplot/options/legendFontSize/18.title
-#: qqplot/options/xAxisFontSize/18.title
-#: qqplot/options/yAxisFontSize/18.title
-#: raincloud/options/titleFontSize/18.title
-#: raincloud/options/subtitleFontSize/18.title
-#: raincloud/options/captionFontSize/18.title
-#: raincloud/options/legendFontSize/18.title
-#: raincloud/options/xAxisFontSize/18.title
-#: raincloud/options/yAxisFontSize/18.title
-#: scatterplot/options/titleFontSize/18.title
-#: scatterplot/options/subtitleFontSize/18.title
-#: scatterplot/options/captionFontSize/18.title
-#: scatterplot/options/legendFontSize/18.title
-#: scatterplot/options/xAxisFontSize/18.title
-#: scatterplot/options/yAxisFontSize/18.title
-msgid "18"
-msgstr ""
-
-#: areachart/options/dateBreak/2 week.title
-#: linechart/options/dateBreak/2 week.title
+#: areachart/options/dateBreak/2week.title
+#: linechart/options/dateBreak/2week.title
 msgid "2 weeks"
 msgstr ""
 
-#: areachart/options/titleFontSize/20.title
-#: areachart/options/subtitleFontSize/20.title
-#: areachart/options/captionFontSize/20.title
-#: areachart/options/legendFontSize/20.title
-#: areachart/options/xAxisFontSize/20.title
-#: areachart/options/yAxisFontSize/20.title
-#: barplot/options/titleFontSize/20.title
-#: barplot/options/subtitleFontSize/20.title
-#: barplot/options/captionFontSize/20.title
-#: barplot/options/legendFontSize/20.title
-#: barplot/options/xAxisFontSize/20.title
-#: barplot/options/yAxisFontSize/20.title
-#: boxplot/options/titleFontSize/20.title
-#: boxplot/options/subtitleFontSize/20.title
-#: boxplot/options/captionFontSize/20.title
-#: boxplot/options/legendFontSize/20.title
-#: boxplot/options/xAxisFontSize/20.title
-#: boxplot/options/yAxisFontSize/20.title
-#: corresp/options/xAxisFontSize/20.title
-#: corresp/options/yAxisFontSize/20.title
-#: histogram/options/titleFontSize/20.title
-#: histogram/options/subtitleFontSize/20.title
-#: histogram/options/captionFontSize/20.title
-#: histogram/options/legendFontSize/20.title
-#: histogram/options/xAxisFontSize/20.title
-#: histogram/options/yAxisFontSize/20.title
-#: likertplot/options/vLabelWrap/20.title
-#: likertplot/options/hLabelWrap/20.title
-#: likertplot/options/titleFontSize/20.title
-#: likertplot/options/subtitleFontSize/20.title
-#: likertplot/options/captionFontSize/20.title
-#: linechart/options/titleFontSize/20.title
-#: linechart/options/subtitleFontSize/20.title
-#: linechart/options/captionFontSize/20.title
-#: linechart/options/legendFontSize/20.title
-#: linechart/options/xAxisFontSize/20.title
-#: linechart/options/yAxisFontSize/20.title
-#: lollipop/options/titleFontSize/20.title
-#: lollipop/options/subtitleFontSize/20.title
-#: lollipop/options/captionFontSize/20.title
-#: lollipop/options/xAxisFontSize/20.title
-#: lollipop/options/yAxisFontSize/20.title
-#: mrcrosstabs/options/titleFontSize/20.title
-#: mrcrosstabs/options/subtitleFontSize/20.title
-#: mrcrosstabs/options/captionFontSize/20.title
-#: mrcrosstabs/options/legendFontSize/20.title
-#: mrcrosstabs/options/xAxisFontSize/20.title
-#: mrcrosstabs/options/yAxisFontSize/20.title
-#: mrfrequencies/options/titleFontSize/20.title
-#: mrfrequencies/options/subtitleFontSize/20.title
-#: mrfrequencies/options/captionFontSize/20.title
-#: mrfrequencies/options/xAxisFontSize/20.title
-#: mrfrequencies/options/yAxisFontSize/20.title
-#: multcorresp/options/legendFontSize/20.title
-#: multcorresp/options/xAxisFontSize/20.title
-#: multcorresp/options/yAxisFontSize/20.title
-#: piechart/options/titleFontSize/20.title
-#: piechart/options/subtitleFontSize/20.title
-#: piechart/options/captionFontSize/20.title
-#: piechart/options/legendFontSize/20.title
-#: principal/options/legendFontSize/20.title
-#: principal/options/xAxisFontSize/20.title
-#: principal/options/yAxisFontSize/20.title
-#: qqplot/options/titleFontSize/20.title
-#: qqplot/options/subtitleFontSize/20.title
-#: qqplot/options/captionFontSize/20.title
-#: qqplot/options/legendFontSize/20.title
-#: qqplot/options/xAxisFontSize/20.title
-#: qqplot/options/yAxisFontSize/20.title
-#: raincloud/options/titleFontSize/20.title
-#: raincloud/options/subtitleFontSize/20.title
-#: raincloud/options/captionFontSize/20.title
-#: raincloud/options/legendFontSize/20.title
-#: raincloud/options/xAxisFontSize/20.title
-#: raincloud/options/yAxisFontSize/20.title
-#: scatterplot/options/titleFontSize/20.title
-#: scatterplot/options/subtitleFontSize/20.title
-#: scatterplot/options/captionFontSize/20.title
-#: scatterplot/options/legendFontSize/20.title
-#: scatterplot/options/xAxisFontSize/20.title
-#: scatterplot/options/yAxisFontSize/20.title
-msgid "20"
-msgstr ""
-
-#: areachart/options/displayFormat/%e %B %Y.title
-#: linechart/options/displayFormat/%e %B %Y.title
+#: areachart/options/displayFormat/%e%B%Y.title
+#: linechart/options/displayFormat/%e%B%Y.title
 msgid "20 October 2035"
 msgstr ""
 
@@ -849,23 +369,18 @@ msgstr ""
 msgid "20/10/35"
 msgstr ""
 
-#: areachart/options/displayFormat/%Y.title
-#: linechart/options/displayFormat/%Y.title
-msgid "2035"
-msgstr ""
-
-#: areachart/options/displayFormat/%Y %b.title
-#: linechart/options/displayFormat/%Y %b.title
+#: areachart/options/displayFormat/%Y%b.title
+#: linechart/options/displayFormat/%Y%b.title
 msgid "2035 Oct"
 msgstr ""
 
-#: areachart/options/displayFormat/%Y %B.title
-#: linechart/options/displayFormat/%Y %B.title
+#: areachart/options/displayFormat/%Y%B.title
+#: linechart/options/displayFormat/%Y%B.title
 msgid "2035 October"
 msgstr ""
 
-#: areachart/options/displayFormat/%Y %B %e.title
-#: linechart/options/displayFormat/%Y %B %e.title
+#: areachart/options/displayFormat/%Y%B%e.title
+#: linechart/options/displayFormat/%Y%B%e.title
 msgid "2035 October 20"
 msgstr ""
 
@@ -874,105 +389,14 @@ msgstr ""
 msgid "2035-10-20"
 msgstr ""
 
-#: areachart/options/titleFontSize/22.title
-#: areachart/options/subtitleFontSize/22.title
-#: barplot/options/titleFontSize/22.title
-#: barplot/options/subtitleFontSize/22.title
-#: boxplot/options/titleFontSize/22.title
-#: boxplot/options/subtitleFontSize/22.title
-#: histogram/options/titleFontSize/22.title
-#: histogram/options/subtitleFontSize/22.title
-#: likertplot/options/titleFontSize/22.title
-#: likertplot/options/subtitleFontSize/22.title
-#: linechart/options/titleFontSize/22.title
-#: linechart/options/subtitleFontSize/22.title
-#: lollipop/options/titleFontSize/22.title
-#: lollipop/options/subtitleFontSize/22.title
-#: mrcrosstabs/options/titleFontSize/22.title
-#: mrcrosstabs/options/subtitleFontSize/22.title
-#: mrfrequencies/options/titleFontSize/22.title
-#: mrfrequencies/options/subtitleFontSize/22.title
-#: piechart/options/titleFontSize/22.title
-#: piechart/options/subtitleFontSize/22.title
-#: qqplot/options/titleFontSize/22.title
-#: qqplot/options/subtitleFontSize/22.title
-#: raincloud/options/titleFontSize/22.title
-#: raincloud/options/subtitleFontSize/22.title
-#: scatterplot/options/titleFontSize/22.title
-#: scatterplot/options/subtitleFontSize/22.title
-msgid "22"
-msgstr ""
-
-#: areachart/options/titleFontSize/24.title
-#: barplot/options/titleFontSize/24.title
-#: boxplot/options/titleFontSize/24.title
-#: histogram/options/titleFontSize/24.title
-#: likertplot/options/titleFontSize/24.title
-#: linechart/options/titleFontSize/24.title
-#: lollipop/options/titleFontSize/24.title
-#: mrcrosstabs/options/titleFontSize/24.title
-#: mrfrequencies/options/titleFontSize/24.title
-#: piechart/options/titleFontSize/24.title
-#: qqplot/options/titleFontSize/24.title
-#: raincloud/options/titleFontSize/24.title
-#: scatterplot/options/titleFontSize/24.title
-msgid "24"
-msgstr ""
-
-#: likertplot/options/vLabelWrap/25.title
-msgid "25"
-msgstr ""
-
-#: areachart/options/dateBreak/3 month.title
-#: linechart/options/dateBreak/3 month.title
+#: areachart/options/dateBreak/3month.title
+#: linechart/options/dateBreak/3month.title
 msgid "3 months"
 msgstr ""
 
-#: likertplot/options/vLabelWrap/30.title
-#: likertplot/options/hLabelWrap/30.title
-msgid "30"
-msgstr ""
-
-#: likertplot/options/vLabelWrap/35.title
-msgid "35"
-msgstr ""
-
-#: likertplot/options/hLabelWrap/40.title
-msgid "40"
-msgstr ""
-
-#: likertplot/options/hLabelWrap/60.title
-msgid "50"
-msgstr ""
-
-#: areachart/options/dateBreak/6 month.title
-#: linechart/options/dateBreak/6 month.title
+#: areachart/options/dateBreak/6month.title
+#: linechart/options/dateBreak/6month.title
 msgid "6 months"
-msgstr ""
-
-#: areachart/options/captionFontSize/8.title
-#: barplot/options/captionFontSize/8.title
-#: boxplot/options/captionFontSize/8.title
-#: histogram/options/captionFontSize/8.title
-#: likertplot/options/captionFontSize/8.title
-#: likertplot/options/legendFontSize/8.title
-#: linechart/options/captionFontSize/8.title
-#: lollipop/options/captionFontSize/8.title
-#: mrcrosstabs/options/captionFontSize/8.title
-#: mrfrequencies/options/captionFontSize/8.title
-#: piechart/options/captionFontSize/8.title
-#: qqplot/options/captionFontSize/8.title
-#: raincloud/options/captionFontSize/8.title
-#: scatterplot/options/captionFontSize/8.title
-msgid "8"
-msgstr ""
-
-#: likertplot/options/hLabelWrap/80.title
-msgid "80"
-msgstr ""
-
-#: likertplot/options/legendFontSize/9.title
-msgid "9"
 msgstr ""
 
 #: package/datasets/vijPlots.description
@@ -991,7 +415,7 @@ msgstr ""
 msgid "A demonstration dataset for vijPlots/Multiple Correspondence Analysis."
 msgstr ""
 
-#: package/datasets/Credit Cards.description
+#: package/datasets/CreditCards.description
 msgid "A demonstration dataset for vijPlots/Multiple Response plots."
 msgstr ""
 
@@ -1003,7 +427,7 @@ msgstr ""
 msgid "A demonstration dataset for vijPlots/Raincloud plot."
 msgstr ""
 
-#: package/datasets/Time Series.description
+#: package/datasets/TimeSeries.description
 msgid "A demonstration dataset for vijPlots/Time Serie plots."
 msgstr ""
 
@@ -1167,7 +591,7 @@ msgstr ""
 
 #: areachart/ui[2].label
 #: barplot/ui[5].label
-#: boxplot/ui[3].label
+#: boxplot/ui[4].label
 #: histogram/ui[5].label
 #: likertplot/ui[6].label
 #: linechart/ui[2].label
@@ -1180,7 +604,15 @@ msgstr ""
 msgid "Axes"
 msgstr ""
 
-#: corresp/ui[7].label
+#: R/corresp.b.R
+msgid "Axis numbers cannot be equal."
+msgstr ""
+
+#: R/corresp.b.R
+msgid "Axis numbers must be less than or equal to the number of dimensions ({nDim})."
+msgstr ""
+
+#: corresp/ui[6].label
 #: mrfrequencies/ui[5].label
 msgid "Axis Titles"
 msgstr ""
@@ -1216,8 +648,13 @@ msgstr ""
 msgid "Benzécri correction"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/beta.title
 msgid "Beta"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "Beta distribution requires data between 0 and 1."
 msgstr ""
 
 #: likertplot/options/adjustMethod/BH.title
@@ -1550,9 +987,17 @@ msgstr ""
 msgid "By variable"
 msgstr ""
 
+#: R/likertplot.b.R
+msgid "Cannot convert text variables to integers"
+msgstr ""
+
+#: R/likertplot.b.R
+msgid "Cannot tidy up text variables"
+msgstr ""
+
 #: areachart/ui[4][2].label
 #: barplot/ui[7][2].label
-#: boxplot/ui[5][2].label
+#: boxplot/ui[6][2].label
 #: histogram/ui[7][2].label
 #: likertplot/ui[8][2].label
 #: linechart/ui[4][2].label
@@ -1566,13 +1011,13 @@ msgstr ""
 msgid "Caption"
 msgstr ""
 
-#: corresp/ui[8][2][1][0].label
+#: corresp/ui[7][2][1][0].label
 #: multcorresp/ui[8][2][1][0].label
 #: principal/ui[6][2][1][0].label
 msgid "Caption Style"
 msgstr ""
 
-#: corresp/ui[8][2][0][0].label
+#: corresp/ui[7][2][0][0].label
 #: multcorresp/ui[8][2][0][0].label
 #: principal/ui[6][2][0][0].label
 msgid "Caption Text"
@@ -1628,6 +1073,7 @@ msgstr ""
 msgid "Category Summary"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/cauchy.title
 msgid "Cauchy"
 msgstr ""
@@ -1716,6 +1162,7 @@ msgstr ""
 msgid "Centered"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/chisq.title
 msgid "Chi-squared"
 msgstr ""
@@ -1748,7 +1195,7 @@ msgid "Color Palette"
 msgstr ""
 
 #: barplot/ui[3].label
-#: corresp/ui[6][0][1][0].label
+#: corresp/ui[5][0][1][0].label
 #: histogram/ui[3].label
 #: lollipop/ui[3][0][0][0].label
 #: mrcrosstabs/ui[3].label
@@ -1764,6 +1211,8 @@ msgstr ""
 
 #: barplot/options/facetBy/column.title
 #: barplot/ui[4][0][1][0][0]/facetBy_column.label
+#: boxplot/options/facetBy/column.title
+#: boxplot/ui[3][0][1][0][0]/facetBy_column.label
 #: corresp/options/colColor.title
 #: histogram/options/facetBy/column.title
 #: histogram/ui[4][0][0][0][0]/facetBy_column.label
@@ -1771,6 +1220,8 @@ msgstr ""
 #: lollipop/ui[4][0][0][0][0]/facetBy_column.label
 #: piechart/options/facetBy/column.title
 #: piechart/ui[4][0][1][0][0]/facetBy_column.label
+#: scatterplot/options/facetBy/column.title
+#: scatterplot/ui[2][0][1][0][0]/facetBy_column.label
 msgid "Column"
 msgstr ""
 
@@ -1805,8 +1256,15 @@ msgstr ""
 msgid "Column Summary"
 msgstr ""
 
+#: corresp/options/columnTitle.title
+msgid "Column title"
+msgstr ""
+
 #: corresp/options/cols.title
-#: corresp/ui[0][1].label
+#: corresp/options/columns.title
+#: corresp/options/columnTitle.default
+#: corresp/ui/mode/obsTable[0][0][1].label
+#: corresp/ui/mode/contTable[0][0][0].label
 msgid "Columns"
 msgstr ""
 
@@ -1818,6 +1276,14 @@ msgstr ""
 #: likertplot/ui[3].label
 #: likertplot/results/comp.title
 msgid "Comparison Tests"
+msgstr ""
+
+#: R/likertplot.b.R
+msgid "Comparison tests cannot be computed with empty (N=0) groups"
+msgstr ""
+
+#: R/likertplot.b.R
+msgid "Comparison tests require numeric variables"
 msgstr ""
 
 #: R/principal.b.R
@@ -1854,6 +1320,7 @@ msgstr ""
 msgid "Conover's Pairwise Comparisons"
 msgstr ""
 
+#: corresp/options/mode/contTable.title
 #: corresp/results/contingency.title
 msgid "Contingency Table"
 msgstr ""
@@ -1929,7 +1396,7 @@ msgid "Counts"
 msgstr ""
 
 #: corresp/options/counts.title
-#: corresp/ui[0][2].label
+#: corresp/ui/mode/obsTable[0][0][2].label
 msgid "Counts (optional)"
 msgstr ""
 
@@ -1945,7 +1412,7 @@ msgstr ""
 msgid "Covariance Biplot"
 msgstr ""
 
-#: package/datasets/Credit Cards.name
+#: package/datasets/CreditCards.name
 msgid "Credit Cards"
 msgstr ""
 
@@ -2143,9 +1610,10 @@ msgstr ""
 msgid "Distribution"
 msgstr ""
 
-#: R/areachart.b.R
-#: R/linechart.b.R
-msgid "doesn't have a valid date format."
+#: R/qqplot.b.R
+#: qqplot/options/distrib/norm.title
+msgctxt "distribution"
+msgid "Normal"
 msgstr ""
 
 #: piechart/options/donut.title
@@ -2205,9 +1673,12 @@ msgid "Eigenvalues"
 msgstr ""
 
 #: principal/ui[4][0][0][1].label
-#: scatterplot/ui[2].label
 #: scatterplot/ui[2][0][0][0].label
 msgid "Element Sizes"
+msgstr ""
+
+#: scatterplot/ui[2].label
+msgid "Element Sizes & Facets"
 msgstr ""
 
 #: qqplot/options/methodQQ/ell.title
@@ -2229,21 +1700,24 @@ msgstr ""
 msgid "EU (D-M-Y)"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/exp.title
 msgid "Exponential"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "Exponential distribution requires non-negative (≥0) data."
 msgstr ""
 
 #: principal/results/summaryTable.columns.superTitle
 msgid "Extraction Sums of Squared Loadings"
 msgstr ""
 
-#: qqplot/options/distrib/f.title
-msgid "F"
-msgstr ""
-
 #: barplot/options/facet.title
 #: barplot/options/facetBy.title
 #: barplot/ui[0][2].label
+#: boxplot/options/facet.title
+#: boxplot/ui[0][3].label
 #: histogram/options/facet.title
 #: histogram/ui[0][2].label
 #: lollipop/options/facet.title
@@ -2251,10 +1725,14 @@ msgstr ""
 #: lollipop/ui[0][2].label
 #: piechart/options/facet.title
 #: piechart/ui[0][1].label
+#: scatterplot/options/facet.title
+#: scatterplot/ui[0][5].label
 msgid "Facet"
 msgstr ""
 
 #: barplot/ui[4][0][1][0].label
+#: boxplot/options/facetBy.title
+#: boxplot/ui[3][0][1][0].label
 #: histogram/options/facetBy.title
 #: histogram/ui[4].label
 #: histogram/ui[4][0][0][0].label
@@ -2262,6 +1740,8 @@ msgstr ""
 #: lollipop/ui[4][0][0][0].label
 #: piechart/options/facetBy.title
 #: piechart/ui[4][0][1][0].label
+#: scatterplot/options/facetBy.title
+#: scatterplot/ui[2][0][1][0].label
 msgid "Facets"
 msgstr ""
 
@@ -2392,6 +1872,7 @@ msgstr ""
 msgid "Frequency Type"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/gamma.title
 msgid "Gamma"
 msgstr ""
@@ -2846,6 +2327,7 @@ msgstr ""
 #: barplot/options/textColor.title
 #: barplot/options/labelFontSize.title
 #: boxplot/options/label.title
+#: boxplot/options/labSize.title
 #: boxplot/ui[0][2].label
 #: corresp/options/labelSize.title
 #: likertplot/options/textSize.title
@@ -3029,7 +2511,7 @@ msgstr ""
 
 #: areachart/ui[3][0].label
 #: barplot/ui[6][0].label
-#: boxplot/ui[4][0].label
+#: boxplot/ui[5][0].label
 #: histogram/ui[6][0].label
 #: likertplot/ui[7][0].label
 #: linechart/ui[3][0].label
@@ -3046,7 +2528,7 @@ msgstr ""
 
 #: areachart/ui[3].label
 #: barplot/ui[6].label
-#: boxplot/ui[4].label
+#: boxplot/ui[5].label
 #: histogram/ui[6].label
 #: linechart/ui[3].label
 #: lollipop/ui[6].label
@@ -3168,6 +2650,10 @@ msgstr ""
 msgid "Likert Plot"
 msgstr ""
 
+#: R/likertplot.b.R
+msgid "Likert Plot requires ordinal (or numeric) variables"
+msgstr ""
+
 #: likertplot/options/liks.title
 #: likertplot/ui[0][0].label
 msgid "Likert Variables"
@@ -3206,10 +2692,12 @@ msgstr ""
 msgid "Linear"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/lnorm.title
 msgid "Log-normal"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/logis.title
 msgid "Logistic"
 msgstr ""
@@ -3231,7 +2719,12 @@ msgid "Lollipop Size & Colors"
 msgstr ""
 
 #: package.description
-msgid "Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) with many options along with Likert plot, multiple response barplot, Principal Component and (Multiple) Correspondence Analyses. Project source (and changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
+msgid ""
+"Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) "
+"with many options along with Likert plot, multiple response barplot, "
+"Principal Component and (Multiple) Correspondence Analyses. Project source "
+"(and changelog) is available at <a "
+"href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
 msgstr ""
 
 #: likertplot/options/showMannU.title
@@ -3346,6 +2839,10 @@ msgstr ""
 #: lollipop/options/yaxis/median.title
 #: lollipop/ui[2][0][0][0]/yaxis_median.label
 msgid "Median"
+msgstr ""
+
+#: R/likertplot.b.R
+msgid "Median and mean require numeric variables"
 msgstr ""
 
 #: R/lollipop.b.R
@@ -3483,6 +2980,10 @@ msgstr ""
 msgid "Natural log tranform"
 msgstr ""
 
+#: R/qqplot.b.R
+msgid "Natural Log Tranform requires positive (>0) data."
+msgstr ""
+
 #: R/principal.b.R
 msgid "No rotation used."
 msgstr ""
@@ -3553,7 +3054,6 @@ msgstr ""
 #: principal/options/titleFontFace/plain.title
 #: principal/options/subtitleFontFace/plain.title
 #: principal/options/captionFontFace/plain.title
-#: qqplot/options/distrib/norm.title
 #: qqplot/options/titleFontFace/plain.title
 #: qqplot/options/subtitleFontFace/plain.title
 #: qqplot/options/captionFontFace/plain.title
@@ -3571,7 +3071,7 @@ msgid "Normal Curve"
 msgstr ""
 
 #: corresp/options/normalization.title
-#: corresp/ui[4][0].label
+#: corresp/ui[3][0].label
 #: multcorresp/options/normalization.title
 #: multcorresp/ui[4][0].label
 #: principal/ui[7][0][0][0].label
@@ -3615,6 +3115,10 @@ msgstr ""
 msgid "Number of dimensions"
 msgstr ""
 
+#: R/corresp.b.R
+msgid "Number of dimensions must be less than or equal to {maxDim}."
+msgstr ""
+
 #: multcorresp/options/obsColor.title
 msgid "Obs color"
 msgstr ""
@@ -3656,6 +3160,10 @@ msgstr ""
 msgid "Observation Summary"
 msgstr ""
 
+#: corresp/options/mode/obsTable.title
+msgid "Observation Table"
+msgstr ""
+
 #: multcorresp/options/showObservations.title
 #: multcorresp/options/showObservationPlot.title
 #: principal/options/showObservations.title
@@ -3670,13 +3178,13 @@ msgstr ""
 msgid "Oct"
 msgstr ""
 
-#: areachart/options/displayFormat/%b %Y.title
-#: linechart/options/displayFormat/%b %Y.title
+#: areachart/options/displayFormat/%b%Y.title
+#: linechart/options/displayFormat/%b%Y.title
 msgid "Oct 2035"
 msgstr ""
 
-#: areachart/options/displayFormat/%b %y.title
-#: linechart/options/displayFormat/%b %y.title
+#: areachart/options/displayFormat/%b%y.title
+#: linechart/options/displayFormat/%b%y.title
 msgid "Oct 35"
 msgstr ""
 
@@ -3685,13 +3193,13 @@ msgstr ""
 msgid "October"
 msgstr ""
 
-#: areachart/options/displayFormat/%B %Y.title
-#: linechart/options/displayFormat/%B %Y.title
+#: areachart/options/displayFormat/%B%Y.title
+#: linechart/options/displayFormat/%B%Y.title
 msgid "October 2035"
 msgstr ""
 
-#: areachart/options/displayFormat/%B %y.title
-#: linechart/options/displayFormat/%B %y.title
+#: areachart/options/displayFormat/%B%y.title
+#: linechart/options/displayFormat/%B%y.title
 msgid "October 35"
 msgstr ""
 
@@ -3705,7 +3213,7 @@ msgstr ""
 
 #: barplot/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: boxplot/ui[2][0][0][0]/singleColor/colorNo.suffix
-#: mrfrequencies/ui[3][0][0][0]/singleColor/colorNo.suffix
+#: mrfrequencies/ui[3][0][0][0][1]/colorNo.suffix
 #: raincloud/ui[1][1][0]/singleColor/colorNo.suffix
 msgid "only"
 msgstr ""
@@ -3816,12 +3324,6 @@ msgstr ""
 #: histogram/options/groupingN/identity.title
 #: histogram/ui[1][2][0]/groupingN_identity.label
 msgid "Overlapping"
-msgstr ""
-
-#: likertplot/results/comp/uTestTable.columns.title
-#: likertplot/results/comp/kwTable.columns.title
-#: principal/results/kmoTable.columns.title
-msgid "p"
 msgstr ""
 
 #: R/qqplot.b.R
@@ -3973,6 +3475,10 @@ msgstr ""
 msgid "Pie Chart"
 msgstr ""
 
+#: R/piechart.b.R
+msgid "Pie charts are for educational use only. Please do not use Pie charts!"
+msgstr ""
+
 #: corresp/options/rowColor/hotpink.title
 #: corresp/options/colColor/hotpink.title
 #: histogram/options/fillColor/#F781BF.title
@@ -4035,7 +3541,7 @@ msgstr ""
 
 #: areachart/ui[4].label
 #: barplot/ui[7].label
-#: boxplot/ui[5].label
+#: boxplot/ui[6].label
 #: histogram/ui[7].label
 #: likertplot/ui[8].label
 #: linechart/ui[4].label
@@ -4049,7 +3555,7 @@ msgstr ""
 msgid "Plot Titles"
 msgstr ""
 
-#: corresp/ui[8].label
+#: corresp/ui[7].label
 #: multcorresp/ui[8].label
 #: principal/ui[6].label
 msgid "Plot Titles & Subtitles"
@@ -4061,7 +3567,7 @@ msgstr ""
 msgid "Plot Type"
 msgstr ""
 
-#: corresp/ui[5][1][0].label
+#: corresp/ui[4][1][0].label
 #: mrcrosstabs/results/plot.title
 #: multcorresp/ui[5][1][0].label
 #: principal/ui[3][1][0].label
@@ -4319,8 +3825,8 @@ msgstr ""
 #: areachart/ui[2][0][1][1].label
 #: barplot/ui[5][0][0][1].label
 #: barplot/ui[5][0][1][1].label
-#: boxplot/ui[3][0][0][1].label
-#: boxplot/ui[3][0][1][1].label
+#: boxplot/ui[4][0][0][1].label
+#: boxplot/ui[4][0][1][1].label
 #: histogram/ui[5][0][0][1].label
 #: histogram/ui[5][0][1][1].label
 #: linechart/ui[2][0][1][1].label
@@ -4570,6 +4076,8 @@ msgstr ""
 
 #: barplot/options/facetBy/row.title
 #: barplot/ui[4][0][1][0][0]/facetBy_row.label
+#: boxplot/options/facetBy/row.title
+#: boxplot/ui[3][0][1][0][0]/facetBy_row.label
 #: corresp/options/rowColor.title
 #: histogram/options/facetBy/row.title
 #: histogram/ui[4][0][0][0][0]/facetBy_row.label
@@ -4577,6 +4085,8 @@ msgstr ""
 #: lollipop/ui[4][0][0][0][0]/facetBy_row.label
 #: piechart/options/facetBy/row.title
 #: piechart/ui[4][0][1][0][0]/facetBy_row.label
+#: scatterplot/options/facetBy/row.title
+#: scatterplot/ui[2][0][1][0][0]/facetBy_row.label
 msgid "Row"
 msgstr ""
 
@@ -4590,6 +4100,11 @@ msgstr ""
 
 #: corresp/options/showSummaries.title
 msgid "Row and column summaries"
+msgstr ""
+
+#: corresp/options/rowLabels.title
+#: corresp/ui/mode/contTable[0][0][1].label
+msgid "Row Labels"
 msgstr ""
 
 #: corresp/results/rowplot.title
@@ -4624,7 +4139,7 @@ msgid "Row Summary"
 msgstr ""
 
 #: corresp/options/rows.title
-#: corresp/ui[0][0].label
+#: corresp/ui/mode/obsTable[0][0][0].label
 msgid "Rows"
 msgstr ""
 
@@ -4635,11 +4150,6 @@ msgstr ""
 
 #: principal/options/labelColor/none.title
 msgid "Same as point/arrow"
-msgstr ""
-
-#: barplot/options/singleColor.title
-#: mrfrequencies/options/singleColor.title
-msgid "Same color for all bars"
 msgstr ""
 
 #: R/qqplot.b.R
@@ -4870,7 +4380,7 @@ msgstr ""
 msgid "Smooth"
 msgstr ""
 
-#: corresp/ui[2][0].label
+#: corresp/ui[1][0].label
 #: multcorresp/ui[2][0].label
 #: principal/ui[2][0][0].label
 msgid "Solution"
@@ -4987,13 +4497,14 @@ msgstr ""
 msgid "Stretch arrows by"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/t.title
 msgid "Student"
 msgstr ""
 
 #: areachart/ui[4][1].label
 #: barplot/ui[7][1].label
-#: boxplot/ui[5][1].label
+#: boxplot/ui[6][1].label
 #: histogram/ui[7][1].label
 #: likertplot/ui[8][1].label
 #: linechart/ui[4][1].label
@@ -5007,13 +4518,13 @@ msgstr ""
 msgid "Subtitle"
 msgstr ""
 
-#: corresp/ui[8][1][1][0].label
+#: corresp/ui[7][1][1][0].label
 #: multcorresp/ui[8][1][1][0].label
 #: principal/ui[6][1][1][0].label
 msgid "Subtitle Style"
 msgstr ""
 
-#: corresp/ui[8][1][0][0].label
+#: corresp/ui[7][1][0][0].label
 #: multcorresp/ui[8][1][0][0].label
 #: principal/ui[6][1][0][0].label
 msgid "Subtitle Text"
@@ -5044,12 +4555,28 @@ msgid "Supplement"
 msgstr ""
 
 #: R/corresp.b.R
+msgid "Supplementary column numbers must be a list of numbers, e.g. 1,2,9"
+msgstr ""
+
+#: R/corresp.b.R
+msgid "Supplementary column numbers must be between 1 and {nmax}."
+msgstr ""
+
+#: R/corresp.b.R
 #: corresp/options/supplementaryCols.title
 msgid "Supplementary columns"
 msgstr ""
 
-#: corresp/ui[3][0].label
+#: corresp/ui[2][0].label
 msgid "Supplementary Points"
+msgstr ""
+
+#: R/corresp.b.R
+msgid "Supplementary row numbers must be a list of numbers, e.g. 1,2,9"
+msgstr ""
+
+#: R/corresp.b.R
+msgid "Supplementary row numbers must be between 1 and {nmax}."
 msgstr ""
 
 #: R/corresp.b.R
@@ -5089,7 +4616,7 @@ msgstr ""
 msgid "Table"
 msgstr ""
 
-#: corresp/ui[5][0][0].label
+#: corresp/ui[4][0][0].label
 #: multcorresp/ui[5][0][0].label
 #: principal/ui[3][0][0].label
 msgid "Tables"
@@ -5110,7 +4637,8 @@ msgid "Text"
 msgstr ""
 
 #: barplot/ui[4][0][0][0].label
-#: corresp/ui[6][0][0][0].label
+#: boxplot/ui[3][0][0][0].label
+#: corresp/ui[5][0][0][0].label
 #: likertplot/ui[5].label
 #: likertplot/ui[5][0][0][0].label
 #: mrcrosstabs/ui[2][0][2][1].label
@@ -5121,21 +4649,28 @@ msgstr ""
 msgid "Text Size"
 msgstr ""
 
-#: corresp/ui[6].label
+#: corresp/ui[5].label
 msgid "Text Size & Colors"
 msgstr ""
 
 #: barplot/ui[4].label
+#: boxplot/ui[3].label
 #: piechart/ui[4].label
 msgid "Text Size & Facets"
 msgstr ""
 
 #: R/principal.b.R
-msgid "The correlation matrix is not positive definite. Computations may not be accurate."
+msgid ""
+"The correlation matrix is not positive definite. Computations may not be "
+"accurate."
 msgstr ""
 
 #: R/multcorresp.b.R
 msgid "The number of dimensions cannot be greater than {max}."
+msgstr ""
+
+#: R/principal.b.R
+msgid "The number of dimensions cannot be greater than the number of variables."
 msgstr ""
 
 #: R/qqplot.b.R
@@ -5144,6 +4679,29 @@ msgstr ""
 
 #: R/qqplot.b.R
 msgid "Theoretical Quantiles"
+msgstr ""
+
+#: areachart/options/yTicks.title
+#: barplot/options/xTicks.title
+#: barplot/options/yTicks.title
+#: boxplot/options/xTicks.title
+#: boxplot/options/yTicks.title
+#: histogram/options/xTicks.title
+#: histogram/options/yTicks.title
+#: linechart/options/yTicks.title
+#: lollipop/options/xTicks.title
+#: lollipop/options/yTicks.title
+#: mrcrosstabs/options/xTicks.title
+#: mrcrosstabs/options/yTicks.title
+#: mrfrequencies/options/xTicks.title
+#: mrfrequencies/options/yTicks.title
+#: qqplot/options/xTicks.title
+#: qqplot/options/yTicks.title
+#: raincloud/options/xTicks.title
+#: raincloud/options/yTicks.title
+#: scatterplot/options/xTicks.title
+#: scatterplot/options/yTicks.title
+msgid "Tick count"
 msgstr ""
 
 #: likertplot/options/tidyUp.title
@@ -5280,7 +4838,7 @@ msgstr ""
 
 #: package/analyses/linechart.menuSubgroup
 #: package/analyses/areachart.menuSubgroup
-#: package/datasets/Time Series.name
+#: package/datasets/TimeSeries.name
 #: areachart/options.menuSubgroup
 #: linechart/options.menuSubgroup
 msgid "Time Series"
@@ -5288,7 +4846,7 @@ msgstr ""
 
 #: areachart/ui[4][0].label
 #: barplot/ui[7][0].label
-#: boxplot/ui[5][0].label
+#: boxplot/ui[6][0].label
 #: histogram/ui[7][0].label
 #: likertplot/ui[8][0].label
 #: linechart/ui[4][0].label
@@ -5302,13 +4860,13 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: corresp/ui[8][0][1][0].label
+#: corresp/ui[7][0][1][0].label
 #: multcorresp/ui[8][0][1][0].label
 #: principal/ui[6][0][1][0].label
 msgid "Title Style"
 msgstr ""
 
-#: corresp/ui[8][0][0][0].label
+#: corresp/ui[7][0][0][0].label
 #: multcorresp/ui[8][0][0][0].label
 #: principal/ui[6][0][0][0].label
 msgid "Title Text"
@@ -5370,14 +4928,15 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: likertplot/results/comp/uTestTable.columns.title
-msgid "U"
+#: R/qqplot.b.R
+msgid "Unable to estimate the distribution parameters."
 msgstr ""
 
 #: R/principal.b.R
 msgid "Unable to use {rotation} rotation."
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/unif.title
 msgid "Uniform"
 msgstr ""
@@ -5391,9 +4950,9 @@ msgstr ""
 msgid "Use boldface"
 msgstr ""
 
-#: barplot/ui[3][0][0][0]/singleColor.label
+#: barplot/options/singleColor.title
 #: boxplot/ui[2][0][0][0]/singleColor.label
-#: mrfrequencies/ui[3][0][0][0]/singleColor.label
+#: mrfrequencies/options/singleColor.title
 #: raincloud/ui[1][1][0]/singleColor.label
 msgid "Use color No."
 msgstr ""
@@ -5609,6 +5168,7 @@ msgstr ""
 msgid "Viridis:Viridis"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/options/distrib/weibull.title
 msgid "Weibull"
 msgstr ""
@@ -5645,6 +5205,10 @@ msgstr ""
 msgid "Within groups"
 msgstr ""
 
+#: R/qqplot.b.R
+msgid "Wrong parameter values."
+msgstr ""
+
 #: areachart/options/timeVar.title
 #: areachart/options/timeVar1.title
 #: areachart/ui/mode/oneVariable[0][0][0].label
@@ -5654,10 +5218,10 @@ msgstr ""
 #: areachart/ui[3][1].label
 #: barplot/ui[5][0][0][0].label
 #: barplot/ui[6][1].label
-#: boxplot/ui[3][0][0][0].label
-#: boxplot/ui[4][1].label
+#: boxplot/ui[4][0][0][0].label
+#: boxplot/ui[5][1].label
 #: corresp/options/xaxis.title
-#: corresp/ui[7][0].label
+#: corresp/ui[6][0].label
 #: histogram/ui[5][0][0][0].label
 #: histogram/ui[6][1].label
 #: likertplot/ui[6][0][0][0].label
@@ -5689,6 +5253,16 @@ msgstr ""
 msgid "X-Axis"
 msgstr ""
 
+#: R/multcorresp.b.R
+#: R/principal.b.R
+msgid "X-Axis and Y-Axis cannot be equal."
+msgstr ""
+
+#: R/multcorresp.b.R
+#: R/principal.b.R
+msgid "X-Axis and Y-Axis cannot be greater than the number of dimensions."
+msgstr ""
+
 #: areachart/options/isDate.title
 #: linechart/options/isDate.title
 msgid "X-Axis is a date"
@@ -5712,10 +5286,10 @@ msgstr ""
 #: barplot/ui[1][0][0].label
 #: barplot/ui[5][0][1][0].label
 #: barplot/ui[6][2].label
-#: boxplot/ui[3][0][1][0].label
-#: boxplot/ui[4][2].label
+#: boxplot/ui[4][0][1][0].label
+#: boxplot/ui[5][2].label
 #: corresp/options/yaxis.title
-#: corresp/ui[7][1].label
+#: corresp/ui[6][1].label
 #: histogram/ui[1][0][0].label
 #: histogram/ui[5][0][1][0].label
 #: histogram/ui[6][2].label
@@ -5832,8 +5406,4 @@ msgstr ""
 #: raincloud/options/colorPalette/YlOrRd.title
 #: scatterplot/options/colorPalette/YlOrRd.title
 msgid "Yellow to Red"
-msgstr ""
-
-#: likertplot/results/comp/kwTable.columns.title
-msgid "χ²"
 msgstr ""

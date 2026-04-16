@@ -86,9 +86,10 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .init = function() {
             #
-            if (is.null(self$options$rows) || is.null(self$options$cols)) {
+            if ((self$options$mode == "obsTable" && (is.null(self$options$rows) || is.null(self$options$cols))) ||
+                (self$options$mode == "contTable" && (is.null(self$options$rowLabels) || length(self$options$columns) < 3)) ) {
                 private$.showHelpMessage()
-            } else {
+            } else if (self$options$mode == "obsTable") {
                 # Weight message
                 countsName <- self$countsName
                 if (!is.null(countsName)) {
@@ -98,34 +99,49 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .run = function() {
-            data <- private$.getData()
-            if (is.null(data) || nrow(data) == 0) {
-                self$results$contingency$addColumn(".", type="text")
-                self$results$rowProfiles$addColumn(".", type="text")
-                self$results$colProfiles$addColumn(".", type="text")
-                self$results$rowSummary$addColumn(".", type="text")
-                self$results$colSummary$addColumn(".", type="text")
-                self$results$eigenvalues$addRow(".")
-                self$results$eigenvalues$setNote("chisq", NULL)
-                return()
+            if (self$options$mode == "obsTable") {
+                data <- private$.getData()
+                if (is.null(data) || nrow(data) == 0) {
+                    self$results$contingency$addColumn(".", type="text")
+                    self$results$rowProfiles$addColumn(".", type="text")
+                    self$results$colProfiles$addColumn(".", type="text")
+                    self$results$rowSummary$addColumn(".", type="text")
+                    self$results$colSummary$addColumn(".", type="text")
+                    self$results$eigenvalues$addRow(".")
+                    self$results$eigenvalues$setNote("chisq", NULL)
+                    return()
+                }
+
+                rowVarName <- self$options$rows
+                colVarName <- self$options$cols
+                countsVarName <- self$countsName
+
+                # Set variable names
+                rowVarNameString <- private$.getVarName(rowVarName)
+                colVarNameString <- private$.getVarName(colVarName)
+
+                #Contingency Table (base)
+
+                if (!is.null(countsVarName)) {
+                    formula <- jmvcore::composeFormula('.COUNTS', c(rowVarName, colVarName))
+                    contingencyTable <- xtabs(formula, data)
+                } else {
+                    contingencyTable <- table(self$data[[rowVarName]], self$data[[colVarName]])
+                }
+            } else { # self$options$mode == "contTable"
+                if (is.null(self$options$rowLabels) || length(self$options$columns) < 3)
+                    return()
+                contingencyTable <- self$data[,self$options$columns]
+                row.names(contingencyTable) <- self$data[[self$options$rowLabels]]
+                contingencyTable <- as.matrix(contingencyTable)
+                # Set variable names
+                rowVarName <- self$options$rowLabels
+                rowVarNameString <- rowVarName
+                colVarName <- self$options$columnTitle
+                colVarNameString <- colVarName
             }
 
-            rowVarName <- self$options$rows
-            colVarName <- self$options$cols
-            countsVarName <- self$countsName
-
-            # Set variable names
-            rowVarNameString <-private$.getVarName(rowVarName)
-            colVarNameString <- private$.getVarName(colVarName)
-
-            #### Contingency Table (base) ####
-
-            if (!is.null(countsVarName)) {
-                formula <- jmvcore::composeFormula('.COUNTS', c(rowVarName, colVarName))
-                contingencyTable <- xtabs(formula, data)
-            } else {
-                contingencyTable <- table(self$data[[rowVarName]], self$data[[colVarName]])
-            }
+            #self$results$text$setContent(contingencyTable)
 
             #### Supplementary Rows & Column ####
 
@@ -139,7 +155,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     return(TRUE)
                 } else {
                     supplementaryRows <- sort(unique(supplementaryRows))
-                    nmax <- nlevels(self$data[[rowVarName]])
+                    nmax <- nrow(contingencyTable) #nlevels(self$data[[rowVarName]])
                     if (!all(supplementaryRows %in% 1:nmax)) {
                         errorMessage <- jmvcore::format(.("Supplementary row numbers must be between 1 and {nmax}."), nmax = nmax)
                         vijErrorMessage(self, errorMessage)
@@ -157,7 +173,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     return(TRUE)
                 } else {
                     supplementaryCols <- sort(unique(supplementaryCols))
-                    nmax <- nlevels(self$data[[colVarName]])
+                    nmax <- ncol(contingencyTable) #nlevels(self$data[[colVarName]])
                     if (!all(supplementaryCols %in% 1:nmax)) {
                         errorMessage <- jmvcore::format(.("Supplementary column numbers must be between 1 and {nmax}."), nmax=nmax)
                         vijErrorMessage(self, errorMessage)
@@ -526,8 +542,8 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot +
                 scale_color_manual(
                     values=c("1" = self$options$rowColor, "2" = self$options$supColor, "3" = self$options$colColor, "4" = self$options$supColor),
-                    breaks=c("1", "3", "2", "4"),
-                    labels = c(self$options$rows, self$options$cols, .("Suppl. Row"), .("Suppl. Column"))) + labs(color = "") +
+                    breaks=c("1", "3", "2", "4")) + labs(color = "") +
+                    #labels = c(self$options$rows, self$options$cols, .("Suppl. Row"), .("Suppl. Column"))) + labs(color = "") +
                 scale_shape_manual(values = c(19, 19, 17, 17), breaks = c("1","2","3","4")) +
                 theme(legend.text = element_text(size=10))
             plot <- plot + guides(color = "none", shape = "none")
@@ -606,7 +622,11 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .showHelpMessage = function() {
             helpMsg <- .('<p>This module computes <strong>Correspondence Analysis (CA)</strong> for two categorical variables. Computations are based on <a href = "https://CRAN.R-project.org/package=FactoMineR" target="_blank">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>
-<p>The data may be weighted using <em>jamovi</em> built-in weight system or using the "Counts" variable.</p>
+<p>The data can be</p>
+<ul>
+<li>an <strong>Observation table</strong> (raw data), possibly weighted using <em>jamovi</em> built-in weight system or using the "Counts" variable</li>
+<li>or a <strong>Contingency table</strong></li>
+</ul>
 <p><strong>Supplementary row or column</strong> numbers may be entered as integer lists : 1,3,6</p>
 <p>Four normalizations (scaling of row and column scores before plotting) are avalaible :</p>
 <ul>

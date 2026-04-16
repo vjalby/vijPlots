@@ -13,6 +13,15 @@ options:
     - name: data
       type: Data
 
+    - name: mode
+      title: ""
+      type: List
+      options:
+            - name: obsTable
+              title: "Observation Table"
+            - name: contTable
+              title: "Contingency Table"
+
     - name: rows
       title: Rows
       type: Variable
@@ -30,6 +39,28 @@ options:
         - ordinal
       permitted:
         - factor
+
+    - name: columns
+      title: Columns
+      type: Variables
+      suggested:
+        - continuous
+      permitted:
+        - numeric
+
+    - name: rowLabels
+      title: Row Labels
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+
+    - name: columnTitle
+      title: Column title
+      type: String
+      default: 'Columns'
 
     - name: counts
       title: Counts (optional)

@@ -2,80 +2,11 @@
     "domain": "messages",
     "locale_data": {
         "messages": {
-            "1": [
-                "1"
-            ],
-            "8": [
-                "8"
-            ],
-            "9": [
-                "9"
-            ],
-            "10": [
-                "10"
-            ],
-            "11": [
-                "11"
-            ],
-            "12": [
-                "12"
-            ],
-            "13": [
-                "13"
-            ],
-            "14": [
-                "14"
-            ],
-            "15": [
-                "15"
-            ],
-            "16": [
-                "16"
-            ],
-            "18": [
-                "18"
-            ],
-            "20": [
-                "20"
-            ],
-            "22": [
-                "22"
-            ],
-            "24": [
-                "24"
-            ],
-            "25": [
-                "25"
-            ],
-            "30": [
-                "30"
-            ],
-            "35": [
-                "35"
-            ],
-            "40": [
-                "40"
-            ],
-            "50": [
-                "50"
-            ],
-            "80": [
-                "80"
-            ],
-            "2035": [
-                "2035"
-            ],
             "": {
                 "domain": "messages",
-                "plural_forms": "nplurals=2; plural=(n != 1)",
-                "lang": "es"
+                "lang": "es",
+                "plural_forms": "nplurals=2; plural=(n != 1)"
             },
-            ";": [
-                ";"
-            ],
-            "[0-9]": [
-                "[0-9]"
-            ],
             "{distrib} distribution requires positive (>0) data.": [
                 "La distribución {distrib} requiere datos positivos (>0)."
             ],
@@ -133,13 +64,10 @@
             "% within": [
                 "% en"
             ],
-            "°": [
-                "°"
-            ],
             "<h3>Data & Sorting</h3>\n<ul>\n<li>Likert variables must be of ordinal measure-type. (Continuous measure-type works as well.)</li>\n<li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>\n<li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>\n<li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>\n<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>\n</ul>\n<h3>Comparison Tests</h3>\n<p>When using a group variable, several tests are available:</p>\n<ul>\n<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) paiwise comparisons tests.</li>\n</ul>\n<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for MannWithney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>\n<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>": [
                 "<h3>Datos y ordenación</h3>\n<ul>\n<li>Las variables de los gráficos Likert deben ser de tipo Ordinal (el tipo de medida Continua también se admite).</li>\n<li>Si tiene previsto calcular la media, la mediana o la desviación típica, o bien utilizar tests de comparativos, entonces el tipo de dato ha de ser entero.</li>\n<li><strong>Corregir niveles:</strong> cuando se selecciona, se intenta corregir el orden de las etiquetas en la tabla y el gráfico (en el caso de que a alguna de las variables le falten niveles).</li>\n<li><strong>Convertir variables a entero:</strong> cuando se selecciona, se ignoran las etiquetas de los niveles y solo se utilizan los valores enteros.</li>\n<li><strong>Ordenar variables según mediana:</strong> ordena la lista de variables según su mediana.</li>\n</ul>\n<h3>Test de comparación</h3>\n<p>Cuando se utiliza una variable de agrupación, es posible llevar a cabo varios test:</p>\n<ul>\n<li><strong>U de Mann-Whitney:</strong> comparación de dos grupos.</li>\n<li><strong>Kruskal-Wallis:</strong> comparación de n grupos.</li>\n<li><strong>Tests Post Hoc:</strong> tests de comparación por pares de Dunn, Conover y Dwass-Steel-Critchlow-Fligner (DSCF).</li>\n</ul>\n<p>Los p-valores se pueden ajustar <strong>por grupo</strong> (para cada pregunta) en los test post hoc o <strong>globalmente</strong> (por grupo y por pregunta) para la U de Mann-Whitney, Kruskal-Wallis y los test post hoc. Los p-valores del test DSCF ya están ajustados (por grupo); no es posible realizar ningún otro ajuste.</p>\n<p>Un archivo de ejemplo está incluido en Abrir > Biblioteca de datos > vijPlots > Likert</p>"
             ],
-            "<p>This module computes <strong>Correspondence Analysis (CA)</strong> for two categorical variables. Computations are based on <a href = \"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>\n<p>The data may be weighted using <em>jamovi</em> built-in weight system or using the \"Counts\" variable.</p>\n<p><strong>Supplementary row or column</strong> numbers may be entered as integer lists : 1,3,6</p>\n<p>Four normalizations (scaling of row and column scores before plotting) are avalaible :</p>\n<ul>\n<li><strong>Principal:</strong> Row an columns scores are scaled by eigenvalues.</li>\n<li><strong>Symmetric:</strong> Row an columns scores are scaled by the square root of eigenvalues. </li>\n<li><strong>Row Principal:</strong> Only row scores are scaled by eigenvalues.</li>\n<li><strong>Column Principal:</strong> Only column scores are scaled by eigenvalues.</li>\n<li><strong>Standard:</strong> The raw coordinates without normalization.</li>\n</ul>\n<p>A sample file is included at Open > Data Library > vijPlots > Smoking</p>": [
+            "<p>This module computes <strong>Correspondence Analysis (CA)</strong> for two categorical variables. Computations are based on <a href = \"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>\n<p>The data can be</p>\n<ul>\n<li>an <strong>Observation table</strong> (raw data), possibly weighted using <em>jamovi</em> built-in weight system or using the \"Counts\" variable</li>\n<li>or a <strong>Contingency table</strong></li>\n</ul>\n<p><strong>Supplementary row or column</strong> numbers may be entered as integer lists : 1,3,6</p>\n<p>Four normalizations (scaling of row and column scores before plotting) are avalaible :</p>\n<ul>\n<li><strong>Principal:</strong> Row an columns scores are scaled by eigenvalues.</li>\n<li><strong>Symmetric:</strong> Row an columns scores are scaled by the square root of eigenvalues. </li>\n<li><strong>Row Principal:</strong> Only row scores are scaled by eigenvalues.</li>\n<li><strong>Column Principal:</strong> Only column scores are scaled by eigenvalues.</li>\n<li><strong>Standard:</strong> The raw coordinates without normalization.</li>\n</ul>\n<p>A sample file is included at Open > Data Library > vijPlots > Smoking</p>": [
                 "<p>Este módulo realiza un <strong>Análisis de Correspondencias (AC)</strong> para dos variables categóricas. Los cálculos se basan en el paquete <a href=\"https://CRAN.R-project.org/package=FactoMineR\">FactoMineR</a> de F. Husson, J. Josse, S. Le, J. Mazet.</p>\n<p>Los datos pueden ser ponderados mediante el sistema de ponderación integrado de <em>jamovi</em> o utilizando la variable \"Conteos\".</p>\n<p>Los números de <strong>filas o columnas suplementarias</strong> pueden introducirse como listas de enteros: 1,3,6.</p>\n<p>Hay cuatro normalizaciones disponibles (escalado de las puntuaciones de filas y columnas antes de la representación gráfica):</p>\n<ul>\n<li><strong>Principal:</strong> las puntuaciones de filas y columnas se escalan mediante los valores propios.</li>\n<li><strong>Simétrica:</strong> las puntuaciones de filas y columnas se escalan mediante la raíz cuadrada de los valores propios.</li>\n<li><strong>Principal de filas:</strong> solo las puntuaciones de las filas se escalan mediante los valores propios.</li>\n<li><strong>Principal de columnas:</strong> solo las puntuaciones de las columnas se escalan mediante los valores propios.</li>\n<li><strong>Estándar:</strong> coordenadas brutas, sin normalización.</li>\n</ul>\n<p>Se incluye un archivo de ejemplo en Abrir > Biblioteca de datos > vijPlots > Smoking.</p>"
             ],
             "<p>This module computes <strong>Multiple Correspondence Analysis (MCA)</strong> for several categorical variables. Computations are based on <a href = \"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>\n<p>Both classic methods are available:</p>\n<ul>\n<li><strong>Indicator matrix:</strong> CA of the indicator matrix</li>\n<li><strong>Burt matrix:</strong> CA of the Burt matrix. The eigenvalues are the squares of those of the indicator matrix method. </li>\n</ul>\n<p>Both methods give the same <em>standard</em> coordinates (but different <em>principal</em> coordinates).</p>\n<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are applied to eigenvalues only (<strong>Summary</strong> table). Coordinates (and inertia) of categories and observations are computed from the original eigenvalues of the Burt matrix.</p>\n<p>The <strong>Normalization</strong> options specify how the coordinates are scaled (by eigenvalues):</p>\n<ul>\n<li><strong>Principal:</strong> Both category and observation coordinates are scaled.</li>\n<li><strong>Category principal:</strong> Only category coordinates are scaled.</li>\n<li><strong>Observation principal:</strong> Only observation coordinates are scaled.</li>\n<li><strong>Standard:</strong> Both category and observation coordinates are standard.</li>\n</ul>\n<p>A sample file is included at Open > Data Library > vijPlots > Cars</p>": [
@@ -156,12 +84,6 @@
             ],
             "<p>This module uses <a href = \"https://CRAN.R-project.org/package=qqplotr\" target=\"_blank\">qqplotr R package<a/> by Alexandre Almeida, Adam Loy and Heike Hofmann. In-depth information can be found in the package documentation on CRAN site.</p>\n<p><strong>Reference line:</strong> Draws either the <em>identity line</em> (y = x) or the commonly-used <em>Q-Q line</em> that intercepts two data quantiles (Q<sub>0.25</sub> and Q<sub>0.75</sub>). P-P plot only supports identity line.</p>\n<p><strong>Confidence band:</strong> Draws a confidence band around the reference line. qqplotr package provides several methods to compute the confidence band:</p>\n<ul>\n<li><strong><em>Pointwise</em></strong> constructs pointwise confidence bands based on Normal confidence intervals;</li>\n<li><strong><em>Bootstrap</em></strong> creates pointwise confidence bands based on a parametric bootstrap;</li>\n<li><strong><em>Kolmogorov-Smirnov</em></strong> band is based on the Kolmogorov-Smirnov test;</li>\n<li><strong><em>Tail-Sensitive</em></strong> constructs a tail-sensitive confidence bands but is only implemented for Normal Q-Q plots;</li>\n<li><strong><em>Equal Local Levels (ELL)</em></strong> constructs simultaneous bands using the equal local levels.</li>\n</ul>\n<p>P-P plots only support \"ELL\" and \"Bootstrap\" methods.</p>\n<p><strong>Detrended plot:</strong> The objects are <em>detrended</em> according to the reference line. This procedure may help reducing visual bias caused by the orthogonal distances from the points to the reference line.</p>\n<p><strong>Parameter values:</strong> The distribution parameters can be estimated from data using:</p>\n<ul>\n<li><strong>Maximum Likelihood Method</strong> (using MASS package) : it should work with all distributions but \"t\" and \"uniform\";</li>\n<li><strong>Method of Moments</strong> for moment based parameters : it should work with \"normal\", \"log-normal\", \"Beta\", \"Exponential\", \"Gamma\", \"Logistic\" and \"Uniform\" distributions;</li>\n</ul>\n<p>or entered by user:</p>\n<ul>\n<li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 (F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>\n<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 (Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma, Weibull) and max (Uniform).</li>\n</ul>\n</p>": [
                 "<p>Este módulo utiliza el <a href=\"https://CRAN.R-project.org/package=qqplotr\">paquete de R qqplotr</a>, desarrollado por Alexandre Almeida, Adam Loy y Heike Hofmann. Se puede encontrar información detallada en la documentación del paquete disponible en la web de CRAN.</p>\n<p><strong>Recta de referencia:</strong> Dibuja la <em>recta identidad</em> (y = x) o la <em>recta Q-Q</em> que pasa por dos cuantiles específicos (Q<sub>0.25</sub> y Q<sub>0.75</sub>). Los gráficos P-P solo admiten la línea identidad.</p>\n<p><strong>Banda de confianza:</strong> Dibuja una banda de confianza alrededor de la línea de referencia. El paquete qqplotr ofrece varios métodos para calcular la banda de confianza:</p>\n<ul>\n<li><em><strong>Puntual</strong></em> construye bandas de confianza puntuales basadas en intervalos de confianza normales;</li>\n<li><em><strong>Bootstrap</strong></em> crea bandas de confianza puntuales basadas en un bootstrap paramétrico;</li>\n<li><em><strong>Kolmogorov-Smirnov</strong></em>: la banda se basa en el test de Kolmogorov-Smirnov;</li>\n<li><em><strong>Sensible a las colas</strong></em> construye bandas de confianza sensibles a las colas, pero solo está implementado para gráficos Q-Q normales;</li>\n<li><em><strong>Niveles locales iguales</strong></em> construye bandas simultáneas utilizando niveles locales iguales.</li>\n</ul>\n<p>Los gráficos P-P solo admiten los métodos \"Niveles locales iguales\" y \"Bootstrap\".</p>\n<p><strong>Gráfico sin tendencia (Detrended):</strong> Los objetos se representan <em>sin tendencia</em> en relación a la línea de referencia. Este procedimiento puede ayudar a reducir el sesgo visual causado por las distancias ortogonales de los puntos a la línea de referencia.</p>\n<p><strong>Valores de los parámetros:</strong> Los parámetros de la distribución pueden estimarse a partir de los datos mediante:</p>\n<ul>\n<li><strong>Método de máxima verosimilitud</strong> (utilizando el paquete MASS) : funciona con todas las distribuciones excepto \"t-Student\" y \"Uniform\";</li>\n<li><strong>Método de los momentos</strong> para parámetros basados en momentos : funciona con \"Normal\", \"Log-normal\", \"Beta\", \"Exponencial\", \"Gamma\", \"Logística\", \"Uniforme\";</li>\n</ul>\n<p>o introducidos por el usuario:</p>\n<ul>\n<li><strong>Parámetro 1:</strong> media (Normal), media-log (Log-normal), forma 1 (Beta), localización (Cauchy, Logística), grados de libertad (Chi-cuadrado, t-Student), grados de libertad 1 (F), tasa (Exponencial), forma (Gamma, Weibull) y mínimo (Uniforme);</li>\n<li><strong>Parámetro 2:</strong> desviación típica (Normal), desviación típica-log (Log-normal), forma 2 (Beta), escala (Cauchy, Logística), grados de libertad 2 (F), escala (Gamma, Weibull) y máximo (Uniforme).</li>\n</ul>"
-            ],
-            "0.01": [
-                "0,01"
-            ],
-            "0.1": [
-                "0,1"
             ],
             "1 day": [
                 "1 día"
@@ -490,6 +412,9 @@
             "Column Summary": [
                 "Resumen de columnas"
             ],
+            "Column title": [
+                ""
+            ],
             "Columns": [
                 "Columnas"
             ],
@@ -729,9 +654,6 @@
             ],
             "Extraction Sums of Squared Loadings": [
                 "Suma de cuadrados de las cargas extraídas"
-            ],
-            "F": [
-                "F"
             ],
             "Facet": [
                 "Subgráfico"
@@ -1261,6 +1183,9 @@
             "Observation Summary": [
                 "Resumen de las observaciones"
             ],
+            "Observation Table": [
+                ""
+            ],
             "Observations": [
                 "Observaciones"
             ],
@@ -1326,9 +1251,6 @@
             ],
             "Overlapping": [
                 "Superpuesto"
-            ],
-            "p": [
-                "p"
             ],
             "P-P": [
                 "P-P"
@@ -1581,6 +1503,9 @@
             ],
             "Row and column summaries": [
                 "Resumen de filas y columnas"
+            ],
+            "Row Labels": [
+                ""
             ],
             "Row Plot": [
                 "Gráfico de filas"
@@ -1939,9 +1864,6 @@
             "Type": [
                 "Tipo"
             ],
-            "U": [
-                "U"
-            ],
             "Unable to estimate the distribution parameters.": [
                 "No se pueden estimar los parámetros de la distribución."
             ],
@@ -2074,9 +1996,6 @@
             "Yellow to Red": [
                 "Amarillo y rojo"
             ],
-            "χ²": [
-                "χ²"
-            ],
             "boundary\u0004Position": [
                 "Posición"
             ],
@@ -2090,6 +2009,5 @@
                 "Octubre"
             ]
         }
-    },
-    "code": "es"
+    }
 }

@@ -6,8 +6,12 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
+            mode = NULL,
             rows = NULL,
             cols = NULL,
+            columns = NULL,
+            rowLabels = NULL,
+            columnTitle = "Columns",
             counts = NULL,
             showContingency = FALSE,
             showProfiles = FALSE,
@@ -58,6 +62,12 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
+            private$..mode <- jmvcore::OptionList$new(
+                "mode",
+                mode,
+                options=list(
+                    "obsTable",
+                    "contTable"))
             private$..rows <- jmvcore::OptionVariable$new(
                 "rows",
                 rows,
@@ -74,6 +84,25 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
+            private$..columns <- jmvcore::OptionVariables$new(
+                "columns",
+                columns,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..rowLabels <- jmvcore::OptionVariable$new(
+                "rowLabels",
+                rowLabels,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"))
+            private$..columnTitle <- jmvcore::OptionString$new(
+                "columnTitle",
+                columnTitle,
+                default="Columns")
             private$..counts <- jmvcore::OptionVariable$new(
                 "counts",
                 counts,
@@ -331,8 +360,12 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 descAsVarName,
                 default=FALSE)
 
+            self$.addOption(private$..mode)
             self$.addOption(private$..rows)
             self$.addOption(private$..cols)
+            self$.addOption(private$..columns)
+            self$.addOption(private$..rowLabels)
+            self$.addOption(private$..columnTitle)
             self$.addOption(private$..counts)
             self$.addOption(private$..showContingency)
             self$.addOption(private$..showProfiles)
@@ -378,8 +411,12 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..descAsVarName)
         }),
     active = list(
+        mode = function() private$..mode$value,
         rows = function() private$..rows$value,
         cols = function() private$..cols$value,
+        columns = function() private$..columns$value,
+        rowLabels = function() private$..rowLabels$value,
+        columnTitle = function() private$..columnTitle$value,
         counts = function() private$..counts$value,
         showContingency = function() private$..showContingency$value,
         showProfiles = function() private$..showProfiles$value,
@@ -424,8 +461,12 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         yAxisPosition = function() private$..yAxisPosition$value,
         descAsVarName = function() private$..descAsVarName$value),
     private = list(
+        ..mode = NA,
         ..rows = NA,
         ..cols = NA,
+        ..columns = NA,
+        ..rowLabels = NA,
+        ..columnTitle = NA,
         ..counts = NA,
         ..showContingency = NA,
         ..showProfiles = NA,
@@ -503,7 +544,10 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "rows",
                     "cols",
-                    "descAsVarName")))
+                    "descAsVarName",
+                    "columns",
+                    "rowLabels",
+                    "columnTitle")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rowProfiles",
@@ -514,7 +558,10 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "rows",
                     "cols",
-                    "descAsVarName")))
+                    "descAsVarName",
+                    "columns",
+                    "rowLabels",
+                    "columnTitle")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="colProfiles",
@@ -525,7 +572,10 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "rows",
                     "cols",
-                    "descAsVarName")))
+                    "descAsVarName",
+                    "columns",
+                    "rowLabels",
+                    "columnTitle")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="eigenvalues",
@@ -560,7 +610,9 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "rows",
                     "cols",
-                    "counts")))
+                    "counts",
+                    "columns",
+                    "rowLabels")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="rowSummary",
@@ -574,7 +626,9 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "counts",
                     "dimNum",
                     "normalization",
-                    "descAsVarName")))
+                    "descAsVarName",
+                    "columns",
+                    "rowLabels")))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="colSummary",
@@ -588,7 +642,10 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "counts",
                     "dimNum",
                     "normalization",
-                    "descAsVarName")))
+                    "descAsVarName",
+                    "columns",
+                    "rowLabels",
+                    "columnTitle")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="rowplot",
@@ -601,6 +658,8 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "rows",
                     "cols",
                     "counts",
+                    "columns",
+                    "rowLabels",
                     "xaxis",
                     "yaxis",
                     "rowColor",
@@ -640,6 +699,9 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "rows",
                     "cols",
                     "counts",
+                    "columns",
+                    "rowLabels",
+                    "columnTitle",
                     "xaxis",
                     "yaxis",
                     "colColor",
@@ -679,6 +741,9 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "rows",
                     "cols",
                     "counts",
+                    "columns",
+                    "rowLabels",
+                    "columnTitle",
                     "xaxis",
                     "yaxis",
                     "rowColor",
@@ -733,8 +798,12 @@ correspBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' 
 #' @param data .
+#' @param mode .
 #' @param rows .
 #' @param cols .
+#' @param columns .
+#' @param rowLabels .
+#' @param columnTitle .
 #' @param counts .
 #' @param showContingency .
 #' @param showProfiles .
@@ -800,8 +869,12 @@ correspBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @export
 corresp <- function(
     data,
+    mode,
     rows,
     cols,
+    columns,
+    rowLabels,
+    columnTitle = "Columns",
     counts,
     showContingency = FALSE,
     showProfiles = FALSE,
@@ -851,20 +924,29 @@ corresp <- function(
 
     if ( ! missing(rows)) rows <- jmvcore::resolveQuo(jmvcore::enquo(rows))
     if ( ! missing(cols)) cols <- jmvcore::resolveQuo(jmvcore::enquo(cols))
+    if ( ! missing(columns)) columns <- jmvcore::resolveQuo(jmvcore::enquo(columns))
+    if ( ! missing(rowLabels)) rowLabels <- jmvcore::resolveQuo(jmvcore::enquo(rowLabels))
     if ( ! missing(counts)) counts <- jmvcore::resolveQuo(jmvcore::enquo(counts))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(rows), rows, NULL),
             `if`( ! missing(cols), cols, NULL),
+            `if`( ! missing(columns), columns, NULL),
+            `if`( ! missing(rowLabels), rowLabels, NULL),
             `if`( ! missing(counts), counts, NULL))
 
     for (v in rows) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in cols) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    for (v in rowLabels) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- correspOptions$new(
+        mode = mode,
         rows = rows,
         cols = cols,
+        columns = columns,
+        rowLabels = rowLabels,
+        columnTitle = columnTitle,
         counts = counts,
         showContingency = showContingency,
         showProfiles = showProfiles,

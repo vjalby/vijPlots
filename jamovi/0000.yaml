@@ -1,12 +1,12 @@
 ---
 title: 'vijPlots: Yet Another jamovi Plotting Module'
 name: vijPlots
-version: 1.1.0
+version: 1.2.0
 jms: '1.0'
 authors:
   - Vincent Jalby
 maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
-date: '2026-03-21'
+date: '2026-04-16'
 category: plots
 type: R
 description: >-
@@ -155,5 +155,6 @@ datasets:
   - name: Cars
     path: cars.omv
     description: A demonstration dataset for vijPlots/Multiple Correspondence Analysis.
+build-time: '2026-03-25T04:27:47.366Z'
 
 ...

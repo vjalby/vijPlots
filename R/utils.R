@@ -56,8 +56,6 @@ vijPalette = function(pal, type = "fill", themePal = NULL) {
     }
 }
 
-
-
 vijTitlesAndLabels = function(options, defaults = list(), plotType = '') {
     horizontal <- options[["horizontal"]]  %||% FALSE
     # Title & Subtitle
@@ -70,8 +68,14 @@ vijTitlesAndLabels = function(options, defaults = list(), plotType = '') {
         subtitle <- options[[paste0(plotType,"SubtitleText")]] %||% ''
         caption <- options[[paste0(plotType,"CaptionText")]] %||% ''
     }
-    default <- eval.parent(quote(.("default")))
-    default <- c("default", default)
+    #default <- eval.parent(quote(.("default")))
+    default <- c("default", "par défaut", "por defecto", "per defecte",
+                 "standard", "Standard", "standaard", "oletus", "zadano",
+                 "výchozí", "domyślny", "padrão", "implicit", "privzeto",
+                 "alapértelmezett", "predefinito",
+                 "προεπιλογή","varsayılan", "по умолчанию", "за замовчуванням",
+                 "இயல்பு", "ഡിഫോൾട്ട്",
+                 "기본값", "初期値", "默认", "預設")
     # Title
     if (title == "")
         title <- NULL

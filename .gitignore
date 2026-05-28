@@ -16,3 +16,4 @@ build/
 released/
 computations/
 .positai
+.git.nosync/

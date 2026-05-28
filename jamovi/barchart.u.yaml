@@ -1,0 +1,576 @@
+title: Bar Chart
+name: barchart
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Variable
+        children:
+          - type: VariablesListBox
+            name: yVar
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: X-Axis
+        children:
+          - type: VariablesListBox
+            name: xVar
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Group
+        children:
+          - type: VariablesListBox
+            name: group
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Facet
+        children:
+          - type: VariablesListBox
+            name: facet
+            maxItemCount: 1
+            isTarget: true
+  - type: LayoutBox
+    margin: large
+    stretchFactor: 1
+    style: inline
+    children:
+      - type: LayoutBox
+        cell:
+          column: 0
+          row: 0
+        fitToGrid: true
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Statistic
+            style: list-inline
+            children:
+              - type: LayoutBox
+                margin: normal
+                children:
+                  - type: RadioButton
+                    name: yaxis_mean
+                    optionName: yaxis
+                    optionPart: mean
+                    label: Mean
+                  - type: RadioButton
+                    name: yaxis_median
+                    optionName: yaxis
+                    optionPart: median
+                    label: Median
+                  - type: RadioButton
+                    name: yaxis_sum
+                    optionName: yaxis
+                    optionPart: sum
+                    label: Sum
+                  - type: RadioButton
+                    name: yaxis_max
+                    optionName: yaxis
+                    optionPart: max
+                    label: Max
+                  - type: RadioButton
+                    name: yaxis_min
+                    optionName: yaxis
+                    optionPart: min
+                    label: Min
+      - type: LayoutBox
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Bar Type
+            children:
+              - type: RadioButton
+                name: barType_dodge
+                optionName: barType
+                optionPart: dodge2
+                enable: (!(!group))
+              - type: RadioButton
+                name: barType_dodge2
+                optionName: barType
+                optionPart: dodge
+                enable: (!(!group))
+              - type: RadioButton
+                name: barType_stack
+                optionName: barType
+                optionPart: stack
+                enable: (!(!group))
+      - type: LayoutBox
+        cell:
+          column: 2
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Sorting
+            children:
+              - type: RadioButton
+                name: order_none
+                optionName: order
+                optionPart: none
+                label: None
+              - type: RadioButton
+                name: order_increasing
+                optionName: order
+                optionPart: increasing
+                label: Increasing
+              - type: RadioButton
+                name: order_decreasing
+                optionName: order
+                optionPart: decreasing
+                label: Decreasing
+  - type: CollapseBox
+    label: Plot Options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Plot Options
+                children:
+                  - type: CheckBox
+                    name: ignoreNA
+                  - type: CheckBox
+                    name: reverseStack
+                    enable: (!(!group) && barType_stack)
+                  - type: CheckBox
+                    name: horizontal
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Value Labels
+                children:
+                  - type: CheckBox
+                    name: showLabels
+                    children:
+                      - type: TextBox
+                        name: decimalPrecision
+                        format: number
+                        enable: (showLabels)
+                      - type: TextBox
+                        name: labelTextSize
+                        format: number
+                        enable: (showLabels)
+  - type: CollapseBox
+    label: Colors
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Palette
+                children:
+                  - type: ComboBox
+                    name: colorPalette
+                    label: ''
+                  - type: CheckBox
+                    name: singleColor
+                    enable: (!group)
+                    style: inline
+                    verticalAlignment: center
+                    children:
+                      - type: TextBox
+                        name: colorNo
+                        label: ''
+                        suffix: only
+                        format: number
+                        enable: (singleColor && !group)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Options
+                children:
+                  - type: ComboBox
+                    name: borderColor
+                  - type: ComboBox
+                    name: textColor
+                    enable: (showLabels)
+  - type: CollapseBox
+    label: Error Bars
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Error Bars
+            children:
+              - type: RadioButton
+                name: errorBars_none
+                optionName: errorBars
+                optionPart: none
+              - type: RadioButton
+                name: errorBars_sd
+                optionName: errorBars
+                optionPart: sd
+                enable: ((!barType_stack || !group) && yaxis_mean)
+              - type: RadioButton
+                name: errorBars_se
+                optionName: errorBars
+                optionPart: se
+                enable: ((!barType_stack|| !group) && yaxis_mean)
+              - type: RadioButton
+                name: errorBars_ci
+                optionName: errorBars
+                optionPart: ci
+                enable: ((!barType_stack|| !group) && yaxis_mean)
+                children:
+                  - type: TextBox
+                    name: ciWidth
+                    format: number
+                    suffix: "%"
+                    enable: ((!barType_stack|| !group) && (yaxis_mean || yaxis_median) && errorBars_ci)
+      - type: LayoutBox
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Error Bar Size
+            children:
+              - type: TextBox
+                name: errorBarLineSize
+                format: number
+              - type: TextBox
+                name: errorBarWidth
+                format: number
+  - type: CollapseBox
+    label: Facets
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facets
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: RadioButton
+                        name: facetBy_row
+                        optionName: facetBy
+                        optionPart: row
+                        label: Row
+                        enable: (!(!facet))
+                      - type: RadioButton
+                        name: facetBy_column
+                        optionName: facetBy
+                        optionPart: column
+                        label: Column
+                        enable: (!(!facet))
+                  - type: TextBox
+                    name: facetNumber
+                    format: number
+                    enable: (!(!facet))
+  - type: CollapseBox
+    label: Axes
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: X-Axis
+                children:
+                  - type: TextBox
+                    name: xAxisLabelFontSize
+                    format: number
+                  - type: TextBox
+                    name: xAxisLabelRotation
+                    suffix: °
+                    format: number
+                  - type: TextBox
+                    name: xTicks
+                    format: number
+                    enable: (horizontal)
+              - type: Label
+                label: Range
+                children:
+                  - type: RadioButton
+                    name: xAxisRangeType_auto
+                    optionName: xAxisRangeType
+                    optionPart: auto
+                    enable: (horizontal)
+                  - type: RadioButton
+                    name: xAxisRangeType_manual
+                    optionName: xAxisRangeType
+                    optionPart: manual
+                    enable: (horizontal)
+                    children:
+                      - type: TextBox
+                        name: xAxisRangeMin
+                        format: number
+                        enable: (xAxisRangeType:manual && horizontal)
+                      - type: TextBox
+                        name: xAxisRangeMax
+                        format: number
+                        enable: (xAxisRangeType:manual && horizontal)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Y-Axis
+                children:
+                  - type: TextBox
+                    name: yAxisLabelFontSize
+                    format: number
+                  - type: TextBox
+                    name: yAxisLabelRotation
+                    suffix: °
+                    format: number
+                  - type: TextBox
+                    name: yTicks
+                    format: number
+                    enable: (!horizontal)
+              - type: Label
+                label: Range
+                children:
+                  - type: RadioButton
+                    name: yAxisRangeType_auto
+                    optionName: yAxisRangeType
+                    optionPart: auto
+                    enable: (!horizontal)
+                  - type: RadioButton
+                    name: yAxisRangeType_manual
+                    optionName: yAxisRangeType
+                    optionPart: manual
+                    enable: (!horizontal)
+                    children:
+                      - type: TextBox
+                        name: yAxisRangeMin
+                        format: number
+                        enable: (yAxisRangeType:manual && !horizontal)
+                      - type: TextBox
+                        name: yAxisRangeMax
+                        format: number
+                        enable: (yAxisRangeType:manual && !horizontal)
+  - type: CollapseBox
+    label: Legend & Axis Titles
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: Label
+        label: Legend
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: legendText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: legendFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: legendPosition
+      - type: Label
+        label: X-Axis
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: xAxisText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: xAxisFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: xAxisPosition
+      - type: Label
+        label: Y-Axis
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: yAxisText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: yAxisFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: yAxisPosition
+  - type: CollapseBox
+    label: Plot Titles
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: Label
+        label: Title
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: titleText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: ComboBox
+                    name: titleFontFace
+                  - type: ComboBox
+                    name: titleFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: titleAlign
+      - type: Label
+        label: Subtitle
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: subtitleText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: ComboBox
+                    name: subtitleFontFace
+                  - type: ComboBox
+                    name: subtitleFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: subtitleAlign
+      - type: Label
+        label: Caption
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: captionText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: ComboBox
+                    name: captionFontFace
+                  - type: ComboBox
+                    name: captionFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: captionAlign

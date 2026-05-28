@@ -196,9 +196,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                 }
 
-
-
-
                 # geom_text
                 if (yaxis == "count") {
                     if (textColor == "auto") {

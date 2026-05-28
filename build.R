@@ -27,7 +27,7 @@ jmvtools::addAnalysis(name='qqplot', title='Q-Q & P-P Plots')
 jmvtools::addAnalysis(name='corresp', title='Correspondence Analysis')
 jmvtools::addAnalysis(name='principal', title='Principal Component Analysis')
 jmvtools::addAnalysis(name='multcorresp', title='Multiple Correspondence Analysis')
-#jmvtools::addAnalysis(name='barplot2', title='Bar Plot 2')
+jmvtools::addAnalysis(name='barplot2', title='Bar Plot 2')
 
 # Install module
 

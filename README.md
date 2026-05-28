@@ -69,8 +69,9 @@ Principal component analysis and (Multiple) Correspondence analysis.
 
 ## Version history
 
-### 2026-04-16 / 1.2.0
+### 2026-05-28 / 1.1.9
 -   Option to use contingency table (instead of observation table) for Correspondence analysis
+-   Bar chart for quantitative variables with error bars
 
 ### 2026-03-21 / 1.1.0
 -   Axis tick option

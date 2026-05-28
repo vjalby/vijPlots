@@ -1,0 +1,654 @@
+---
+name:  barchart
+title: Bar Chart
+category: plots
+menuGroup: vijPlots
+menuSubgroup: Continuous
+version: '1.0.0'
+jas: '1.2'
+
+options:
+    - name: data
+      type: Data
+
+    - name: yVar
+      title: Variable
+      type: Variable
+      suggested:
+        - continuous
+      permitted:
+        - numeric
+
+    - name: xVar
+      title: X-Axis
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+
+    - name: group
+      title: Group
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+
+    - name: facet
+      title: Facet
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+
+    - name: yaxis
+      title: Y-Axis
+      type: List
+      options:
+        - title: Mean
+          name:  mean
+        - title: Median
+          name:  median
+        - title: Max
+          name:  max
+        - title: Min
+          name:  min
+        - title: Sum
+          name:  sum
+      default: mean
+
+    - name: order
+      title: Sorting
+      type: List
+      options:
+        - title: Decreasing
+          name:  decreasing
+        - title: Increasing
+          name:  increasing
+        - title: None
+          name:  none
+      default: none
+
+    - name: barType
+      title: Bar Type
+      type: List
+      options:
+        - title: Grouped
+          name:  dodge2
+        - title: Grouped (tight)
+          name:  dodge
+        - title: Stacked
+          name:  stack
+      default: dodge2
+
+    - name: horizontal
+      title: Horizontal plot
+      type: Bool
+      default: false
+
+    - name: ignoreNA
+      title: Ignore missing groups
+      type: Bool
+      default: true
+
+    - name: reverseStack
+      title: Reverse stacking order
+      type: Bool
+      default: false
+
+    - name: showLabels
+      title: Show value labels
+      type: Bool
+      default: true
+
+    - name: decimalPrecision
+      type: Integer
+      title: Decimal precision
+      min: 0
+      max: 99
+      default: 1
+
+    - name: labelTextSize
+      type: Integer
+      title: Text size
+      min: 6
+      max: 18
+      default: 12
+
+    - name: errorBars
+      title: Error Bars
+      type: List
+      options:
+        - title: None
+          name:  none
+        - title: Standard deviation
+          name:  sd
+        - title: Standard error
+          name:  se
+        - title: Confidence interval
+          name:  ci
+      default: none
+
+    - name: ciWidth
+      type: Number
+      title: Width
+      min: 0
+      max: 100
+      default: 95
+
+    - name: errorBarWidth
+      type: Number
+      title: Width
+      min: 0
+      max: 1
+      default: 0.2
+
+    - name: errorBarLineSize
+      type: Number
+      title: Line size
+      min: 0
+      max: 5
+      default: 0.5
+
+    - name: singleColor
+      title: Use color No.
+      type: Bool
+      default: true
+
+    - name: colorNo
+      type: Integer
+      title: Color Number
+      min: 1
+      max: 255
+      default: 1
+
+    - name: colorPalette
+      title: Palette
+      type: List
+      options:
+        - title: jmv Default
+          name:  jmv
+        - title: Set 1
+          name:  Set1
+        - title: Set 2
+          name:  Set2
+        - title: Set 3
+          name:  Set3
+        - title: Pastel 1
+          name:  Pastel1
+        - title: Pastel 2
+          name:  Pastel2
+        - title: Accent
+          name:  Accent
+        - title: Paired
+          name:  Paired
+        - title: Dark 2
+          name:  Dark2
+        - title: Spectral
+          name:  Spectral
+        - title: Red, Yellow, Green
+          name:  RdYlGn
+        - title: Red, Yellow, Blue
+          name:  RdYlBu
+        - title: Red and Gray
+          name:  RdGy
+        - title: Red and Blue
+          name:  RdBu
+        - title: Orange and Purple
+          name:  PuOr
+        - title: Purple and Green
+          name:  PRGn
+        - title: Pink and Green
+          name:  PiYG
+        - title: Brown and Green
+          name:  BrBG
+        - title: Blues
+          name:  Blues
+        - title: Greens
+          name:  Greens
+        - title: Greys
+          name:  Greys
+        - title: Oranges
+          name:  Oranges
+        - title: Purples
+          name:  Purples
+        - title: Reds
+          name:  Reds
+        - title: Blue to Green
+          name:  BuGn
+        - title: Blue to Purple
+          name:  BuPu
+        - title: Green to Blue
+          name:  GnBu
+        - title: Orange to Red
+          name:  OrRd
+        - title: Purple to Blue
+          name:  PuBu
+        - title: Purple to Green
+          name:  PuBuGn
+        - title: Purple to Red
+          name:  PuRd
+        - title: Red to Purple
+          name:  RdPu
+        - title: Yellow to Green
+          name:  YlGn
+        - title: Yellow to Blue
+          name:  YlGnBu
+        - title: Yellow to Brown
+          name:  YlOrBr
+        - title: Yellow to Red
+          name:  YlOrRd
+        - title: Viridis:Viridis
+          name: viridis::viridis
+        - title: Viridis:Magma
+          name: viridis::magma
+        - title: Viridis:Inferno
+          name: viridis::inferno
+        - title: Viridis:Plasma
+          name: viridis::plasma
+        - title: Viridis:Turbo
+          name: viridis::turbo
+        - title: Dichromat:Categorical
+          name: dichromat::Categorical.12
+        - title: Tidy:Friendly
+          name: tidy::friendly
+        - title: Tidy:Seaside
+          name: tidy::seaside
+        - title: Tidy:Apple
+          name: tidy::apple
+        - title: Tidy:Ibm
+          name: tidy::ibm
+        - title: Tidy:Candy
+          name: tidy::candy
+        - title: Tidy:Alger
+          name: tidy::alger
+        - title: Tidy:Rainbow
+          name: tidy::rainbow
+        - title: Tidy:Metro
+          name: tidy::metro
+        - title: Lémovice
+          name: custom::lemovice
+      default: jmv
+
+    - name: borderColor
+      title: Border
+      type: List
+      options:
+        - title: None
+          name:  none
+        - title: Black
+          name:  black
+        - title: White
+          name:  white
+        - title: Gray
+          name:  gray
+      default: none
+
+    - name: textColor
+      title: Label
+      type: List
+      options:
+        - title: Black
+          name:  black
+        - title: White
+          name:  white
+        - title: Red
+          name:  red
+        - title: Auto
+          name:  auto
+      default: auto
+
+    - name: facetBy
+      title: Facet
+      type: List
+      options:
+        - title: Row
+          name:  row
+        - title: Column
+          name:  column
+      default: column
+
+    - name: facetNumber
+      type: Integer
+      title: "# of rows/columns"
+      min: 1
+      max: 10
+      default: 1
+
+    - name: titleText
+      title: ""
+      type: String
+
+    - name: titleFontFace
+      title: Font
+      type: List
+      options:
+        - name: plain
+          title: Normal
+        - name: bold
+          title: Bold
+        - name: italic
+          title: Italic
+        - name: bold.italic
+          title: Bold Italic
+      default: bold
+
+    - name: titleFontSize
+      title: ""
+      type: List
+      options:
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+        - name: "22"
+          title: "22"
+        - name: "24"
+          title: "24"
+      default: "14"
+
+    - name: titleAlign
+      title: Align
+      type: List
+      options:
+        - name: "0"
+          title: Left
+        - name: "0.5"
+          title: Center
+        - name: "1"
+          title: Right
+      default: "0.5"
+
+    - name: subtitleText
+      title: ""
+      type: String
+
+    - name: subtitleFontFace
+      title: Font
+      type: List
+      options:
+        - name: plain
+          title: Normal
+        - name: bold
+          title: Bold
+        - name: italic
+          title: Italic
+        - name: bold.italic
+          title: Bold Italic
+      default: plain
+
+    - name: subtitleFontSize
+      title: ""
+      type: List
+      options:
+        - name: "10"
+          title: "10"
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+        - name: "22"
+          title: "22"
+      default: "12"
+
+    - name: subtitleAlign
+      title: Align
+      type: List
+      options:
+        - name: "0"
+          title: Left
+        - name: "0.5"
+          title: Center
+        - name: "1"
+          title: Right
+      default: "0.5"
+
+    - name: captionText
+      title: ""
+      type: String
+
+    - name: captionFontFace
+      title: Font
+      type: List
+      options:
+        - name: plain
+          title: Normal
+        - name: bold
+          title: Bold
+        - name: italic
+          title: Italic
+        - name: bold.italic
+          title: Bold Italic
+      default: italic
+
+    - name: captionFontSize
+      title: ""
+      type: List
+      options:
+        - name: "8"
+          title: "8"
+        - name: "10"
+          title: "10"
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+      default: "10"
+
+    - name: captionAlign
+      title: Align
+      type: List
+      options:
+        - name: "0"
+          title: Left
+        - name: "0.5"
+          title: Center
+        - name: "1"
+          title: Right
+      default: "1"
+
+    - name: legendText
+      title: ""
+      type: String
+
+    - name: legendFontSize
+      title: Size
+      type: List
+      options:
+        - name: "10"
+          title: "10"
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+      default: "14"
+
+    - name: legendPosition
+      title: Position
+      type: List
+      options:
+        - name: right
+          title: Right
+        - name: bottom
+          title: Bottom
+        - name: left
+          title: Left
+        - name: top
+          title: Top
+      default: right
+
+    - name: xAxisText
+      title: ""
+      type: String
+
+    - name: xAxisFontSize
+      title: Size
+      type: List
+      options:
+        - name: "10"
+          title: "10"
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+      default: "16"
+
+    - name: xAxisPosition
+      title: Position
+      type: List
+      options:
+        - name: "0"
+          title: Left
+        - name: "0.5"
+          title: Center
+        - name: "1"
+          title: Right
+      default: "0.5"
+
+    - name: yAxisText
+      title: ""
+      type: String
+
+    - name: yAxisFontSize
+      title: Size
+      type: List
+      options:
+        - name: "10"
+          title: "10"
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+      default: "16"
+
+    - name: yAxisPosition
+      title: Position
+      type: List
+      options:
+        - name: "1"
+          title: Top
+        - name: "0.5"
+          title: Center
+        - name: "0"
+          title: Bottom
+      default: "0.5"
+
+    - name: yAxisLabelFontSize
+      title: Label font size
+      type: Number
+      default: 12
+
+    - name: yAxisLabelRotation
+      title: Label rotation
+      type: Number
+      default: 0
+      min: 0
+      max: 360
+
+    - name: yAxisRangeType
+      title: Y-Axis Range
+      type: List
+      options:
+        - name: auto
+          title: Auto
+        - name: manual
+          title: Manual
+      default: auto
+
+    - name: yAxisRangeMin
+      title: Min
+      type: Number
+      default: 0
+
+    - name: yAxisRangeMax
+      title: Max
+      type: Number
+      default: 10
+
+    - name: xAxisLabelFontSize
+      title: Label font size
+      type: Number
+      default: 12
+
+    - name: xAxisLabelRotation
+      title: Label rotation
+      type: Number
+      default: 0
+      min: 0
+      max: 360
+
+    - name: xAxisRangeType
+      title: X-Axis Range
+      type: List
+      options:
+        - name: auto
+          title: Auto
+        - name: manual
+          title: Manual
+      default: auto
+
+    - name: xAxisRangeMin
+      title: Min
+      type: Number
+      default: 0
+
+    - name: xAxisRangeMax
+      title: Max
+      type: Number
+      default: 10
+
+    - name: xTicks
+      title: Tick count
+      type: Integer
+      default: 0
+      min: 0
+      max: 99
+
+    - name: yTicks
+      title: Tick count
+      type: Integer
+      default: 0
+      min: 0
+      max: 99
+...

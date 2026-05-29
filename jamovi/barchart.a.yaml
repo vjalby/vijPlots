@@ -134,12 +134,17 @@ options:
           name:  ci
       default: none
 
-    - name: ciWidth
+    - name: ciLevel
       type: Number
-      title: Width
+      title: Level
       min: 0
       max: 100
       default: 95
+
+    - name: bootstrap
+      title: Use bootstrap
+      type: Bool
+      default: false
 
     - name: errorBarWidth
       type: Number

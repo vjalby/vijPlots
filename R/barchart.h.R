@@ -20,7 +20,8 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             decimalPrecision = 1,
             labelTextSize = 12,
             errorBars = "none",
-            ciWidth = 95,
+            ciLevel = 95,
+            bootstrap = FALSE,
             errorBarWidth = 0.2,
             errorBarLineSize = 0.5,
             singleColor = TRUE,
@@ -164,12 +165,16 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "se",
                     "ci"),
                 default="none")
-            private$..ciWidth <- jmvcore::OptionNumber$new(
-                "ciWidth",
-                ciWidth,
+            private$..ciLevel <- jmvcore::OptionNumber$new(
+                "ciLevel",
+                ciLevel,
                 min=0,
                 max=100,
                 default=95)
+            private$..bootstrap <- jmvcore::OptionBool$new(
+                "bootstrap",
+                bootstrap,
+                default=FALSE)
             private$..errorBarWidth <- jmvcore::OptionNumber$new(
                 "errorBarWidth",
                 errorBarWidth,
@@ -519,7 +524,8 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..decimalPrecision)
             self$.addOption(private$..labelTextSize)
             self$.addOption(private$..errorBars)
-            self$.addOption(private$..ciWidth)
+            self$.addOption(private$..ciLevel)
+            self$.addOption(private$..bootstrap)
             self$.addOption(private$..errorBarWidth)
             self$.addOption(private$..errorBarLineSize)
             self$.addOption(private$..singleColor)
@@ -578,7 +584,8 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         decimalPrecision = function() private$..decimalPrecision$value,
         labelTextSize = function() private$..labelTextSize$value,
         errorBars = function() private$..errorBars$value,
-        ciWidth = function() private$..ciWidth$value,
+        ciLevel = function() private$..ciLevel$value,
+        bootstrap = function() private$..bootstrap$value,
         errorBarWidth = function() private$..errorBarWidth$value,
         errorBarLineSize = function() private$..errorBarLineSize$value,
         singleColor = function() private$..singleColor$value,
@@ -636,7 +643,8 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..decimalPrecision = NA,
         ..labelTextSize = NA,
         ..errorBars = NA,
-        ..ciWidth = NA,
+        ..ciLevel = NA,
+        ..bootstrap = NA,
         ..errorBarWidth = NA,
         ..errorBarLineSize = NA,
         ..singleColor = NA,
@@ -740,7 +748,8 @@ barchartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param decimalPrecision .
 #' @param labelTextSize .
 #' @param errorBars .
-#' @param ciWidth .
+#' @param ciLevel .
+#' @param bootstrap .
 #' @param errorBarWidth .
 #' @param errorBarLineSize .
 #' @param singleColor .
@@ -805,7 +814,8 @@ barchart <- function(
     decimalPrecision = 1,
     labelTextSize = 12,
     errorBars = "none",
-    ciWidth = 95,
+    ciLevel = 95,
+    bootstrap = FALSE,
     errorBarWidth = 0.2,
     errorBarLineSize = 0.5,
     singleColor = TRUE,
@@ -883,7 +893,8 @@ barchart <- function(
         decimalPrecision = decimalPrecision,
         labelTextSize = labelTextSize,
         errorBars = errorBars,
-        ciWidth = ciWidth,
+        ciLevel = ciLevel,
+        bootstrap = bootstrap,
         errorBarWidth = errorBarWidth,
         errorBarLineSize = errorBarLineSize,
         singleColor = singleColor,

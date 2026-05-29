@@ -255,10 +255,13 @@ children:
                 enable: ((!barType_stack|| !group) && yaxis_mean)
                 children:
                   - type: TextBox
-                    name: ciWidth
+                    name: ciLevel
                     format: number
                     suffix: "%"
-                    enable: ((!barType_stack|| !group) && (yaxis_mean || yaxis_median) && errorBars_ci)
+                    enable: ((!barType_stack || !group) && yaxis_mean && errorBars_ci)
+                  - type: CheckBox
+                    name: bootstrap
+                    enable: ((!barType_stack || !group) && yaxis_mean && errorBars_c
       - type: LayoutBox
         cell:
           column: 1

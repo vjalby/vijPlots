@@ -26,6 +26,13 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 fixed_width <- 75
                 fixed_height <- 50
             }
+            # Legend
+            if( !is.null(self$options$group)) {
+                if (self$options$legendPosition %in% c('top','bottom'))
+                    fixed_height <- fixed_height + 50
+                else
+                    fixed_width <- fixed_width + 100
+            }
             # Set the image dimensions
             image <- self$results$plot
             if (is.null(image$setSize2)) { # jamovi < 2.7.16
@@ -160,6 +167,22 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                 size = self$options$labelTextSize /.pt, fontface = fontFace,
                                                 position = labPosition, vjust = vjust, hjust = hjust,
                                                 color = textColor)
+                # Label for stacked sum
+                if (stacked && self$options$yaxis == "sum") {
+                    if (self$options$horizontal) {
+                        vjust2 <- 0.5
+                        hjust2 <- -0.5
+                    } else {
+                        vjust2 <- -0.5
+                        hjust2 <- 0.5
+                    }
+                    textColor2 <- ifelse(textColor %in% c("auto","white"), "black", textColor)
+
+                    plot <- plot + stat_summary(fun = summaryFun, geom = "text",
+                                                aes(y = !!yVar, label = round(after_stat(y), self$options$decimalPrecision), group = NULL, fill = NULL),
+                                                size = self$options$labelTextSize /.pt, vjust = vjust2, hjust = hjust2,
+                                                color = textColor2)
+                }
             }
 
             # ErrorBars
@@ -174,8 +197,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 funData <- mean_cl_normal
                 funArgs <- list(mult = 1)
             } else if (errorBars == "ci") {
-                funData <- mean_cl_normal
-                funArgs <- list(conf.int = self$options$ciWidth/100)
+                funData <- ifelse(self$options$bootstrap, mean_cl_boot, mean_cl_normal)
+                funArgs <- list(conf.int = self$options$ciLevel/100)
             }
             if (errorBars != "none")
                 plot <- plot +  stat_summary(fun.data = funData, fun.args = funArgs, geom = "errorbar",
@@ -188,8 +211,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$xAxisRangeType == "manual") {
                     plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
                 } else {
-                    if (self$options$showLabels && !stacked)
-                        plot <- plot + coord_flip(clip = "off", ylim = layer_scales(plot)$y$get_limits()*1.1)
+                    if ((self$options$showLabels && !stacked) || (self$options$showLabels && summaryFun == "sum" && stacked))
+                        plot <- plot + coord_flip(clip = "off", ylim = layer_scales(plot)$y$get_limits()*1.2)
                     else
                         plot <- plot + coord_flip()
                 }
@@ -208,7 +231,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else if (errorBars == "se")
                     ylabel <- jmvcore::format(.('{var} (Mean ± SE)'), var = yVar)
                 else if (errorBars == "ci")
-                    ylabel <- jmvcore::format(.('{var} (Mean ± {level}%  CI)'), var = yVar, level = self$options$ciWidth)
+                    ylabel <- jmvcore::format(.('{var} (Mean ± {level}%  CI)'), var = yVar, level = self$options$ciLevel)
             } else if (self$options$yaxis == "median")
                 ylabel <- jmvcore::format(.('Median of {var}'), var = yVar)
             else if (self$options$yaxis == "min")
@@ -244,7 +267,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             defaults <- list(y = ylabel, x = xVar, legend = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = !is.null(groupVar))
 
-#            self$results$text$setContent(plot)
+            #self$results$text$setContent(plot)
 
             return(plot)
         })

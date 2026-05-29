@@ -635,14 +635,14 @@ options:
 
     - name: xTicks
       title: Tick count
-      type: Number
+      type: Integer
       default: 0
       min: 0
       max: 99
 
     - name: yTicks
       title: Tick count
-      type: Number
+      type: Integer
       default: 0
       min: 0
       max: 99

@@ -95,7 +95,7 @@ options:
       default: column
 
     - name: facetNumber
-      type: Number
+      type: Integer
       title: "# of rows/columns"
       min: 1
       max: 10
@@ -215,7 +215,7 @@ options:
       default: false
 
     - name: colorNo
-      type: Number
+      type: Integer
       title: Color Number
       min: 1
       max: 255
@@ -567,14 +567,14 @@ options:
 
     - name: xTicks
       title: Tick count
-      type: Number
+      type: Integer
       default: 0
       min: 0
       max: 99
 
     - name: yTicks
       title: Tick count
-      type: Number
+      type: Integer
       default: 0
       min: 0
       max: 99

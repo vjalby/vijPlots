@@ -182,7 +182,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "row",
                     "column"),
                 default="column")
-            private$..facetNumber <- jmvcore::OptionNumber$new(
+            private$..facetNumber <- jmvcore::OptionInteger$new(
                 "facetNumber",
                 facetNumber,
                 min=1,

@@ -209,7 +209,7 @@ options:
       default: column
 
     - name: facetNumber
-      type: Number
+      type: Integer
       title: "# of rows/columns"
       min: 1
       max: 10
@@ -499,14 +499,14 @@ options:
 
     - name: xTicks
       title: Tick count
-      type: Number
+      type: Integer
       default: 0
       min: 0
       max: 99
 
     - name: yTicks
       title: Tick count
-      type: Number
+      type: Integer
       default: 0
       min: 0
       max: 99

@@ -236,7 +236,7 @@ options:
       default: column
 
     - name: facetNumber
-      type: Number
+      type: Integer
       title: "# of rows/columns"
       min: 1
       max: 10

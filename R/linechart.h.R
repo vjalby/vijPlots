@@ -396,7 +396,7 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0,
                 min=0,
                 max=360)
-            private$..yTicks <- jmvcore::OptionNumber$new(
+            private$..yTicks <- jmvcore::OptionInteger$new(
                 "yTicks",
                 yTicks,
                 default=0,

@@ -134,7 +134,7 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "row",
                     "column"),
                 default="column")
-            private$..facetNumber <- jmvcore::OptionNumber$new(
+            private$..facetNumber <- jmvcore::OptionInteger$new(
                 "facetNumber",
                 facetNumber,
                 min=1,
@@ -200,7 +200,7 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "singleColor",
                 singleColor,
                 default=FALSE)
-            private$..colorNo <- jmvcore::OptionNumber$new(
+            private$..colorNo <- jmvcore::OptionInteger$new(
                 "colorNo",
                 colorNo,
                 min=1,
@@ -439,13 +439,13 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "xAxisRangeMax",
                 xAxisRangeMax,
                 default=10)
-            private$..xTicks <- jmvcore::OptionNumber$new(
+            private$..xTicks <- jmvcore::OptionInteger$new(
                 "xTicks",
                 xTicks,
                 default=0,
                 min=0,
                 max=99)
-            private$..yTicks <- jmvcore::OptionNumber$new(
+            private$..yTicks <- jmvcore::OptionInteger$new(
                 "yTicks",
                 yTicks,
                 default=0,

@@ -32,11 +32,24 @@ msgstr ""
 msgid "{rotation} rotation with Kaiser normalization was used."
 msgstr ""
 
+#: R/barchart.b.R
+msgid "{var} (Mean ± {level}%  CI)"
+msgstr ""
+
+#: R/barchart.b.R
+msgid "{var} (Mean ± SD)"
+msgstr ""
+
+#: R/barchart.b.R
+msgid "{var} (Mean ± SE)"
+msgstr ""
+
 #: R/areachart.b.R
 #: R/linechart.b.R
 msgid "{var} doesn't have a valid date format."
 msgstr ""
 
+#: barchart/options/facetNumber.title
 #: barplot/options/facetNumber.title
 #: boxplot/options/facetNumber.title
 #: histogram/options/facetNumber.title
@@ -44,6 +57,10 @@ msgstr ""
 #: piechart/options/facetNumber.title
 #: scatterplot/options/facetNumber.title
 msgid "# of rows/columns"
+msgstr ""
+
+#: barchart/ui[4][0][0]/errorBars_ci/ciWidth.suffix
+msgid "%"
 msgstr ""
 
 #: barplot/options/accuracy.title
@@ -148,8 +165,13 @@ msgid ""
 "\"https://CRAN.R-project.org/package=FactoMineR\" "
 "target=\"_blank\">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, "
 "S.&nbsp;Le, J.&nbsp;Mazet.</p>\n"
-"<p>The data may be weighted using <em>jamovi</em> built-in weight system or "
-"using the \"Counts\" variable.</p>\n"
+"<p>The data can be</p>\n"
+"<ul>\n"
+"<li>an <strong>Observation table</strong> (raw data), possibly weighted "
+"using <em>jamovi</em> built-in weight system or using the \"Counts\" "
+"variable</li>\n"
+"<li>or a <strong>Contingency table</strong></li>\n"
+"</ul>\n"
 "<p><strong>Supplementary row or column</strong> numbers may be entered as "
 "integer lists : 1,3,6</p>\n"
 "<p>Four normalizations (scaling of row and column scores before plotting) "
@@ -432,6 +454,7 @@ msgid "A demonstration dataset for vijPlots/Time Serie plots."
 msgstr ""
 
 #: areachart/options/colorPalette/Accent.title
+#: barchart/options/colorPalette/Accent.title
 #: barplot/options/colorPalette/Accent.title
 #: boxplot/options/colorPalette/Accent.title
 #: histogram/options/colorPalette/Accent.title
@@ -470,6 +493,9 @@ msgstr ""
 #: areachart/options/titleAlign.title
 #: areachart/options/subtitleAlign.title
 #: areachart/options/captionAlign.title
+#: barchart/options/titleAlign.title
+#: barchart/options/subtitleAlign.title
+#: barchart/options/captionAlign.title
 #: barplot/options/titleAlign.title
 #: barplot/options/subtitleAlign.title
 #: barplot/options/captionAlign.title
@@ -561,6 +587,9 @@ msgstr ""
 
 #: areachart/options/dateFormat/auto.title
 #: areachart/options/yAxisRangeType/auto.title
+#: barchart/options/textColor/auto.title
+#: barchart/options/yAxisRangeType/auto.title
+#: barchart/options/xAxisRangeType/auto.title
 #: barplot/options/textColor/auto.title
 #: barplot/options/yAxisRangeType/auto.title
 #: barplot/options/xAxisRangeType/auto.title
@@ -590,6 +619,7 @@ msgid "Auto"
 msgstr ""
 
 #: areachart/ui[2].label
+#: barchart/ui[6].label
 #: barplot/ui[5].label
 #: boxplot/ui[4].label
 #: histogram/ui[5].label
@@ -617,6 +647,14 @@ msgstr ""
 msgid "Axis Titles"
 msgstr ""
 
+#: package/analyses/barchart.title
+#: package/analyses/barchart.menuTitle
+#: barchart/options.title
+#: barchart/ui.title
+#: barchart/results.title
+msgid "Bar Chart"
+msgstr ""
+
 #: package/analyses/barplot.title
 #: package/analyses/barplot.menuTitle
 #: barplot/options.title
@@ -625,6 +663,8 @@ msgstr ""
 msgid "Bar Plot"
 msgstr ""
 
+#: barchart/options/barType.title
+#: barchart/ui[1][1][0].label
 #: barplot/options/barType.title
 #: barplot/ui[1][1][0].label
 #: mrcrosstabs/options/bartype.title
@@ -693,6 +733,8 @@ msgstr ""
 msgid "Biplot Type"
 msgstr ""
 
+#: barchart/options/borderColor/black.title
+#: barchart/options/textColor/black.title
 #: barplot/options/borderColor/black.title
 #: barplot/options/textColor/black.title
 #: corresp/options/supColor/black.title
@@ -728,6 +770,7 @@ msgid "Blue"
 msgstr ""
 
 #: areachart/options/colorPalette/BuGn.title
+#: barchart/options/colorPalette/BuGn.title
 #: barplot/options/colorPalette/BuGn.title
 #: boxplot/options/colorPalette/BuGn.title
 #: histogram/options/colorPalette/BuGn.title
@@ -744,6 +787,7 @@ msgid "Blue to Green"
 msgstr ""
 
 #: areachart/options/colorPalette/BuPu.title
+#: barchart/options/colorPalette/BuPu.title
 #: barplot/options/colorPalette/BuPu.title
 #: boxplot/options/colorPalette/BuPu.title
 #: histogram/options/colorPalette/BuPu.title
@@ -760,6 +804,7 @@ msgid "Blue to Purple"
 msgstr ""
 
 #: areachart/options/colorPalette/Blues.title
+#: barchart/options/colorPalette/Blues.title
 #: barplot/options/colorPalette/Blues.title
 #: boxplot/options/colorPalette/Blues.title
 #: histogram/options/colorPalette/Blues.title
@@ -778,6 +823,9 @@ msgstr ""
 #: areachart/options/titleFontFace/bold.title
 #: areachart/options/subtitleFontFace/bold.title
 #: areachart/options/captionFontFace/bold.title
+#: barchart/options/titleFontFace/bold.title
+#: barchart/options/subtitleFontFace/bold.title
+#: barchart/options/captionFontFace/bold.title
 #: barplot/options/titleFontFace/bold.title
 #: barplot/options/subtitleFontFace/bold.title
 #: barplot/options/captionFontFace/bold.title
@@ -829,6 +877,9 @@ msgstr ""
 #: areachart/options/titleFontFace/bold.italic.title
 #: areachart/options/subtitleFontFace/bold.italic.title
 #: areachart/options/captionFontFace/bold.italic.title
+#: barchart/options/titleFontFace/bold.italic.title
+#: barchart/options/subtitleFontFace/bold.italic.title
+#: barchart/options/captionFontFace/bold.italic.title
 #: barplot/options/titleFontFace/bold.italic.title
 #: barplot/options/subtitleFontFace/bold.italic.title
 #: barplot/options/captionFontFace/bold.italic.title
@@ -886,6 +937,7 @@ msgstr ""
 msgid "Boostrap"
 msgstr ""
 
+#: barchart/options/borderColor.title
 #: barplot/options/borderColor.title
 #: histogram/options/borderColor.title
 #: mrcrosstabs/options/borderColor.title
@@ -896,6 +948,8 @@ msgstr ""
 
 #: areachart/options/legendPosition/bottom.title
 #: areachart/options/yAxisPosition/0.title
+#: barchart/options/legendPosition/bottom.title
+#: barchart/options/yAxisPosition/0.title
 #: barplot/options/legendPosition/bottom.title
 #: barplot/options/yAxisPosition/0.title
 #: boxplot/options/legendPosition/bottom.title
@@ -951,6 +1005,7 @@ msgid "Brown"
 msgstr ""
 
 #: areachart/options/colorPalette/BrBG.title
+#: barchart/options/colorPalette/BrBG.title
 #: barplot/options/colorPalette/BrBG.title
 #: boxplot/options/colorPalette/BrBG.title
 #: histogram/options/colorPalette/BrBG.title
@@ -996,6 +1051,7 @@ msgid "Cannot tidy up text variables"
 msgstr ""
 
 #: areachart/ui[4][2].label
+#: barchart/ui[8][2].label
 #: barplot/ui[7][2].label
 #: boxplot/ui[6][2].label
 #: histogram/ui[7][2].label
@@ -1083,6 +1139,11 @@ msgstr ""
 #: areachart/options/captionAlign/0.5.title
 #: areachart/options/xAxisPosition/0.5.title
 #: areachart/options/yAxisPosition/0.5.title
+#: barchart/options/titleAlign/0.5.title
+#: barchart/options/subtitleAlign/0.5.title
+#: barchart/options/captionAlign/0.5.title
+#: barchart/options/xAxisPosition/0.5.title
+#: barchart/options/yAxisPosition/0.5.title
 #: barplot/options/titleAlign/0.5.title
 #: barplot/options/subtitleAlign/0.5.title
 #: barplot/options/captionAlign/0.5.title
@@ -1167,6 +1228,7 @@ msgstr ""
 msgid "Chi-squared"
 msgstr ""
 
+#: barchart/options/colorNo.title
 #: barplot/options/colorNo.title
 #: boxplot/options/colorNo.title
 #: mrfrequencies/options/colorNo.title
@@ -1174,6 +1236,7 @@ msgstr ""
 msgid "Color Number"
 msgstr ""
 
+#: barchart/ui[3][0][1][0].label
 #: barplot/ui[3][0][1][0].label
 #: mrcrosstabs/ui[3][0][1][0].label
 #: mrfrequencies/ui[3][0][1][0].label
@@ -1183,6 +1246,7 @@ msgstr ""
 msgid "Color Options"
 msgstr ""
 
+#: barchart/ui[3][0][0][0].label
 #: barplot/ui[3][0][0][0].label
 #: boxplot/ui[2][0][0][0].label
 #: histogram/options/colorPalette.title
@@ -1194,6 +1258,7 @@ msgstr ""
 msgid "Color Palette"
 msgstr ""
 
+#: barchart/ui[3].label
 #: barplot/ui[3].label
 #: corresp/ui[5][0][1][0].label
 #: histogram/ui[3].label
@@ -1209,6 +1274,8 @@ msgstr ""
 msgid "Colors & Options"
 msgstr ""
 
+#: barchart/options/facetBy/column.title
+#: barchart/ui[5][0][0][0][0]/facetBy_column.label
 #: barplot/options/facetBy/column.title
 #: barplot/ui[4][0][1][0][0]/facetBy_column.label
 #: boxplot/options/facetBy/column.title
@@ -1303,6 +1370,7 @@ msgstr ""
 msgid "Confidence Band Methods"
 msgstr ""
 
+#: barchart/options/errorBars/ci.title
 #: scatterplot/options/lineSE.title
 msgid "Confidence interval"
 msgstr ""
@@ -1333,8 +1401,10 @@ msgstr ""
 #: package/analyses/boxplot.menuSubgroup
 #: package/analyses/raincloud.menuSubgroup
 #: package/analyses/scatterplot.menuSubgroup
+#: package/analyses/barchart.menuSubgroup
 #: package/analyses/lollipop.menuSubgroup
 #: package/analyses/qqplot.menuSubgroup
+#: barchart/options.menuSubgroup
 #: boxplot/options.menuSubgroup
 #: histogram/options.menuSubgroup
 #: lollipop/options.menuSubgroup
@@ -1443,6 +1513,7 @@ msgid "Cumulative %"
 msgstr ""
 
 #: areachart/options/colorPalette/Dark2.title
+#: barchart/options/colorPalette/Dark2.title
 #: barplot/options/colorPalette/Dark2.title
 #: boxplot/options/colorPalette/Dark2.title
 #: histogram/options/colorPalette/Dark2.title
@@ -1489,6 +1560,12 @@ msgstr ""
 msgid "December"
 msgstr ""
 
+#: barchart/options/decimalPrecision.title
+msgid "Decimal precision"
+msgstr ""
+
+#: barchart/options/order/decreasing.title
+#: barchart/ui[1][2][0]/order_decreasing.label
 #: barplot/options/order/decreasing.title
 #: barplot/ui[1][2][0]/order_decreasing.label
 #: boxplot/options/order/decreasing.title
@@ -1559,6 +1636,7 @@ msgid "df"
 msgstr ""
 
 #: areachart/options/colorPalette/dichromat::Categorical.12.title
+#: barchart/options/colorPalette/dichromat::Categorical.12.title
 #: barplot/options/colorPalette/dichromat::Categorical.12.title
 #: boxplot/options/colorPalette/dichromat::Categorical.12.title
 #: histogram/options/colorPalette/dichromat::Categorical.12.title
@@ -1690,6 +1768,16 @@ msgstr ""
 msgid "Equamax"
 msgstr ""
 
+#: barchart/ui[4][1][0].label
+msgid "Error Bar Size"
+msgstr ""
+
+#: barchart/options/errorBars.title
+#: barchart/ui[4].label
+#: barchart/ui[4][0][0].label
+msgid "Error Bars"
+msgstr ""
+
 #: qqplot/options/paramMethod/paraEstimate.title
 #: qqplot/ui[3][0][0]/paramMethod_paraEstimat.label
 msgid "Estimate parameters from data"
@@ -1713,6 +1801,9 @@ msgstr ""
 msgid "Extraction Sums of Squared Loadings"
 msgstr ""
 
+#: barchart/options/facet.title
+#: barchart/options/facetBy.title
+#: barchart/ui[0][3].label
 #: barplot/options/facet.title
 #: barplot/options/facetBy.title
 #: barplot/ui[0][2].label
@@ -1730,6 +1821,8 @@ msgstr ""
 msgid "Facet"
 msgstr ""
 
+#: barchart/ui[5].label
+#: barchart/ui[5][0][0][0].label
 #: barplot/ui[4][0][1][0].label
 #: boxplot/options/facetBy.title
 #: boxplot/ui[3][0][1][0].label
@@ -1766,6 +1859,9 @@ msgstr ""
 #: areachart/options/titleFontFace.title
 #: areachart/options/subtitleFontFace.title
 #: areachart/options/captionFontFace.title
+#: barchart/options/titleFontFace.title
+#: barchart/options/subtitleFontFace.title
+#: barchart/options/captionFontFace.title
 #: barplot/options/titleFontFace.title
 #: barplot/options/subtitleFontFace.title
 #: barplot/options/captionFontFace.title
@@ -1877,6 +1973,7 @@ msgstr ""
 msgid "Gamma"
 msgstr ""
 
+#: barchart/options/borderColor/gray.title
 #: barplot/options/borderColor/gray.title
 #: corresp/options/supColor/darkgray.title
 #: histogram/options/fillColor/#999999.title
@@ -1905,6 +2002,7 @@ msgid "Green"
 msgstr ""
 
 #: areachart/options/colorPalette/GnBu.title
+#: barchart/options/colorPalette/GnBu.title
 #: barplot/options/colorPalette/GnBu.title
 #: boxplot/options/colorPalette/GnBu.title
 #: histogram/options/colorPalette/GnBu.title
@@ -1933,6 +2031,7 @@ msgid "Greenacre's corrected inertia ="
 msgstr ""
 
 #: areachart/options/colorPalette/Greens.title
+#: barchart/options/colorPalette/Greens.title
 #: barplot/options/colorPalette/Greens.title
 #: boxplot/options/colorPalette/Greens.title
 #: histogram/options/colorPalette/Greens.title
@@ -1953,6 +2052,7 @@ msgid "Grey"
 msgstr ""
 
 #: areachart/options/colorPalette/Greys.title
+#: barchart/options/colorPalette/Greys.title
 #: barplot/options/colorPalette/Greys.title
 #: boxplot/options/colorPalette/Greys.title
 #: histogram/options/colorPalette/Greys.title
@@ -1970,6 +2070,8 @@ msgstr ""
 
 #: areachart/options/group.title
 #: areachart/ui/mode/oneVariable[0][0][2].label
+#: barchart/options/group.title
+#: barchart/ui[0][2].label
 #: barplot/options/columns.title
 #: barplot/ui[0][1].label
 #: boxplot/options/group.title
@@ -2012,12 +2114,14 @@ msgstr ""
 msgid "Group By"
 msgstr ""
 
+#: barchart/options/barType/dodge2.title
 #: barplot/options/barType/dodge2.title
 #: histogram/options/grouping/dodge.title
 #: mrcrosstabs/options/bartype/dodge2.title
 msgid "Grouped"
 msgstr ""
 
+#: barchart/options/barType/dodge.title
 #: barplot/options/barType/dodge.title
 #: mrcrosstabs/options/bartype/dodge.title
 msgid "Grouped (tight)"
@@ -2078,6 +2182,7 @@ msgstr ""
 msgid "Horizontal line at"
 msgstr ""
 
+#: barchart/options/horizontal.title
 #: barplot/options/horizontal.title
 #: boxplot/options/horizontal.title
 #: lollipop/options/horizontal.title
@@ -2092,6 +2197,7 @@ msgstr ""
 msgid "Identity line"
 msgstr ""
 
+#: barchart/options/ignoreNA.title
 #: likertplot/options/ignoreNA.title
 msgid "Ignore missing groups"
 msgstr ""
@@ -2107,6 +2213,8 @@ msgstr ""
 msgid "Improve label display"
 msgstr ""
 
+#: barchart/options/order/increasing.title
+#: barchart/ui[1][2][0]/order_increasing.label
 #: barplot/options/order/increasing.title
 #: barplot/ui[1][2][0]/order_increasing.label
 #: boxplot/options/order/increasing.title
@@ -2157,6 +2265,9 @@ msgstr ""
 #: areachart/options/titleFontFace/italic.title
 #: areachart/options/subtitleFontFace/italic.title
 #: areachart/options/captionFontFace/italic.title
+#: barchart/options/titleFontFace/italic.title
+#: barchart/options/subtitleFontFace/italic.title
+#: barchart/options/captionFontFace/italic.title
 #: barplot/options/titleFontFace/italic.title
 #: barplot/options/subtitleFontFace/italic.title
 #: barplot/options/captionFontFace/italic.title
@@ -2225,6 +2336,7 @@ msgid "jmv Blue"
 msgstr ""
 
 #: areachart/options/colorPalette/jmv.title
+#: barchart/options/colorPalette/jmv.title
 #: barplot/options/colorPalette/jmv.title
 #: boxplot/options/colorPalette/jmv.title
 #: histogram/options/colorPalette/jmv.title
@@ -2324,6 +2436,7 @@ msgstr ""
 msgid "Kruskal-Wallis Tests"
 msgstr ""
 
+#: barchart/options/textColor.title
 #: barplot/options/textColor.title
 #: barplot/options/labelFontSize.title
 #: boxplot/options/label.title
@@ -2354,6 +2467,8 @@ msgstr ""
 
 #: areachart/options/yAxisLabelFontSize.title
 #: areachart/options/xAxisLabelFontSize.title
+#: barchart/options/yAxisLabelFontSize.title
+#: barchart/options/xAxisLabelFontSize.title
 #: barplot/options/yAxisLabelFontSize.title
 #: barplot/options/xAxisLabelFontSize.title
 #: boxplot/options/yAxisLabelFontSize.title
@@ -2394,6 +2509,8 @@ msgstr ""
 
 #: areachart/options/yAxisLabelRotation.title
 #: areachart/options/xAxisLabelRotation.title
+#: barchart/options/yAxisLabelRotation.title
+#: barchart/options/xAxisLabelRotation.title
 #: barplot/options/yAxisLabelRotation.title
 #: barplot/options/xAxisLabelRotation.title
 #: boxplot/options/yAxisLabelRotation.title
@@ -2436,6 +2553,11 @@ msgstr ""
 #: areachart/options/captionAlign/0.title
 #: areachart/options/legendPosition/left.title
 #: areachart/options/xAxisPosition/0.title
+#: barchart/options/titleAlign/0.title
+#: barchart/options/subtitleAlign/0.title
+#: barchart/options/captionAlign/0.title
+#: barchart/options/legendPosition/left.title
+#: barchart/options/xAxisPosition/0.title
 #: barplot/options/titleAlign/0.title
 #: barplot/options/subtitleAlign/0.title
 #: barplot/options/captionAlign/0.title
@@ -2510,6 +2632,7 @@ msgid "Left"
 msgstr ""
 
 #: areachart/ui[3][0].label
+#: barchart/ui[7][0].label
 #: barplot/ui[6][0].label
 #: boxplot/ui[5][0].label
 #: histogram/ui[6][0].label
@@ -2527,6 +2650,7 @@ msgid "Legend"
 msgstr ""
 
 #: areachart/ui[3].label
+#: barchart/ui[7].label
 #: barplot/ui[6].label
 #: boxplot/ui[5].label
 #: histogram/ui[6].label
@@ -2546,6 +2670,7 @@ msgid "Legend Title"
 msgstr ""
 
 #: areachart/options/colorPalette/custom::lemovice.title
+#: barchart/options/colorPalette/custom::lemovice.title
 #: barplot/options/colorPalette/custom::lemovice.title
 #: boxplot/options/colorPalette/custom::lemovice.title
 #: histogram/options/colorPalette/custom::lemovice.title
@@ -2677,6 +2802,7 @@ msgstr ""
 msgid "Line Chart"
 msgstr ""
 
+#: barchart/options/errorBarLineSize.title
 #: histogram/options/densityLineSize.title
 #: histogram/options/normalCurveLineSize.title
 msgid "Line size"
@@ -2736,6 +2862,8 @@ msgid "Mann-Whitney U Tests"
 msgstr ""
 
 #: areachart/options/yAxisRangeType/manual.title
+#: barchart/options/yAxisRangeType/manual.title
+#: barchart/options/xAxisRangeType/manual.title
 #: barplot/options/yAxisRangeType/manual.title
 #: barplot/options/xAxisRangeType/manual.title
 #: boxplot/options/yAxisRangeType/manual.title
@@ -2775,6 +2903,10 @@ msgid "Mass"
 msgstr ""
 
 #: areachart/options/yAxisRangeMax.title
+#: barchart/options/yaxis/max.title
+#: barchart/options/yAxisRangeMax.title
+#: barchart/options/xAxisRangeMax.title
+#: barchart/ui[1][0][0][0]/yaxis_max.label
 #: barplot/options/yAxisRangeMax.title
 #: barplot/options/xAxisRangeMax.title
 #: boxplot/options/yAxisRangeMax.title
@@ -2799,6 +2931,7 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
+#: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Maximum of {var}"
 msgstr ""
@@ -2821,6 +2954,8 @@ msgstr ""
 msgid "MCA Standard Coordinates"
 msgstr ""
 
+#: barchart/options/yaxis/mean.title
+#: barchart/ui[1][0][0][0]/yaxis_mean.label
 #: lollipop/options/yaxis/mean.title
 #: lollipop/ui[2][0][0][0]/yaxis_mean.label
 msgid "Mean"
@@ -2830,11 +2965,14 @@ msgstr ""
 msgid "Mean & SD"
 msgstr ""
 
+#: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Mean of {var}"
 msgstr ""
 
 #: R/likertplot.b.R
+#: barchart/options/yaxis/median.title
+#: barchart/ui[1][0][0][0]/yaxis_median.label
 #: likertplot/options/showMedian.title
 #: lollipop/options/yaxis/median.title
 #: lollipop/ui[2][0][0][0]/yaxis_median.label
@@ -2845,6 +2983,7 @@ msgstr ""
 msgid "Median and mean require numeric variables"
 msgstr ""
 
+#: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Median of {var}"
 msgstr ""
@@ -2887,6 +3026,10 @@ msgid "Middle"
 msgstr ""
 
 #: areachart/options/yAxisRangeMin.title
+#: barchart/options/yaxis/min.title
+#: barchart/options/yAxisRangeMin.title
+#: barchart/options/xAxisRangeMin.title
+#: barchart/ui[1][0][0][0]/yaxis_min.label
 #: barplot/options/yAxisRangeMin.title
 #: barplot/options/xAxisRangeMin.title
 #: boxplot/options/yAxisRangeMin.title
@@ -2920,6 +3063,7 @@ msgstr ""
 msgid "Minimum entropy"
 msgstr ""
 
+#: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Minimum of {var}"
 msgstr ""
@@ -2988,6 +3132,10 @@ msgstr ""
 msgid "No rotation used."
 msgstr ""
 
+#: barchart/options/order/none.title
+#: barchart/options/errorBars/none.title
+#: barchart/options/borderColor/none.title
+#: barchart/ui[1][2][0]/order_none.label
 #: barplot/options/order/none.title
 #: barplot/options/borderColor/none.title
 #: barplot/ui[1][2][0]/order_none.label
@@ -3018,6 +3166,9 @@ msgstr ""
 #: areachart/options/titleFontFace/plain.title
 #: areachart/options/subtitleFontFace/plain.title
 #: areachart/options/captionFontFace/plain.title
+#: barchart/options/titleFontFace/plain.title
+#: barchart/options/subtitleFontFace/plain.title
+#: barchart/options/captionFontFace/plain.title
 #: barplot/options/titleFontFace/plain.title
 #: barplot/options/subtitleFontFace/plain.title
 #: barplot/options/captionFontFace/plain.title
@@ -3211,6 +3362,7 @@ msgstr ""
 msgid "One variable"
 msgstr ""
 
+#: barchart/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: barplot/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: boxplot/ui[2][0][0][0]/singleColor/colorNo.suffix
 #: mrfrequencies/ui[3][0][0][0][1]/colorNo.suffix
@@ -3253,6 +3405,7 @@ msgid "Orange"
 msgstr ""
 
 #: areachart/options/colorPalette/PuOr.title
+#: barchart/options/colorPalette/PuOr.title
 #: barplot/options/colorPalette/PuOr.title
 #: boxplot/options/colorPalette/PuOr.title
 #: histogram/options/colorPalette/PuOr.title
@@ -3270,6 +3423,7 @@ msgid "Orange and Purple"
 msgstr ""
 
 #: areachart/options/colorPalette/OrRd.title
+#: barchart/options/colorPalette/OrRd.title
 #: barplot/options/colorPalette/OrRd.title
 #: boxplot/options/colorPalette/OrRd.title
 #: histogram/options/colorPalette/OrRd.title
@@ -3286,6 +3440,7 @@ msgid "Orange to Red"
 msgstr ""
 
 #: areachart/options/colorPalette/Oranges.title
+#: barchart/options/colorPalette/Oranges.title
 #: barplot/options/colorPalette/Oranges.title
 #: boxplot/options/colorPalette/Oranges.title
 #: histogram/options/colorPalette/Oranges.title
@@ -3354,6 +3509,7 @@ msgid "p-values are adjusted using {method} method."
 msgstr ""
 
 #: areachart/options/colorPalette/Paired.title
+#: barchart/options/colorPalette/Paired.title
 #: barplot/options/colorPalette/Paired.title
 #: boxplot/options/colorPalette/Paired.title
 #: histogram/options/colorPalette/Paired.title
@@ -3374,6 +3530,7 @@ msgid "Pairwise Comparisons"
 msgstr ""
 
 #: areachart/options/colorPalette.title
+#: barchart/options/colorPalette.title
 #: barplot/options/colorPalette.title
 #: boxplot/options/colorPalette.title
 #: likertplot/options/plotColor.title
@@ -3416,6 +3573,7 @@ msgid "Parsimax"
 msgstr ""
 
 #: areachart/options/colorPalette/Pastel1.title
+#: barchart/options/colorPalette/Pastel1.title
 #: barplot/options/colorPalette/Pastel1.title
 #: boxplot/options/colorPalette/Pastel1.title
 #: histogram/options/colorPalette/Pastel1.title
@@ -3432,6 +3590,7 @@ msgid "Pastel 1"
 msgstr ""
 
 #: areachart/options/colorPalette/Pastel2.title
+#: barchart/options/colorPalette/Pastel2.title
 #: barplot/options/colorPalette/Pastel2.title
 #: boxplot/options/colorPalette/Pastel2.title
 #: histogram/options/colorPalette/Pastel2.title
@@ -3491,6 +3650,7 @@ msgid "Pink"
 msgstr ""
 
 #: areachart/options/colorPalette/PiYG.title
+#: barchart/options/colorPalette/PiYG.title
 #: barplot/options/colorPalette/PiYG.title
 #: boxplot/options/colorPalette/PiYG.title
 #: histogram/options/colorPalette/PiYG.title
@@ -3523,6 +3683,8 @@ msgid "Plot Colors"
 msgstr ""
 
 #: areachart/ui[1][0][0].label
+#: barchart/ui[2].label
+#: barchart/ui[2][0][0][0].label
 #: barplot/ui[2].label
 #: barplot/ui[2][0][0][0].label
 #: boxplot/ui[1][0][0].label
@@ -3540,6 +3702,7 @@ msgid "Plot Options"
 msgstr ""
 
 #: areachart/ui[4].label
+#: barchart/ui[8].label
 #: barplot/ui[7].label
 #: boxplot/ui[6].label
 #: histogram/ui[7].label
@@ -3599,6 +3762,9 @@ msgstr ""
 #: areachart/options/legendPosition.title
 #: areachart/options/xAxisPosition.title
 #: areachart/options/yAxisPosition.title
+#: barchart/options/legendPosition.title
+#: barchart/options/xAxisPosition.title
+#: barchart/options/yAxisPosition.title
 #: barplot/options/legendPosition.title
 #: barplot/options/xAxisPosition.title
 #: barplot/options/yAxisPosition.title
@@ -3693,6 +3859,7 @@ msgid "Purple"
 msgstr ""
 
 #: areachart/options/colorPalette/PRGn.title
+#: barchart/options/colorPalette/PRGn.title
 #: barplot/options/colorPalette/PRGn.title
 #: boxplot/options/colorPalette/PRGn.title
 #: histogram/options/colorPalette/PRGn.title
@@ -3710,6 +3877,7 @@ msgid "Purple and Green"
 msgstr ""
 
 #: areachart/options/colorPalette/PuBu.title
+#: barchart/options/colorPalette/PuBu.title
 #: barplot/options/colorPalette/PuBu.title
 #: boxplot/options/colorPalette/PuBu.title
 #: histogram/options/colorPalette/PuBu.title
@@ -3726,6 +3894,7 @@ msgid "Purple to Blue"
 msgstr ""
 
 #: areachart/options/colorPalette/PuBuGn.title
+#: barchart/options/colorPalette/PuBuGn.title
 #: barplot/options/colorPalette/PuBuGn.title
 #: boxplot/options/colorPalette/PuBuGn.title
 #: histogram/options/colorPalette/PuBuGn.title
@@ -3742,6 +3911,7 @@ msgid "Purple to Green"
 msgstr ""
 
 #: areachart/options/colorPalette/PuRd.title
+#: barchart/options/colorPalette/PuRd.title
 #: barplot/options/colorPalette/PuRd.title
 #: boxplot/options/colorPalette/PuRd.title
 #: histogram/options/colorPalette/PuRd.title
@@ -3758,6 +3928,7 @@ msgid "Purple to Red"
 msgstr ""
 
 #: areachart/options/colorPalette/Purples.title
+#: barchart/options/colorPalette/Purples.title
 #: barplot/options/colorPalette/Purples.title
 #: boxplot/options/colorPalette/Purples.title
 #: histogram/options/colorPalette/Purples.title
@@ -3823,6 +3994,8 @@ msgid "Raincloud Plot"
 msgstr ""
 
 #: areachart/ui[2][0][1][1].label
+#: barchart/ui[6][0][0][1].label
+#: barchart/ui[6][0][1][1].label
 #: barplot/ui[5][0][0][1].label
 #: barplot/ui[5][0][1][1].label
 #: boxplot/ui[4][0][0][1].label
@@ -3845,6 +4018,7 @@ msgstr ""
 msgid "Range"
 msgstr ""
 
+#: barchart/options/textColor/red.title
 #: corresp/options/rowColor/red.title
 #: corresp/options/colColor/red.title
 #: histogram/options/fillColor/#E41A1C.title
@@ -3858,6 +4032,7 @@ msgid "Red"
 msgstr ""
 
 #: areachart/options/colorPalette/RdBu.title
+#: barchart/options/colorPalette/RdBu.title
 #: barplot/options/colorPalette/RdBu.title
 #: boxplot/options/colorPalette/RdBu.title
 #: histogram/options/colorPalette/RdBu.title
@@ -3875,6 +4050,7 @@ msgid "Red and Blue"
 msgstr ""
 
 #: areachart/options/colorPalette/RdGy.title
+#: barchart/options/colorPalette/RdGy.title
 #: barplot/options/colorPalette/RdGy.title
 #: boxplot/options/colorPalette/RdGy.title
 #: histogram/options/colorPalette/RdGy.title
@@ -3892,6 +4068,7 @@ msgid "Red and Gray"
 msgstr ""
 
 #: areachart/options/colorPalette/RdPu.title
+#: barchart/options/colorPalette/RdPu.title
 #: barplot/options/colorPalette/RdPu.title
 #: boxplot/options/colorPalette/RdPu.title
 #: histogram/options/colorPalette/RdPu.title
@@ -3916,6 +4093,7 @@ msgid "Red, Yellow and Green"
 msgstr ""
 
 #: areachart/options/colorPalette/RdYlBu.title
+#: barchart/options/colorPalette/RdYlBu.title
 #: barplot/options/colorPalette/RdYlBu.title
 #: boxplot/options/colorPalette/RdYlBu.title
 #: histogram/options/colorPalette/RdYlBu.title
@@ -3932,6 +4110,7 @@ msgid "Red, Yellow, Blue"
 msgstr ""
 
 #: areachart/options/colorPalette/RdYlGn.title
+#: barchart/options/colorPalette/RdYlGn.title
 #: barplot/options/colorPalette/RdYlGn.title
 #: boxplot/options/colorPalette/RdYlGn.title
 #: histogram/options/colorPalette/RdYlGn.title
@@ -3948,6 +4127,7 @@ msgid "Red, Yellow, Green"
 msgstr ""
 
 #: areachart/options/colorPalette/Reds.title
+#: barchart/options/colorPalette/Reds.title
 #: barplot/options/colorPalette/Reds.title
 #: boxplot/options/colorPalette/Reds.title
 #: histogram/options/colorPalette/Reds.title
@@ -3980,6 +4160,7 @@ msgstr ""
 msgid "Reverse disposition"
 msgstr ""
 
+#: barchart/options/reverseStack.title
 #: barplot/options/reverseStack.title
 #: likertplot/options/reverseLikert.title
 #: mrcrosstabs/options/reverseStack.title
@@ -3991,6 +4172,11 @@ msgstr ""
 #: areachart/options/captionAlign/1.title
 #: areachart/options/legendPosition/right.title
 #: areachart/options/xAxisPosition/1.title
+#: barchart/options/titleAlign/1.title
+#: barchart/options/subtitleAlign/1.title
+#: barchart/options/captionAlign/1.title
+#: barchart/options/legendPosition/right.title
+#: barchart/options/xAxisPosition/1.title
 #: barplot/options/titleAlign/1.title
 #: barplot/options/subtitleAlign/1.title
 #: barplot/options/captionAlign/1.title
@@ -4074,6 +4260,8 @@ msgstr ""
 msgid "Rotation"
 msgstr ""
 
+#: barchart/options/facetBy/row.title
+#: barchart/ui[5][0][0][0][0]/facetBy_row.label
 #: barplot/options/facetBy/row.title
 #: barplot/ui[4][0][1][0][0]/facetBy_row.label
 #: boxplot/options/facetBy/row.title
@@ -4218,6 +4406,7 @@ msgid "September"
 msgstr ""
 
 #: areachart/options/colorPalette/Set1.title
+#: barchart/options/colorPalette/Set1.title
 #: barplot/options/colorPalette/Set1.title
 #: boxplot/options/colorPalette/Set1.title
 #: histogram/options/colorPalette/Set1.title
@@ -4234,6 +4423,7 @@ msgid "Set 1"
 msgstr ""
 
 #: areachart/options/colorPalette/Set2.title
+#: barchart/options/colorPalette/Set2.title
 #: barplot/options/colorPalette/Set2.title
 #: boxplot/options/colorPalette/Set2.title
 #: histogram/options/colorPalette/Set2.title
@@ -4250,6 +4440,7 @@ msgid "Set 2"
 msgstr ""
 
 #: areachart/options/colorPalette/Set3.title
+#: barchart/options/colorPalette/Set3.title
 #: barplot/options/colorPalette/Set3.title
 #: boxplot/options/colorPalette/Set3.title
 #: histogram/options/colorPalette/Set3.title
@@ -4315,6 +4506,10 @@ msgstr ""
 msgid "Show totals (Centered only)"
 msgstr ""
 
+#: barchart/options/showLabels.title
+msgid "Show value labels"
+msgstr ""
+
 #: scatterplot/options/singleColor.title
 msgid "Single"
 msgstr ""
@@ -4326,6 +4521,9 @@ msgstr ""
 #: areachart/options/legendFontSize.title
 #: areachart/options/xAxisFontSize.title
 #: areachart/options/yAxisFontSize.title
+#: barchart/options/legendFontSize.title
+#: barchart/options/xAxisFontSize.title
+#: barchart/options/yAxisFontSize.title
 #: barplot/options/legendFontSize.title
 #: barplot/options/xAxisFontSize.title
 #: barplot/options/yAxisFontSize.title
@@ -4391,6 +4589,8 @@ msgstr ""
 msgid "Sort Variables by Median"
 msgstr ""
 
+#: barchart/options/order.title
+#: barchart/ui[1][2][0].label
 #: barplot/options/order.title
 #: barplot/ui[1][2][0].label
 #: lollipop/options/order.title
@@ -4408,6 +4608,7 @@ msgid "Sorting (by median)"
 msgstr ""
 
 #: areachart/options/colorPalette/Spectral.title
+#: barchart/options/colorPalette/Spectral.title
 #: barplot/options/colorPalette/Spectral.title
 #: boxplot/options/colorPalette/Spectral.title
 #: histogram/options/colorPalette/Spectral.title
@@ -4429,6 +4630,7 @@ msgid "SS Loadings"
 msgstr ""
 
 #: areachart/options/position/stack.title
+#: barchart/options/barType/stack.title
 #: barplot/options/barType/stack.title
 #: histogram/options/grouping/stack.title
 #: histogram/options/groupingN/stack.title
@@ -4451,6 +4653,14 @@ msgstr ""
 #: R/multcorresp.b.R
 #: R/principal.b.R
 msgid "Standard coordinates"
+msgstr ""
+
+#: barchart/options/errorBars/sd.title
+msgid "Standard deviation"
+msgstr ""
+
+#: barchart/options/errorBars/se.title
+msgid "Standard error"
 msgstr ""
 
 #: R/corresp.b.R
@@ -4489,6 +4699,7 @@ msgstr ""
 msgid "Staple width"
 msgstr ""
 
+#: barchart/ui[1][0][0].label
 #: principal/results/kmoTable.columns.title
 msgid "Statistic"
 msgstr ""
@@ -4503,6 +4714,7 @@ msgid "Student"
 msgstr ""
 
 #: areachart/ui[4][1].label
+#: barchart/ui[8][1].label
 #: barplot/ui[7][1].label
 #: boxplot/ui[6][1].label
 #: histogram/ui[7][1].label
@@ -4528,6 +4740,15 @@ msgstr ""
 #: multcorresp/ui[8][1][0][0].label
 #: principal/ui[6][1][0][0].label
 msgid "Subtitle Text"
+msgstr ""
+
+#: barchart/options/yaxis/sum.title
+#: barchart/ui[1][0][0][0]/yaxis_sum.label
+msgid "Sum"
+msgstr ""
+
+#: R/barchart.b.R
+msgid "Sum of {var}"
 msgstr ""
 
 #: corresp/results/eigenvalues.title
@@ -4649,6 +4870,10 @@ msgstr ""
 msgid "Text Size"
 msgstr ""
 
+#: barchart/options/labelTextSize.title
+msgid "Text size"
+msgstr ""
+
 #: corresp/ui[5].label
 msgid "Text Size & Colors"
 msgstr ""
@@ -4682,6 +4907,8 @@ msgid "Theoretical Quantiles"
 msgstr ""
 
 #: areachart/options/yTicks.title
+#: barchart/options/xTicks.title
+#: barchart/options/yTicks.title
 #: barplot/options/xTicks.title
 #: barplot/options/yTicks.title
 #: boxplot/options/xTicks.title
@@ -4709,6 +4936,7 @@ msgid "Tidy up levels"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::alger.title
+#: barchart/options/colorPalette/tidy::alger.title
 #: barplot/options/colorPalette/tidy::alger.title
 #: boxplot/options/colorPalette/tidy::alger.title
 #: histogram/options/colorPalette/tidy::alger.title
@@ -4725,6 +4953,7 @@ msgid "Tidy:Alger"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::apple.title
+#: barchart/options/colorPalette/tidy::apple.title
 #: barplot/options/colorPalette/tidy::apple.title
 #: boxplot/options/colorPalette/tidy::apple.title
 #: histogram/options/colorPalette/tidy::apple.title
@@ -4741,6 +4970,7 @@ msgid "Tidy:Apple"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::candy.title
+#: barchart/options/colorPalette/tidy::candy.title
 #: barplot/options/colorPalette/tidy::candy.title
 #: boxplot/options/colorPalette/tidy::candy.title
 #: histogram/options/colorPalette/tidy::candy.title
@@ -4757,6 +4987,7 @@ msgid "Tidy:Candy"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::friendly.title
+#: barchart/options/colorPalette/tidy::friendly.title
 #: barplot/options/colorPalette/tidy::friendly.title
 #: boxplot/options/colorPalette/tidy::friendly.title
 #: histogram/options/colorPalette/tidy::friendly.title
@@ -4773,6 +5004,7 @@ msgid "Tidy:Friendly"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::ibm.title
+#: barchart/options/colorPalette/tidy::ibm.title
 #: barplot/options/colorPalette/tidy::ibm.title
 #: boxplot/options/colorPalette/tidy::ibm.title
 #: histogram/options/colorPalette/tidy::ibm.title
@@ -4789,6 +5021,7 @@ msgid "Tidy:Ibm"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::metro.title
+#: barchart/options/colorPalette/tidy::metro.title
 #: barplot/options/colorPalette/tidy::metro.title
 #: boxplot/options/colorPalette/tidy::metro.title
 #: histogram/options/colorPalette/tidy::metro.title
@@ -4805,6 +5038,7 @@ msgid "Tidy:Metro"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::rainbow.title
+#: barchart/options/colorPalette/tidy::rainbow.title
 #: barplot/options/colorPalette/tidy::rainbow.title
 #: boxplot/options/colorPalette/tidy::rainbow.title
 #: histogram/options/colorPalette/tidy::rainbow.title
@@ -4821,6 +5055,7 @@ msgid "Tidy:Rainbow"
 msgstr ""
 
 #: areachart/options/colorPalette/tidy::seaside.title
+#: barchart/options/colorPalette/tidy::seaside.title
 #: barplot/options/colorPalette/tidy::seaside.title
 #: boxplot/options/colorPalette/tidy::seaside.title
 #: histogram/options/colorPalette/tidy::seaside.title
@@ -4845,6 +5080,7 @@ msgid "Time Series"
 msgstr ""
 
 #: areachart/ui[4][0].label
+#: barchart/ui[8][0].label
 #: barplot/ui[7][0].label
 #: boxplot/ui[6][0].label
 #: histogram/ui[7][0].label
@@ -4874,6 +5110,8 @@ msgstr ""
 
 #: areachart/options/legendPosition/top.title
 #: areachart/options/yAxisPosition/1.title
+#: barchart/options/legendPosition/top.title
+#: barchart/options/yAxisPosition/1.title
 #: barplot/options/labelPosition/top.title
 #: barplot/options/legendPosition/top.title
 #: barplot/options/yAxisPosition/1.title
@@ -4950,6 +5188,7 @@ msgstr ""
 msgid "Use boldface"
 msgstr ""
 
+#: barchart/options/singleColor.title
 #: barplot/options/singleColor.title
 #: boxplot/ui[2][0][0][0]/singleColor.label
 #: mrfrequencies/options/singleColor.title
@@ -4973,6 +5212,10 @@ msgstr ""
 msgid "Use variable's description as name"
 msgstr ""
 
+#: barchart/ui[2][0][1][0].label
+msgid "Value Labels"
+msgstr ""
+
 #: R/areachart.b.R
 #: R/linechart.b.R
 #: lollipop/options/yaxis/identity.title
@@ -4984,6 +5227,8 @@ msgstr ""
 
 #: areachart/options/var.title
 #: areachart/ui/mode/oneVariable[0][0][1].label
+#: barchart/options/yVar.title
+#: barchart/ui[0][0].label
 #: histogram/options/aVar.title
 #: histogram/ui[0][0].label
 #: lollipop/options/aVar.title
@@ -5057,6 +5302,7 @@ msgstr ""
 #: package/analyses/mrfrequencies.menuGroup
 #: package/analyses/mrcrosstabs.menuGroup
 #: package/analyses/scatterplot.menuGroup
+#: package/analyses/barchart.menuGroup
 #: package/analyses/lollipop.menuGroup
 #: package/analyses/linechart.menuGroup
 #: package/analyses/areachart.menuGroup
@@ -5066,6 +5312,7 @@ msgstr ""
 #: package/analyses/multcorresp.menuGroup
 #: package/datasets/vijPlots.name
 #: areachart/options.menuGroup
+#: barchart/options.menuGroup
 #: barplot/options.menuGroup
 #: boxplot/options.menuGroup
 #: corresp/options.menuGroup
@@ -5089,6 +5336,7 @@ msgid "vijPlots: Yet Another jamovi Plotting Module"
 msgstr ""
 
 #: areachart/options/colorPalette/viridis::inferno.title
+#: barchart/options/colorPalette/viridis::inferno.title
 #: barplot/options/colorPalette/viridis::inferno.title
 #: boxplot/options/colorPalette/viridis::inferno.title
 #: histogram/options/colorPalette/viridis::inferno.title
@@ -5105,6 +5353,7 @@ msgid "Viridis:Inferno"
 msgstr ""
 
 #: areachart/options/colorPalette/viridis::magma.title
+#: barchart/options/colorPalette/viridis::magma.title
 #: barplot/options/colorPalette/viridis::magma.title
 #: boxplot/options/colorPalette/viridis::magma.title
 #: histogram/options/colorPalette/viridis::magma.title
@@ -5121,6 +5370,7 @@ msgid "Viridis:Magma"
 msgstr ""
 
 #: areachart/options/colorPalette/viridis::plasma.title
+#: barchart/options/colorPalette/viridis::plasma.title
 #: barplot/options/colorPalette/viridis::plasma.title
 #: boxplot/options/colorPalette/viridis::plasma.title
 #: histogram/options/colorPalette/viridis::plasma.title
@@ -5137,6 +5387,7 @@ msgid "Viridis:Plasma"
 msgstr ""
 
 #: areachart/options/colorPalette/viridis::turbo.title
+#: barchart/options/colorPalette/viridis::turbo.title
 #: barplot/options/colorPalette/viridis::turbo.title
 #: boxplot/options/colorPalette/viridis::turbo.title
 #: histogram/options/colorPalette/viridis::turbo.title
@@ -5153,6 +5404,7 @@ msgid "Viridis:Turbo"
 msgstr ""
 
 #: areachart/options/colorPalette/viridis::viridis.title
+#: barchart/options/colorPalette/viridis::viridis.title
 #: barplot/options/colorPalette/viridis::viridis.title
 #: boxplot/options/colorPalette/viridis::viridis.title
 #: histogram/options/colorPalette/viridis::viridis.title
@@ -5173,6 +5425,8 @@ msgstr ""
 msgid "Weibull"
 msgstr ""
 
+#: barchart/options/borderColor/white.title
+#: barchart/options/textColor/white.title
 #: barplot/options/borderColor/white.title
 #: barplot/options/textColor/white.title
 #: corresp/options/supColor/white.title
@@ -5191,6 +5445,8 @@ msgstr ""
 msgid "White"
 msgstr ""
 
+#: barchart/options/ciWidth.title
+#: barchart/options/errorBarWidth.title
 #: histogram/options/binWidth.title
 msgid "Width"
 msgstr ""
@@ -5216,6 +5472,10 @@ msgstr ""
 #: areachart/ui[1][1][0].label
 #: areachart/ui[2][0][0][0].label
 #: areachart/ui[3][1].label
+#: barchart/options/xVar.title
+#: barchart/ui[0][1].label
+#: barchart/ui[6][0][0][0].label
+#: barchart/ui[7][1].label
 #: barplot/ui[5][0][0][0].label
 #: barplot/ui[6][1].label
 #: boxplot/ui[4][0][0][0].label
@@ -5268,6 +5528,7 @@ msgstr ""
 msgid "X-Axis is a date"
 msgstr ""
 
+#: barchart/options/xAxisRangeType.title
 #: barplot/options/xAxisRangeType.title
 #: boxplot/options/xAxisRangeType.title
 #: histogram/options/xAxisRangeType.title
@@ -5282,6 +5543,9 @@ msgstr ""
 
 #: areachart/ui[2][0][1][0].label
 #: areachart/ui[3][2].label
+#: barchart/options/yaxis.title
+#: barchart/ui[6][0][1][0].label
+#: barchart/ui[7][2].label
 #: barplot/options/yaxis.title
 #: barplot/ui[1][0][0].label
 #: barplot/ui[5][0][1][0].label
@@ -5321,6 +5585,7 @@ msgid "Y-Axis"
 msgstr ""
 
 #: areachart/options/yAxisRangeType.title
+#: barchart/options/yAxisRangeType.title
 #: barplot/options/yAxisRangeType.title
 #: boxplot/options/yAxisRangeType.title
 #: histogram/options/yAxisRangeType.title
@@ -5345,6 +5610,7 @@ msgid "Yellow"
 msgstr ""
 
 #: areachart/options/colorPalette/YlGnBu.title
+#: barchart/options/colorPalette/YlGnBu.title
 #: barplot/options/colorPalette/YlGnBu.title
 #: boxplot/options/colorPalette/YlGnBu.title
 #: histogram/options/colorPalette/YlGnBu.title
@@ -5361,6 +5627,7 @@ msgid "Yellow to Blue"
 msgstr ""
 
 #: areachart/options/colorPalette/YlOrBr.title
+#: barchart/options/colorPalette/YlOrBr.title
 #: barplot/options/colorPalette/YlOrBr.title
 #: boxplot/options/colorPalette/YlOrBr.title
 #: histogram/options/colorPalette/YlOrBr.title
@@ -5377,6 +5644,7 @@ msgid "Yellow to Brown"
 msgstr ""
 
 #: areachart/options/colorPalette/YlGn.title
+#: barchart/options/colorPalette/YlGn.title
 #: barplot/options/colorPalette/YlGn.title
 #: boxplot/options/colorPalette/YlGn.title
 #: histogram/options/colorPalette/YlGn.title
@@ -5393,6 +5661,7 @@ msgid "Yellow to Green"
 msgstr ""
 
 #: areachart/options/colorPalette/YlOrRd.title
+#: barchart/options/colorPalette/YlOrRd.title
 #: barplot/options/colorPalette/YlOrRd.title
 #: boxplot/options/colorPalette/YlOrRd.title
 #: histogram/options/colorPalette/YlOrRd.title

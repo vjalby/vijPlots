@@ -59,7 +59,7 @@ msgstr "{var} n'a pas un format de date valide."
 msgid "# of rows/columns"
 msgstr "Nbre de lignes/colonnes"
 
-#: barchart/ui[4][0][0]/errorBars_ci/ciLevel.suffix
+#: barchart/ui[3][0][0]/errorBars_ci/ciLevel.suffix
 msgid "%"
 msgstr "%"
 
@@ -1440,7 +1440,7 @@ msgstr "Khi-deux"
 msgid "Color Number"
 msgstr "Numéro de la couleur"
 
-#: barchart/ui[3][0][1][0].label
+#: barchart/ui[4][0][1][0].label
 #: barplot/ui[3][0][1][0].label
 #: mrcrosstabs/ui[3][0][1][0].label
 #: mrfrequencies/ui[3][0][1][0].label
@@ -1450,7 +1450,7 @@ msgstr "Numéro de la couleur"
 msgid "Color Options"
 msgstr "Options de couleurs"
 
-#: barchart/ui[3][0][0][0].label
+#: barchart/ui[4][0][0][0].label
 #: barplot/ui[3][0][0][0].label
 #: boxplot/ui[2][0][0][0].label
 #: histogram/options/colorPalette.title
@@ -1462,7 +1462,7 @@ msgstr "Options de couleurs"
 msgid "Color Palette"
 msgstr "Palette de couleurs"
 
-#: barchart/ui[3].label
+#: barchart/ui[4].label
 #: barplot/ui[3].label
 #: corresp/ui[5][0][1][0].label
 #: histogram/ui[3].label
@@ -1756,10 +1756,6 @@ msgstr "Tranformation des données"
 msgid "Date breaks"
 msgstr "Intervalle"
 
-#: barchart/results/text.title
-msgid "Debug"
-msgstr ""
-
 #: R/areachart.b.R
 #: R/linechart.b.R
 msgid "Dec"
@@ -1978,13 +1974,13 @@ msgstr "Equal Local Levels"
 msgid "Equamax"
 msgstr "Equamax"
 
-#: barchart/ui[4][1][0].label
+#: barchart/ui[3][1][0].label
 msgid "Error Bar Size"
 msgstr "Taille des barres d'erreur"
 
 #: barchart/options/errorBars.title
-#: barchart/ui[4].label
-#: barchart/ui[4][0][0].label
+#: barchart/ui[3].label
+#: barchart/ui[3][0][0].label
 msgid "Error Bars"
 msgstr "Barres d'erreur"
 
@@ -3578,7 +3574,7 @@ msgstr "Offset"
 msgid "One variable"
 msgstr "Une variable"
 
-#: barchart/ui[3][0][0][0]/singleColor/colorNo.suffix
+#: barchart/ui[4][0][0][0]/singleColor/colorNo.suffix
 #: barplot/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: boxplot/ui[2][0][0][0]/singleColor/colorNo.suffix
 #: mrfrequencies/ui[3][0][0][0][1]/colorNo.suffix

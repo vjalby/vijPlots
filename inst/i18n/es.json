@@ -25,11 +25,23 @@
             "{rotation} rotation with Kaiser normalization was used.": [
                 "Se ha utilizado la rotación {rotation} con normalización de Kaiser."
             ],
+            "{var} (Mean ± {level}%  CI)": [
+                ""
+            ],
+            "{var} (Mean ± SD)": [
+                ""
+            ],
+            "{var} (Mean ± SE)": [
+                ""
+            ],
             "{var} doesn't have a valid date format.": [
                 "{var} no tiene un formato de fecha válido."
             ],
             "# of rows/columns": [
                 "Nº de filas/columnas"
+            ],
+            "%": [
+                ""
             ],
             "% Accuracy": [
                 "Precisión de los %"
@@ -219,6 +231,9 @@
             ],
             "Axis Titles": [
                 "Títulos de los ejes"
+            ],
+            "Bar Chart": [
+                ""
             ],
             "Bar Plot": [
                 "Gráfico de barras"
@@ -541,6 +556,9 @@
             "December": [
                 "Diciembre"
             ],
+            "Decimal precision": [
+                ""
+            ],
             "Decreasing": [
                 "Decreciente"
             ],
@@ -639,6 +657,12 @@
             ],
             "Equamax": [
                 "Equamax"
+            ],
+            "Error Bar Size": [
+                ""
+            ],
+            "Error Bars": [
+                ""
             ],
             "Estimate parameters from data": [
                 "Estimar parámetros a partir de datos"
@@ -1621,6 +1645,9 @@
             "Show totals (Centered only)": [
                 "Mostrar totales (solo centrado)"
             ],
+            "Show value labels": [
+                ""
+            ],
             "Single": [
                 "Único"
             ],
@@ -1669,6 +1696,12 @@
             "Standard coordinates": [
                 "Coordenadas estándar"
             ],
+            "Standard deviation": [
+                ""
+            ],
+            "Standard error": [
+                ""
+            ],
             "Standard normalization": [
                 "Normalización estándar"
             ],
@@ -1713,6 +1746,12 @@
             ],
             "Subtitle Text": [
                 "Texto de subtítulo"
+            ],
+            "Sum": [
+                ""
+            ],
+            "Sum of {var}": [
+                ""
             ],
             "Summary": [
                 "Resumen"
@@ -1785,6 +1824,9 @@
             ],
             "Text Size": [
                 "Tamaño del texto"
+            ],
+            "Text size": [
+                ""
             ],
             "Text Size & Colors": [
                 "Tamaño del texto y colores"
@@ -1879,6 +1921,9 @@
             "Use boldface": [
                 "Usar negrita"
             ],
+            "Use bootstrap": [
+                ""
+            ],
             "Use color No.": [
                 "Color nº"
             ],
@@ -1890,6 +1935,9 @@
             ],
             "Use variable's description as name": [
                 "Usar descripción de las variables como etiqueta"
+            ],
+            "Value Labels": [
+                ""
             ],
             "Values": [
                 "Valores"

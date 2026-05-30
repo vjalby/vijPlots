@@ -174,53 +174,6 @@ children:
                         format: number
                         enable: (showLabels)
   - type: CollapseBox
-    label: Colors
-    collapsed: true
-    stretchFactor: 1
-    children:
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        children:
-          - type: LayoutBox
-            cell:
-              column: 0
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Color Palette
-                children:
-                  - type: ComboBox
-                    name: colorPalette
-                    label: ''
-                  - type: CheckBox
-                    name: singleColor
-                    enable: (!group)
-                    style: inline
-                    verticalAlignment: center
-                    children:
-                      - type: TextBox
-                        name: colorNo
-                        label: ''
-                        suffix: only
-                        format: number
-                        enable: (singleColor && !group)
-          - type: LayoutBox
-            cell:
-              column: 1
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Color Options
-                children:
-                  - type: ComboBox
-                    name: borderColor
-                  - type: ComboBox
-                    name: textColor
-                    enable: (showLabels)
-  - type: CollapseBox
     label: Error Bars
     collapsed: true
     stretchFactor: 1
@@ -277,6 +230,53 @@ children:
               - type: TextBox
                 name: errorBarWidth
                 format: number
+  - type: CollapseBox
+    label: Colors
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Palette
+                children:
+                  - type: ComboBox
+                    name: colorPalette
+                    label: ''
+                  - type: CheckBox
+                    name: singleColor
+                    enable: (!group)
+                    style: inline
+                    verticalAlignment: center
+                    children:
+                      - type: TextBox
+                        name: colorNo
+                        label: ''
+                        suffix: only
+                        format: number
+                        enable: (singleColor && !group)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Options
+                children:
+                  - type: ComboBox
+                    name: borderColor
+                  - type: ComboBox
+                    name: textColor
+                    enable: (showLabels)
   - type: CollapseBox
     label: Facets
     collapsed: true

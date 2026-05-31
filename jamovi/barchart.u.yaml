@@ -214,7 +214,7 @@ children:
                     enable: ((!barType_stack || !group) && yaxis_mean && errorBars_ci)
                   - type: CheckBox
                     name: bootstrap
-                    enable: ((!barType_stack || !group) && yaxis_mean && errorBars_c
+                    enable: ((!barType_stack || !group) && yaxis_mean && errorBars_ci)
       - type: LayoutBox
         cell:
           column: 1

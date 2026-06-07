@@ -70,6 +70,10 @@
 
 ## Version history
 
+### 2026-06-08 / 1.2.1
+
+- Improved x-axis limits for line and area plots
+
 ### 2026-05-31 / 1.2.0
 
 - Option to use contingency table (instead of observation table) for Correspondence analysis

@@ -42,6 +42,13 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(depVars) == 0 || is.null(timeVar))
                 return()
             data <- jmvcore::select(self$data, varNames)
+
+            if (!self$options$isDate && !is.numeric(data[[timeVar]]) && (self$options$xTicks > 0 || self$options$xAxisRangeType == "manual"))
+                vijWarningMessage(self,"\"Tick Count\" and \"Range\" options for the X-axis are only available for numeric variables.")
+
+            if (self$options$isDate && is.numeric(data[[timeVar]]))
+                vijWarningMessage(self,"A date variable must be in text format.")
+
             # Be sure dep var are numeric
             for (aVar in depVars)
                 data[[aVar]] <- jmvcore::toNumeric(data[[aVar]])
@@ -83,20 +90,11 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 groupVar <- ensym(groupVar)
 
             # Time format
-            timeVarIsDate <- self$options$isDate
-            if (timeVarIsDate) {
-                if (self$options$dateFormat == "auto") {
-                    timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], "iso")
-                    if (is.null(timeVarAsDate)) {
-                        timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], "us")
-                        if (is.null(timeVarAsDate)) {
-                            timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], "eu")
-                        }
-                    }
-                } else {
-                    timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], self$options$dateFormat)
-                }
+            timeIsNumeric <- is.numeric(plotData[[timeVar]])
+            timeVarIsDate <- (self$options$isDate && !timeIsNumeric)
 
+            if (timeVarIsDate) {
+                timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], self$options$dateFormat)
                 if (!is.null(timeVarAsDate)) {
                     plotData[[timeVar]] <- timeVarAsDate
                 } else {
@@ -134,9 +132,9 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Theme and colors
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill")
 
-            if (timeVarIsDate) {
-                plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
-            }
+#            if (timeVarIsDate) {
+#                plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
+#            }
 
             if (self$options$position == "fill")
                 labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
@@ -156,16 +154,30 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 yLab <- depVar
             }
 
-            # Axis range
-            if (self$options$yAxisRangeType == "manual") { # Horizontal and manual
-                plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+            # X-Axis range
+            if (timeVarIsDate) {
+                if (self$options$xAxisRangeType == "manual") { # Date and manual
+                    plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
+                                                limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
+                                                expand = c(0, 0))
+                } else {
+                    plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
+                }
+            } else if (timeIsNumeric) {
+                if (self$options$xAxisRangeType == "manual") { # Numeric and manual
+                    plot <- plot + coord_cartesian(xlim = c(as.double(self$options$xAxisRangeMin), as.double(self$options$xAxisRangeMax)))
+                }
+                if (self$options$xTicks > 0) {
+                    plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                }
             }
 
-            # Ticks
+            # Y-Axis range and Ticks
+            if (self$options$yAxisRangeType == "manual") {
+                plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+            }
             if (self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(label = labelFnct, breaks = scales::breaks_extended(self$options$yTicks + 1))
-            } else {
-                plot <- plot  + scale_y_continuous(label = labelFnct)
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
             # Titles & Labels
@@ -213,8 +225,21 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(format.Date(aDate, self$options$displayFormat))
         },
         .convertToDate = function(dAsString, fmt) {
+            if (fmt == "auto") {
+                dAsDate <- private$.convertToDateBase(dAsString, "iso")
+                if (is.null(dAsDate)) {
+                    dAsDate <- private$.convertToDateBase(dAsString, "us")
+                    if (is.null(dAsDate)) {
+                        dAsDate <- private$.convertToDateBase(dAsString, "eu")
+                    }
+                }
+            } else {
+                dAsDate <- private$.convertToDateBase(dAsString, fmt)
+            }
+            return(dAsDate)
+        },
+        .convertToDateBase = function(dAsString, fmt) {
             n <- length(na.omit(dAsString))
-
             if (fmt == "iso")
                 dAsDate <- as.Date(dAsString, optional = TRUE, tryFormats = c("%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d", "%Y%m%d"))
             else if (fmt == "us")
@@ -223,10 +248,8 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 dAsDate <- as.Date(dAsString, optional = TRUE, tryFormats = c("%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%d%m%Y"))
             else
                 dAsDate <- NULL
-
             if (length(na.omit(dAsDate)) != n || min(as.numeric(format(dAsDate, "%Y")), na.rm=T) < 100)
                 dAsDate <- NULL
-
             return(dAsDate)
         })
 )

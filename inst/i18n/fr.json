@@ -118,11 +118,17 @@
             "10/20/35": [
                 "10/20/35"
             ],
+            "100 years": [
+                ""
+            ],
             "2 weeks": [
                 "2 semaines"
             ],
             "20 October 2035": [
                 "20 octobre 2035"
+            ],
+            "20 years": [
+                ""
             ],
             "20-10-2035": [
                 "20-10-2035"
@@ -142,8 +148,17 @@
             "2035-10-20": [
                 "2035-10-20"
             ],
+            "25 years": [
+                ""
+            ],
             "3 months": [
                 "3 mois"
+            ],
+            "5 years": [
+                ""
+            ],
+            "50 years": [
+                ""
             ],
             "6 months": [
                 "6 mois"
@@ -1030,8 +1045,8 @@
             "Lollipop Size & Colors": [
                 "Taille et couleurs des sucettes"
             ],
-            "Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) with many options along with Likert plot, multiple response barplot, Principal Component and (Multiple) Correspondence Analyses. Project source (and changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.": [
-                "Principaux graphiques statistiques (histogramme, boite à moustache, bâtons, lignes, secteurs…) avec de nombreuses options ainsi que diagramme de Likert, réponses multiples, analyse en composantes principales et analyse des correspondances (multiples). Le code source du projet est disponible sur <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
+            "Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) with many options along with Likert plot, multiple response barplot, Principal Component and (Multiple) Correspondence Analyses. The module is available in the <strong>Plots tab</strong>. Project source (and changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.": [
+                "Principaux graphiques statistiques (histogramme, boite à moustache, bâtons, lignes, secteurs…) avec de nombreuses options ainsi que diagramme de Likert, réponses multiples, analyse en composantes principales et analyse des correspondances (multiples). Le module est disponible dans l'<strong>onglet Graphes</strong>. Le code source du projet est disponible sur <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
             ],
             "Mann-Whitney U": [
                 "Mann-Whitney U"

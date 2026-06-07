@@ -1,15 +1,18 @@
 Package: vijPlots
 Type: Package
 Title: vijPlots: Yet Another jamovi Plotting Module
-Version: 1.2.0
+Version: 1.2.1
 Author: Vincent Jalby
 Maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
 Description: Main statistical charts (histogram, boxplot, point, bar, line, 
     raincloud…) with many options along with Likert plot, multiple response barplot,
     Principal Component and (Multiple) Correspondence Analyses. 
+    The module is available in the <strong>Plots</strong> tab.
     Project source (and changelog) is available at  
     <a href="https://github.com/vjalby/vijPlots" target="_blank">Github</a>.
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
-Imports: jmvcore (>= 0.8.5), R6, ggplot2, labelled, scales, ggstats, tidyr, ggh4x, fitdistrplus, colorspace, ggdist, ggpp, qqplotr, forcats, ggrepel, ggforce, GPArotation, FactoMineR, dichromat
+Imports: jmvcore (>= 0.8.5), R6, ggplot2, labelled, scales, ggstats, tidyr, 
+         ggh4x, fitdistrplus, colorspace, ggdist, ggpp, qqplotr, forcats, 
+         ggrepel, ggforce, GPArotation, FactoMineR, dichromat

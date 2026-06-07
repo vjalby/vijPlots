@@ -370,6 +370,11 @@ msgstr ""
 msgid "10/20/35"
 msgstr ""
 
+#: areachart/options/dateBreak/100year.title
+#: linechart/options/dateBreak/100year.title
+msgid "100 years"
+msgstr ""
+
 #: areachart/options/dateBreak/2week.title
 #: linechart/options/dateBreak/2week.title
 msgid "2 weeks"
@@ -378,6 +383,11 @@ msgstr ""
 #: areachart/options/displayFormat/%e%B%Y.title
 #: linechart/options/displayFormat/%e%B%Y.title
 msgid "20 October 2035"
+msgstr ""
+
+#: areachart/options/dateBreak/20year.title
+#: linechart/options/dateBreak/20year.title
+msgid "20 years"
 msgstr ""
 
 #: areachart/options/displayFormat/%d-%m-%Y.title
@@ -410,9 +420,24 @@ msgstr ""
 msgid "2035-10-20"
 msgstr ""
 
+#: areachart/options/dateBreak/25year.title
+#: linechart/options/dateBreak/25year.title
+msgid "25 years"
+msgstr ""
+
 #: areachart/options/dateBreak/3month.title
 #: linechart/options/dateBreak/3month.title
 msgid "3 months"
+msgstr ""
+
+#: areachart/options/dateBreak/5year.title
+#: linechart/options/dateBreak/5year.title
+msgid "5 years"
+msgstr ""
+
+#: areachart/options/dateBreak/50year.title
+#: linechart/options/dateBreak/50year.title
+msgid "50 years"
 msgstr ""
 
 #: areachart/options/dateBreak/6month.title
@@ -585,6 +610,7 @@ msgid "August"
 msgstr ""
 
 #: areachart/options/dateFormat/auto.title
+#: areachart/options/xAxisRangeType/auto.title
 #: areachart/options/yAxisRangeType/auto.title
 #: barchart/options/textColor/auto.title
 #: barchart/options/yAxisRangeType/auto.title
@@ -598,6 +624,7 @@ msgstr ""
 #: histogram/options/xAxisRangeType/auto.title
 #: likertplot/options/labelColor/auto.title
 #: linechart/options/dateFormat/auto.title
+#: linechart/options/xAxisRangeType/auto.title
 #: linechart/options/yAxisRangeType/auto.title
 #: lollipop/options/yAxisRangeType/auto.title
 #: lollipop/options/xAxisRangeType/auto.title
@@ -2848,9 +2875,10 @@ msgstr ""
 msgid ""
 "Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) "
 "with many options along with Likert plot, multiple response barplot, "
-"Principal Component and (Multiple) Correspondence Analyses. Project source "
-"(and changelog) is available at <a "
-"href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
+"Principal Component and (Multiple) Correspondence Analyses. The module is "
+"available in the <strong>Plots tab</strong>. Project source (and changelog) "
+"is available at <a href=\"https://github.com/vjalby/vijPlots\" "
+"target=\"_blank\">Github</a>."
 msgstr ""
 
 #: likertplot/options/showMannU.title
@@ -2861,6 +2889,7 @@ msgstr ""
 msgid "Mann-Whitney U Tests"
 msgstr ""
 
+#: areachart/options/xAxisRangeType/manual.title
 #: areachart/options/yAxisRangeType/manual.title
 #: barchart/options/yAxisRangeType/manual.title
 #: barchart/options/xAxisRangeType/manual.title
@@ -2870,6 +2899,7 @@ msgstr ""
 #: boxplot/options/xAxisRangeType/manual.title
 #: histogram/options/yAxisRangeType/manual.title
 #: histogram/options/xAxisRangeType/manual.title
+#: linechart/options/xAxisRangeType/manual.title
 #: linechart/options/yAxisRangeType/manual.title
 #: lollipop/options/yAxisRangeType/manual.title
 #: lollipop/options/xAxisRangeType/manual.title
@@ -2902,6 +2932,7 @@ msgstr ""
 msgid "Mass"
 msgstr ""
 
+#: areachart/options/xAxisRangeMax.title
 #: areachart/options/yAxisRangeMax.title
 #: barchart/options/yaxis/max.title
 #: barchart/options/yAxisRangeMax.title
@@ -2913,6 +2944,7 @@ msgstr ""
 #: boxplot/options/xAxisRangeMax.title
 #: histogram/options/yAxisRangeMax.title
 #: histogram/options/xAxisRangeMax.title
+#: linechart/options/xAxisRangeMax.title
 #: linechart/options/yAxisRangeMax.title
 #: lollipop/options/yaxis/max.title
 #: lollipop/options/yAxisRangeMax.title
@@ -3025,6 +3057,7 @@ msgstr ""
 msgid "Middle"
 msgstr ""
 
+#: areachart/options/xAxisRangeMin.title
 #: areachart/options/yAxisRangeMin.title
 #: barchart/options/yaxis/min.title
 #: barchart/options/yAxisRangeMin.title
@@ -3036,6 +3069,7 @@ msgstr ""
 #: boxplot/options/xAxisRangeMin.title
 #: histogram/options/yAxisRangeMin.title
 #: histogram/options/xAxisRangeMin.title
+#: linechart/options/xAxisRangeMin.title
 #: linechart/options/yAxisRangeMin.title
 #: lollipop/options/yaxis/min.title
 #: lollipop/options/yAxisRangeMin.title
@@ -3993,6 +4027,7 @@ msgstr ""
 msgid "Raincloud Plot"
 msgstr ""
 
+#: areachart/ui[2][0][0][1].label
 #: areachart/ui[2][0][1][1].label
 #: barchart/ui[6][0][0][1].label
 #: barchart/ui[6][0][1][1].label
@@ -4002,6 +4037,7 @@ msgstr ""
 #: boxplot/ui[4][0][1][1].label
 #: histogram/ui[5][0][0][1].label
 #: histogram/ui[5][0][1][1].label
+#: linechart/ui[2][0][0][1].label
 #: linechart/ui[2][0][1][1].label
 #: lollipop/ui[5][0][0][1].label
 #: lollipop/ui[5][0][1][1].label
@@ -4906,6 +4942,7 @@ msgstr ""
 msgid "Theoretical Quantiles"
 msgstr ""
 
+#: areachart/options/xTicks.title
 #: areachart/options/yTicks.title
 #: barchart/options/xTicks.title
 #: barchart/options/yTicks.title
@@ -4915,6 +4952,7 @@ msgstr ""
 #: boxplot/options/yTicks.title
 #: histogram/options/xTicks.title
 #: histogram/options/yTicks.title
+#: linechart/options/xTicks.title
 #: linechart/options/yTicks.title
 #: lollipop/options/xTicks.title
 #: lollipop/options/yTicks.title
@@ -5587,11 +5625,13 @@ msgstr ""
 msgid "Y-Axis"
 msgstr ""
 
+#: areachart/options/xAxisRangeType.title
 #: areachart/options/yAxisRangeType.title
 #: barchart/options/yAxisRangeType.title
 #: barplot/options/yAxisRangeType.title
 #: boxplot/options/yAxisRangeType.title
 #: histogram/options/yAxisRangeType.title
+#: linechart/options/xAxisRangeType.title
 #: linechart/options/yAxisRangeType.title
 #: lollipop/options/yAxisRangeType.title
 #: mrcrosstabs/options/yAxisRangeType.title

@@ -39,6 +39,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xAxisText = NULL,
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
+            xAxisRangeType = "auto",
+            xAxisRangeMin = "0",
+            xAxisRangeMax = "10",
             yAxisText = NULL,
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
@@ -49,6 +52,7 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             yAxisRangeMax = 10,
             xAxisLabelFontSize = 12,
             xAxisLabelRotation = 0,
+            xTicks = 0,
             yTicks = 0, ...) {
 
             super$initialize(
@@ -214,7 +218,12 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "3 month",
                     "6 month",
                     "1 year",
-                    "10 year"),
+                    "5 year",
+                    "10 year",
+                    "20 year",
+                    "25 year",
+                    "50 year",
+                    "100 year"),
                 default="1 month")
             private$..lineWidth <- jmvcore::OptionNumber$new(
                 "lineWidth",
@@ -363,6 +372,21 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "0.5",
                     "1"),
                 default="0.5")
+            private$..xAxisRangeType <- jmvcore::OptionList$new(
+                "xAxisRangeType",
+                xAxisRangeType,
+                options=list(
+                    "auto",
+                    "manual"),
+                default="auto")
+            private$..xAxisRangeMin <- jmvcore::OptionString$new(
+                "xAxisRangeMin",
+                xAxisRangeMin,
+                default="0")
+            private$..xAxisRangeMax <- jmvcore::OptionString$new(
+                "xAxisRangeMax",
+                xAxisRangeMax,
+                default="10")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
                 yAxisText)
@@ -420,6 +444,12 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0,
                 min=0,
                 max=360)
+            private$..xTicks <- jmvcore::OptionInteger$new(
+                "xTicks",
+                xTicks,
+                default=0,
+                min=0,
+                max=99)
             private$..yTicks <- jmvcore::OptionInteger$new(
                 "yTicks",
                 yTicks,
@@ -460,6 +490,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..xAxisText)
             self$.addOption(private$..xAxisFontSize)
             self$.addOption(private$..xAxisPosition)
+            self$.addOption(private$..xAxisRangeType)
+            self$.addOption(private$..xAxisRangeMin)
+            self$.addOption(private$..xAxisRangeMax)
             self$.addOption(private$..yAxisText)
             self$.addOption(private$..yAxisFontSize)
             self$.addOption(private$..yAxisPosition)
@@ -470,6 +503,7 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yAxisRangeMax)
             self$.addOption(private$..xAxisLabelFontSize)
             self$.addOption(private$..xAxisLabelRotation)
+            self$.addOption(private$..xTicks)
             self$.addOption(private$..yTicks)
         }),
     active = list(
@@ -506,6 +540,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xAxisText = function() private$..xAxisText$value,
         xAxisFontSize = function() private$..xAxisFontSize$value,
         xAxisPosition = function() private$..xAxisPosition$value,
+        xAxisRangeType = function() private$..xAxisRangeType$value,
+        xAxisRangeMin = function() private$..xAxisRangeMin$value,
+        xAxisRangeMax = function() private$..xAxisRangeMax$value,
         yAxisText = function() private$..yAxisText$value,
         yAxisFontSize = function() private$..yAxisFontSize$value,
         yAxisPosition = function() private$..yAxisPosition$value,
@@ -516,6 +553,7 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         yAxisRangeMax = function() private$..yAxisRangeMax$value,
         xAxisLabelFontSize = function() private$..xAxisLabelFontSize$value,
         xAxisLabelRotation = function() private$..xAxisLabelRotation$value,
+        xTicks = function() private$..xTicks$value,
         yTicks = function() private$..yTicks$value),
     private = list(
         ..mode = NA,
@@ -551,6 +589,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xAxisText = NA,
         ..xAxisFontSize = NA,
         ..xAxisPosition = NA,
+        ..xAxisRangeType = NA,
+        ..xAxisRangeMin = NA,
+        ..xAxisRangeMax = NA,
         ..yAxisText = NA,
         ..yAxisFontSize = NA,
         ..yAxisPosition = NA,
@@ -561,6 +602,7 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..yAxisRangeMax = NA,
         ..xAxisLabelFontSize = NA,
         ..xAxisLabelRotation = NA,
+        ..xTicks = NA,
         ..yTicks = NA)
 )
 
@@ -642,6 +684,9 @@ areachartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param xAxisText .
 #' @param xAxisFontSize .
 #' @param xAxisPosition .
+#' @param xAxisRangeType .
+#' @param xAxisRangeMin .
+#' @param xAxisRangeMax .
 #' @param yAxisText .
 #' @param yAxisFontSize .
 #' @param yAxisPosition .
@@ -652,6 +697,7 @@ areachartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yAxisRangeMax .
 #' @param xAxisLabelFontSize .
 #' @param xAxisLabelRotation .
+#' @param xTicks .
 #' @param yTicks .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -694,6 +740,9 @@ areachart <- function(
     xAxisText,
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
+    xAxisRangeType = "auto",
+    xAxisRangeMin = "0",
+    xAxisRangeMax = "10",
     yAxisText,
     yAxisFontSize = "16",
     yAxisPosition = "0.5",
@@ -704,6 +753,7 @@ areachart <- function(
     yAxisRangeMax = 10,
     xAxisLabelFontSize = 12,
     xAxisLabelRotation = 0,
+    xTicks = 0,
     yTicks = 0) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
@@ -759,6 +809,9 @@ areachart <- function(
         xAxisText = xAxisText,
         xAxisFontSize = xAxisFontSize,
         xAxisPosition = xAxisPosition,
+        xAxisRangeType = xAxisRangeType,
+        xAxisRangeMin = xAxisRangeMin,
+        xAxisRangeMax = xAxisRangeMax,
         yAxisText = yAxisText,
         yAxisFontSize = yAxisFontSize,
         yAxisPosition = yAxisPosition,
@@ -769,6 +822,7 @@ areachart <- function(
         yAxisRangeMax = yAxisRangeMax,
         xAxisLabelFontSize = xAxisLabelFontSize,
         xAxisLabelRotation = xAxisLabelRotation,
+        xTicks = xTicks,
         yTicks = yTicks)
 
     analysis <- areachartClass$new(

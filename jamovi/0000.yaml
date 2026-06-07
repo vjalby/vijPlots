@@ -1,20 +1,20 @@
 ---
 title: 'vijPlots: Yet Another jamovi Plotting Module'
 name: vijPlots
-version: 1.2.0
+version: 1.2.1
 jms: '1.0'
 authors:
   - Vincent Jalby
 maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
-date: '2026-05-31'
+date: '2026-06-08'
 category: plots
 type: R
 description: >-
   Main statistical charts (histogram, boxplot, point, bar, line, raincloud…)
   with many options along with Likert plot, multiple response barplot, Principal
-  Component and (Multiple) Correspondence Analyses. Project source (and
-  changelog) is available at <a href="https://github.com/vjalby/vijPlots"
-  target="_blank">Github</a>.
+  Component and (Multiple) Correspondence Analyses. The module is available in
+  the <strong>Plots tab</strong>. Project source (and changelog) is available at
+  <a href="https://github.com/vjalby/vijPlots" target="_blank">Github</a>.
 analyses:
   - title: Histogram
     name: histogram

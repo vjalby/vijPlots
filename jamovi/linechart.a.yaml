@@ -228,8 +228,18 @@ options:
           name:  "6 month"
         - title: "1 year"
           name:  "1 year"
+        - title: "5 years"
+          name:  "5 year"
         - title: "10 years"
           name:  "10 year"
+        - title: "20 years"
+          name:  "20 year"
+        - title: "25 years"
+          name:  "25 year"
+        - title: "50 years"
+          name:  "50 year"
+        - title: "100 years"
+          name:  "100 year"
       default: "1 month"
 
     - name: dotSize
@@ -466,6 +476,26 @@ options:
           title: Right
       default: "0.5"
 
+    - name: xAxisRangeType
+      title: Y-Axis Range
+      type: List
+      options:
+        - name: auto
+          title: Auto
+        - name: manual
+          title: Manual
+      default: auto
+
+    - name: xAxisRangeMin
+      title: Min
+      type: String
+      default: "0"
+
+    - name: xAxisRangeMax
+      title: Max
+      type: String
+      default: "10"
+
     - name: yAxisText
       title: ""
       type: String
@@ -543,6 +573,13 @@ options:
       default: 0
       min: 0
       max: 360
+
+    - name: xTicks
+      title: Tick count
+      type: Integer
+      default: 0
+      min: 0
+      max: 99
 
     - name: yTicks
       title: Tick count

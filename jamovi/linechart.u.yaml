@@ -103,6 +103,32 @@ children:
                     name: xAxisLabelRotation
                     suffix: °
                     format: number
+                  - type: TextBox
+                    name: xTicks
+                    format: number
+                    enable: (!isDate)
+              - type: Label
+                label: Range
+                children:
+                  - type: RadioButton
+                    name: xAxisRangeType_auto
+                    optionName: xAxisRangeType
+                    optionPart: auto
+                  - type: RadioButton
+                    name: xAxisRangeType_manual
+                    optionName: xAxisRangeType
+                    optionPart: manual
+                    children:
+                      - type: TextBox
+                        name: xAxisRangeMin
+                        format: string
+                        width: large
+                        enable: (xAxisRangeType:manual)
+                      - type: TextBox
+                        name: xAxisRangeMax
+                        format: string
+                        width: large
+                        enable: (xAxisRangeType:manual)
           - type: LayoutBox
             cell:
               column: 1
@@ -129,12 +155,10 @@ children:
                     name: yAxisRangeType_auto
                     optionName: yAxisRangeType
                     optionPart: auto
-                    enable: (!horizontal)
                   - type: RadioButton
                     name: yAxisRangeType_manual
                     optionName: yAxisRangeType
                     optionPart: manual
-                    enable: (!horizontal)
                     children:
                       - type: TextBox
                         name: yAxisRangeMin

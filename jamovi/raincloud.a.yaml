@@ -37,6 +37,11 @@ options:
       permitted:
         - factor
 
+    - name: ignoreNA
+      title: Ignore missing groups
+      type: Bool
+      default: true
+
     - name: nudgeBoxplot
       title: Nudged boxplots
       type: Bool

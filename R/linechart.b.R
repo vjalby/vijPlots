@@ -33,24 +33,26 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             varNames <- c(timeVar, depVars, groupVar)
             if (length(depVars) == 0 || is.null(timeVar))
                 return()
-            data <- jmvcore::select(self$data, varNames)
+            plotData <- jmvcore::select(self$data, varNames)
 
-            if (!self$options$isDate && !is.numeric(data[[timeVar]]) && (self$options$xTicks > 0 || self$options$xAxisRangeType == "manual"))
+            if (!self$options$isDate && !is.numeric(plotData[[timeVar]]) && (self$options$xTicks > 0 || self$options$xAxisRangeType == "manual"))
                 vijWarningMessage(self,"\"Tick Count\" and \"Range\" options for the X-axis are only available for numeric variables.")
 
-            if (self$options$isDate && is.numeric(data[[timeVar]]))
+            if (self$options$isDate && is.numeric(plotData[[timeVar]]))
                 vijWarningMessage(self,"A date variable must be in text format.")
 
             # Be sure dep var are numeric
             for (aVar in depVars)
-                data[[aVar]] <- jmvcore::toNumeric(data[[aVar]])
+                plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
             # Delete row with missing time
-            data <- subset(data, !is.na(data[timeVar]))
+            plotData <- subset(plotData, !is.na(plotData[timeVar]))
             # Ignore NA
             if (!is.null(groupVar) && self$options$ignoreNA)
-                data <- subset(data, !is.na(data[groupVar]))
+                plotData <- subset(plotData, !is.na(plotData[groupVar]))
+            if (nrow(plotData) == 0)
+                return()
             image <- self$results$plot
-            image$setState(data)
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
@@ -91,17 +93,21 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (varName in depVars) {
                 aVar <- ensym(varName)
 
-                if (is.null(groupVar))
-                    plot <- plot + geom_line(aes(y = !!aVar, color = !!varName), size = lineWidth) #, linetype = as.numeric(self$options$lineType))
-                else
+                if (is.null(groupVar)) {
+                    plot <- plot + geom_line(aes(y = !!aVar, color = !!varName), linewidth = lineWidth)
+                    if (self$options$showPoint)
+                        plot <- plot + geom_point(aes(y = !!aVar, color = !!varName), size = dotSize)
+                } else {
                     if (length(depVars) > 1) {
-                        plot <- plot + geom_line(aes(y = !!aVar, color = !!varName, linetype = !!groupVar), size = lineWidth)
+                        plot <- plot + geom_line(aes(y = !!aVar, color = !!varName, linetype = !!groupVar), linewidth = lineWidth)
+                        if (self$options$showPoint)
+                            plot <- plot + geom_point(aes(y = !!aVar, color = !!varName), size = dotSize)
                     } else {
-                        plot <- plot + geom_line(aes(y = !!aVar, color = !!groupVar ), size = lineWidth) #, linetype = as.numeric(self$options$lineType))
+                        plot <- plot + geom_line(aes(y = !!aVar, color = !!groupVar), linewidth = lineWidth)
+                        if (self$options$showPoint)
+                            plot <- plot + geom_point(aes(y = !!aVar, color = !!groupVar), size = dotSize)
                     }
-
-                if (self$options$showPoint)
-                    plot <- plot + geom_point(aes(y = !!aVar), size = dotSize)
+                }
             }
 
             # Theme and colors
@@ -113,7 +119,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 gLab <- .("Variables")
             } else {
                 yLab <- depVars
-                gLab <- groupVar
+                gLab <- self$options$group
             }
             if (length(depVars) > 1 && is.null(groupVar))
                 plot <- plot + labs(color = '')
@@ -123,31 +129,36 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 showLegend <- TRUE
 
-            # X-Axis range
+            # Date range/scale
             if (timeVarIsDate) {
                 if (self$options$xAxisRangeType == "manual") { # Date and manual
                     plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
-                                            limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
-                                            expand = c(0, 0))
+                                                limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
+                                                expand = c(0, 0))
                 } else {
                     plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
                 }
-            } else if (timeIsNumeric) {
-                if (self$options$xAxisRangeType == "manual") { # Numeric and manual
-                    plot <- plot + coord_cartesian(xlim = c(as.double(self$options$xAxisRangeMin), as.double(self$options$xAxisRangeMax)))
-                }
-                if (self$options$xTicks > 0) {
-                    plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
-                }
             }
 
-            # Y-Axis range and Ticks
-            if (self$options$yAxisRangeType == "manual") {
-                plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+            # Axis Ticks (always set ticks before range)
+            if (timeIsNumeric && self$options$xTicks > 0) {
+                plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
                 plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
+
+            # Axis ranges
+            if (!timeVarIsDate && timeIsNumeric && self$options$xAxisRangeType == "manual")
+                xLim <- c(as.double(self$options$xAxisRangeMin), as.double(self$options$xAxisRangeMax))
+            else
+                xLim <- NULL
+            if (self$options$yAxisRangeType == "manual")
+                yLim <- c(self$options$yAxisRangeMin, self$options$yAxisRangeMax)
+            else
+                yLim <- NULL
+            if (!is.null(xLim) || !is.null(yLim))
+                plot <- plot + coord_cartesian(xlim = xLim, ylim = yLim)
 
             # Titles & Labels
             defaults <- list(y = yLab, x = timeVar, legend = gLab)

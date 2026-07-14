@@ -195,12 +195,10 @@ children:
                     name: yAxisRangeType_auto
                     optionName: yAxisRangeType
                     optionPart: auto
-                    enable: (!horizontal)
                   - type: RadioButton
                     name: yAxisRangeType_manual
                     optionName: yAxisRangeType
                     optionPart: manual
-                    enable: (!horizontal)
                     children:
                       - type: TextBox
                         name: yAxisRangeMin

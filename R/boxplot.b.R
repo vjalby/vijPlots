@@ -162,7 +162,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                  nudge_x = nudgeX, angle = labAngle, size = self$options$labSize / .pt)
                     }
 
-                    plot <- plot + guides(fill = FALSE)
+                    plot <- plot + guides(fill = "none")
                     if( self$options$showMean ) {
                         plot <- plot + stat_summary(aes(y = !!aVar, x = !!varName), fun = mean, geom = "point",
                                                     shape = 15, size = 3)

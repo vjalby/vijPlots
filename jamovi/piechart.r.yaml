@@ -4,10 +4,6 @@ title: Pie Chart
 jrs:   '1.1'
 
 items:
-    # - name:  text
-    #   title: Debug
-    #   type:  Preformatted
-
     - name: plot
       title: ""
       type: Image

@@ -17,3 +17,4 @@ released/
 computations/
 .positai
 .git.nosync/
+*_log.md

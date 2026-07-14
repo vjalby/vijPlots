@@ -44,6 +44,9 @@ children:
             label: Plot Options
             children:
               - type: CheckBox
+                name: ignoreNA
+                enable: (!(!groupOne) || !(!groupTwo))
+              - type: CheckBox
                 name: nudgeBoxplot
                 enable: (!(!groupTwo))
               - type: CheckBox

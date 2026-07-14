@@ -47,15 +47,24 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .run = function() {
-            if (! is.null(self$options$aVar)) {
-                plotData <- self$data[c(self$options$aVar, self$options$groupOne, self$options$groupTwo)]
-                plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
-                image <- self$results$plot
-                image$setState(plotData)
+            if (is.null(self$options$aVar))
+                return()
+            plotData <- self$data[c(self$options$aVar, self$options$groupOne, self$options$groupTwo)]
+            plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
+            # Remove case with missing group
+            if (!is.null(self$options$groupOne) & self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[self$options$groupOne]))
             }
+            if (!is.null(self$options$groupTwo) & self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[self$options$groupTwo]))
+            }
+            if (nrow(plotData) == 0)
+                return()
+            image <- self$results$plot
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {  # <-- the plot function
-            if (is.null(self$options$aVar))
+            if (is.null(image$state))
                 return(FALSE)
             plotData <- image$state
 
@@ -75,8 +84,6 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 groupTwo <- NULL
             }
-
-            plotData <- jmvcore::naOmit(plotData)
 
             alphaC <- as.numeric(self$options$alphaC)
 
@@ -122,7 +129,7 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + geom_point(position = jitter_nudge, size=1.2)
                     plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.25,-0.25), width = 0.2, .width = 0,
                                                         point_color = NA, slab_color = "black", slab_linewidth = 0.5, fill = oneColorOfPalette)
-                    plot <- plot + guides(fill = FALSE)
+                    plot <- plot + guides(fill = "none")
                 } else {
                     # show.legend needed to display unused colors, guide size & slab_color needed to hide extra legends
                     jitter_nudge <- ggpp::position_jitternudge(width = 0.02, height = 0,
@@ -152,7 +159,7 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.30,-0.30), width = 0.3, .width = 0,
                                                             point_color = NA, slab_color = "black", slab_linewidth = 0.5)
                     }
-                    plot <- plot + geom_point(aes(color = !!groupTwo), position = jitter_nudge, size=1.2) + guides(fill = FALSE)
+                    plot <- plot + geom_point(position = jitter_nudge, size=1.2) + guides(fill = "none")
 
 
                 } else {
@@ -174,6 +181,14 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                     vijScale(self$options$colorPalette, "fill", drop = FALSE) +
                                     vijScale(self$options$colorPalette, "slab_color", drop = FALSE)
 
+            # Ticks
+            if (self$options$horizontal && self$options$xTicks > 0) {
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+            }
+            if (!self$options$horizontal && self$options$yTicks > 0) {
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+            }
+
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
@@ -183,14 +198,6 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             } else if (self$options$yAxisRangeType == "manual") { # Horizontal and manual
                 plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
-            }
-
-            # Ticks
-            if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
-            }
-            if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
             # Legend spacing

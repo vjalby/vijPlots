@@ -50,25 +50,27 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             labelVar <- self$options$labelVar
             sizeVar <- self$options$ptSize
 
-            if ( is.null(xaxis) || is.null(yaxis))
+            if (is.null(xaxis) || is.null(yaxis))
                 return(FALSE)
 
-            data <- jmvcore::select(self$data, c(xaxis,yaxis,groupVar,labelVar,sizeVar, self$options$facet))
-            data[[xaxis]] <- jmvcore::toNumeric(data[[xaxis]])
-            data[[yaxis]] <- jmvcore::toNumeric(data[[yaxis]])
+            plotData <- jmvcore::select(self$data, c(xaxis,yaxis,groupVar,labelVar,sizeVar, self$options$facet))
+            plotData[[xaxis]] <- jmvcore::toNumeric(plotData[[xaxis]])
+            plotData[[yaxis]] <- jmvcore::toNumeric(plotData[[yaxis]])
             if(!is.null(sizeVar))
-                data[[sizeVar]] <- jmvcore::toNumeric(data[[sizeVar]])
+                plotData[[sizeVar]] <- jmvcore::toNumeric(plotData[[sizeVar]])
 
-            if( ! self$options$keepNA )
-                data <- jmvcore::naOmit(data)
+            if (!self$options$keepNA)
+                plotData <- jmvcore::naOmit(plotData)
+
+            if (nrow(plotData) == 0)
+                return(FALSE)
 
             image <- self$results$plot
-            image$setState(data)
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {
-            if (is.null(image$state)) {
+            if (is.null(image$state))
                 return(FALSE)
-            }
             xaxis <- self$options$xaxis
             yaxis <- self$options$yaxis
             groupVar <- self$options$group

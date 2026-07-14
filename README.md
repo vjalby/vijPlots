@@ -70,6 +70,11 @@
 
 ## Version history
 
+
+### 2026-07-?? / 1.2.2
+
+- Option to ignore missing groups in Raincloud plot
+
 ### 2026-06-08 / 1.2.1
 
 - Improved x-axis limits for line and area plots

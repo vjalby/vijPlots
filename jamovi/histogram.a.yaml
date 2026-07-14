@@ -168,21 +168,6 @@ options:
           name:  gray
       default: black
 
-    - name: grouping
-      title: Grouping
-      type: List
-      hidden: true
-      options:
-        - title: None
-          name:  none
-        - title: Overlapping
-          name:  identity
-        - title: Stacked
-          name:  stack
-        - title: Grouped
-          name:  dodge
-      default: none
-
     - name: groupingN
       title: Grouping
       type: List

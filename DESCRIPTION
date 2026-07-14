@@ -1,7 +1,7 @@
 Package: vijPlots
 Type: Package
 Title: vijPlots: Yet Another jamovi Plotting Module
-Version: 1.2.1
+Version: 1.2.2
 Author: Vincent Jalby
 Maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
 Description: Main statistical charts (histogram, boxplot, point, bar, line, 
@@ -13,6 +13,8 @@ Description: Main statistical charts (histogram, boxplot, point, bar, line,
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
-Imports: jmvcore (>= 0.8.5), R6, ggplot2, labelled, scales, ggstats, tidyr, 
-         ggh4x, fitdistrplus, colorspace, ggdist, ggpp, qqplotr, forcats, 
-         ggrepel, ggforce, GPArotation, FactoMineR, dichromat
+Imports: jmvcore (>= 0.8.5), R6, psych, MASS, tidyr, dplyr, tibble, ggplot2, 
+         labelled, scales, ggstats, ggh4x, ggdist, ggpp, ggrepel, ggforce,
+         fitdistrplus, dichromat, colorspace, qqplotr, forcats, GPArotation, 
+         FactoMineR, 
+         

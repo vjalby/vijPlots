@@ -21,7 +21,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                     table$addRow(rowKey = i)
             } else {
                 aCol <- self$data[[self$options$repVar]]
-                uniqueValues <- unique(unlist(strsplit(levels(aCol), split = self$options$separator)))
+                uniqueValues <- unique(unlist(strsplit(levels(aCol), split = self$options$separator, fixed = TRUE)))
                 uniqueValues <- uniqueValues[uniqueValues != ""]
                 for (i in seq_along(uniqueValues))
                     table$addRow(rowKey = i)
@@ -127,7 +127,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                 oneColorOfPalette <- vijPalette(self$options$colorPalette, "fill")(nbColors)[min(colorNo,nbColors)]
                 plot <- plot + geom_col(fill = oneColorOfPalette, color = borderColor)
             } else {
-                plot <- plot + geom_col(aes(fill = Option), color = borderColor) + guides(fill = FALSE)
+                plot <- plot + geom_col(aes(fill = Option), color = borderColor) + guides(fill = "none")
             }
 
             if (self$options$labelPosition == "top")
@@ -233,7 +233,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
         },
         .oneHotEncoding = function (aCol, separator, na = TRUE) {
-            uniqueValues <- unique(unlist(strsplit(levels(aCol), split = separator)))
+            uniqueValues <- unique(unlist(strsplit(levels(aCol), split = separator, fixed = TRUE)))
             uniqueValues <- uniqueValues[uniqueValues != ""]
             onehotDF <- data.frame("X__priVate__X" = 1:length(aCol))
             for(j in uniqueValues) {

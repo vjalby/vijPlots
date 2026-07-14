@@ -20,7 +20,6 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             normalCurveLineSize = 1,
             fillColor = "#A6C4F1",
             borderColor = "black",
-            grouping = "none",
             groupingN = "stack",
             colorPalette = "jmv",
             usePalette = "forFilling",
@@ -177,16 +176,6 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "white",
                     "gray"),
                 default="black")
-            private$..grouping <- jmvcore::OptionList$new(
-                "grouping",
-                grouping,
-                hidden=TRUE,
-                options=list(
-                    "none",
-                    "identity",
-                    "stack",
-                    "dodge"),
-                default="none")
             private$..groupingN <- jmvcore::OptionList$new(
                 "groupingN",
                 groupingN,
@@ -510,7 +499,6 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..normalCurveLineSize)
             self$.addOption(private$..fillColor)
             self$.addOption(private$..borderColor)
-            self$.addOption(private$..grouping)
             self$.addOption(private$..groupingN)
             self$.addOption(private$..colorPalette)
             self$.addOption(private$..usePalette)
@@ -565,7 +553,6 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         normalCurveLineSize = function() private$..normalCurveLineSize$value,
         fillColor = function() private$..fillColor$value,
         borderColor = function() private$..borderColor$value,
-        grouping = function() private$..grouping$value,
         groupingN = function() private$..groupingN$value,
         colorPalette = function() private$..colorPalette$value,
         usePalette = function() private$..usePalette$value,
@@ -619,7 +606,6 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..normalCurveLineSize = NA,
         ..fillColor = NA,
         ..borderColor = NA,
-        ..grouping = NA,
         ..groupingN = NA,
         ..colorPalette = NA,
         ..usePalette = NA,
@@ -719,7 +705,6 @@ histogramBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param normalCurveLineSize .
 #' @param fillColor .
 #' @param borderColor .
-#' @param grouping .
 #' @param groupingN .
 #' @param colorPalette .
 #' @param usePalette .
@@ -780,7 +765,6 @@ histogram <- function(
     normalCurveLineSize = 1,
     fillColor = "#A6C4F1",
     borderColor = "black",
-    grouping = "none",
     groupingN = "stack",
     colorPalette = "jmv",
     usePalette = "forFilling",
@@ -851,7 +835,6 @@ histogram <- function(
         normalCurveLineSize = normalCurveLineSize,
         fillColor = fillColor,
         borderColor = borderColor,
-        grouping = grouping,
         groupingN = groupingN,
         colorPalette = colorPalette,
         usePalette = usePalette,

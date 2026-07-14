@@ -40,13 +40,15 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .run = function() {
-            if (!is.null(self$options$rows) && nrow(self$data) != 0) {
-                plotData <- self$data[c(self$options$rows, self$options$columns, self$options$facet)]
-                if( self$options$ignoreNA )
-                    plotData <- jmvcore::naOmit(plotData)
-                image <- self$results$plot
-                image$setState(plotData)
-            }
+            if (is.null(self$options$rows))
+                return()
+            plotData <- self$data[c(self$options$rows, self$options$columns, self$options$facet)]
+            if (self$options$ignoreNA)
+                plotData <- jmvcore::naOmit(plotData)
+            if (nrow(plotData) == 0)
+                return()
+            image <- self$results$plot
+            image$setState(plotData)
         },
 
         .plot = function(image, ggtheme, theme, ...) {

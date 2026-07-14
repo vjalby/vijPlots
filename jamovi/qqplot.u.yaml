@@ -144,7 +144,7 @@ children:
                   - type: TextBox
                     name: param2
                     format: number
-                    enable: (paramMethod_paraValue && norm)
+                    enable: (paramMethod_paraValue)
   - type: CollapseBox
     label: Colors & Options
     collapsed: true

@@ -6,10 +6,6 @@ refs:
     - factominer
 
 items:
-    # - name:  text
-    #   title: Debug
-    #   type:  Preformatted
-
     - name: contingency
       title: Contingency Table
       type: Table

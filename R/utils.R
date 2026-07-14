@@ -105,7 +105,6 @@ vijTitlesAndLabels = function(options, defaults = list(), plotType = '') {
     if (x == "")
         x <- defaults$x
     # yAxis
-    y <- options[["yAxisText"]] %||% ''
     if (horizontal)
         y <- options[["xAxisText"]] %||% ''
     else
@@ -206,7 +205,13 @@ vijErrorMessage = function(self, errorMessage) {
     self$results$insert(1, errorNotice)
 }
 
-vijWarningMessage = function(self, warningMessage, name = '.warning') {
+vijWarningMessage = function(self, debugMessage, name = '.warning') {
     warningNotice <- jmvcore::Notice$new(self$options, type = jmvcore::NoticeType$WARNING, name = name, content = warningMessage)
     self$results$insert(1, warningNotice)
+}
+
+vijDebugMessage = function(self, debugMessage, name = '.debug', title = "Debug") {
+    debugMsg <- jmvcore::Preformatted$new(self$options, name = name, title = title)
+    debugMsg$setContent(debugMessage)
+    self$results$insert(1, debugMsg)
 }

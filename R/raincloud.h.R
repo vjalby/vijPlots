@@ -9,6 +9,7 @@ raincloudOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             aVar = NULL,
             groupOne = NULL,
             groupTwo = NULL,
+            ignoreNA = TRUE,
             nudgeBoxplot = FALSE,
             horizontal = FALSE,
             reverse = FALSE,
@@ -79,6 +80,10 @@ raincloudOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
+            private$..ignoreNA <- jmvcore::OptionBool$new(
+                "ignoreNA",
+                ignoreNA,
+                default=TRUE)
             private$..nudgeBoxplot <- jmvcore::OptionBool$new(
                 "nudgeBoxplot",
                 nudgeBoxplot,
@@ -392,6 +397,7 @@ raincloudOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..aVar)
             self$.addOption(private$..groupOne)
             self$.addOption(private$..groupTwo)
+            self$.addOption(private$..ignoreNA)
             self$.addOption(private$..nudgeBoxplot)
             self$.addOption(private$..horizontal)
             self$.addOption(private$..reverse)
@@ -437,6 +443,7 @@ raincloudOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         aVar = function() private$..aVar$value,
         groupOne = function() private$..groupOne$value,
         groupTwo = function() private$..groupTwo$value,
+        ignoreNA = function() private$..ignoreNA$value,
         nudgeBoxplot = function() private$..nudgeBoxplot$value,
         horizontal = function() private$..horizontal$value,
         reverse = function() private$..reverse$value,
@@ -481,6 +488,7 @@ raincloudOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..aVar = NA,
         ..groupOne = NA,
         ..groupTwo = NA,
+        ..ignoreNA = NA,
         ..nudgeBoxplot = NA,
         ..horizontal = NA,
         ..reverse = NA,
@@ -571,6 +579,7 @@ raincloudBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param aVar .
 #' @param groupOne .
 #' @param groupTwo .
+#' @param ignoreNA .
 #' @param nudgeBoxplot .
 #' @param horizontal .
 #' @param reverse .
@@ -622,6 +631,7 @@ raincloud <- function(
     aVar,
     groupOne,
     groupTwo,
+    ignoreNA = TRUE,
     nudgeBoxplot = FALSE,
     horizontal = FALSE,
     reverse = FALSE,
@@ -683,6 +693,7 @@ raincloud <- function(
         aVar = aVar,
         groupOne = groupOne,
         groupTwo = groupTwo,
+        ignoreNA = ignoreNA,
         nudgeBoxplot = nudgeBoxplot,
         horizontal = horizontal,
         reverse = reverse,

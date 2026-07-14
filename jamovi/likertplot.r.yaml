@@ -6,10 +6,6 @@ refs:
     - ggplots
 
 items:
-    # - name:  text
-    #   title: Debug
-    #   type:  Preformatted
-
     - name: frequencies
       title: Frequency Table
       type: Table

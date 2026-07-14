@@ -42,25 +42,26 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .run = function() {
-            if (!is.null(self$options$yVar) && !is.null(self$options$xVar) && nrow(self$data) != 0) {
-                plotData <- self$data[c(self$options$yVar, self$options$xVar, self$options$group, self$options$facet)]
-                plotData[[self$options$yVar]] <- jmvcore::toNumeric(plotData[[self$options$yVar]])
-                # missing data
-                plotData <- subset(plotData, !is.na(plotData[self$options$yVar]))
-                # Remove case with missing group
-                if (!is.null(self$options$xVar) & self$options$ignoreNA) {
-                    plotData <- subset(plotData, !is.na(plotData[self$options$xVar]))
-                }
-                if (!is.null(self$options$group) & self$options$ignoreNA) {
-                    plotData <- subset(plotData, !is.na(plotData[self$options$group]))
-                }
-                if (!is.null(self$options$facet) & self$options$ignoreNA) {
-                    plotData <- subset(plotData, !is.na(plotData[self$options$facet]))
-                }
-                #plotData <- jmvcore::naOmit(plotData)
-                image <- self$results$plot
-                image$setState(plotData)
+            if (is.null(self$options$yVar) || is.null(self$options$xVar))
+                return()
+            plotData <- self$data[c(self$options$yVar, self$options$xVar, self$options$group, self$options$facet)]
+            plotData[[self$options$yVar]] <- jmvcore::toNumeric(plotData[[self$options$yVar]])
+            # missing data
+            plotData <- subset(plotData, !is.na(plotData[self$options$yVar]))
+            # Remove case with missing group
+            if (!is.null(self$options$xVar) & self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[self$options$xVar]))
             }
+            if (!is.null(self$options$group) & self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[self$options$group]))
+            }
+            if (!is.null(self$options$facet) & self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[self$options$facet]))
+            }
+            if (nrow(plotData) == 0)
+                return()
+            image <- self$results$plot
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {  # <-- the plot function
             if (is.null(image$state))

@@ -6,21 +6,27 @@ refs:
     - ggplots
 
 items:
+    # - name:  text
+    #   title: Debug
+    #   type:  Preformatted
+
     - name: frequencies
       title: Frequency Table
       type: Table
       visible: (frequencyTable)
       rows:  0
       columns:
-        - name: ques
+        - name: .question
           title: Questions
           type: text
       clearWith:
         - liks
         - group
         - type
+        - sorting
         - frequencies
         - showMean
+        - showMedian
         - frequencyTable
         - toInteger
         - tidyUp

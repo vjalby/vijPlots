@@ -19,7 +19,6 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             toInteger = FALSE,
             tidyUp = FALSE,
             ignoreNA = TRUE,
-            textSize = NULL,
             labelSize = 11,
             groupSize = 12,
             accuracy = "1",
@@ -134,10 +133,6 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ignoreNA",
                 ignoreNA,
                 default=TRUE)
-            private$..textSize <- jmvcore::OptionNumber$new(
-                "textSize",
-                textSize,
-                hidden=TRUE)
             private$..labelSize <- jmvcore::OptionNumber$new(
                 "labelSize",
                 labelSize,
@@ -418,7 +413,6 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..toInteger)
             self$.addOption(private$..tidyUp)
             self$.addOption(private$..ignoreNA)
-            self$.addOption(private$..textSize)
             self$.addOption(private$..labelSize)
             self$.addOption(private$..groupSize)
             self$.addOption(private$..accuracy)
@@ -471,7 +465,6 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         toInteger = function() private$..toInteger$value,
         tidyUp = function() private$..tidyUp$value,
         ignoreNA = function() private$..ignoreNA$value,
-        textSize = function() private$..textSize$value,
         labelSize = function() private$..labelSize$value,
         groupSize = function() private$..groupSize$value,
         accuracy = function() private$..accuracy$value,
@@ -523,7 +516,6 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..toInteger = NA,
         ..tidyUp = NA,
         ..ignoreNA = NA,
-        ..textSize = NA,
         ..labelSize = NA,
         ..groupSize = NA,
         ..accuracy = NA,
@@ -587,15 +579,17 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=0,
                 columns=list(
                     list(
-                        `name`="ques", 
+                        `name`=".question", 
                         `title`="Questions", 
                         `type`="text")),
                 clearWith=list(
                     "liks",
                     "group",
                     "type",
+                    "sorting",
                     "frequencies",
                     "showMean",
+                    "showMedian",
                     "frequencyTable",
                     "toInteger",
                     "tidyUp",
@@ -780,7 +774,6 @@ likertplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param toInteger .
 #' @param tidyUp .
 #' @param ignoreNA .
-#' @param textSize .
 #' @param labelSize .
 #' @param groupSize .
 #' @param accuracy .
@@ -849,7 +842,6 @@ likertplot <- function(
     toInteger = FALSE,
     tidyUp = FALSE,
     ignoreNA = TRUE,
-    textSize,
     labelSize = 11,
     groupSize = 12,
     accuracy = "1",
@@ -915,7 +907,6 @@ likertplot <- function(
         toInteger = toInteger,
         tidyUp = tidyUp,
         ignoreNA = ignoreNA,
-        textSize = textSize,
         labelSize = labelSize,
         groupSize = groupSize,
         accuracy = accuracy,

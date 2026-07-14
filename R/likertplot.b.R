@@ -5,27 +5,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "likertplotClass",
     inherit = likertplotBase,
     private = list(
-        .getVarName = function(aVar) {
-            if (self$options$descAsVarName) {
-                aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
-                if (!is.null(aVarName))
-                    return(aVarName)
-                else
-                    return(aVar)
-            } else {
-                return(aVar)
-            }
-        },
-        .mannU = function(var, group, data, level1=1, level2=2) { # Two groups
-            variable <- jmvcore::toNumeric(data[[var]])
-            levels <- levels(data[[group]])
-            group1 <- variable[data[[group]] == levels[level1]]
-            group2 <- variable[data[[group]] == levels[level2]]
-            res1 <- wilcox.test(group1, group2)
-            res2 <- wilcox.test(group2, group1)
-            statistic <- min(res1$statistic, res2$statistic)
-            return( list('statistic' = statistic, 'p.value' = res1$p.value) )
-        },
         .init = function() {
             if (length(self$options$liks) == 0) {
                 private$.showHelpMessage()
@@ -134,7 +113,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Cleaning the group variable name (it would crash gglikert)
             if (!is.null(self$options$group)) {
                 groupingVar <- jmvcore::toB64(self$options$group)
-                names(mainData)[length(names(mainData))] <- groupingVar
+                #names(mainData)[length(names(mainData))] <- groupingVar
+                names(mainData)[names(mainData) == self$options$group] <- groupingVar
             } else {
                 groupingVar <- NULL
             }
@@ -150,8 +130,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 ng <- 0
             }
 
+            #### Compute frenquencies by question/group ####
+            freq_wide <- private$.computeFrequencies(ggLikertData, groupingVar, ng)
+
             #### Frequency table ####
-            oneFreqIsNull <- 1
             if (self$options$frequencyTable) {
                 if (self$options$frequencies == "counts") {
                     fType <- 'integer'
@@ -160,30 +142,29 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     fType <- 'number'
                     fmt <- 'pc'
                 }
+                # Set columns
+                if (ng > 0) {
+                    self$results$frequencies$addColumn(self$options$group, type = "text", title = private$.getVarName(self$options$group))
+                }
+                self$results$frequencies$addColumn("Sum", type = "integer", title = "N")
+                answers_levels <- levels(ggLikertData[['.answer']])
+                for (col in answers_levels) {
+                    self$results$frequencies$addColumn(col, type = fType, format = fmt, title = col)
+                }
+                if (self$options$showMedian)
+                    self$results$frequencies$addColumn("Median", type = "number", title = .("Median"))
+                if (self$options$showMean) {
+                    self$results$frequencies$addColumn("Mean", type = "number")
+                    self$results$frequencies$addColumn("SD", type = "number", title = .("SD"))
+                }
 
+                # Populate the table
                 if (ng == 0) { # Freq table without grouping variable
-                    self$results$frequencies$addColumn("Sum", type="integer", title = "N")
-                    for (col in levels(ggLikertData[['.answer']])) {
-                        #self$results$frequencies$addColumn(col, type = fType, format = fmt, title = paste0(strwrap(col, 15), collapse="<br />"))
-                        self$results$frequencies$addColumn(col, type = fType, format = fmt, title = col)
-                    }
-                    if (self$options$showMedian)
-                        self$results$frequencies$addColumn("Median", type = "number", title = .("Median"))
-                    if (self$options$showMean) {
-                        self$results$frequencies$addColumn("Mean", type = "number")
-                        self$results$frequencies$addColumn("SD", type = "number", title = .("SD"))
-                    }
-
-                    freqTable <- table(ggLikertData[c('.question','.answer')])
-                    sumCol <- marginSums(freqTable, margin = 1)
-                    if (self$options$frequencies == "percentages")
-                        freqTable <- proportions(freqTable, margin = 1)
-                    freqTable <- cbind(freqTable, "Sum" = sumCol)
-
                     for (ques in questions) {
-                        values = as.list(freqTable[ques,])
-                        values["ques"] <- private$.getVarName(ques)
-                        numericData <-jmvcore::toNumeric(mainData[[ques]])
+                        row_data <- dplyr::filter(freq_wide, .question == ques)
+                        values <- as.list(row_data)
+                        values[".question"] <- private$.getVarName(ques)
+                        numericData <- jmvcore::toNumeric(mainData[[ques]])
                         if (self$options$showMedian)
                             values['Median'] <- as.numeric(median(numericData, na.rm = TRUE))
                         if (self$options$showMean) {
@@ -193,39 +174,20 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         self$results$frequencies$addRow(rowKey = ques, values = values)
                     }
                 } else { # Freq table by group
-                    # Build the frequence tables (for each group)
-                    freqTables <- list()
-                    for (aGroup in groups) {
-                        groupData <- subset(ggLikertData, ggLikertData[groupingVar] == aGroup)
-                        freqTable <- table(groupData[c('.question','.answer')])
-                        sumCol <- marginSums(freqTable, margin = 1)
-                        if (self$options$frequencies == "percentages")
-                            freqTable <- proportions(freqTable, margin = 1)
-                        freqTable <- cbind(freqTable, "Sum" = sumCol)
-                        freqTables[[aGroup]] <- freqTable
-                    }
-                    self$results$frequencies$addColumn(self$options$group, type = "text", title = private$.getVarName(self$options$group))
-                    self$results$frequencies$addColumn("Sum", type="integer", title = "N")
-                    for (col in levels(ggLikertData[['.answer']])) {
-                        self$results$frequencies$addColumn(col, type = fType, format = fmt, title = col)
-                    }
-                    if (self$options$showMedian)
-                        self$results$frequencies$addColumn("Median", type = "number", title = .("Median"))
-                    if (self$options$showMean) {
-                        self$results$frequencies$addColumn("Mean", type = "number")
-                        self$results$frequencies$addColumn("SD", type = "number", title = .("SD"))
-                    }
+                    group_sym <- rlang::ensym(groupingVar)
                     for (ques in questions) {
                         firstGroup <- TRUE
                         for (group in groups) {
-                            groupAndQues <- paste0(group,ques)
-                            values = as.list(freqTables[[group]][ques,])
-                            if (firstGroup) # Workaround to not use combineBelow
-                                values["ques"] <- private$.getVarName(ques)
+                            groupAndQues <- paste0(group, ques)
+                            row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
+                            values <- as.list(row_data)
+                            if (firstGroup)
+                                values[".question"] <- private$.getVarName(ques)
                             else
-                                values["ques"] <- " "
-                            values[self$options$group] = group
+                                values[".question"] <- " "
+                            values[[self$options$group]] <- group
                             numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
+
                             if (self$options$showMedian)
                                 values["Median"] <- as.numeric(median(numericData, na.rm = TRUE))
                             if (self$options$showMean) {
@@ -236,7 +198,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             if (firstGroup)
                                 self$results$frequencies$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.BEGIN_GROUP)
                             firstGroup <- FALSE
-                            oneFreqIsNull <- oneFreqIsNull * values[["Sum"]]
                         }
                         self$results$frequencies$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.END_GROUP)
                     }
@@ -271,7 +232,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         self$results$comp$uTestTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
                         adjustedp <- p.adjust(p, method = adjustMethod)
                         for (i in 1:nq) {
-                            self$results$comp$uTestTable$setCell(rowNo = i, col = "adjusted.p", adjustedp[i])
+                            self$results$comp$uTestTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
                         }
                         self$results$comp$uTestTable$setNote("adj",
                             jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
@@ -283,7 +244,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (ng > 1 && self$options$showKW) {
                 p <- c()
                 for (ques in questions) {
-                    res <- kruskal.test(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
+                    res <- private$.kruskalW(ques, groupingVar, mainData)
                     res[["ques"]] <- private$.getVarName(ques)
                     self$results$comp$kwTable$setRow(rowKey = ques, values = res)
                     p <- c(p, res[["p.value"]])
@@ -292,7 +253,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     self$results$comp$kwTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
                     adjustedp <- p.adjust(p, method = adjustMethod)
                     for (i in 1:nq) {
-                        self$results$comp$kwTable$setCell(rowNo = i, col = "adjusted.p", adjustedp[i])
+                        self$results$comp$kwTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
                     }
                     self$results$comp$kwTable$setNote("adj",
                         jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
@@ -301,10 +262,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Pairwise comparison table ####
             if (ng > 1 && self$options$showPostHoc) {
-                if (oneFreqIsNull == 0) {
-                    vijErrorMessage(self, .("Comparison tests cannot be computed with empty (N=0) groups"))
-                    return(TRUE)
-                }
                 # Set title and statistic column title
                 self$results$comp$pwTable$setTitle(switch(self$options$postHoc,
                                                           "conover" = .("Conover's Pairwise Comparisons"),
@@ -333,25 +290,34 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     res.p.values[[ques]] <- testRes$p.values
                     res.statistics[[ques]] <- testRes$statistics
                     # Compute groupwise adjusted p
-                    if (self$options$pValue == "group" && self$options$postHoc != "dscf") {
+                    if (self$options$pValue == "group" && self$options$postHoc != "dscf" && length(res.p.values[[ques]]) > 0) {
                         res.p.adjusted[[ques]] <- p.adjust(res.p.values[[ques]], method = adjustMethod)
+                    } else {
+                        res.p.adjusted[[ques]] <- list()
                     }
                 }
 
                 # Compute overall adjusted p
+                pvalues <- c()
                 if (self$options$pValue == "overall" && self$options$postHoc != "dscf") {
-                    pvalues <- c()
+                	# Gather the pValues question-wise
                     for (ques in questions) {
-                        pvalues <- c(pvalues, res.p.values[[ques]])
+                        if (length(res.p.values[[ques]]) > 0) {
+                            pvalues <- c(pvalues, unlist(res.p.values[[ques]]))
+                        }
                     }
-                    pvalues <- p.adjust(pvalues, method = adjustMethod)
-
-                    i = 0
-                    for (ques in questions) {
-                        k = length(res.p.values[[ques]])
-                        res.p.adjusted[[ques]] <- pvalues[(i+1):(i+k)]
-                        names(res.p.adjusted[[ques]]) <- names(res.p.values[[ques]])
-                        i <- i + k
+                    # Adjust the pValues then split them back by question
+                    if (length(pvalues) > 0) {
+                        pvalues_adj_flat <- p.adjust(pvalues, method = adjustMethod)
+                        idx <- 0
+                        for (ques in questions) {
+                            k <- length(res.p.values[[ques]])
+                            if (k > 0) {
+                                res.p.adjusted[[ques]] <- pvalues_adj_flat[(idx + 1):(idx + k)]
+                                names(res.p.adjusted[[ques]]) <- names(res.p.values[[ques]])
+                                idx <- idx + k
+                            }
+                        }
                     }
                 }
 
@@ -367,46 +333,57 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         self$results$comp$pwTable$addColumn(name = paste(ques, "p.adj"), title = .("Adj. p"), superTitle = superTitle, type = 'number', format = 'zto,pvalue')
                 }
 
-                #### Populate table ####
-                k <- 0
+                # Populate table
                 for (i in 1:(ng-1)) {
                     for (j in (i+1):ng) {
                         values <- list("group1" = groups[i], "group2" = groups[j])
                         compStr1 <- paste(groups[i], "-", groups[j])
                         compStr2 <- paste(groups[j], "-", groups[i])
-                        k <- k +1
                         for (ques in questions) {
-                            # Fix because conover.test & dunn.test don't keep the factor order
-                            if (is.na((res.statistics[[ques]])[compStr1])) {
-                                compStr <- compStr2
-                                res.statistics[[ques]][compStr2] <- - res.statistics[[ques]][compStr2]
+                            # let test both compStr1 and compStr2
+                            # because conover.test and dunn.test don't keep the factor order
+                            stats1 <- (res.statistics[[ques]])[[compStr1]]
+                            stats2 <- (res.statistics[[ques]])[[compStr2]]
+                            if (!is.null(stats1)) {
+                                values[paste(ques, "stat")] <- stats1
+                                values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr1]]
+                                if (self$options$pValue != "none") {
+                                    values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr1]
+                                }
+                            } else if (!is.null(stats2)) {
+                                values[paste(ques, "stat")] <- -stats2
+                                values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr2]]
+                                if (self$options$pValue != "none") {
+                                    values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr2]
+                                }
                             } else {
-                                compStr <- compStr1
+                                values[paste(ques, "stat")] <- NA
+                                values[paste(ques, "p")] <- NA
+                                if (self$options$pValue != "none") {
+                                    values[paste(ques, "p.adj")] <- NA
+                                }
                             }
-                            values[paste(ques, "stat")] <- (res.statistics[[ques]])[compStr]
-                            values[paste(ques, "p")] <- (res.p.values[[ques]])[compStr]
-                            if (self$options$pValue != "none")
-                                values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr]
                         }
                         self$results$comp$pwTable$addRow(rowKey = paste0(i,"/",j), values = values)
                     }
                 }
+
                 # Add Note
-                if (self$options$pValue == "overall" && oneFreqIsNull != 0 && self$options$postHoc != "dscf"){
+                if (self$options$pValue == "overall" && self$options$postHoc != "dscf" && length(pvalues) > 0){
                     self$results$comp$pwTable$setNote("adj",
                         jmvcore::format(.("p-values are adjusted overall using {method} method."), method = adjustMethodStr))
                 }
-                if (self$options$pValue == "group" && oneFreqIsNull != 0 && self$options$postHoc != "dscf") {
+                if (self$options$pValue == "group" && self$options$postHoc != "dscf") {
                     self$results$comp$pwTable$setNote("adj",
                         jmvcore::format(.("p-values are adjusted groupwise using {method} method."), method = adjustMethodStr))
                 }
-                if (oneFreqIsNull != 0 && self$options$postHoc == "dscf") {
+                if (self$options$postHoc == "dscf") {
                     self$results$comp$pwTable$setNote("adj",.("DSCF p-values are adjusted groupwise."))
                 }
                 self$results$comp$pwTable$setStatus('complete')
             }
 
-            # Set image data
+            #### Set image data ####
             plotData <- list()
             plotData$mainData <- mainData
             plotData$variableLabels <- sapply(self$options$liks, FUN = private$.getVarName) #, USE.NAMES = FALSE)
@@ -523,12 +500,85 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             return(plot)
         },
+        .getVarName = function(aVar) {
+            if (self$options$descAsVarName) {
+                aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
+                if (!is.null(aVarName))
+                    return(aVarName)
+                else
+                    return(aVar)
+            } else {
+                return(aVar)
+            }
+        },
+        .computeFrequencies = function(ggLikertData, groupingVar, ng) {
+            ggLikertData <- ggLikertData |>
+                dplyr::filter(!is.na(.answer))
+            if (ng == 0) { # --- Cas SANS variable de groupe ---
+                freq_df <- ggLikertData |>
+                    dplyr::count(.question, .answer, .drop = FALSE) |>
+                    dplyr::group_by(.question) |>
+                    dplyr::mutate(Sum = sum(n))
+
+                if (self$options$frequencies == "percentages") {
+                    freq_df <- freq_df |> dplyr::mutate(n = ifelse(Sum == 0, 0, n / Sum))
+                }
+
+                freq_wide <- freq_df |>
+                    tidyr::pivot_wider(names_from = .answer, values_from = n, values_fill = 0)
+
+            } else { # --- Cas AVEC variable de groupe ---
+                group_sym <- rlang::sym(groupingVar)
+                freq_df <- ggLikertData |>
+                    dplyr::count(.question, !!group_sym, .answer, .drop = FALSE) |>
+                    dplyr::group_by(.question, !!group_sym) |>
+                    dplyr::mutate(Sum = sum(n))
+
+                if (self$options$frequencies == "percentages") {
+                    freq_df <- freq_df |> dplyr::mutate(n = ifelse(Sum == 0, 0, n / Sum))
+                }
+
+                freq_wide <- freq_df |>
+                    tidyr::pivot_wider(names_from = .answer, values_from = n, values_fill = 0)
+            }
+
+            return(freq_wide)
+        },
+        .mannU = function(var, group, data, level1=1, level2=2) { # Two groups
+            variable <- jmvcore::toNumeric(data[[var]])
+            gLevels <- levels(data[[group]])
+            group1 <- na.omit(variable[data[[group]] == gLevels[level1]])
+            group2 <- na.omit(variable[data[[group]] == gLevels[level2]])
+            n1 <- length(group1)
+            n2 <- length(group2)
+            if (n1 > 1 && n2 > 1) {
+                res <- wilcox.test(group1, group2)
+                statistic <- min(res$statistic, n1 * n2 - res$statistic)
+                return(list('statistic' = statistic, 'p.value' = res$p.value))
+            } else {
+                return(list('statistic' = NA, 'p.value' = NA))
+            }
+        },
+        .kruskalW = function(var, group, data) {
+            variable <- jmvcore::toNumeric(data[[var]])
+            group <- data[[group]]
+            tryCatch(
+                kruskal.test(variable, group),
+                error = function(e) list(p.value = NA)
+            )
+        },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/dscfAllPairsTest.R
         .dscfAllPairsTest = function(x, g){
             OK <- complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
+            # vijPlots: drop empty levels
+            g <- droplevels(g)
             k <- nlevels(g)
+            # vijPlots: return empty result if less than 2 groups
+            if (k < 2) {
+                return( list(p.values = list(), statistics = list()) )
+            }
             n <- tapply(x, g, length)
             glev <- levels(g)
             ## Function to get ties for tie adjustment
@@ -563,6 +613,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             PSTAT <- pairwise.table(compare.stats,levels(g), p.adjust.method="none")
             PVAL <- ptukey(abs(PSTAT), nmeans = k, df = Inf, lower.tail = FALSE)
             # vijPlots : change the format of result returned
+            # pairwise.table() = (k-1)×(k-1) triangular matrix
             p.values = list()
             statistics = list()
             for(i in 1:(k-1)) {
@@ -596,12 +647,18 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             OK <- complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
+            # vijPlots: drop empty levels
+            g <- droplevels(g)
             k <- nlevels(g)
+            # vijPlots: return empty result if less than 2 groups
+            if (k < 2) {
+                return( list(p.values = list(), statistics = list()) )
+            }
             x.rank <- rank(x)
             R.bar <- tapply(x.rank, g, mean,na.rm=T)
             R.n <- tapply(!is.na(x), g, length)
-            g.unique <- unique(g)
-            k <- length(g.unique)
+            # g.unique <- unique(g)
+            # k <- length(g.unique)
             n <- sum(R.n)
 
             ## Kruskal-Wallis statistic
@@ -660,13 +717,20 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             OK <- complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
+            # vijPlots: drop empty levels
+            g <- droplevels(g)
             k <- nlevels(g)
+            # vijPlots: return empty result if less than 2 groups
+            if (k < 2) {
+                return( list(p.values = list(), statistics = list()) )
+            }
             x.rank <- rank(x)
             R.bar <- tapply(x.rank, g, mean,na.rm=T)
             R.n <- tapply(!is.na(x), g, length)
-            g.unique <- unique(g)
-            k <- length(g.unique)
+            # g.unique <- unique(g)
+            # k <- length(g.unique)
             n <- sum(R.n)
+
             ## get the ties
             C <- gettiesDunn(x.rank)
             # if (C != 0) warning("Ties are present. z-quantiles were corrected for ties.")
@@ -688,7 +752,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             PVAL <- pairwise.table(compare.levels,levels(g), p.adjust.method = p.adjust.method)
 
-            # vijPlots : change the format of result returned
+            # vijPlots: change the format of result returned
             p.values = list()
             statistics = list()
             for(i in 1:(k-1)) {

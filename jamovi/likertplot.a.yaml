@@ -101,12 +101,6 @@ options:
       type: Bool
       default: true
 
-# textSize replaced with labelSize
-    - name: textSize
-      type: Number
-      title: Label
-      hidden: true
-
     - name: labelSize
       type: Number
       title: Label
@@ -249,8 +243,6 @@ options:
       title: Post Hoc Tests
       type: List
       options:
-#        - title: Mann-Whitney U
-#          name:  mannwhitney
         - title: Conover
           name:  conover
         - title: Dunn

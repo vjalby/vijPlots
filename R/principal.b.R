@@ -60,9 +60,6 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(TRUE)
             }
 
-            # Set variable names
-            #private$.setVarNames(c(self$options$vars, self$options$labelVar, self$options$groupVar))
-
             #### Prepare data ####
             data <- self$data[,c(self$options$vars, self$options$labelVar, self$options$groupVar)]
             # Be sure data is numeric (for ordinal data)
@@ -72,16 +69,33 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # remove cases with NA in vars
             data <- data[complete.cases(data[,self$options$vars]),]
 
-            # Verify that cor Matrice is positive definite
+            if (nrow(data) < 2) {
+                vijErrorMessage(self, .("Not enough complete observations to perform PCA."))
+                return(TRUE)
+            }
+
+            # Compute the correlation matrix
             corrMat <- cor(data[,self$options$vars])
+
+            if (anyNA(corrMat)) {
+                vijErrorMessage(self, .("Unable to compute the correlation matrix."))
+                return(TRUE)
+            }
+
             if (abs(det(corrMat)) < .Machine$double.eps) {
                 vijWarningMessage(self, .("The correlation matrix is not positive definite. Computations may not be accurate."))
             }
 
             #### KMO & Bartlett's test ####
             if (self$options$showKMO) {
-                kmo <- psych::KMO(corrMat)
-                bartlett <- psych::cortest.bartlett(corrMat, n = nrow(data))
+                kmo <- tryCatch(
+                            psych::KMO(corrMat),
+                            error = function (e) list(MSA = NA)
+                        )
+                bartlett <- tryCatch(
+                                psych::cortest.bartlett(corrMat, n = nrow(data)),
+                                error = function (e) list(cf = NA, p.value = NA)
+                            )
 
                 self$results$kmoTable$setRow(rowNo = 1,
                                              values = list(test = .("Bartlett's Test of Sphericity"),
@@ -94,8 +108,15 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### PCA computation ####
-            res <- private$.pca(data[,self$options$vars], scale = self$options$stdVariables,
-                               nfact = nDim, rotation = self$options$rotation)
+            res <- tryCatch(
+                        private$.pca(data[,self$options$vars], scale = self$options$stdVariables,
+                               nfact = nDim, rotation = self$options$rotation),
+                        error = function (e) NULL
+                    )
+            if (is.null(res)) {
+                vijErrorMessage(self, .("Unable to compute principal components for the selected variables."))
+                return(TRUE)
+            }
 
             if (!is.null(self$options$labelVar)) {
                 rownames(res$scores) <- data[[self$options$labelVar]]
@@ -174,7 +195,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Loading Table ####
             if (self$options$showLoadings) {
                 for(i in 1:nDim) {
-                    self$results$loadingTable$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = "Component", type = "number", format = "zto")
+                    self$results$loadingTable$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = "Component", type = "number") #, format = "zto")
                 }
                 self$results$loadingTable$addColumn(name = "QLT",
                                                     title = "Extraction", #ifelse(self$options$stdVariables, "Communalities", "Explained"),
@@ -206,7 +227,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!is.null(self$options$groupVar))
                     self$results$obsTable$addColumn("group", title = private$.getVarName(self$options$groupVar), type = "text")
                 for(i in 1:nDim) {
-                    self$results$obsTable$addColumn(as.character(i), title = as.character(i), , superTitle = "Component", type = "number", format = "zto")
+                    self$results$obsTable$addColumn(as.character(i), title = as.character(i), superTitle = "Component", type = "number") #, format = "zto")
                 }
                 self$results$obsTable$addColumn("qlt", title = "Extraction", type = "number", format = "zto")
 
@@ -334,6 +355,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     res$scores <- cbind(as.data.frame(res$scores), group = res$group)
 
                 obsData <- as.data.frame(res$scores)
+                obsData$Label <- rownames(obsData)
 
                 if (self$options$labelColor == "none")
                     labelColor <- self$options$obsColor
@@ -346,17 +368,17 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 c2 <- ensym(c2)
 
                 if (!is.null(self$options$groupVar)) {
-                    plot <- plot + geom_point(data = obsData, aes(x = !!c1, y = !!c2, label = rownames(obsData), color = group), size = self$options$pointSize)
+                    plot <- plot + geom_point(data = obsData, aes(x = !!c1, y = !!c2, color = group), size = self$options$pointSize)
                 } else {
-                    plot <- plot + geom_point(data = obsData, aes(x = !!c1, y = !!c2, label = rownames(obsData)), color = self$options$obsColor, size = self$options$pointSize)
+                    plot <- plot + geom_point(data = obsData, aes(x = !!c1, y = !!c2), color = self$options$obsColor, size = self$options$pointSize)
                 }
                 if (!is.null(self$options$labelVar)) {
                     if (!is.null(self$options$groupVar) && self$options$labelColor == "none") {
-                        plot <- plot + ggrepel::geom_text_repel(data = obsData, aes(x = !!c1, y = !!c2, label = rownames(obsData), color = group),
+                        plot <- plot + ggrepel::geom_text_repel(data = obsData, aes(x = !!c1, y = !!c2, label = Label, color = group),
                                                                 check_overlap = TRUE, box.padding = 0.4, min.segment.length = 0.6,
                                                                 size = self$options$obsLabelSize/.pt)
                     } else {
-                        plot <- plot + ggrepel::geom_text_repel(data = obsData, aes(x = !!c1, y = !!c2, label = rownames(obsData)),
+                        plot <- plot + ggrepel::geom_text_repel(data = obsData, aes(x = !!c1, y = !!c2, label = Label),
                                                                 check_overlap = TRUE, color = labelColor, box.padding = 0.4, min.segment.length = 0.6,
                                                                 size = self$options$obsLabelSize/.pt)
                     }
@@ -368,6 +390,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$biplotStretch && plotType == "biplot")
                     res$loadings <- res$loadings * self$options$biplotStretchFactor
                 varData <- as.data.frame.array(res$loadings)
+                varData$Label <- rownames(varData)
 
                 if (self$options$labelColor == "none")
                     labelColor <- self$options$varColor
@@ -383,7 +406,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + geom_segment(data = varData, aes(x = 0, y = 0, xend = !!c1, yend = !!c2),
                                             arrow = arrow(length = unit(0.05, "inches"), type = "closed"),
                                             color = self$options$varColor, size = 0.8)
-                plot <- plot + ggrepel::geom_text_repel(data = varData, aes(x = !!c1, y = !!c2, label = rownames(varData)),
+                plot <- plot + ggrepel::geom_text_repel(data = varData, aes(x = !!c1, y = !!c2, label = Label),
                                                         check_overlap = TRUE, min.segment.length = 2,
                                                         position = ggpp::position_nudge_center(x = 0.2, y = 0.01, center_x = 0, center_y = 0),
                                                         size = self$options$varLabelSize/.pt, color = labelColor, fontface="bold")

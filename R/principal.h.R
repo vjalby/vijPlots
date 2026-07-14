@@ -742,7 +742,8 @@ principalResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Principal Component Analysis",
                 refs=list(
                     "greenacre",
-                    "gpa"))
+                    "gpa",
+                    "psych"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="summaryTable",

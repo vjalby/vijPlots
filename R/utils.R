@@ -205,7 +205,7 @@ vijErrorMessage = function(self, errorMessage) {
     self$results$insert(1, errorNotice)
 }
 
-vijWarningMessage = function(self, debugMessage, name = '.warning') {
+vijWarningMessage = function(self, warningMessage, name = '.warning') {
     warningNotice <- jmvcore::Notice$new(self$options, type = jmvcore::NoticeType$WARNING, name = name, content = warningMessage)
     self$results$insert(1, warningNotice)
 }

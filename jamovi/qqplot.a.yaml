@@ -59,7 +59,7 @@ options:
       default: norm
 
     - name: transLog
-      title: Natural log tranform
+      title: Natural log transform
       type: Bool
       default: false
 
@@ -86,7 +86,7 @@ options:
           name:  ell
         - title: Pointwise
           name:  pointwise
-        - title: Boostrap
+        - title: Bootstrap
           name:  boot
         - title: Kolmogorov-Smirnov
           name:  ks
@@ -100,7 +100,7 @@ options:
       options:
         - title: "Equal Local Levels"
           name:  ell
-        - title: Boostrap
+        - title: Bootstrap
           name:  boot
       default: ell
 

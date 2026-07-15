@@ -213,7 +213,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Normalisation ####
             normalizationString <- switch(self$options$normalization,
                                           principal = .("Principal normalization"),
-                                          symmetric = .("Symetric normalization"),
+                                          symmetric = .("Symmetric normalization"),
                                           rowprincipal = .("Row principal normalization"),
                                           colprincipal = .("Column principal normalization"),
                                           standard = .("Standard normalization")
@@ -628,10 +628,10 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <li>or a <strong>Contingency table</strong></li>
 </ul>
 <p><strong>Supplementary row or column</strong> numbers may be entered as integer lists : 1,3,6</p>
-<p>Four normalizations (scaling of row and column scores before plotting) are avalaible :</p>
+<p>Four normalizations (scaling of row and column scores before plotting) are available :</p>
 <ul>
-<li><strong>Principal:</strong> Row an columns scores are scaled by eigenvalues.</li>
-<li><strong>Symmetric:</strong> Row an columns scores are scaled by the square root of eigenvalues. </li>
+<li><strong>Principal:</strong> Row and column scores are scaled by eigenvalues.</li>
+<li><strong>Symmetric:</strong> Row and column scores are scaled by the square root of eigenvalues. </li>
 <li><strong>Row Principal:</strong> Only row scores are scaled by eigenvalues.</li>
 <li><strong>Column Principal:</strong> Only column scores are scaled by eigenvalues.</li>
 <li><strong>Standard:</strong> The raw coordinates without normalization.</li>

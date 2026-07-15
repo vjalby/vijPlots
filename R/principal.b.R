@@ -601,7 +601,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .showHelpMessage = function() {
             helpMsg <- .('<p>This module computes <strong>Principal Component Analysis (PCA)</strong> for several continuous variables. Computations are based on <tt>stats::prcomp</tt> function.</p>
 <p>Although rotated components are not principal components, they are widely used. Only orthogonal rotations are available (from GPArotation package).</p>
-<p>Loadings (variable coordinates) and scores (observation coordinates) are principal (scaled by the squareroot of eigenvalues).</p>
+<p>Loadings (variable coordinates) and scores (observation coordinates) are principal (scaled by the square root of eigenvalues).</p>
 <p>Biplot follows "Biplots in Practice" (Michael Greenacre, 2010):</p>
 <ul>
 <li><strong>Form biplot:</strong> Scores are principal (scaled by eigenvalues) while loadings are standard.</li>

@@ -97,7 +97,7 @@ options:
       default: true
 
     - name: showDiscriminations
-      title: Variable dicriminations
+      title: Variable discriminations
       type: Bool
       default: false
 
@@ -112,7 +112,7 @@ options:
       default: false
 
     - name: showDiscriminationPlot
-      title: Variable dicriminations
+      title: Variable discriminations
       type: Bool
       default: false
 

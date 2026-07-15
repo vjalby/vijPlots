@@ -76,7 +76,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             varMin <- min(plotData[[depVar]])
             varMax <- max(plotData[[depVar]])
             if (self$options$transLog && !is.finite(varMin))
-                errorMessage <- .("Natural Log Tranform requires positive (>0) data.")
+                errorMessage <- .("Natural Log Transform requires positive (>0) data.")
             else if (varMin <= 0 && distrib %in% c("lnorm", "chisq", "f", "gamma", "weibull"))
                 errorMessage <- jmvcore::format(.("{distrib} distribution requires positive (>0) data."), distrib = private$.distTitleName(distrib))
             else if (varMin < 0 && distrib == "exp")

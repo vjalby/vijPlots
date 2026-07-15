@@ -551,7 +551,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             group2 <- na.omit(variable[data[[group]] == gLevels[level2]])
             n1 <- length(group1)
             n2 <- length(group2)
-            if (n1 > 1 && n2 > 1) {
+            if (n1 > 0 && n2 > 0) {
                 res <- wilcox.test(group1, group2)
                 statistic <- min(res$statistic, n1 * n2 - res$statistic)
                 return(list('statistic' = statistic, 'p.value' = res$p.value))
@@ -779,9 +779,9 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <ul>
 <li><strong>Mann-Whitney U:</strong> Two group comparison</li>
 <li><strong>Kruskal-Wallis:</strong> n group comparison</li>
-<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) paiwise comparisons tests.</li>
+<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>
 </ul>
-<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for MannWithney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>
+<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>
 <p>A sample file is included at Open > Data Library > vijPlots > Likert</p>')
             vijHelpMessage(self, helpMsg)
         }

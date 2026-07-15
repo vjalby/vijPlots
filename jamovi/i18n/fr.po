@@ -148,11 +148,11 @@ msgid ""
 "<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n"
 "<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n"
 "<li><strong>Post Hoc Tests:</strong> Dunn, Conover and "
-"Dwass-Steel-Critchlow-Fligner (DSCF) paiwise comparisons tests.</li>\n"
+"Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>\n"
 "</ul>\n"
 "<p>The p-values can be adjusted <strong>groupwise</strong> (for each "
 "question) for post hoc tests or <strong>overall</strong> (groupwise and "
-"questionwise) for MannWithney U, Kruskal-Wallis and post hoc tests. DSCF "
+"questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF "
 "p-values are already adjusted (groupwise); no other adjustment is "
 "possible.</p>\n"
 "<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>"
@@ -206,11 +206,11 @@ msgid ""
 "<p><strong>Supplementary row or column</strong> numbers may be entered as "
 "integer lists : 1,3,6</p>\n"
 "<p>Four normalizations (scaling of row and column scores before plotting) "
-"are avalaible :</p>\n"
+"are available :</p>\n"
 "<ul>\n"
-"<li><strong>Principal:</strong> Row an columns scores are scaled by "
+"<li><strong>Principal:</strong> Row and column scores are scaled by "
 "eigenvalues.</li>\n"
-"<li><strong>Symmetric:</strong> Row an columns scores are scaled by the "
+"<li><strong>Symmetric:</strong> Row and column scores are scaled by the "
 "square root of eigenvalues. </li>\n"
 "<li><strong>Row Principal:</strong> Only row scores are scaled by "
 "eigenvalues.</li>\n"
@@ -330,7 +330,7 @@ msgid ""
 "used. Only orthogonal rotations are available (from GPArotation "
 "package).</p>\n"
 "<p>Loadings (variable coordinates) and scores (observation coordinates) are "
-"principal (scaled by the squareroot of eigenvalues).</p>\n"
+"principal (scaled by the square root of eigenvalues).</p>\n"
 "<p>Biplot follows \"Biplots in Practice\" (Michael Greenacre, 2010):</p>\n"
 "<ul>\n"
 "<li><strong>Form biplot:</strong> Scores are principal (scaled by "
@@ -578,7 +578,7 @@ msgstr "10/20/35"
 #: areachart/options/dateBreak/100year.title
 #: linechart/options/dateBreak/100year.title
 msgid "100 years"
-msgstr ""
+msgstr "100 ans"
 
 #: areachart/options/dateBreak/2week.title
 #: linechart/options/dateBreak/2week.title
@@ -593,7 +593,7 @@ msgstr "20 octobre 2035"
 #: areachart/options/dateBreak/20year.title
 #: linechart/options/dateBreak/20year.title
 msgid "20 years"
-msgstr ""
+msgstr "20 ans"
 
 #: areachart/options/displayFormat/%d-%m-%Y.title
 #: linechart/options/displayFormat/%d-%m-%Y.title
@@ -628,7 +628,7 @@ msgstr "2035-10-20"
 #: areachart/options/dateBreak/25year.title
 #: linechart/options/dateBreak/25year.title
 msgid "25 years"
-msgstr ""
+msgstr "25 ans"
 
 #: areachart/options/dateBreak/3month.title
 #: linechart/options/dateBreak/3month.title
@@ -638,12 +638,12 @@ msgstr "3 mois"
 #: areachart/options/dateBreak/5year.title
 #: linechart/options/dateBreak/5year.title
 msgid "5 years"
-msgstr ""
+msgstr "5 ans"
 
 #: areachart/options/dateBreak/50year.title
 #: linechart/options/dateBreak/50year.title
 msgid "50 years"
-msgstr ""
+msgstr "50 ans"
 
 #: areachart/options/dateBreak/6month.title
 #: linechart/options/dateBreak/6month.title
@@ -1165,8 +1165,8 @@ msgstr "Bonferroni"
 
 #: qqplot/options/methodQQ/boot.title
 #: qqplot/options/methodPP/boot.title
-msgid "Boostrap"
-msgstr "Boostrap"
+msgid "Bootstrap"
+msgstr "Bootstrap"
 
 #: barchart/options/borderColor.title
 #: barplot/options/borderColor.title
@@ -1577,12 +1577,6 @@ msgid "Comparison Tests"
 msgstr "Tests de comparaison"
 
 #: R/likertplot.b.R
-msgid "Comparison tests cannot be computed with empty (N=0) groups"
-msgstr ""
-"Les tests de comparaison ne peuvent pas être appliqués avec des groupes "
-"vides."
-
-#: R/likertplot.b.R
 msgid "Comparison tests require numeric variables"
 msgstr "Les tests de comparaison nécessitent des variables numériques."
 
@@ -1776,7 +1770,7 @@ msgstr "Données"
 
 #: qqplot/ui[2][0][1].label
 msgid "Data Transform"
-msgstr "Tranformation des données"
+msgstr "Transformation des données"
 
 #: areachart/options/dateBreak.title
 #: linechart/options/dateBreak.title
@@ -2349,7 +2343,6 @@ msgstr "Grouper par"
 
 #: barchart/options/barType/dodge2.title
 #: barplot/options/barType/dodge2.title
-#: histogram/options/grouping/dodge.title
 #: mrcrosstabs/options/bartype/dodge2.title
 msgid "Grouped"
 msgstr "Groupé"
@@ -2360,7 +2353,6 @@ msgstr "Groupé"
 msgid "Grouped (tight)"
 msgstr "Groupé (serré)"
 
-#: histogram/options/grouping.title
 #: histogram/options/groupingN.title
 #: histogram/ui[1][2][0].label
 msgid "Grouping"
@@ -2432,6 +2424,7 @@ msgstr "Droite identitée"
 
 #: barchart/options/ignoreNA.title
 #: likertplot/options/ignoreNA.title
+#: raincloud/options/ignoreNA.title
 msgid "Ignore missing groups"
 msgstr "Ignorer les groupes manquants"
 
@@ -2676,7 +2669,6 @@ msgstr "Tests de Kruskal-Wallis"
 #: boxplot/options/labSize.title
 #: boxplot/ui[0][2].label
 #: corresp/options/labelSize.title
-#: likertplot/options/textSize.title
 #: likertplot/options/labelSize.title
 #: mrcrosstabs/options/labelFontSize.title
 #: mrfrequencies/options/labelFontSize.title
@@ -3368,11 +3360,11 @@ msgid "Name"
 msgstr "Nom"
 
 #: qqplot/options/transLog.title
-msgid "Natural log tranform"
+msgid "Natural log transform"
 msgstr "Transformation logarithme népérien"
 
 #: R/qqplot.b.R
-msgid "Natural Log Tranform requires positive (>0) data."
+msgid "Natural Log Transform requires positive (>0) data."
 msgstr "La transformation logarithmique nécessite des données strictement positives."
 
 #: R/principal.b.R
@@ -3390,7 +3382,6 @@ msgstr "Aucune rotation appliquée."
 #: boxplot/ui[1][1][0]/order_none.label
 #: histogram/options/fillColor/none.title
 #: histogram/options/borderColor/none.title
-#: histogram/options/grouping/none.title
 #: likertplot/options/sorting/none.title
 #: likertplot/options/pValue/none.title
 #: likertplot/ui[1][1][0]/sorting_none.label
@@ -3475,6 +3466,10 @@ msgstr "Courbe normale"
 #: principal/ui[7][0][0][0].label
 msgid "Normalization"
 msgstr "Normalisation"
+
+#: R/principal.b.R
+msgid "Not enough complete observations to perform PCA."
+msgstr "Nombre d'observations insuffisant pour procéder à une ACP."
 
 #: boxplot/options/notchWidth.title
 msgid "Notch width"
@@ -3722,7 +3717,6 @@ msgid "Overall (all groups)"
 msgstr "Ensemble des groupes"
 
 #: areachart/options/position/identity.title
-#: histogram/options/grouping/identity.title
 #: histogram/options/groupingN/identity.title
 #: histogram/ui[1][2][0]/groupingN_identity.label
 msgid "Overlapping"
@@ -4887,7 +4881,6 @@ msgstr "Total"
 #: areachart/options/position/stack.title
 #: barchart/options/barType/stack.title
 #: barplot/options/barType/stack.title
-#: histogram/options/grouping/stack.title
 #: histogram/options/groupingN/stack.title
 #: histogram/ui[1][2][0]/groupingN_stack.label
 #: likertplot/options/type/stacked.title
@@ -5076,10 +5069,6 @@ msgstr "Variables supplémentaires"
 #: multcorresp/ui[0][1].label
 msgid "Supplementary Variables"
 msgstr "Variables supplémentaires"
-
-#: R/corresp.b.R
-msgid "Symetric normalization"
-msgstr "Normalisation symétrique"
 
 #: corresp/options/normalization/symmetric.title
 msgid "Symmetric"
@@ -5429,6 +5418,16 @@ msgstr "Considérer les valeurs vides comme manquantes"
 msgid "Type"
 msgstr "Type"
 
+#: R/principal.b.R
+msgid "Unable to compute principal components for the selected variables."
+msgstr ""
+"Impossible de calculer les composantes principales pour les variables "
+"sélectionnées."
+
+#: R/principal.b.R
+msgid "Unable to compute the correlation matrix."
+msgstr "Impossible de calculer la matrice de corrélation."
+
 #: R/qqplot.b.R
 msgid "Unable to estimate the distribution parameters."
 msgstr "Impossible d'estimer les paramètres de la distribution."
@@ -5512,7 +5511,7 @@ msgstr "Variable"
 
 #: multcorresp/options/showDiscriminations.title
 #: multcorresp/options/showDiscriminationPlot.title
-msgid "Variable dicriminations"
+msgid "Variable discriminations"
 msgstr "Discrimination des variables"
 
 #: multcorresp/results/discrim.title

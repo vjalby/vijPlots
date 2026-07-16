@@ -1171,6 +1171,9 @@
             "Not enough complete observations to perform PCA.": [
                 "Nombre d'observations insuffisant pour procéder à une ACP."
             ],
+            "Not enough data to compute CA.": [
+                "Données insuffisantes pour effectuer une analyse des correspondances"
+            ],
             "Notch width": [
                 "Largeur de l'encoche"
             ],
@@ -1684,6 +1687,9 @@
             "Solution": [
                 "Solution"
             ],
+            "Some values are missing from the contingency table.": [
+                "Le tableau de contingence contient des données manquantes."
+            ],
             "Sort Variables by Median": [
                 "Trier les variables selon la médiane"
             ],
@@ -1855,6 +1861,9 @@
             "The number of dimensions cannot be greater than the number of variables.": [
                 "Le nombre de dimensions ne peut pas être supérieur au nombre de variables."
             ],
+            "The χ2 statistic is equal to zero.": [
+                "La statistique du χ2 est égale à 0 !"
+            ],
             "Theoretical Probabilities": [
                 "Probabilités théoriques"
             ],
@@ -1918,11 +1927,17 @@
             "Type": [
                 "Type"
             ],
+            "Unable to compute correspondence analysis for the selected data.": [
+                "Impossible d'effectuer l'analyse des correspondances des données sélectionnées."
+            ],
             "Unable to compute principal components for the selected variables.": [
                 "Impossible de calculer les composantes principales pour les variables sélectionnées."
             ],
             "Unable to compute the correlation matrix.": [
                 "Impossible de calculer la matrice de corrélation."
+            ],
+            "Unable to compute the χ2 statistic.": [
+                "Impossible de calculer la statistique du χ2."
             ],
             "Unable to estimate the distribution parameters.": [
                 "Impossible d'estimer les paramètres de la distribution."

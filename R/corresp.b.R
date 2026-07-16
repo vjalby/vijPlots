@@ -129,9 +129,13 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     contingencyTable <- table(self$data[[rowVarName]], self$data[[colVarName]])
                 }
             } else { # self$options$mode == "contTable"
-                if (is.null(self$options$rowLabels) || length(self$options$columns) < 3)
+                if (is.null(self$options$rowLabels) || length(self$options$columns) < 3 || nrow(self$data) < 3)
                     return()
                 contingencyTable <- self$data[,self$options$columns]
+                if (anyNA(contingencyTable)) {
+                    vijErrorMessage(self, .("Some values are missing from the contingency table."))
+                    return()
+                }
                 row.names(contingencyTable) <- self$data[[self$options$rowLabels]]
                 contingencyTable <- as.matrix(contingencyTable)
                 # Set variable names
@@ -140,8 +144,6 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 colVarName <- self$options$columnTitle
                 colVarNameString <- colVarName
             }
-
-            #self$results$text$setContent(contingencyTable)
 
             #### Supplementary Rows & Column ####
 
@@ -191,6 +193,10 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Solution dimension
             maxDim = min(nrow(contingencyTable)-length(supplementaryRows), ncol(contingencyTable)-length(supplementaryCols)) - 1
+            if (maxDim < 2) {
+                vijErrorMessage(self, .("Not enough data to compute CA."))
+                return(TRUE)
+            }
             nDim <-self$options$dimNum
             if (nDim > maxDim) {
                 errorMessage <- jmvcore::format(.("Number of dimensions must be less than or equal to {maxDim}."), maxDim = maxDim)
@@ -281,12 +287,22 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             activeContingencyTable <- contingencyTable
             if (!is.null(supplementaryRows))
-                activeContingencyTable <- activeContingencyTable[-supplementaryRows,]
+                activeContingencyTable <- activeContingencyTable[-supplementaryRows,, drop = FALSE]
             if (!is.null(supplementaryCols))
-                activeContingencyTable <- activeContingencyTable[,-supplementaryCols]
-            chisqres <- chisq.test(activeContingencyTable)
-            if (round(chisqres$statistic,2) == 0)
-                return()
+                activeContingencyTable <- activeContingencyTable[,-supplementaryCols, drop = FALSE]
+            chisqres <- tryCatch(
+                            chisq.test(activeContingencyTable),
+                            error = function (e) NULL
+                        )
+
+            if (is.null(chisqres) || !is.finite(chisqres$statistic) ) {
+                vijErrorMessage(self, .("Unable to compute the χ2 statistic."))
+                return(TRUE)
+            }
+            if (round(chisqres$statistic,2) == 0) {
+                vijErrorMessage(self, .("The χ2 statistic is equal to zero."))
+                return(TRUE)
+            }
 
             #### Compute CA ####
             if (is.null(supplementaryRows))
@@ -298,7 +314,15 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 supcol <- supplementaryCols
 
-            res <- private$.ca(contingencyTable, row.sup = suprow, col.sup = supcol, ncp = nDim, norm = self$options$normalization)
+            res <- tryCatch(
+                    private$.ca(contingencyTable, row.sup = suprow, col.sup = supcol, ncp = nDim, norm = self$options$normalization),
+                    error = function (e) NULL
+                )
+
+            if (is.null(res) ) {
+                vijErrorMessage(self, .("Unable to compute correspondence analysis for the selected data."))
+                return(TRUE)
+            }
 
             #### Inertia Table ####
             # Populate the inertia table
@@ -530,7 +554,8 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             dim2name <- paste0(.("Dimension"), " ", yaxis, " (", percentInertia[yaxis], '\u2009%)')
 
             # Building the plot
-            plot <-  ggplot(ptcoord, aes(x = ptcoord[,xaxisdim], y = ptcoord[,yaxisdim], color = ptcoord$sup, shape = ptcoord$sup))
+            #plot <-  ggplot(ptcoord, aes(x = ptcoord[,xaxisdim], y = ptcoord[,yaxisdim], color = ptcoord$sup, shape = ptcoord$sup))
+            plot <-  ggplot(ptcoord, aes(x = .data[[xaxisdim]], y = .data[[yaxisdim]], color = .data[["sup"]], shape = .data[["sup"]]))
             plot <- plot + geom_point()
             plot <- plot + ggrepel::geom_text_repel(aes(label = rownames(ptcoord)), show.legend = FALSE, size = self$options$labelSize/.pt)
             plot <- plot + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2)
@@ -549,7 +574,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + guides(color = "none", shape = "none")
 
             # Plot frame
-            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, size = 1))
+            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, linewidth = 1))
 
             # Plot title
             title <- switch(plotType,
@@ -572,8 +597,8 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             defaults <- list(title = title, subtitle = subtitle, y = dim2name, x = dim1name)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)
 
+            vijDebugMessage(self, plot)
 
-            #self$results$text$setContent(plot) # show debug message
             return(plot)
         },
         .rowplot = function(image, ggtheme, theme, ...) {

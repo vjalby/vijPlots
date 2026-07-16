@@ -3471,6 +3471,10 @@ msgstr "Normalisation"
 msgid "Not enough complete observations to perform PCA."
 msgstr "Nombre d'observations insuffisant pour procéder à une ACP."
 
+#: R/corresp.b.R
+msgid "Not enough data to compute CA."
+msgstr "Données insuffisantes pour effectuer une analyse des correspondances"
+
 #: boxplot/options/notchWidth.title
 msgid "Notch width"
 msgstr "Largeur de l'encoche"
@@ -4833,6 +4837,10 @@ msgstr "Lisse"
 msgid "Solution"
 msgstr "Solution"
 
+#: R/corresp.b.R
+msgid "Some values are missing from the contingency table."
+msgstr "Le tableau de contingence contient des données manquantes."
+
 #: likertplot/options/sorting.title
 #: likertplot/ui[1][1][0].label
 msgid "Sort Variables by Median"
@@ -5148,6 +5156,10 @@ msgstr "Le nombre de dimensions ne peut pas être supérieur à {max}."
 msgid "The number of dimensions cannot be greater than the number of variables."
 msgstr "Le nombre de dimensions ne peut pas être supérieur au nombre de variables."
 
+#: R/corresp.b.R
+msgid "The χ2 statistic is equal to zero."
+msgstr "La statistique du χ2 est égale à 0 !"
+
 #: R/qqplot.b.R
 msgid "Theoretical Probabilities"
 msgstr "Probabilités théoriques"
@@ -5418,6 +5430,10 @@ msgstr "Considérer les valeurs vides comme manquantes"
 msgid "Type"
 msgstr "Type"
 
+#: R/corresp.b.R
+msgid "Unable to compute correspondence analysis for the selected data."
+msgstr "Impossible d'effectuer l'analyse des correspondances des données sélectionnées."
+
 #: R/principal.b.R
 msgid "Unable to compute principal components for the selected variables."
 msgstr ""
@@ -5427,6 +5443,10 @@ msgstr ""
 #: R/principal.b.R
 msgid "Unable to compute the correlation matrix."
 msgstr "Impossible de calculer la matrice de corrélation."
+
+#: R/corresp.b.R
+msgid "Unable to compute the χ2 statistic."
+msgstr "Impossible de calculer la statistique du χ2."
 
 #: R/qqplot.b.R
 msgid "Unable to estimate the distribution parameters."

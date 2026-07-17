@@ -617,7 +617,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         },
         .showHelpMessage = function() {
-            helpMsg <- .('<p>This module computes <strong>Multiple Correspondence Analysis (MCA)</strong> for several categorical variables. Computations are based on <a href = "https://CRAN.R-project.org/package=FactoMineR" target="_blank">FactoMineR<a/> package by F.&nbsp;Husson, J.&nbsp;Josse, S.&nbsp;Le, J.&nbsp;Mazet.</p>
+            helpMsg <- .('<p>This module computes <strong>Multiple Correspondence Analysis (MCA)</strong> for several categorical variables. Computations are based on <a href = "https://CRAN.R-project.org/package=FactoMineR" target="_blank">FactoMineR<a/> package by F. Husson, J. Josse, S. Le, J. Mazet.</p>
 <p>Both classic methods are available:</p>
 <ul>
 <li><strong>Indicator matrix:</strong> CA of the indicator matrix</li>

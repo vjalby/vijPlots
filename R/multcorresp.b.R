@@ -48,7 +48,14 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 supplIdx <- (length(activeVars)+1):(length(allVars))
 
             # remove cases with with NA in vars
-            data <- self$data[complete.cases(self$data[,allVars]),]
+            data <- self$data[complete.cases(self$data[, allVars, drop = FALSE]), , drop = FALSE]
+            data <- droplevels(data)
+
+            if (nrow(data) == 0) {
+                vijErrorMessage(self, .("Unable to compute MCA because of too many missing values."))
+                return(TRUE)
+            }
+
 
             # list of ordered factors (used to draw path)
             ordVars <- c()
@@ -77,7 +84,16 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Compute MCA ####
 
-            res <- private$.mca(data[,allVars], method = method, nd = nDim, supcol = supplIdx, rowlabels = rowLabels, rownames = rownames(data))
+            res <- tryCatch(
+                    private$.mca(data[,allVars], method = method, nd = nDim, supcol = supplIdx,
+                                 rowlabels = rowLabels, rownames = rownames(data)),
+                    error = function (e) NULL
+                )
+
+            if (is.null(res)) {
+                vijErrorMessage(self, .("Unable to compute MCA for the selected variables."))
+                return(TRUE)
+            }
 
             if (nDim > res$nd.max) {
                 errorMessage <- jmvcore::format(.("The number of dimensions cannot be greater than {max}."), max = res$nd.max)
@@ -118,7 +134,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         values["%G"] <- nullOrValue(res$adjEig[i,4])
                         values["C%G"] <- nullOrValue(res$adjEig[i,5])
                     }
-                    self$results$eigenvalues$addRow(i, values = values)
+                    self$results$eigenvalues$addRow(rowKey = as.character(i), values = values)
                 }
                 # Add total row
                 values = list(
@@ -137,8 +153,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     values["%G"] <- sum(res$adjEig[,4], na.rm=TRUE)
                     values["C%G"] <- NULL
                 }
-                self$results$eigenvalues$addRow(rowKey="Total", values = values)
-                self$results$eigenvalues$addFormat(rowKey="Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
+                self$results$eigenvalues$addRow(rowKey = "Total", values = values)
+                self$results$eigenvalues$addFormat(rowKey = "Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
             }
             self$results$eigenvalues$setNote("method", paste(.("Method:"), methodStr))
             if (method == "Burt" && self$options$GreenacreAdj)
@@ -154,7 +170,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     values[["var"]] <- rownames(res$allvar$eta2)[i]
                     for (j in seq(nDim))
                         values[[paste0("dim",j)]] <- res$allvar$eta2[i,j]
-                    self$results$discrim$addRow(rowKey = i, values = values)
+                    self$results$discrim$addRow(rowKey = as.character(i), values = values)
                 }
             }
             if (!is.null(supplIdx))
@@ -186,9 +202,9 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         values[[paste0("co2",j)]] <- res$cat$cos2[i,j]
                         values[[paste0("ctr",j)]] <- nullOrValue(res$cat$contrib[i,j])
                     }
-                    self$results$categories$addRow(rowKey = i, values = values)
+                    self$results$categories$addRow(rowKey = as.character(i), values = values)
                     if( res$cat$factors[i] != previousfactor) {
-                        self$results$categories$addFormat(rowKey = i, 1, jmvcore::Cell.BEGIN_END_GROUP)
+                        self$results$categories$addFormat(rowKey = as.character(i), 1, jmvcore::Cell.BEGIN_END_GROUP)
                         previousfactor <- res$cat$factors[i]
                     }
                 }
@@ -232,7 +248,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         values[[paste0("co2",j)]] <- res$ind$cos2[i,j]
                         values[[paste0("ctr",j)]] <- res$ind$contrib[i,j]
                     }
-                    self$results$observations$addRow(rowKey = i, values = values)
+                    self$results$observations$addRow(rowKey = as.character(i), values = values)
                 }
                 if (self$options$normalization %in% c("principal", "obsprincipal"))
                     self$results$observations$setNote("normalization",paste("† :",.("Principal coordinates")))
@@ -286,8 +302,10 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(supcol))
                 varNames <- varNames[-supcol]   # remove supplementary variables
             varFactors <- c()
-            for (aVar in varNames)
-                varFactors <- c(varFactors, rep(aVar, nlevels(factor(data[[aVar]]))))
+            for (aVar in varNames) {
+                #varFactors <- c(varFactors, rep(aVar, nlevels(factor(data[[aVar]]))))
+                varFactors <- c(varFactors, rep(aVar, nlevels(data[[aVar]]))) # unused levels are now dropped from the begining
+            }
             # Build the list of supplementary variable names for levels
             supSymbol <- "*"
             supFactors <- c()
@@ -300,15 +318,15 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             res$cat$factors <- c(varFactors, supFactors)
             # convert % to decimal
             res$eig[,2:3] <- res$eig[,2:3] / 100
-            res$var$contrib <- res$var$contrib[,] / 100
-            res$ind$contrib <- res$ind$contrib[,] / 100
+            res$var$contrib <- res$var$contrib / 100
+            res$ind$contrib <- res$ind$contrib / 100
             # var QLT
-            res$var$qlt <- rowSums(res$var$cos2[,1:nd])
+            res$var$qlt <- rowSums(res$var$cos2[,1:nd, drop = FALSE])
             # var Inertia
             varinertia <- res$var$contrib %*% res$eig[,1]
             res$var$inertia <- varinertia / sum(varinertia)
             # ind QLT
-            res$ind$qlt <- rowSums(res$ind$cos2[,1:nd])
+            res$ind$qlt <- rowSums(res$ind$cos2[,1:nd, drop = FALSE])
             # ind Inertia
             indinertia <- res$ind$contrib %*% res$eig[,1]
             res$ind$inertia <- indinertia / sum(indinertia)
@@ -320,20 +338,20 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Burt fixes ####
             if (method == "Burt") {
                 # var eta2
-                res$var$eta2 <- sweep(res$var$eta2, 2, res$eig[,1]/sqrt(res$eig[,1]), FUN = "*")
+                res$var$eta2 <- sweep(res$var$eta2, 2, sqrt(res$eig[,1]), FUN = "*")
                 ## MCA compute Pal Coordinates for Indicator Inertia only. So we have to rebuild std coordinates from
                 ## indicator-principal coordinates and redo the computation of co2 & qlt. contrib are unchanged. Inertia computed above is ok.
                 # Obs coordinates
                 res$ind$stdcoord <- sweep(res$ind$coord, 2, res$eig [,1]**(1/4), FUN = "/")
                 res$ind$coord <- sweep(res$ind$stdcoord, 2, sqrt(res$eig [,1]), FUN = "*")
                 # Obs CO2
-                res$ind$cos2 <- res$ind$coord**2 / rowSums(res$ind$coord**2)
-                res$ind$qlt <- rowSums(res$ind$cos2[,1:nd])
+                res$ind$cos2 <- sweep(res$ind$coord**2, 1, rowSums(res$ind$coord**2), FUN = "/")
+                res$ind$qlt <- rowSums(res$ind$cos2[,1:nd, drop = FALSE])
             }
 
             #### Supp Categories ####
             if (!is.null(supcol)) {
-                res$quali.sup$qlt <- rowSums(res$quali.sup$cos2[,1:nd])
+                res$quali.sup$qlt <- rowSums(res$quali.sup$cos2[,1:nd, drop = FALSE])
                 res$quali.sup$stdcoord <- sweep(res$quali.sup$coord, 2, sqrt(res$eig [,1]), FUN = "/")
             }
 

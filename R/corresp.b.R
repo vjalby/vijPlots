@@ -597,8 +597,6 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             defaults <- list(title = title, subtitle = subtitle, y = dim2name, x = dim1name)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)
 
-            vijDebugMessage(self, plot)
-
             return(plot)
         },
         .rowplot = function(image, ggtheme, theme, ...) {

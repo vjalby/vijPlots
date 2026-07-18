@@ -80,7 +80,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             yaxis <- self$options$yaxis
 
-
             if (self$options$order == "decreasing")
                 plotData[[category]] <- forcats::fct_infreq(plotData[[category]])
             else if (self$options$order == "increasing")
@@ -97,7 +96,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             suffix = '\u2009%',
                             decimal.mark = self$options[['decSymbol']])
             if (self$options$horizontal)
-                doNumber <- function(x){ifelse(x<10, paste0(" ",x), x)}
+                doNumber <- function(x) formatC(x, width = 2, format = "d")
             else
                 doNumber <- as.character
 
@@ -109,7 +108,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (singleColor) {
                 nbColors <- attr(vijPalette(self$options$colorPalette, "fill"),"nlevels")
-                colorNo <- self$options$colorNo
+                colorNo <- as.numeric(self$options$colorNo)
                 oneColorOfPalette <- vijPalette(self$options$colorPalette, "fill")(nbColors)[min(colorNo,nbColors)]
             }
 
@@ -242,17 +241,14 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Show unused levels (if checked in data/var setting)
-            plot <- plot + scale_x_discrete(drop = FALSE) #+ scale_fill_manual(drop = FALSE)
+            plot <- plot + scale_x_discrete(drop = FALSE)
 
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") { # Horizontal and manual
                     plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
                 } else {
-                    if (self$options$showLabels && self$options$labelPosition == "top")
-                        plot <- plot + coord_flip(clip = "off", ylim = layer_scales(plot)$y$get_limits()*1.1) # Gives more room for labels !
-                    else
-                        plot <- plot + coord_flip(clip = "off")
+                    plot <- plot + coord_flip(clip = "off")
                 }
             } else {
                 if (self$options$yAxisRangeType == "manual") {
@@ -262,13 +258,18 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
-            # Ticks
+            #### Ticks & Axis Expansion ####
+            expand_arg <- ggplot2::waiver() # Default ggplot behavior
+            if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
+                expand_arg <- expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
+            }
+
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct)
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct)
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
             } else {
-                plot <- plot  + scale_y_continuous(labels = labelFnct)
+                plot <- plot  + scale_y_continuous(labels = labelFnct, expand = expand_arg)
             }
 
             # facet
@@ -290,8 +291,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Legend position
             plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
-
-            #self$results$text$setContent(plot)
 
             return(plot)
 

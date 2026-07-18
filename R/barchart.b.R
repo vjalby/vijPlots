@@ -47,16 +47,16 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plotData <- self$data[c(self$options$yVar, self$options$xVar, self$options$group, self$options$facet)]
             plotData[[self$options$yVar]] <- jmvcore::toNumeric(plotData[[self$options$yVar]])
             # missing data
-            plotData <- subset(plotData, !is.na(plotData[self$options$yVar]))
+            plotData <- subset(plotData, !is.na(plotData[[self$options$yVar]]))
             # Remove case with missing group
-            if (!is.null(self$options$xVar) & self$options$ignoreNA) {
-                plotData <- subset(plotData, !is.na(plotData[self$options$xVar]))
+            if (!is.null(self$options$xVar) && self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[[self$options$xVar]]))
             }
-            if (!is.null(self$options$group) & self$options$ignoreNA) {
-                plotData <- subset(plotData, !is.na(plotData[self$options$group]))
+            if (!is.null(self$options$group) && self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[[self$options$group]]))
             }
-            if (!is.null(self$options$facet) & self$options$ignoreNA) {
-                plotData <- subset(plotData, !is.na(plotData[self$options$facet]))
+            if (!is.null(self$options$facet) && self$options$ignoreNA) {
+                plotData <- subset(plotData, !is.na(plotData[[self$options$facet]]))
             }
             if (nrow(plotData) == 0)
                 return()
@@ -80,12 +80,14 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 ffill <- xVar
             }
 
-            # barType / Position
+            #### barType / Position ####
             position <- self$options$barType
             if (is.null(groupVar))
                 position <- "dodge"
 
             stacked <- (position == "stack")
+            dodge2 <- (position == "dodge2")
+
             if (stacked) {
                 if (self$options$reverseStack) {
                     position <- position_stack()
@@ -94,11 +96,15 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     position <- position_stack(reverse = TRUE)
                     labPosition <- position_stack(vjust = 0.5, reverse = TRUE)
                 }
+            } else if (dodge2) {
+                position <- position_dodge2(preserve = "single", width = 0.9)
+                labPosition <- position_dodge2(preserve = "single", width = 0.9)
             } else {
+                position <- position_dodge(width = 0.9)
                 labPosition <- position_dodge(width = 0.9)
             }
 
-            # Single color
+            #### Single color ####
             singleColor <- self$options$singleColor
             if (!is.null(groupVar))
                 singleColor <- FALSE
@@ -107,20 +113,13 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 colorNo <- self$options$colorNo
                 oneColorOfPalette <- vijPalette(self$options$colorPalette, "fill")(nbColors)[min(colorNo,nbColors)]
             }
-            # Border color
+            #### Border color ####
             if (self$options$borderColor == "none")
-                borderColor = NA
+                borderColor <- NA
             else
-                borderColor = self$options$borderColor
+                borderColor <- self$options$borderColor
 
-            if (!is.null(self$options$facet)) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
-            } else {
-                facetVar <- NULL
-            }
-
-            # Order
+            #### Order ####
             orderFun <- self$options$yaxis
             if (self$options$order == "decreasing")
                 plot <- ggplot(plotData, aes(x = forcats::fct_reorder(!!xVar,!!yVar, .fun = orderFun, .desc = TRUE), y = !!yVar, group = !!groupVar, fill = !!ffill))
@@ -138,7 +137,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + stat_summary(fun = summaryFun, geom = "bar", position = position,
                                             color = borderColor)
 
-            # Value labels
+            #### Value labels ####
             if (self$options$showLabels) {
                 if (stacked) {
                     vjust <- 0.5
@@ -186,7 +185,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
-            # ErrorBars
+            #### ErrorBars ####
             errorBars <- self$options$errorBars
             if (stacked || orderFun != "mean")
                 errorBars <- "none"
@@ -197,33 +196,54 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else if (errorBars == "se") {
                 funData <- mean_cl_normal
                 funArgs <- list(mult = 1)
-            } else if (errorBars == "ci") {
-                funData <- ifelse(self$options$bootstrap, mean_cl_boot, mean_cl_normal)
+            } else if (errorBars == "ci" && self$options$bootstrap) {
+                funData <- mean_cl_boot
+                funArgs <- list(conf.int = self$options$ciLevel/100)
+            } else if (errorBars == "ci" && !self$options$bootstrap) {
+                funData <- mean_cl_normal
                 funArgs <- list(conf.int = self$options$ciLevel/100)
             }
             if (errorBars != "none")
                 plot <- plot +  stat_summary(fun.data = funData, fun.args = funArgs, geom = "errorbar",
                                              width = self$options$errorBarWidth, size = self$options$errorBarLineSize,
                                              color = "black",
-                                             position = position_dodge(width = 0.8))
+                                             position = position_dodge(width = 0.9))
 
-            # Axis Limits & flip
+            # Show unused levels (if checked in data/var setting)
+            plot <- plot + scale_x_discrete(drop = FALSE)
+
+            #### Axis Limits & flip ####
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
                     plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
                 } else {
-                    if ((self$options$showLabels && !stacked) || (self$options$showLabels && summaryFun == "sum" && stacked))
-                        plot <- plot + coord_flip(clip = "off", ylim = layer_scales(plot)$y$get_limits()*1.2)
-                    else
-                        plot <- plot + coord_flip()
+                    plot <- plot + coord_flip(clip = "off")
                 }
-            } else if (self$options$yAxisRangeType == "manual") { # Horizontal and manual
-                plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+            } else {
+                if (self$options$yAxisRangeType == "manual") {
+                    plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+                } else {
+                    plot <- plot + coord_cartesian(clip = "off")
+                }
             }
 
-            plot <- plot + scale_x_discrete(drop = FALSE) # keep unused levels
+            #### Ticks & Axis Expansion ####
+            expand_arg <- ggplot2::waiver() # Default ggplot behavior
+            if ((self$options$showLabels && !stacked) || (self$options$showLabels && summaryFun == "sum" && stacked)) {
+                if (self$options$horizontal && self$options$xAxisRangeType == "auto")
+                    expand_arg <- expansion(mult = c(0.05, 0.2))
+                else if (!self$options$horizontal && self$options$yAxisRangeType == "auto")
+                    expand_arg <- expansion(mult = c(0.05, 0.1))
+            }
+            if (self$options$horizontal && self$options$xTicks > 0) {
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), expand = expand_arg)
+            } else if (!self$options$horizontal && self$options$yTicks > 0) {
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), expand = expand_arg)
+            } else if(!inherits(expand_arg, "waiver")) {
+                plot <- plot  + scale_y_continuous(expand = expand_arg)
+            }
 
-            # Axis Labels
+            #### Axis Labels ####
             if (self$options$yaxis == "mean") {
                 if (errorBars == "none")
                     ylabel <- jmvcore::format(.('Mean of {var}'), var = yVar)
@@ -244,14 +264,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 ylabel <- yVar
 
-            # Ticks
-            if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
-            } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
-            }
-
-            # facet
+            #### facet ####
             if (!is.null(self$options$facet)) {
                 facetVar <- self$options$facet
                 facetVar <- ensym(facetVar)
@@ -261,14 +274,12 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
-            # Theme and colors
+            #### Theme and colors ####
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE) # drop to include unused levels in color scales
 
-            # Titles & Labels
+            #### Titles & Labels ####
             defaults <- list(y = ylabel, x = xVar, legend = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = !is.null(groupVar))
-
-            #self$results$text$setContent(plot)
 
             return(plot)
         })

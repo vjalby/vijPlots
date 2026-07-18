@@ -107,7 +107,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 facetVar <- NULL
             }
 
-            # Compute the outliers
+            #### Compute the outliers ####
             if (!is.null(labelVar)) {
                 for (varName in depVarNames) {
                     outlierVar <- paste0(".outliers_",varName)
@@ -141,7 +141,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 oneColorOfPalette <- vijPalette(self$options$colorPalette, "fill")(nbColors)[min(colorNo,nbColors)]
             }
 
-            # Building the plot
+            #### Building the plot ####
             plot <- ggplot(plotData)
             for (varName in depVarNames) {
                 aVar <- ensym(varName)
@@ -208,7 +208,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
-            # Sort variables / levels by median
+            #### Sort variables / levels by median ####
             if (length(depVarNames) > 1) {
                 if (self$options$order == "none") {
                     plot <- plot + scale_x_discrete(limits = depVarNames)
@@ -224,10 +224,10 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + scale_x_discrete(drop = FALSE) # keep unused levels
             }
 
-            # Theme and colors
+            #### Theme and colors ####
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE)
 
-            # Axis Limits & flip
+            #### Axis Limits & flip ####
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
                     plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
@@ -238,7 +238,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
             }
 
-            # Ticks
+            #### Ticks ####
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
@@ -248,7 +248,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
 
-            # Facet
+            #### Facet ####
             if (!is.null(facetVar)) {
                 if (self$options$facetBy == "column")
                     plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
@@ -256,7 +256,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
-            # Titles & Labels
+            #### Titles & Labels ####
             defaults <- list(legend = groupVar)
             if (!is.null(groupVar) && length(depVarNames) == 1) {
                 defaults$x <- groupVarName

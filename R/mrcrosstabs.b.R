@@ -21,13 +21,12 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Table rows
             if (morevar) {
                 for (i in seq_along(self$options$resps))
-                    table$addRow(rowKey = i, list(var = self$options$resps[i]))
+                    table$addRow(rowKey = as.character(i), list(var = self$options$resps[i]))
             } else {
                 aCol <- self$data[[self$options$repVar]]
-                uniqueValues <- unique(unlist(strsplit(levels(aCol), split = self$options$separator, fixed = TRUE)))
-                uniqueValues <- uniqueValues[uniqueValues != ""]
+                uniqueValues <- private$.oneHotEncoding(aCol, self$options$separator, init = TRUE)
                 for (i in seq_along(uniqueValues))
-                    table$addRow(rowKey = i, list(var = uniqueValues[i]))
+                    table$addRow(rowKey = as.character(i), list(var = uniqueValues[i]))
             }
             # Add the "total" row here (to prevent flickering)
             if ( self$options$totalRow ) {
@@ -81,7 +80,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
 
         .run = function() {
-            if (self$options$mode == "morevar") { # Several dychotomous variables
+            if (self$options$mode == "morevar") { # Several dichotomous variables
                 if (length(self$options$resps) < 1 || is.null(self$options$group) || nrow(self$data) == 0) {
                     return()
                 } else {
@@ -105,16 +104,18 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
+            #### Fill the table ####
             table <- self$results$crosstab
-            # Filling the table
-            for(i in 1:(nrow(crosstab)-2))
-                table$setRow(rowKey=i,
-                             values = c(var=rownames(crosstab)[i], crosstab[i,]))
+            n <- nrow(crosstab)
+            for(i in seq_len(n-2)) {
+                table$setRow(rowKey = as.character(i),
+                             values = c(var = rownames(crosstab)[i], crosstab[i,]))
+            }
             if ( self$options$totalRow ) {
-                table$setRow(rowKey='.total', values = c(var="Total", crosstab[i+1,]))
+                table$setRow(rowKey = '.total', values = c(var="Total", crosstab[n-1,]))
             }
             if ( self$options$showNbOfCases && (self$options$computedValues == "count" || self$options$computedValues == "options") ) {
-                table$setRow(rowKey='.nbofcases', values = append(list(var=.("Number of cases")), crosstab[i+2,]))
+                table$setRow(rowKey = '.nbofcases', values = append(list(var=.("Number of cases")), crosstab[n,]))
             }
             image <- self$results$plot
             image$setState(crosstab[1:nAnswers,1:nGroups])
@@ -146,9 +147,9 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Border color
             if (self$options$borderColor == "none")
-                borderColor = NA
+                borderColor <- NA
             else
-                borderColor = self$options$borderColor
+                borderColor <- self$options$borderColor
 
             # Reverse stack option
             bartype <- self$options$bartype
@@ -245,10 +246,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$xAxisRangeType == "manual") {
                     plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
                 } else {
-                    if (self$options$showLabels && self$options$labelPosition == "top")
-                        plot <- plot + coord_flip(clip = "off", ylim = layer_scales(plot)$y$get_limits()*1.1) # Gives more room for labels !
-                    else
-                        plot <- plot + coord_flip(clip = "off")
+                    plot <- plot + coord_flip(clip = "off")
                 }
             } else {
                 if (self$options$yAxisRangeType == "manual") {
@@ -258,13 +256,17 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
-            # Ticks
+            #### Ticks & Axis Expansion ####
+            expand_arg <- ggplot2::waiver() # Default ggplot behavior
+            if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
+                expand_arg <- expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
+            }
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct)
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct)
+                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
             } else {
-                plot <- plot  + scale_y_continuous(labels = labelFnct)
+                plot <- plot  + scale_y_continuous(labels = labelFnct, expand = expand_arg)
             }
 
             # Titles & Labels
@@ -273,7 +275,6 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
 
             return(plot)
-
         },
 
         .crossTab = function (data, items = NULL, group = NULL, endorsedOption = 1, order='none', values='count') {
@@ -288,18 +289,19 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Rename the columns of the table
             names(crossTab) <- groupNames
             # Compute the number of cases by group
-            if (length(items) > 1)
-                NbOfCases <- aggregate( !apply(apply(options, 1, is.na), 2, all), groups, sum )
-            else
+            if (length(items) > 1) {
+                NbOfCases <- aggregate( rowSums(!is.na(options)) > 0, groups, sum )
+            } else {
                 NbOfCases <- aggregate( !is.na(options), groups, sum )
+            }
             NbOfCases <- c( NbOfCases[,2], sum(NbOfCases[,2]))
             # Add the margin column to crosstab
             crossTab <- cbind(crossTab, "Total" = rowSums(crossTab))
             # Sorting crosstab
             if (order == 'decreasing') {
-                crossTab<-crossTab[order(crossTab$Total, decreasing = TRUE),]
+                crossTab <- crossTab[order(crossTab$Total, decreasing = TRUE),]
             } else if (order == 'increasing') {
-                crossTab<-crossTab[order(crossTab$Total, decreasing = FALSE),]
+                crossTab <- crossTab[order(crossTab$Total, decreasing = FALSE),]
             }
             # add margin row to  crosstab
             NbOfResps <- colSums(crossTab)
@@ -313,23 +315,43 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 crossTab <- rbind(crossTab, "Nb of Cases"=NbOfCases)
             } else if (values == 'options' ) {
                 crossTab <- rbind(crossTab, "Nb of Cases"=NbOfCases)
-                crossTab <- sweep( crossTab , 1, rowSums(crossTab)/2, "/")
+                crossTab <- sweep( crossTab , 1, crossTab$Total, "/")
             } else {
                 crossTab <- rbind(crossTab, "Nb of Cases"=NbOfCases)
             }
             # Return result
             return(crossTab)
         },
-        .oneHotEncoding = function (aCol, separator, na = TRUE) {
+        .oneHotEncoding = function (aCol, separator, na = TRUE, init = FALSE) {
+            # List of values
             uniqueValues <- unique(unlist(strsplit(levels(aCol), split = separator, fixed = TRUE)))
+            uniqueValues <- trimws(uniqueValues)
+            uniqueValues <- unique(uniqueValues)  # le trim peut créer des doublons
             uniqueValues <- uniqueValues[uniqueValues != ""]
-            onehotDF <- data.frame("X__priVate__X" = 1:length(aCol))
-            for(j in uniqueValues) {
-                onehotDF[, j] <- ifelse(grepl(j, aCol, fixed = TRUE),1,0)
+            # Return the list of values/columns for table init
+            if (init)
+                return(uniqueValues)
+            # Build the encoded table
+            rawValues <- as.character(aCol)
+            # split then clean (heading/trailing spaces) the values
+            splitted <- lapply(
+                strsplit(rawValues, split = separator, fixed = TRUE),
+                trimws
+            )
+            # build the TRUE/FALSE matrix
+            encoded <- sapply(uniqueValues, function(opt) {
+                vapply(splitted, function(x) opt %in% x, logical(1))
+            })
+            # sapply returns a vector if there's only one uniqueValues. Convert it back to matrix
+            if (length(uniqueValues) == 1)
+                encoded <- matrix(encoded, ncol = 1, dimnames = list(NULL, uniqueValues))
+            # + OL converts TRUE/FALSE to 1/0
+            onehotDF <- as.data.frame(encoded + 0L)
+            # NA/empty rawvalues set to NA
+            if (na) {
+                isMissing <- is.na(aCol) | trimws(rawValues) == ""
+                onehotDF[isMissing, ] <- NA
             }
-            if (na)
-                onehotDF[is.na(aCol),] <- NA
-            onehotDF[,"X__priVate__X"] <- NULL
             return(onehotDF)
         },
         .showHelpMessage = function() {

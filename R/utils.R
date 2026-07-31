@@ -119,28 +119,35 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     horizontal <- options[["horizontal"]]  %||% FALSE
     if (showLegend) {
         legendPosition  <- options$legendPosition
-        legendFontSize <- as.integer(options$legendFontSize)
+        legendFontSize <- as.numeric(options$legendFontSize)
     } else {
         legendPosition <- "none"
         legendFontSize <- 14
     }
-    xAxisLabelFontSize <- options[["xAxisLabelFontSize"]] %||% 12
-    xAxisLabelRotation <- options[["xAxisLabelRotation"]] %||% 0
-    yAxisLabelFontSize <- options[["yAxisLabelFontSize"]] %||% 12
-    yAxisLabelRotation <- options[["yAxisLabelRotation"]] %||% 0
+    # Font sizes and alignments come from List options, i.e. as strings; since
+    # ggplot2 4.0.0 the theme elements validate their types and reject those.
+    titleFontSize <- as.numeric(options$titleFontSize)
+    subtitleFontSize <- as.numeric(options$subtitleFontSize)
+    captionFontSize <- as.numeric(options$captionFontSize)
+    xAxisFontSize <- as.numeric(options[["xAxisFontSize"]] %||% 14)
+    yAxisFontSize <- as.numeric(options[["yAxisFontSize"]] %||% 14)
+    xAxisLabelFontSize <- as.numeric(options[["xAxisLabelFontSize"]] %||% 12)
+    xAxisLabelRotation <- as.numeric(options[["xAxisLabelRotation"]] %||% 0)
+    yAxisLabelFontSize <- as.numeric(options[["yAxisLabelFontSize"]] %||% 12)
+    yAxisLabelRotation <- as.numeric(options[["yAxisLabelRotation"]] %||% 0)
     return(ggplot2::theme(
         # Title, subtitle and caption
         plot.title = element_text(
-            size = options$titleFontSize,
+            size = titleFontSize,
             face = options$titleFontFace,
             hjust = as.numeric(options$titleAlign)),
         plot.subtitle = element_text(
-            size = options$subtitleFontSize,
+            size = subtitleFontSize,
             face = options$subtitleFontFace,
             hjust = as.numeric(options$subtitleAlign),
             margin = margin(-5, 0, 15, 0)),
         plot.caption = element_text(
-            size = options$captionFontSize,
+            size = captionFontSize,
             face = options$captionFontFace,
             hjust = as.numeric(options$captionAlign)),
         # Legend
@@ -153,16 +160,16 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
         legend.margin = margin(b=0), # for multiple legends
         # Facet Label ~ subtitle
         strip.text = element_text(
-            size = options$subtitleFontSize,
+            size = subtitleFontSize,
             face = options$subtitleFontFace,
             hjust = as.numeric(options$subtitleAlign)),
         # Axis Titles
         axis.title.x = element_text(
-            size = options[["xAxisFontSize"]] %||% 14,
+            size = xAxisFontSize,
             hjust = as.numeric(options[["xAxisPosition"]] %||% 0)
         ),
         axis.title.y = element_text(
-            size = options[["yAxisFontSize"]] %||% 14,
+            size = yAxisFontSize,
             hjust = as.numeric(options[["yAxisPosition"]] %||% 0)
         ),
         # Axis Labels

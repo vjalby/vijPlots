@@ -6,6 +6,8 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     inherit = principalBase,
     private = list(
         .getVarName = function(aVar) {
+            if (is.null(aVar)) # unassigned labelVar/groupVar
+                return(aVar)
             if (self$options$descAsVarName) {
                 aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
                 if (!is.null(aVarName))

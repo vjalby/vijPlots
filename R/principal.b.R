@@ -6,6 +6,8 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     inherit = principalBase,
     private = list(
         .getVarName = function(aVar) {
+            if (is.null(aVar)) # unassigned labelVar/groupVar
+                return(aVar)
             if (self$options$descAsVarName) {
                 aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
                 if (!is.null(aVarName))
@@ -443,7 +445,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Plot frame
-            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, size = 1))
+            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, linewidth = 1))
 
             # Plot title
             title <- switch(plotType,

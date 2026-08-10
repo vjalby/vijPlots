@@ -166,10 +166,10 @@ children:
             children:
               - type: ComboBox
                 name: borderColor
-                enable: (!group || usePalette:forFilling)
+                enable: (showBins && (!group || usePalette:forFilling))
               - type: ComboBox
                 name: fillColor
-                enable: (!group || usePalette:forBorder)
+                enable: (showBins && (!group || usePalette:forBorder))
       - type: LayoutBox
         cell:
           column: 1

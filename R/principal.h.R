@@ -40,17 +40,17 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             titleAlign = "0.5",
             titleFontSize = 16,
             titleFontFace = "plain",
-            screeSubtitleText = NULL,
+            screeSubtitleText = "",
             varSubtitleText = "default",
             obsSubtitleText = "default",
             biplotSubtitleText = "default",
             subtitleAlign = "0.5",
             subtitleFontSize = 12,
             subtitleFontFace = "plain",
-            screeCaptionText = NULL,
+            screeCaptionText = "",
             varCaptionText = "default",
             obsCaptionText = "default",
-            biplotCaptionText = NULL,
+            biplotCaptionText = "",
             captionAlign = "1",
             captionFontSize = 12,
             captionFontFace = "plain",
@@ -59,13 +59,13 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             stdScores = FALSE,
             stdLoadings = FALSE,
             stataRotation = FALSE,
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
-            yAxisText = NULL,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5", ...) {
 
@@ -365,7 +365,8 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="plain")
             private$..screeSubtitleText <- jmvcore::OptionString$new(
                 "screeSubtitleText",
-                screeSubtitleText)
+                screeSubtitleText,
+                default="")
             private$..varSubtitleText <- jmvcore::OptionString$new(
                 "varSubtitleText",
                 varSubtitleText,
@@ -401,7 +402,8 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="plain")
             private$..screeCaptionText <- jmvcore::OptionString$new(
                 "screeCaptionText",
-                screeCaptionText)
+                screeCaptionText,
+                default="")
             private$..varCaptionText <- jmvcore::OptionString$new(
                 "varCaptionText",
                 varCaptionText,
@@ -412,7 +414,8 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="default")
             private$..biplotCaptionText <- jmvcore::OptionString$new(
                 "biplotCaptionText",
-                biplotCaptionText)
+                biplotCaptionText,
+                default="")
             private$..captionAlign <- jmvcore::OptionList$new(
                 "captionAlign",
                 captionAlign,
@@ -460,7 +463,8 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "obsCoordOV")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -483,7 +487,8 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="right")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -505,7 +510,8 @@ principalOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -1194,17 +1200,17 @@ principal <- function(
     titleAlign = "0.5",
     titleFontSize = 16,
     titleFontFace = "plain",
-    screeSubtitleText,
+    screeSubtitleText = "",
     varSubtitleText = "default",
     obsSubtitleText = "default",
     biplotSubtitleText = "default",
     subtitleAlign = "0.5",
     subtitleFontSize = 12,
     subtitleFontFace = "plain",
-    screeCaptionText,
+    screeCaptionText = "",
     varCaptionText = "default",
     obsCaptionText = "default",
-    biplotCaptionText,
+    biplotCaptionText = "",
     captionAlign = "1",
     captionFontSize = 12,
     captionFontFace = "plain",
@@ -1213,13 +1219,13 @@ principal <- function(
     stdScores = FALSE,
     stdLoadings = FALSE,
     stataRotation = FALSE,
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
-    yAxisText,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5") {
 

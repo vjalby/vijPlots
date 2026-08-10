@@ -110,29 +110,30 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             #### Doing the plot ####
             if (self$options$yaxis == "responses") {
-                plot <- ggplot(plotData, aes(Option, Responses, label = doPercent(Responses)))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Responses, label = doPercent(Responses)))
                 labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
                 yLab <- .("% of Responses")
                 yScaleFactor <- 100 # yScaleFactor is used for manual range computation (1 = count, 100 = percent)
             } else if (self$options$yaxis == "cases") {
-                plot <- ggplot(plotData, aes(Option, Cases, label = doPercent(Cases)))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Cases, label = doPercent(Cases)))
                 labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
                 yLab <- .("% of Cases")
                 yScaleFactor <- 100
             } else {
-                plot <- ggplot(plotData, aes(Option, Frequency, label = doNumber(Frequency)))
-                labelFnct <- waiver()
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Frequency, label = doNumber(Frequency)))
+                labelFnct <- ggplot2::waiver()
                 yLab <- .("Counts")
                 yScaleFactor <- 1
             }
 
             if (self$options$singleColor) {
-                nbColors <- attr(vijPalette(self$options$colorPalette, "fill"),"nlevels")
+                selectedColorPalette <- vijPalette(self$options$colorPalette, "fill")
+                nbColors <- vijPaletteNlevels(selectedColorPalette)
                 colorNo <- self$options$colorNo
-                oneColorOfPalette <- vijPalette(self$options$colorPalette, "fill")(nbColors)[min(colorNo,nbColors)]
-                plot <- plot + geom_col(fill = oneColorOfPalette, color = borderColor)
+                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
+                plot <- plot + ggplot2::geom_col(fill = oneColorOfPalette, color = borderColor)
             } else {
-                plot <- plot + geom_col(aes(fill = Option), color = borderColor) + guides(fill = "none")
+                plot <- plot + ggplot2::geom_col(ggplot2::aes(fill = Option), color = borderColor) + ggplot2::guides(fill = "none")
             }
 
             if (self$options$labelPosition == "top")
@@ -160,13 +161,13 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             if (self$options$showLabels) {
                 if (self$options$textColor == "auto" && self$options$labelPosition == "middle" && !self$options$singleColor) {
-                    plot <- plot + geom_text(aes(fill = Option, color = after_scale(ggstats::hex_bw(.data$fill))),
-                             position = position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
-                             fontface = "bold", size = self$options$labelFontSize / .pt)
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = Option, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                             position = ggplot2::position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
+                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                 } else {
-                    plot <- plot + geom_text(color = textColor,
-                                             position = position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
-                                             fontface = "bold", size = self$options$labelFontSize / .pt)
+                    plot <- plot + ggplot2::geom_text(color = textColor,
+                                             position = ggplot2::position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
+                                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                 }
             }
 
@@ -176,29 +177,29 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             #### Axis Limits & flip ####
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
-                    plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
+                    plot <- plot + ggplot2::coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
                 } else {
-                    plot <- plot + coord_flip(clip = "off")
+                    plot <- plot + ggplot2::coord_flip(clip = "off")
                 }
             } else {
                 if (self$options$yAxisRangeType == "manual") { # Horizontal and manual
-                    plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin/yScaleFactor, self$options$yAxisRangeMax/yScaleFactor))
+                    plot <- plot + ggplot2::coord_cartesian(ylim = c(self$options$yAxisRangeMin/yScaleFactor, self$options$yAxisRangeMax/yScaleFactor))
                 } else {
-                    plot <- plot + coord_cartesian(clip = "off")
+                    plot <- plot + ggplot2::coord_cartesian(clip = "off")
                 }
             }
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
             if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
-                expand_arg <- expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
+                expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
             }
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
             } else {
-                plot <- plot  + scale_y_continuous(labels = labelFnct, expand = expand_arg)
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct, expand = expand_arg)
             }
 
             # Titles & Labels

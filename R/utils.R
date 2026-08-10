@@ -1,7 +1,7 @@
 vijScale = function(pal, type = "fill", drop = TRUE) {
     themePal <- get('theme', envir = parent.frame())$palette
     palette <- vijPalette(pal, type, themePal)
-    return(discrete_scale(aesthetics = type, palette = palette, na.value="gray", drop = drop))
+    return(ggplot2::discrete_scale(aesthetics = type, palette = palette, na.value="gray", drop = drop))
 }
 
 vijPalette = function(pal, type = "fill", themePal = NULL) {
@@ -54,6 +54,17 @@ vijPalette = function(pal, type = "fill", themePal = NULL) {
     } else {
         return(NULL)
     }
+}
+
+vijPaletteNlevels = function(pal) {
+    # scales >= 1.4.0 palette_nlevels() returns the number of colors (using nlevels attribute)
+    # this function uses both palette_nlevels() and attr(pal, "nlevels") for security
+    nl <- tryCatch(scales::palette_nlevels(pal), error = function(e) NA)
+    if (is.na(nl))
+        nl <- attr(pal, "nlevels")
+    if (is.null(nl))
+        nl <- 6L
+    return(nl)
 }
 
 vijTitlesAndLabels = function(options, defaults = list(), plotType = '') {
@@ -119,50 +130,57 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     horizontal <- options[["horizontal"]]  %||% FALSE
     if (showLegend) {
         legendPosition  <- options$legendPosition
-        legendFontSize <- as.integer(options$legendFontSize)
+        legendFontSize <- as.numeric(options$legendFontSize)
     } else {
         legendPosition <- "none"
         legendFontSize <- 14
     }
-    xAxisLabelFontSize <- options[["xAxisLabelFontSize"]] %||% 12
-    xAxisLabelRotation <- options[["xAxisLabelRotation"]] %||% 0
-    yAxisLabelFontSize <- options[["yAxisLabelFontSize"]] %||% 12
-    yAxisLabelRotation <- options[["yAxisLabelRotation"]] %||% 0
+    # Font sizes and alignments come from List options, i.e. as strings; since
+    # ggplot2 4.0.0 the theme elements validate their types and reject those.
+    titleFontSize <- as.numeric(options$titleFontSize)
+    subtitleFontSize <- as.numeric(options$subtitleFontSize)
+    captionFontSize <- as.numeric(options$captionFontSize)
+    xAxisFontSize <- as.numeric(options[["xAxisFontSize"]] %||% 14)
+    yAxisFontSize <- as.numeric(options[["yAxisFontSize"]] %||% 14)
+    xAxisLabelFontSize <- as.numeric(options[["xAxisLabelFontSize"]] %||% 12)
+    xAxisLabelRotation <- as.numeric(options[["xAxisLabelRotation"]] %||% 0)
+    yAxisLabelFontSize <- as.numeric(options[["yAxisLabelFontSize"]] %||% 12)
+    yAxisLabelRotation <- as.numeric(options[["yAxisLabelRotation"]] %||% 0)
     return(ggplot2::theme(
         # Title, subtitle and caption
-        plot.title = element_text(
-            size = options$titleFontSize,
+        plot.title = ggplot2::element_text(
+            size = titleFontSize,
             face = options$titleFontFace,
             hjust = as.numeric(options$titleAlign)),
-        plot.subtitle = element_text(
-            size = options$subtitleFontSize,
+        plot.subtitle = ggplot2::element_text(
+            size = subtitleFontSize,
             face = options$subtitleFontFace,
             hjust = as.numeric(options$subtitleAlign),
-            margin = margin(-5, 0, 15, 0)),
-        plot.caption = element_text(
-            size = options$captionFontSize,
+            margin = ggplot2::margin(-5, 0, 15, 0)),
+        plot.caption = ggplot2::element_text(
+            size = captionFontSize,
             face = options$captionFontFace,
             hjust = as.numeric(options$captionAlign)),
         # Legend
-        legend.title=element_text(
+        legend.title=ggplot2::element_text(
             size = (legendFontSize + 1)),
-        legend.text=element_text(
+        legend.text=ggplot2::element_text(
             size = legendFontSize),
         legend.position = legendPosition,
         legend.box = "vertical", # for legend at bottom
-        legend.margin = margin(b=0), # for multiple legends
+        legend.margin = ggplot2::margin(b=0), # for multiple legends
         # Facet Label ~ subtitle
-        strip.text = element_text(
-            size = options$subtitleFontSize,
+        strip.text = ggplot2::element_text(
+            size = subtitleFontSize,
             face = options$subtitleFontFace,
             hjust = as.numeric(options$subtitleAlign)),
         # Axis Titles
-        axis.title.x = element_text(
-            size = options[["xAxisFontSize"]] %||% 14,
+        axis.title.x = ggplot2::element_text(
+            size = xAxisFontSize,
             hjust = as.numeric(options[["xAxisPosition"]] %||% 0)
         ),
-        axis.title.y = element_text(
-            size = options[["yAxisFontSize"]] %||% 14,
+        axis.title.y = ggplot2::element_text(
+            size = yAxisFontSize,
             hjust = as.numeric(options[["yAxisPosition"]] %||% 0)
         ),
         # Axis Labels

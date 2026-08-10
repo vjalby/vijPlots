@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "piechartClass",
     inherit = piechartBase,
@@ -38,124 +35,144 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 image$setSize2(width, height, fixed_width, fixed_height)
             }
         },
-
         .run = function() {
-            if (!is.null(self$options$aVar) && nrow(self$data) != 0) {
-                plotData <- self$data[c(self$options$aVar, self$options$facet)]
-                plotData <- jmvcore::naOmit(plotData)
-                image <- self$results$plot
-                image$setState(plotData)
-            } else {
+            if (is.null(self$options$aVar) || nrow(self$data) == 0) {
                 vijWarningMessage(self, .("Pie charts are for educational use only. Please do not use Pie charts!"))
+                return(FALSE)
             }
+
+            plotData <- self$data[c(self$options$aVar, self$options$facet)]
+
+            plotData <- jmvcore::naOmit(plotData)
+            if (nrow(plotData) == 0)
+                return(FALSE)
+
+            image <- self$results$plot
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
-            plotData <- image$state
-            aVar <- self$options$aVar
-            aVar <- ensym(aVar)
 
+            plotData <- image$state
+
+            #### Set variables ####
+            aVar <- rlang::sym(self$options$aVar)
             if (!is.null(self$options$facet) ) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
+                facetVar <- rlang::sym(self$options$facet)
             } else {
                 facetVar <- NULL
             }
 
-            # set the border color
+            #### Plot options ####
+
             if (self$options$borderColor == "none") {
                 borderColor <- NA
             } else {
-                borderColor = self$options$borderColor
+                borderColor <- self$options$borderColor
             }
 
-            # Percent format (scales)
             doPercent <- scales::label_percent(
                 accuracy = as.numeric(self$options$accuracy),
                 suffix = '\u2009%',
                 decimal.mark = self$options[['decSymbol']])
 
+            #### Build the lot ####
+
             if(self$options$donut) {
-                plot <- ggplot(plotData, aes(x = 10, fill = !!aVar, by = 1)) + xlim(c(8.5,NA))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 10, fill = !!aVar, by = 1)) + ggplot2::xlim(c(8.5,NA))
                 xOffset <- 10
             } else {
-                plot <- ggplot(plotData, aes(x = "", fill = !!aVar, by = 1))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = "", fill = !!aVar, by = 1))
                 xOffset <- 1
             }
 
-            plot <- plot + geom_bar(position = "fill", color = borderColor, show.legend = TRUE) + coord_polar("y")
+            plot <- plot + ggplot2::geom_bar(position = "fill", color = borderColor, show.legend = TRUE) + ggplot2::coord_polar("y")
 
-            if (self$options$labType == "text") {
-                if (self$options$overlap)
-                    geomLab <- ggrepel::geom_text_repel
-                else
-                    geomLab <- geom_text
-            } else {
-                if (self$options$overlap)
-                    geomLab <- ggrepel::geom_label_repel
-                else
-                    geomLab <- geom_label
-            }
+            #### Labels ####
 
             if (self$options$labels != "none") {
-                if (self$options$textColor == "auto") { # using hex_bw
-                    plot <- plot + geomLab(aes(x = self$options$labOffset/10 + xOffset,
-                                               label = switch(self$options$labels,
-                                                              "count" = after_stat(count),
-                                                              "percent" = doPercent(after_stat(prop)),
-                                                              "group" = fill,
-                                                              "group+count" = paste0(fill, "\n", after_stat(count)),
-                                                              "group+percent" = paste0(fill, "\n", doPercent(after_stat(prop)))),
-                                                color = after_scale(ggstats::hex_bw(.data$fill))
-                                               ),
-                                            stat = switch(self$options$labels, "percent" = ggstats::StatProp, "group+percent" = ggstats::StatProp, "count"),
-                                            position = position_fill(vjust = 0.5), direction = "both",
-                                            fontface = "bold", size = self$options$labSize / .pt,
-                                            show.legend = FALSE, seed = 123, min.segment.length = 1)
+                # label geom
+                if (self$options$overlap) {
+                    if (self$options$labType == "text")
+                        baseGeomLab <- function(...) ggrepel::geom_text_repel(..., direction = "both", seed = 123, min.segment.length = 1)
+                    else
+                        baseGeomLab <- function(...) ggrepel::geom_label_repel(..., direction = "both", seed = 123, min.segment.length = 1)
                 } else {
-                    plot <- plot + geomLab(aes(x = self$options$labOffset/10 + xOffset,
-                                               label = switch(self$options$labels,
-                                                              "count" = after_stat(count),
-                                                              "percent" = doPercent(after_stat(prop)),
-                                                              "group" = fill,
-                                                              "group+count" = paste0(fill, "\n", after_stat(count)),
-                                                              "group+percent" = paste0(fill, "\n", doPercent(after_stat(prop)))),
-                                                ),
-                                           stat = switch(self$options$labels, "percent" = ggstats::StatProp, "group+percent" = ggstats::StatProp, "count"),
-                                           position = position_fill(vjust = 0.5), direction = "both",
-                                           color = self$options$textColor,
-                                           fontface = "bold", size = self$options$labSize / .pt,
-                                           show.legend = FALSE, seed = 123, min.segment.length = 1)
+                    if (self$options$labType == "text")
+                        baseGeomLab <- ggplot2::geom_text
+                    else
+                        baseGeomLab <- ggplot2::geom_label
                 }
+
+                # label color
+                if (self$options$textColor != "auto") {
+                    geomLab <- function(...) baseGeomLab(..., color = self$options$textColor)
+                } else {
+                    geomLab <- baseGeomLab
+                }
+
+                # label format
+                labelExpr <- rlang::expr(switch(self$options$labels,
+                                   "count" = ggplot2::after_stat(count),
+                                   "percent" = doPercent(ggplot2::after_stat(prop)),
+                                   "group" = .data$fill,
+                                   "group+count" = paste0(.data$fill, "\n", ggplot2::after_stat(count)),
+                                   "group+percent" = paste0(.data$fill, "\n", doPercent(ggplot2::after_stat(prop)))))
+
+                # Label stat and position
+                statLab <- switch(self$options$labels, "percent" = ggstats::StatProp,
+                                  "group+percent" = ggstats::StatProp,
+                                  "count")
+
+                labX <- self$options$labOffset/10 + xOffset
+
+                # Label AES
+                if (self$options$textColor == "auto") {
+                    labMapping <- ggplot2::aes(x = !!labX, label = !!labelExpr,
+                                               color = ggplot2::after_scale(ggstats::hex_bw(.data$fill)))
+                } else {
+                    labMapping <- ggplot2::aes(x = !!labX, label = !!labelExpr)
+                }
+
+                # Plot label
+                plot <- plot + geomLab(labMapping, stat = statLab,
+                                       position = ggplot2::position_fill(vjust = 0.5),
+                                       fontface = "bold",
+                                       size = self$options$labSize / ggplot2::.pt,
+                                       show.legend = FALSE)
             }
 
-            # Facet
+            #### Facet ####
+
             if (!is.null(facetVar) ) {
                 if (self$options$facetBy == "column")
-                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = "free")
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = "free")
                 else
-                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = "free")
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = "free")
             }
+
+            #### Theme & colors ####
 
             # Theme and colors
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE)
 
             # Guide
             if (self$options$labels %in% c("group","group+count","group+percent"))
-                plot <- plot + guides(fill = "none")
+                plot <- plot + ggplot2::guides(fill = "none")
+
+            #### Axes and titles ####
 
             # Titles & Labels
             defaults <- list(y = "", x = "", legend = aVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Labs
-            plot <- plot + theme(axis.ticks = element_blank(),
-                                 axis.line.x = element_blank(), axis.line.y = element_blank(),
-                                 axis.text.x = element_blank(),axis.text.y = element_blank(),
-                                 panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-
+            plot <- plot + ggplot2::theme(axis.ticks = ggplot2::element_blank(),
+                                 axis.line.x = ggplot2::element_blank(), axis.line.y = ggplot2::element_blank(),
+                                 axis.text.x = ggplot2::element_blank(),axis.text.y = ggplot2::element_blank(),
+                                 panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank())
             return(plot)
         }
 

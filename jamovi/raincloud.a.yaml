@@ -187,6 +187,7 @@ options:
     - name: titleText
       title: ""
       type: String
+      default: ''
 
     - name: titleFontFace
       title: Font
@@ -237,6 +238,7 @@ options:
     - name: subtitleText
       title: ""
       type: String
+      default: ''
 
     - name: subtitleFontFace
       title: Font
@@ -287,6 +289,7 @@ options:
     - name: captionText
       title: ""
       type: String
+      default: ''
 
     - name: captionFontFace
       title: Font
@@ -337,6 +340,7 @@ options:
     - name: legendText
       title: ""
       type: String
+      default: ''
 
     - name: legendFontSize
       title: Size
@@ -373,6 +377,7 @@ options:
     - name: xAxisText
       title: ""
       type: String
+      default: ''
 
     - name: xAxisFontSize
       title: Size
@@ -407,6 +412,7 @@ options:
     - name: yAxisText
       title: ""
       type: String
+      default: ''
 
     - name: yAxisFontSize
       title: Size

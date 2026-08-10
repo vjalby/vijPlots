@@ -15,6 +15,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             keepNA = FALSE,
             overlap = FALSE,
             plotBorder = FALSE,
+            groupShapes = FALSE,
             hline = FALSE,
             yinter = 0,
             vline = FALSE,
@@ -28,25 +29,25 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             lineSE = TRUE,
             singleColor = "#999999",
             colorPalette = "jmv",
-            titleText = NULL,
+            titleText = "",
             titleFontFace = "bold",
             titleFontSize = "14",
             titleAlign = "0.5",
-            subtitleText = NULL,
+            subtitleText = "",
             subtitleFontFace = "plain",
             subtitleFontSize = "12",
             subtitleAlign = "0.5",
-            captionText = NULL,
+            captionText = "",
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
-            yAxisText = NULL,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
             yAxisLabelFontSize = 12,
@@ -125,6 +126,10 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             private$..plotBorder <- jmvcore::OptionBool$new(
                 "plotBorder",
                 plotBorder,
+                default=FALSE)
+            private$..groupShapes <- jmvcore::OptionBool$new(
+                "groupShapes",
+                groupShapes,
                 default=FALSE)
             private$..hline <- jmvcore::OptionBool$new(
                 "hline",
@@ -262,7 +267,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="jmv")
             private$..titleText <- jmvcore::OptionString$new(
                 "titleText",
-                titleText)
+                titleText,
+                default="")
             private$..titleFontFace <- jmvcore::OptionList$new(
                 "titleFontFace",
                 titleFontFace,
@@ -294,7 +300,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="0.5")
             private$..subtitleText <- jmvcore::OptionString$new(
                 "subtitleText",
-                subtitleText)
+                subtitleText,
+                default="")
             private$..subtitleFontFace <- jmvcore::OptionList$new(
                 "subtitleFontFace",
                 subtitleFontFace,
@@ -326,7 +333,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="0.5")
             private$..captionText <- jmvcore::OptionString$new(
                 "captionText",
-                captionText)
+                captionText,
+                default="")
             private$..captionFontFace <- jmvcore::OptionList$new(
                 "captionFontFace",
                 captionFontFace,
@@ -358,7 +366,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="1")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -381,7 +390,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="right")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -403,7 +413,8 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="0.5")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -495,6 +506,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..keepNA)
             self$.addOption(private$..overlap)
             self$.addOption(private$..plotBorder)
+            self$.addOption(private$..groupShapes)
             self$.addOption(private$..hline)
             self$.addOption(private$..yinter)
             self$.addOption(private$..vline)
@@ -552,6 +564,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         keepNA = function() private$..keepNA$value,
         overlap = function() private$..overlap$value,
         plotBorder = function() private$..plotBorder$value,
+        groupShapes = function() private$..groupShapes$value,
         hline = function() private$..hline$value,
         yinter = function() private$..yinter$value,
         vline = function() private$..vline$value,
@@ -608,6 +621,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..keepNA = NA,
         ..overlap = NA,
         ..plotBorder = NA,
+        ..groupShapes = NA,
         ..hline = NA,
         ..yinter = NA,
         ..vline = NA,
@@ -710,6 +724,7 @@ scatterplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param keepNA .
 #' @param overlap .
 #' @param plotBorder .
+#' @param groupShapes .
 #' @param hline .
 #' @param yinter .
 #' @param vline .
@@ -773,6 +788,7 @@ scatterplot <- function(
     keepNA = FALSE,
     overlap = FALSE,
     plotBorder = FALSE,
+    groupShapes = FALSE,
     hline = FALSE,
     yinter = 0,
     vline = FALSE,
@@ -786,25 +802,25 @@ scatterplot <- function(
     lineSE = TRUE,
     singleColor = "#999999",
     colorPalette = "jmv",
-    titleText,
+    titleText = "",
     titleFontFace = "bold",
     titleFontSize = "14",
     titleAlign = "0.5",
-    subtitleText,
+    subtitleText = "",
     subtitleFontFace = "plain",
     subtitleFontSize = "12",
     subtitleAlign = "0.5",
-    captionText,
+    captionText = "",
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
-    yAxisText,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5",
     yAxisLabelFontSize = 12,
@@ -852,6 +868,7 @@ scatterplot <- function(
         keepNA = keepNA,
         overlap = overlap,
         plotBorder = plotBorder,
+        groupShapes = groupShapes,
         hline = hline,
         yinter = yinter,
         vline = vline,

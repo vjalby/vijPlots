@@ -241,8 +241,9 @@ children:
                   - type: ComboBox
                     name: colorPalette
                     label: ''
-                  - type: LayoutBox
-                    margin: large
+                  - type: CheckBox
+                    name: singleColor
+                    style: inline
                     verticalAlignment: center
                     children:
                       - type: TextBox
@@ -251,11 +252,6 @@ children:
                         suffix: only
                         format: number
                         enable: (singleColor)
-              - type: LayoutBox
-                margin: large
-                children:
-                  - type: CheckBox
-                    name: singleColor
           - type: LayoutBox
             cell:
               column: 1

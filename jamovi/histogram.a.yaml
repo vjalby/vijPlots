@@ -48,6 +48,16 @@ options:
           name:  density
       default: count
 
+    - name: showBins
+      title: Show bins
+      type: Bool
+      default: true
+
+    - name: showLines
+      title: Show lines
+      type: Bool
+      default: false
+
     - name: normalCurve
       title: Show normal curve
       type: Bool
@@ -74,6 +84,20 @@ options:
       title: Position [boundary]
       min: 0
       default: 0
+
+    - name: lineLineSize
+      title: Line size
+      type: Number
+      default: 1.0
+      min: 0.1
+      max: 5
+
+    - name: binOpacity
+      title: Bin opacity
+      type: Number
+      default: 0.5
+      min: 0
+      max: 1
 
     - name: densityOpacity
       title: Density opacity
@@ -176,9 +200,7 @@ options:
           name:  identity
         - title: Stacked
           name:  stack
-        # - title: Grouped
-        #   name:  dodge
-      default: stack
+      default: identity
 
     - name: colorPalette
       title: Color Palette
@@ -301,6 +323,7 @@ options:
     - name: titleText
       title: ""
       type: String
+      default: ''
 
     - name: titleFontFace
       title: Font
@@ -351,6 +374,7 @@ options:
     - name: subtitleText
       title: ""
       type: String
+      default: ''
 
     - name: subtitleFontFace
       title: Font
@@ -401,6 +425,7 @@ options:
     - name: captionText
       title: ""
       type: String
+      default: ''
 
     - name: captionFontFace
       title: Font
@@ -451,6 +476,7 @@ options:
     - name: legendText
       title: ""
       type: String
+      default: ''
 
     - name: legendFontSize
       title: Size
@@ -487,6 +513,7 @@ options:
     - name: xAxisText
       title: ""
       type: String
+      default: ''
 
     - name: xAxisFontSize
       title: Size
@@ -521,6 +548,7 @@ options:
     - name: yAxisText
       title: ""
       type: String
+      default: ''
 
     - name: yAxisFontSize
       title: Size

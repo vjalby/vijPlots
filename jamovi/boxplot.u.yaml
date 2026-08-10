@@ -112,15 +112,15 @@ children:
                     name: singleColor
                     label: Use color No.
                     style: inline
-                    enable: (!group)
                     verticalAlignment: center
+                    enable: (!group || {return (ui['vars'].value() || []).length < 2;})
                     children:
                       - type: TextBox
                         name: colorNo
                         label: ''
                         suffix: only
                         format: number
-                        enable: (singleColor && !group)
+                        enable: (singleColor && (!group || {return (ui['vars'].value() || []).length < 2;}))
           - type: LayoutBox
             cell:
               column: 1

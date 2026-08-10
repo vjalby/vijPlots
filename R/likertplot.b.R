@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "likertplotClass",
     inherit = likertplotBase,
@@ -37,15 +34,27 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             mainData <- self$data[c(self$options$liks, self$options$group)]
 
-            # Check if ordered factor
+            # Check if factors are ordered
             for (ques in self$options$liks) {
-                varAttrib <- attr(mainData[[ques]],"class",TRUE)
-                if ( ("factor" %in% varAttrib)  && !("ordered" %in% varAttrib) ) {
-                    vijErrorMessage(self, .("Likert Plot requires ordinal (or numeric) variables"))
-                    return(TRUE)
+                varClass <- class(mainData[[ques]])
+                if ( (("factor" %in% varClass)  && !("ordered" %in% varClass)) || varClass[1] == "numeric" ) {
+                    vijErrorMessage(self, .("Likert Plot requires ordinal (or continuous-integer) variables"))
+                    return(FALSE)
                 }
             }
-
+            # Check if variables are of the same type when "convert to integer" is not selected
+            if (!self$options$toInteger) {
+                commonClass <- NULL
+                for (ques in self$options$liks) {
+                    varClass <- class(mainData[[ques]])
+                    if (!is.null(commonClass) && varClass[1] != commonClass) {
+                        vijErrorMessage(self, .("Select the \"Convert variables to integers\" option when the variables are not of the same type."))
+                        return(FALSE)
+                    } else {
+                        commonClass <- varClass[1]
+                    }
+                }
+            }
             # Check if canBeNumeric (if median/mean/tests/to integer / tidy up requested)
             canbeNum <- TRUE
             for (ques in self$options$liks)
@@ -64,7 +73,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
 
             #### Convert to integer ####
@@ -72,12 +81,12 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 for (var in self$options$liks) {
                     mainData[[var]] <- factor(jmvcore::toNumeric(mainData[[var]]))
                     attr(mainData[[var]], "values") <- as.integer(levels(mainData[[var]]))
-                    attr(mainData[[var]], "class") <- c("ordered","factor")
+                    class(mainData[[var]]) <- c("ordered","factor")
                 }
             }
 
             #### Tidy up levels ####
-            if (self$options$tidyUp) {
+            if (self$options$tidyUp && length(self$options$liks) >1) {
                 all_values <- c()
                 level_value <- list()
                 # Save all levels and values from the variables
@@ -97,7 +106,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 for (ques in self$options$liks) {
                     mainData[[ques]] <- factor(jmvcore::toNumeric(mainData[[ques]]), levels = tidyValues, labels = tidyLevels)
                     attr(mainData[[ques]], "values") <- tidyValues
-                    attr(mainData[[ques]], "class") <- c("ordered","factor")
+                    class(mainData[[ques]]) <- c("ordered","factor")
                     attr(mainData[[ques]], "jmv-retain-unused") <- TRUE
                 }
             }
@@ -113,7 +122,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Cleaning the group variable name (it would crash gglikert)
             if (!is.null(self$options$group)) {
                 groupingVar <- jmvcore::toB64(self$options$group)
-                #names(mainData)[length(names(mainData))] <- groupingVar
                 names(mainData)[names(mainData) == self$options$group] <- groupingVar
             } else {
                 groupingVar <- NULL
@@ -166,15 +174,15 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         values[".question"] <- private$.getVarName(ques)
                         numericData <- jmvcore::toNumeric(mainData[[ques]])
                         if (self$options$showMedian)
-                            values['Median'] <- as.numeric(median(numericData, na.rm = TRUE))
+                            values['Median'] <- as.numeric(stats::median(numericData, na.rm = TRUE))
                         if (self$options$showMean) {
                             values["Mean"] <- mean(numericData, na.rm = TRUE)
-                            values["SD"] <- sd(numericData, na.rm = TRUE)
+                            values["SD"] <- stats::sd(numericData, na.rm = TRUE)
                         }
                         self$results$frequencies$addRow(rowKey = ques, values = values)
                     }
                 } else { # Freq table by group
-                    group_sym <- rlang::ensym(groupingVar)
+                    group_sym <- rlang::sym(groupingVar)
                     for (ques in questions) {
                         firstGroup <- TRUE
                         for (group in groups) {
@@ -189,10 +197,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
 
                             if (self$options$showMedian)
-                                values["Median"] <- as.numeric(median(numericData, na.rm = TRUE))
+                                values["Median"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
                             if (self$options$showMean) {
                                 values["Mean"] <- mean(numericData, na.rm = TRUE)
-                                values["SD"] <- sd(numericData, na.rm = TRUE)
+                                values["SD"] <- stats::sd(numericData, na.rm = TRUE)
                             }
                             self$results$frequencies$addRow(rowKey = groupAndQues, values = values)
                             if (firstGroup)
@@ -230,7 +238,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                     if (self$options$pValue == "overall") {
                         self$results$comp$uTestTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
-                        adjustedp <- p.adjust(p, method = adjustMethod)
+                        adjustedp <- stats::p.adjust(p, method = adjustMethod)
                         for (i in 1:nq) {
                             self$results$comp$uTestTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
                         }
@@ -251,7 +259,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
                 if (self$options$pValue == "overall") {
                     self$results$comp$kwTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
-                    adjustedp <- p.adjust(p, method = adjustMethod)
+                    adjustedp <- stats::p.adjust(p, method = adjustMethod)
                     for (i in 1:nq) {
                         self$results$comp$kwTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
                     }
@@ -291,7 +299,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     res.statistics[[ques]] <- testRes$statistics
                     # Compute groupwise adjusted p
                     if (self$options$pValue == "group" && self$options$postHoc != "dscf" && length(res.p.values[[ques]]) > 0) {
-                        res.p.adjusted[[ques]] <- p.adjust(res.p.values[[ques]], method = adjustMethod)
+                        res.p.adjusted[[ques]] <- stats::p.adjust(res.p.values[[ques]], method = adjustMethod)
                     } else {
                         res.p.adjusted[[ques]] <- list()
                     }
@@ -308,7 +316,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                     # Adjust the pValues then split them back by question
                     if (length(pvalues) > 0) {
-                        pvalues_adj_flat <- p.adjust(pvalues, method = adjustMethod)
+                        pvalues_adj_flat <- stats::p.adjust(pvalues, method = adjustMethod)
                         idx <- 0
                         for (ques in questions) {
                             k <- length(res.p.values[[ques]])
@@ -398,26 +406,39 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             mainData <- image$state$mainData
 
-            if (self$options$reverseLikert ) { #&& !self$options$toInteger) {
+            if (self$options$reverseLikert ) {
                 for (var in self$options$liks)
                     mainData[[var]] <- forcats::fct_rev(mainData[[var]])
             }
 
-            # Variable & group Labels
+            #### Variable & group Labels ####
             variable_labels <- image$state$variableLabels
             if (!is.null(self$options$group)) {
-                groupingVar <- names(mainData)[length(names(mainData))]
+                groupingVar <- jmvcore::toB64(self$options$group)
             } else {
                 groupingVar <- NULL
             }
 
-            if (!is.null(groupingVar)) {
-                # Remove cases with missing group or change NA to "NA"
-                if (self$options$ignoreNA)
-                    mainData <- subset(mainData, !is.na(mainData[groupingVar]))
+            #### Missing groups ####
+            if (!is.null(groupingVar) && self$options$ignoreNA) {
+                mainData <- mainData[!is.na(mainData[[groupingVar]]),]
             }
 
-            # options
+            #### Group setup ####
+            if( ! is.null(groupingVar) ) {
+                if( self$options$groupBy == "variable" ) {
+                    yOption <- groupingVar
+                    facetRows <- ggplot2::vars(.question)
+                } else {
+                    yOption <- ".question"
+                    facetRows <- ggplot2::vars(!!rlang::sym(groupingVar))
+                }
+            } else {
+                yOption <- ".question"
+                facetRows <- NULL
+            }
+
+            #### Options ####
             accuracy <- as.numeric(self$options$accuracy)
             hLabelWrap <- as.numeric(self$options$hLabelWrap)
             vLabelWrap <- as.numeric(self$options$vLabelWrap)
@@ -425,26 +446,13 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 hideLabelsBelow <- 0.05
             else
                 hideLabelsBelow <- 0.01
-            # Doing the plot
+
+            #### Doing the plot ####
             if( self$options$type == 'centered' ) {
-                # Group setup
-                if( ! is.null(groupingVar) ) {
-                    if( self$options$groupBy == "variable" ) {
-                        yOption <- groupingVar
-                        facetRows <- vars(.question)
-                    } else {
-                        yOption <- ".question"
-                        facetRows <- vars(!!ensym(groupingVar))
-                    }
-                } else {
-                    yOption <- ".question"
-                    facetRows <- NULL
-                }
-                # Do Likert Plot (centered)
                 plot <- ggstats::gglikert(tibble::as_tibble(mainData), include = self$options$liks,
                                           sort = self$options$sorting,
                                           add_labels = self$options$addLabels,
-                                          labels_size = self$options$labelSize / .pt , #0.8*textSize / .pt ,
+                                          labels_size = self$options$labelSize / ggplot2::.pt ,
                                           labels_accuracy = accuracy,
                                           labels_hide_below = hideLabelsBelow,
                                           labels_color = self$options$labelColor,
@@ -453,25 +461,11 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                           add_totals = self$options$addTotals,
                                           y = yOption, facet_rows = facetRows,
                                           variable_labels = variable_labels)
-            } else {
-                # Group setup
-                if( ! is.null(groupingVar) ) {
-                    if( self$options$groupBy == "variable" ) {
-                        yOption <- groupingVar
-                        facetRows <- vars(.question)
-                    } else {
-                        yOption <- ".question"
-                        facetRows <- vars(!!ensym(groupingVar))
-                    }
-                } else {
-                    yOption <- ".question"
-                    facetRows <- NULL
-                }
-                # Do Likert Plot (stacked)
+            } else { # Stacked
                 plot <- ggstats::gglikert_stacked(tibble::as_tibble(mainData), include = self$options$liks,
                                                   sort = self$options$sorting,
                                                   add_labels = self$options$addLabels,
-                                                  labels_size = self$options$labelSize / .pt , #0.8*textSize / .pt ,
+                                                  labels_size = self$options$labelSize / ggplot2::.pt ,
                                                   labels_accuracy = accuracy,
                                                   labels_hide_below = hideLabelsBelow,
                                                   labels_color = self$options$labelColor,
@@ -479,24 +473,19 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                   add_median_line = self$options$addMedianLine,
                                                   y = yOption,
                                                   variable_labels = variable_labels)
-                plot <- plot + facet_grid(rows = facetRows, labeller = label_wrap_gen(vLabelWrap))
+                plot <- plot + ggplot2::facet_grid(rows = facetRows, labeller = ggplot2::label_wrap_gen(vLabelWrap))
             }
 
-            # removed in 1.0 (0.11.6)
-            #plot <- plot + theme(text = element_text(size=textSize))
-
             if (self$options$reverseLikert)
-                plot <- plot + scale_fill_brewer(palette = self$options$plotColor, direction = -1)
+                plot <- plot + ggplot2::scale_fill_brewer(palette = self$options$plotColor, direction = -1)
             else
-                plot <- plot + scale_fill_brewer(palette = self$options$plotColor)
+                plot <- plot + ggplot2::scale_fill_brewer(palette = self$options$plotColor)
 
-            #plot <- plot + theme(strip.text = element_text(size = 18, colour = "red", angle = 0), strip.position = "top")
-
-            # Title & subtitle
+            #### Title & subtitle ####
             plot <- plot + vijTitlesAndLabels(self$options) + vijTitleAndLabelFormat(self$options, showLegend = TRUE)
 
             # Adjust strip (= Facet = Group) text (vijTitleAndLabelFormat uses subtittle format)
-            plot <- plot + theme(strip.text = element_text(size = self$options$groupSize, face = "plain", hjust = 0.5))
+            plot <- plot + ggplot2::theme(strip.text = ggplot2::element_text(size = self$options$groupSize, face = "plain", hjust = 0.5))
 
             return(plot)
         },
@@ -547,12 +536,12 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .mannU = function(var, group, data, level1=1, level2=2) { # Two groups
             variable <- jmvcore::toNumeric(data[[var]])
             gLevels <- levels(data[[group]])
-            group1 <- na.omit(variable[data[[group]] == gLevels[level1]])
-            group2 <- na.omit(variable[data[[group]] == gLevels[level2]])
+            group1 <- stats::na.omit(variable[data[[group]] == gLevels[level1]])
+            group2 <- stats::na.omit(variable[data[[group]] == gLevels[level2]])
             n1 <- length(group1)
             n2 <- length(group2)
             if (n1 > 0 && n2 > 0) {
-                res <- wilcox.test(group1, group2)
+                res <- stats::wilcox.test(group1, group2)
                 statistic <- min(res$statistic, n1 * n2 - res$statistic)
                 return(list('statistic' = statistic, 'p.value' = res$p.value))
             } else {
@@ -563,13 +552,13 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             variable <- jmvcore::toNumeric(data[[var]])
             group <- data[[group]]
             tryCatch(
-                kruskal.test(variable, group),
+                stats::kruskal.test(variable, group),
                 error = function(e) list(p.value = NA)
             )
         },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/dscfAllPairsTest.R
         .dscfAllPairsTest = function(x, g){
-            OK <- complete.cases(x, g)
+            OK <- stats::complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
             # vijPlots: drop empty levels
@@ -610,8 +599,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 PSTAT <- sqrt(2) * (Umn - m * nn / 2) / sqrt(VAR)
                 PSTAT
             }
-            PSTAT <- pairwise.table(compare.stats,levels(g), p.adjust.method="none")
-            PVAL <- ptukey(abs(PSTAT), nmeans = k, df = Inf, lower.tail = FALSE)
+            PSTAT <- stats::pairwise.table(compare.stats,levels(g), p.adjust.method="none")
+            PVAL <- stats::ptukey(abs(PSTAT), nmeans = k, df = Inf, lower.tail = FALSE)
             # vijPlots : change the format of result returned
             # pairwise.table() = (k-1)×(k-1) triangular matrix
             p.values = list()
@@ -644,7 +633,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 H
             }
             # Main computation
-            OK <- complete.cases(x, g)
+            OK <- stats::complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
             # vijPlots: drop empty levels
@@ -680,18 +669,18 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 tval <- dif / sqrt(S2 * B * D)
                 return(tval)
             }
-            PSTAT <- pairwise.table(compare.stats, levels(g), p.adjust.method = "none" )
+            PSTAT <- stats::pairwise.table(compare.stats, levels(g), p.adjust.method = "none" )
 
             compare.levels <- function(i,j) {
                 dif <- abs(R.bar[i] - R.bar[j])
                 B <- (1 / R.n[i] + 1 / R.n[j])
                 D <- (n - 1 - H.cor) / (n - k)
                 tval <- dif / sqrt(S2 * B * D)
-                pval <- 2 * pt(abs(tval), df=n - k, lower.tail=FALSE)
+                pval <- 2 * stats::pt(abs(tval), df=n - k, lower.tail=FALSE)
                 return(pval)
             }
 
-            PVAL <- pairwise.table(compare.levels, levels(g), p.adjust.method = p.adjust.method )
+            PVAL <- stats::pairwise.table(compare.levels, levels(g), p.adjust.method = p.adjust.method )
 
             # vijPlots : change the format of result returned
             p.values = list()
@@ -714,7 +703,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 C <- sum(t^3 - t) / (12 * (n - 1))
                 return(C)
             }
-            OK <- complete.cases(x, g)
+            OK <- stats::complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
             # vijPlots: drop empty levels
@@ -741,16 +730,16 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 zval <- dif / sqrt((A - C) * B)
                 return(zval)
             }
-            PSTAT <- pairwise.table(compare.stats,levels(g), p.adjust.method="none" )
+            PSTAT <- stats::pairwise.table(compare.stats,levels(g), p.adjust.method="none" )
             compare.levels <- function(i,j) {
                 dif <- abs(R.bar[i] - R.bar[j])
                 A <- n * (n+1) / 12
                 B <- (1 / R.n[i] + 1 / R.n[j])
                 zval <- dif / sqrt((A - C) * B)
-                pval <- 2 * pnorm(abs(zval), lower.tail = FALSE)
+                pval <- 2 * stats::pnorm(abs(zval), lower.tail = FALSE)
                 return(pval)
             }
-            PVAL <- pairwise.table(compare.levels,levels(g), p.adjust.method = p.adjust.method)
+            PVAL <- stats::pairwise.table(compare.levels,levels(g), p.adjust.method = p.adjust.method)
 
             # vijPlots: change the format of result returned
             p.values = list()
@@ -768,7 +757,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .showHelpMessage = function() {
             helpMsg <- .('<h3>Data & Sorting</h3>
 <ul>
-<li>Likert variables must be of ordinal measure-type. (Continuous measure-type works as well.)</li>
+<li>Likert variables must be of ordinal measure-type. (Continuous-Integer works as well.)</li>
 <li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>
 <li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>
 <li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>

@@ -64,7 +64,7 @@ options:
         - factor
 
     - name: keepNA
-      title: Show points with missing group/label
+      title: Points with missing group/label
       type: Bool
       default: false
 
@@ -74,7 +74,12 @@ options:
       default: false
 
     - name: plotBorder
-      title: Add plot frame
+      title: Plot frame
+      type: Bool
+      default: false
+
+    - name: groupShapes
+      title: Shape by group
       type: Bool
       default: false
 
@@ -300,6 +305,7 @@ options:
     - name: titleText
       title: ""
       type: String
+      default: ''
 
     - name: titleFontFace
       title: Font
@@ -350,6 +356,7 @@ options:
     - name: subtitleText
       title: ""
       type: String
+      default: ''
 
     - name: subtitleFontFace
       title: Font
@@ -400,6 +407,7 @@ options:
     - name: captionText
       title: ""
       type: String
+      default: ''
 
     - name: captionFontFace
       title: Font
@@ -450,6 +458,7 @@ options:
     - name: legendText
       title: ""
       type: String
+      default: ''
 
     - name: legendFontSize
       title: Size
@@ -486,6 +495,7 @@ options:
     - name: xAxisText
       title: ""
       type: String
+      default: ''
 
     - name: xAxisFontSize
       title: Size
@@ -520,6 +530,7 @@ options:
     - name: yAxisText
       title: ""
       type: String
+      default: ''
 
     - name: yAxisFontSize
       title: Size

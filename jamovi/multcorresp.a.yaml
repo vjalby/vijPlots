@@ -187,6 +187,7 @@ options:
     - name: discrimSubtitleText
       title: Discrimination plot
       type: String
+      default: ''
 
     - name: catSubtitleText
       title: Category plot
@@ -239,18 +240,22 @@ options:
     - name: discrimCaptionText
       title: Discrimination plot
       type: String
+      default: ''
 
     - name: catCaptionText
       title: Category plot
       type: String
+      default: ''
 
     - name: obsCaptionText
       title: Observation plot
       type: String
+      default: ''
 
     - name: biplotCaptionText
       title: Biplot
       type: String
+      default: ''
 
     - name: captionAlign
       title: Align
@@ -450,6 +455,7 @@ options:
     - name: legendText
       title: ""
       type: String
+      default: ''
 
     - name: legendFontSize
       title: Size
@@ -486,6 +492,7 @@ options:
     - name: xAxisText
       title: ""
       type: String
+      default: ''
 
     - name: xAxisFontSize
       title: Size
@@ -520,6 +527,7 @@ options:
     - name: yAxisText
       title: ""
       type: String
+      default: ''
 
     - name: yAxisFontSize
       title: Size

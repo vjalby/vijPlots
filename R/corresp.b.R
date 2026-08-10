@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "correspClass",
     inherit = correspBase,
@@ -17,7 +14,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     ),
     private = list(
         .getVarName = function(aVar) {
-            if (self$options$descAsVarName) {
+            if (self$options$descAsVarName && !is.null(aVar)) {
                 aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
                 if (!is.null(aVarName))
                     return(aVarName)
@@ -43,20 +40,20 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # then adds then back to the main table...
             rowProfiles <- contingencyTable                     # copy contingencyTable
             rowProfiles[supplementaryRows,] <- 0                # set supplementary rows to 0
-            rowProfiles <- addmargins(rowProfiles, margin=1)    # Add margin row (sum)
+            rowProfiles <- stats::addmargins(rowProfiles, margin=1)    # Add margin row (sum)
             rowProfiles[supplementaryRows,] <-contingencyTable[supplementaryRows,]  # set supplementary rows back
             rowProfiles[,supplementaryCols] <- 0                # Empty supplementary columns
             # Compute margin
-            tmpRowProfiles <- addmargins(rowProfiles, margin=2)
+            tmpRowProfiles <- stats::addmargins(rowProfiles, margin=2)
             rowMargins <- tmpRowProfiles[-nrow(tmpRowProfiles),ncol(tmpRowProfiles)]
             rowMargins[supplementaryRows]<-0
-            rowMargins <- addmargins(as.matrix(rowMargins), margin = 1)
+            rowMargins <- stats::addmargins(as.matrix(rowMargins), margin = 1)
             #
             rowProfiles <- proportions(rowProfiles, margin = 1)             # Compute % per lines
-            rowProfiles <- addmargins(rowProfiles,margin=2)                 # Add margin column (sum)
-            supplCols <- as.matrix(contingencyTable[,supplementaryCols])    # Table of supplementary Cols
+            rowProfiles <- stats::addmargins(rowProfiles,margin=2)                 # Add margin column (sum)
+            supplCols <- as.matrix(contingencyTable[,supplementaryCols, drop = FALSE])    # Table of supplementary Cols
             supplCols[supplementaryRows,] <- 0                              # set supplementary rows to 0
-            supplCols <- addmargins(supplCols, margin = 1)                  # add margin
+            supplCols <- stats::addmargins(supplCols, margin = 1)                  # add margin
             supplCols <-supplCols / rowMargins[,1]                          # compute % per lines
             supplCols[supplementaryRows,] <- 0                              # Remplace NaN by 0
             rowProfiles[,supplementaryCols] <- supplCols                    # Replace supplementary cols in row profiles table
@@ -66,11 +63,11 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(rowProfiles)
         },
         .getContingencyTable = function(contingencyTable, supplementaryRows, supplementaryCols) {
-            savedSupplementaryRows <- contingencyTable[supplementaryRows,]
-            savedSupplementaryCols <- contingencyTable[,supplementaryCols]
+            savedSupplementaryRows <- contingencyTable[supplementaryRows,, drop = FALSE]
+            savedSupplementaryCols <- contingencyTable[,supplementaryCols, drop = FALSE]
             contingencyTable[supplementaryRows,] <- 0                # set supplementary rows to 0
             contingencyTable[,supplementaryCols] <- 0                # Empty supplementary columns
-            contingencyTable <- addmargins(contingencyTable, margin=c(1,2))    # Add margin row (sum)
+            contingencyTable <- stats::addmargins(contingencyTable, margin=c(1,2))    # Add margin row (sum)
             # Set the supplementary rows and columns back
             contingencyTable[supplementaryRows,1:(ncol(contingencyTable)-1)] <- savedSupplementaryRows
             contingencyTable[1:(nrow(contingencyTable)-1),supplementaryCols] <- savedSupplementaryCols
@@ -109,32 +106,26 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     self$results$colSummary$addColumn(".", type="text")
                     self$results$eigenvalues$addRow(".")
                     self$results$eigenvalues$setNote("chisq", NULL)
-                    return()
+                    return(FALSE)
                 }
 
                 rowVarName <- self$options$rows
                 colVarName <- self$options$cols
-                countsVarName <- self$countsName
 
                 # Set variable names
                 rowVarNameString <- private$.getVarName(rowVarName)
                 colVarNameString <- private$.getVarName(colVarName)
 
                 #Contingency Table (base)
-
-                if (!is.null(countsVarName)) {
-                    formula <- jmvcore::composeFormula('.COUNTS', c(rowVarName, colVarName))
-                    contingencyTable <- xtabs(formula, data)
-                } else {
-                    contingencyTable <- table(self$data[[rowVarName]], self$data[[colVarName]])
-                }
+                formula <- jmvcore::composeFormula('.COUNTS', c(rowVarName, colVarName))
+                contingencyTable <- stats::xtabs(formula, data)
             } else { # self$options$mode == "contTable"
                 if (is.null(self$options$rowLabels) || length(self$options$columns) < 3 || nrow(self$data) < 3)
-                    return()
-                contingencyTable <- self$data[,self$options$columns]
+                    return(FALSE)
+                contingencyTable <- self$data[,self$options$columns, drop = FALSE]
                 if (anyNA(contingencyTable)) {
                     vijErrorMessage(self, .("Some values are missing from the contingency table."))
-                    return()
+                    return(FALSE)
                 }
                 row.names(contingencyTable) <- self$data[[self$options$rowLabels]]
                 contingencyTable <- as.matrix(contingencyTable)
@@ -154,14 +145,14 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 supplementaryRows <- as.integer(unlist(strsplit(self$options$supplementaryRows,",")))
                 if (any(is.na(supplementaryRows))) {
                     vijErrorMessage(self, .("Supplementary row numbers must be a list of numbers, e.g. 1,2,9"))
-                    return(TRUE)
+                    return(FALSE)
                 } else {
                     supplementaryRows <- sort(unique(supplementaryRows))
                     nmax <- nrow(contingencyTable) #nlevels(self$data[[rowVarName]])
                     if (!all(supplementaryRows %in% 1:nmax)) {
                         errorMessage <- jmvcore::format(.("Supplementary row numbers must be between 1 and {nmax}."), nmax = nmax)
                         vijErrorMessage(self, errorMessage)
-                        return(TRUE)
+                        return(FALSE)
                     }
                 }
             }
@@ -172,14 +163,14 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 supplementaryCols <- as.integer(unlist(strsplit(self$options$supplementaryCols,",")))
                 if (any(is.na(supplementaryCols))) {
                     vijErrorMessage(self,.("Supplementary column numbers must be a list of numbers, e.g. 1,2,9"))
-                    return(TRUE)
+                    return(FALSE)
                 } else {
                     supplementaryCols <- sort(unique(supplementaryCols))
                     nmax <- ncol(contingencyTable) #nlevels(self$data[[colVarName]])
                     if (!all(supplementaryCols %in% 1:nmax)) {
                         errorMessage <- jmvcore::format(.("Supplementary column numbers must be between 1 and {nmax}."), nmax=nmax)
                         vijErrorMessage(self, errorMessage)
-                        return(TRUE)
+                        return(FALSE)
                     }
                 }
             }
@@ -195,13 +186,13 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             maxDim = min(nrow(contingencyTable)-length(supplementaryRows), ncol(contingencyTable)-length(supplementaryCols)) - 1
             if (maxDim < 2) {
                 vijErrorMessage(self, .("Not enough data to compute CA."))
-                return(TRUE)
+                return(FALSE)
             }
             nDim <-self$options$dimNum
             if (nDim > maxDim) {
                 errorMessage <- jmvcore::format(.("Number of dimensions must be less than or equal to {maxDim}."), maxDim = maxDim)
                 vijErrorMessage(self,errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
             # Axis
             xaxis <- self$options$xaxis
@@ -209,11 +200,11 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (xaxis > nDim || yaxis > nDim) {
                 errorMessage <- jmvcore::format(.("Axis numbers must be less than or equal to the number of dimensions ({nDim})."), nDim = nDim)
                 vijErrorMessage(self, errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
             if (xaxis == yaxis) {
                 vijErrorMessage(self, .("Axis numbers cannot be equal."))
-                return(TRUE)
+                return(FALSE)
             }
 
             #### Normalisation ####
@@ -290,18 +281,25 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 activeContingencyTable <- activeContingencyTable[-supplementaryRows,, drop = FALSE]
             if (!is.null(supplementaryCols))
                 activeContingencyTable <- activeContingencyTable[,-supplementaryCols, drop = FALSE]
+
+            if (any(rowSums(activeContingencyTable) == 0) ||
+                any(colSums(activeContingencyTable) == 0)) {
+                vijErrorMessage(self, .("Some categories have zero counts and must be removed."))
+                return(FALSE)
+            }
+
             chisqres <- tryCatch(
-                            chisq.test(activeContingencyTable),
+                            stats::chisq.test(activeContingencyTable),
                             error = function (e) NULL
                         )
 
             if (is.null(chisqres) || !is.finite(chisqres$statistic) ) {
                 vijErrorMessage(self, .("Unable to compute the χ2 statistic."))
-                return(TRUE)
+                return(FALSE)
             }
-            if (round(chisqres$statistic,2) == 0) {
+            if (chisqres$statistic <= .Machine$double.eps) {
                 vijErrorMessage(self, .("The χ2 statistic is equal to zero."))
-                return(TRUE)
+                return(FALSE)
             }
 
             #### Compute CA ####
@@ -309,6 +307,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 suprow <- NULL
             else
                 suprow <- supplementaryRows
+
             if (is.null(supplementaryCols))
                 supcol <- NULL
             else
@@ -321,7 +320,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (is.null(res) ) {
                 vijErrorMessage(self, .("Unable to compute correspondence analysis for the selected data."))
-                return(TRUE)
+                return(FALSE)
             }
 
             #### Inertia Table ####
@@ -347,7 +346,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Chi-squared test
             self$results$eigenvalues$setNote("chisq",
                                              paste0("X-squared = ", round(chisqres$statistic,2), ", df = ", chisqres$parameter, ",
-                               p-value = ",format.pval(chisqres$p.value, eps = 0.001)),
+                               p-value = ", format.pval(chisqres$p.value, eps = 0.001)),
                                              init = FALSE)
             #### Summary Tables ####
 
@@ -387,7 +386,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             row = aRow,
                             margin = "",
                             inertia = "",
-                            qlt = sum(res$row.sup$cos2[aRow,1:nDim])
+                            qlt = sum(res$row.sup$cos2[aRow,1:nDim], na.rm = TRUE)
                         )
                         for (j in seq(nDim)) {
                             theValues[[paste0("score",j)]] <- res$row.sup$coord[aRow,j]
@@ -437,7 +436,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             col = aCol,
                             margin = "",
                             inertia = "",
-                            qlt = sum(res$col.sup$cos2[aCol,1:nDim])
+                            qlt = sum(res$col.sup$cos2[aCol,1:nDim], na.rm = TRUE)
                         )
                         for (j in seq(nDim)) {
                             theValues[[paste0("score",j)]] <- res$col.sup$coord[aCol,j]
@@ -452,9 +451,9 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$colSummary$setNote("norm", paste("† :", normalizationString))
             }
             if (length(res$sv) < 2)
-                return()
+                return(FALSE)
             if (res$sv[2] < .Machine$double.eps)
-                return()
+                return(FALSE)
 
             #### Plots ####
 
@@ -523,7 +522,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     )
                 }
             } else {
-                ptcoord <- NA
+                ptcoord <- NULL #NA
             }
             if (plotType != 'row') { # colplot and biplot
                 if (!is.null(res$col.sup$coord)) {
@@ -554,27 +553,25 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             dim2name <- paste0(.("Dimension"), " ", yaxis, " (", percentInertia[yaxis], '\u2009%)')
 
             # Building the plot
-            #plot <-  ggplot(ptcoord, aes(x = ptcoord[,xaxisdim], y = ptcoord[,yaxisdim], color = ptcoord$sup, shape = ptcoord$sup))
-            plot <-  ggplot(ptcoord, aes(x = .data[[xaxisdim]], y = .data[[yaxisdim]], color = .data[["sup"]], shape = .data[["sup"]]))
-            plot <- plot + geom_point()
-            plot <- plot + ggrepel::geom_text_repel(aes(label = rownames(ptcoord)), show.legend = FALSE, size = self$options$labelSize/.pt)
-            plot <- plot + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2)
+            plot <-  ggplot2::ggplot(ptcoord, ggplot2::aes(x = .data[[xaxisdim]], y = .data[[yaxisdim]], color = .data[["sup"]], shape = .data[["sup"]]))
+            plot <- plot + ggplot2::geom_point()
+            plot <- plot + ggrepel::geom_text_repel(ggplot2::aes(label = rownames(ptcoord)), show.legend = FALSE, size = self$options$labelSize/ggplot2::.pt, seed = 123)
+            plot <- plot + ggplot2::geom_hline(yintercept = 0, linetype = 2) + ggplot2::geom_vline(xintercept = 0, linetype = 2)
 
             # Apply jmv theme
             plot <- plot + ggtheme
 
             # Set point colors
             plot <- plot +
-                scale_color_manual(
+                ggplot2::scale_color_manual(
                     values=c("1" = self$options$rowColor, "2" = self$options$supColor, "3" = self$options$colColor, "4" = self$options$supColor),
-                    breaks=c("1", "3", "2", "4")) + labs(color = "") +
-                    #labels = c(self$options$rows, self$options$cols, .("Suppl. Row"), .("Suppl. Column"))) + labs(color = "") +
-                scale_shape_manual(values = c(19, 19, 17, 17), breaks = c("1","2","3","4")) +
-                theme(legend.text = element_text(size=10))
-            plot <- plot + guides(color = "none", shape = "none")
+                    breaks=c("1", "3", "2", "4")) + ggplot2::labs(color = "") +
+                ggplot2::scale_shape_manual(values = c(19, 19, 17, 17), breaks = c("1","2","3","4")) +
+                ggplot2::theme(legend.text = ggplot2::element_text(size = 10))
+            plot <- plot + ggplot2::guides(color = "none", shape = "none")
 
             # Plot frame
-            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, linewidth = 1))
+            plot <- plot + ggplot2::theme(axis.line = ggplot2::element_line(linewidth = 0), panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1))
 
             # Plot title
             title <- switch(plotType,
@@ -620,16 +617,16 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             columns <- list()
 
-            if ( ! is.null(rowVarName)) {
+            if (!is.null(rowVarName)) {
                 columns[[rowVarName]] <- as.factor(data[[rowVarName]])
             }
-            if ( ! is.null(colVarName)) {
+            if (!is.null(colVarName)) {
                 columns[[colVarName]] <- as.factor(data[[colVarName]])
             }
 
-            if ( ! is.null(countsName)) {
+            if (!is.null(countsName)) {
                 columns[['.COUNTS']] <- jmvcore::toNumeric(data[[countsName]])
-            } else if ( ! is.null(attr(data, "jmv-weights"))) {
+            } else if (!is.null(attr(data, "jmv-weights"))) {
                 columns[['.COUNTS']] <- jmvcore::toNumeric(attr(data, "jmv-weights"))
             } else {
                 columns[['.COUNTS']] <- as.integer(rep(1, nrow(data)))

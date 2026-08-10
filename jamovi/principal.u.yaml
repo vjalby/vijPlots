@@ -99,6 +99,7 @@ children:
                 name: rotation
               - type: CheckBox
                 name: kaiser
+                enable: (!(rotation:none))
   - type: LayoutBox
     margin: large
     style: inline

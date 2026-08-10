@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "histogramClass",
     inherit = histogramBase,
@@ -45,142 +42,217 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .run = function() {
-            if (! is.null(self$options$aVar) && nrow(self$data) != 0) {
-                plotData <- self$data[c(self$options$aVar, self$options$group, self$options$facet)]
-                plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
-                image <- self$results$plot
-                image$setState(plotData)
-            } else {
-                return(FALSE)
-            }
+        	if (is.null(self$options$aVar) || nrow(self$data) == 0)
+        		return(FALSE)
+
+            plotData <- self$data[c(self$options$aVar, self$options$group, self$options$facet)]
+            plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
+
+            plotData <- jmvcore::naOmit(plotData)
+            if (nrow(plotData) == 0)
+            	return(FALSE)
+
+            image <- self$results$plot
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {  # <-- the plot function
             if (is.null(image$state))
                 return(FALSE)
             plotData <- image$state
 
-            xVar <- self$options$aVar
-            xVar <- ensym(xVar)
+			#### Set variables ####
+
+            xVar <- rlang::sym(self$options$aVar)
 
             if (!is.null(self$options$group)) {
-                groupVar <- self$options$group
-                groupVar <- ensym(groupVar)
+                groupVar <- rlang::sym(self$options$group)
             } else {
                 groupVar <- NULL
             }
 
             if (!is.null(self$options$facet)) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
+                facetVar <- rlang::sym(self$options$facet)
             } else {
                 facetVar <- NULL
             }
 
-            plotData <- jmvcore::naOmit(plotData)
+			#### Set options ####
 
-            # Set bin width and boundary
-            if (self$options$binWidth == 0)
-                binWidth <- NULL
-            else
-                binWidth <- self$options$binWidth
+            # Bin width
+			if (self$options$binWidth == 0) { # ggplot default
+                x_vals <- plotData[[xVar]]
+                x_range <- range(x_vals, na.rm = TRUE)
+                binWidth <- (x_range[2] - x_range[1]) / 30
+            } else {
+            	binWidth <- self$options$binWidth
+            }
+
+			# Boundary
             if (self$options$binBoundary == 0)
                 binBoundary <- NULL
             else
                 binBoundary <- self$options$binBoundary
 
-            # set the border color
+            # Border color
             if (self$options$borderColor == "none") {
                 borderColor <- NA
             } else {
-                borderColor = self$options$borderColor
+                borderColor <- self$options$borderColor
             }
-            # set the fill color
+            # Fill color
             if (self$options$fillColor == "none") {
                 fillColor <- NA
             } else {
-                fillColor = self$options$fillColor
+                fillColor <- self$options$fillColor
             }
 
-            # Define geom_historgram argument list
+            # Transparency
+            if (!is.null(groupVar) && self$options$groupingN == "identity") {
+                histAlpha <- self$options$binOpacity #0.5
+            } else {
+            	histAlpha <- NA
+            }
+
+            # Legend glyph priority: filled square if bins/density shown, colored line otherwise
+            legendAsSquare <- self$options$showBins || self$options$density
+
+			#### Build histogram ####
+
+			plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xVar, fill = !!groupVar, color = !!groupVar))
+
             if (self$options$histtype == "density") {
-                hist_arg = list(aes(y = after_stat(density)))
+                histAes <- ggplot2::aes(y = ggplot2::after_stat(density))
             } else {
-                hist_arg = list()
+            	histAes <- ggplot2::aes() # no change
             }
-            if (!is.null(groupVar)) {
-                hist_arg[["position"]] <- self$options$groupingN
-                hist_arg[["show.legend"]] <- TRUE
-                #if (self$options$groupingN == "identity" && (fillColor != "white" || self$options$usePalette == "forFilling")) {
-                if (self$options$groupingN == "identity") {
-                    hist_arg[["alpha"]] <- 0.5
+
+            #### Bins ####
+
+            if (self$options$showBins) {
+                if (!is.null(groupVar)) {
+                    if (self$options$usePalette == "forFilling") { # fixed border color
+                        plot <- plot + ggplot2::geom_histogram(
+                            mapping = histAes,
+                            binwidth = binWidth,
+                            boundary = binBoundary,
+                            position = self$options$groupingN,
+                            alpha = histAlpha,
+                            color = borderColor,
+                            show.legend = TRUE
+                        )
+                    } else { # fixed fill color
+                        plot <- plot + ggplot2::geom_histogram(
+                            mapping = histAes,
+                            binwidth = binWidth,
+                            boundary = binBoundary,
+                            position = self$options$groupingN,
+                            alpha = histAlpha,
+                            fill = fillColor,
+                            show.legend = TRUE
+                        )
+                    }
+                } else { # no group / fixed colors
+                    plot <- plot + ggplot2::geom_histogram(
+                        mapping = histAes,
+                        binwidth = binWidth,
+                        boundary = binBoundary,
+                        fill = fillColor,
+                        color = borderColor,
+                        alpha = histAlpha
+                    )
                 }
-                if (self$options$usePalette == "forFilling") {
-                    hist_arg[["color"]] <- borderColor
-                } else {
-                    hist_arg[["fill"]] <- fillColor
-                }
-            } else {
-                hist_arg[["fill"]] <- fillColor
-                hist_arg[["color"]] <- borderColor
             }
-            hist_arg[["binwidth"]] <- binWidth
-            hist_arg[["boundary"]] <- binBoundary
 
-            plot <- ggplot(plotData, aes(x = !!xVar, fill = !!groupVar, color = !!groupVar))
+            #### Lines ####
 
-            plot <- plot + do.call(geom_histogram, hist_arg)
+            if (self$options$showLines) {
+                plot <- plot + ggplot2::geom_freqpoly(
+                    mapping = histAes,
+                    binwidth = binWidth,
+                    boundary = binBoundary,
+                    position = self$options$groupingN,
+                    linewidth = self$options$lineLineSize,
+                    show.legend = !legendAsSquare
+                )
+            }
 
-            # get binwidth value from ggplot dat
-            ggData <- layer_data(plot)
-            bw <- unique(ggData$xmax - ggData$xmin)[1]
+            #### Normal Curve ####
 
-            # Normal Curve
             if (self$options$normalCurve) {
-                linetype = ifelse(self$options$dashedDensity,2,1)
-                if (!is.null(groupVar)) {
-                    if (self$options$histtype == "density")
-                        plot <- plot + ggh4x::stat_theodensity(na.rm=TRUE, linewidth = self$options$normalCurveLineSize, linetype = linetype, show.legend = FALSE)
-                    else
-                        plot <- plot + ggh4x::stat_theodensity(aes(y = after_stat(count)*bw), na.rm=TRUE, linewidth = self$options$normalCurveLineSize, linetype = linetype, show.legend = FALSE)
-                } else {
-                    if (self$options$histtype == "density")
-                        plot <- plot + ggh4x::stat_theodensity(na.rm=TRUE, color='red', linewidth = self$options$normalCurveLineSize, linetype = linetype)
-                    else
-                        plot <- plot + ggh4x::stat_theodensity(aes(y = after_stat(count)*bw), na.rm=TRUE, color='red', linewidth = self$options$normalCurveLineSize, linetype = linetype)
-                }
-            }
+                lineType <- ifelse(self$options$dashedDensity,2,1)
+                lineSize <- self$options$normalCurveLineSize
 
-            # Density
+                if (self$options$histtype == "density") {
+                	normalCurveAes <- ggplot2::aes() # no change
+                } else {
+                    normalCurveAes <- ggplot2::aes(y = ggplot2::after_stat(count) * binWidth)
+                }
+
+				if (is.null(groupVar)) {
+                    plot <- plot + ggh4x::stat_theodensity(
+                        mapping = normalCurveAes,
+                        na.rm = TRUE,
+                        color = 'red',
+                        linewidth = lineSize,
+                        linetype = lineType
+                    )
+                } else {
+                    plot <- plot + ggh4x::stat_theodensity(
+                        mapping = normalCurveAes,
+                        na.rm = TRUE,
+                        linewidth = lineSize,
+                        linetype = lineType,
+                        show.legend = !legendAsSquare,
+                        position = self$options$groupingN
+                    )
+                }
+             }
+
+            #### Density ####
+
             if (self$options$density) {
-                if (!is.null(groupVar)) {
-                    if (self$options$histtype == "density") {
-                        plot <- plot + geom_density(aes(y = after_stat(density)), alpha = self$options$densityOpacity, linewidth = self$options$densityLineSize)
-                    } else {
-                        plot <- plot + geom_density(aes(y = after_stat(count) * bw), alpha = self$options$densityOpacity, linewidth = self$options$densityLineSize)
-                    }
+            	densityAlpha <- self$options$densityOpacity
+                densitySize  <- self$options$densityLineSize
+
+            	if (self$options$histtype == "density") {
+                    densityAes <- ggplot2::aes(y = ggplot2::after_stat(density))
                 } else {
-                    if (self$options$histtype == "density") {
-                        plot <- plot + geom_density(aes(y = after_stat(density)), fill = fillColor, alpha = self$options$densityOpacity, linewidth = self$options$densityLineSize)
-                    } else {
-                        plot <- plot + geom_density(aes(y = after_stat(count) * bw), fill = fillColor, alpha = self$options$densityOpacity, linewidth = self$options$densityLineSize)
-                    }
+                    densityAes <- ggplot2::aes(y = ggplot2::after_stat(count) * binWidth)
+                }
+
+                if (is.null(groupVar)) {
+                    plot <- plot + ggplot2::geom_density(
+                        mapping = densityAes,
+                        fill = fillColor,
+                        alpha = densityAlpha,
+                        linewidth = densitySize
+                    )
+                } else {
+                    plot <- plot + ggplot2::geom_density(
+                        mapping = densityAes,
+                        alpha = densityAlpha,
+                        linewidth = densitySize,
+                        position = self$options$groupingN,
+                        show.legend = legendAsSquare
+                    )
                 }
             }
 
-            # Y-Axix label
+            #### Axes ####
+
+            # Y-Axis label
             if (self$options$histtype == "density") {
                 yLab <- .("Density")
-                #plot <- plot  + scale_y_continuous(labels = scales::comma)
             } else {
                 yLab <- .("Count")
 
             }
             # Ticks
             if (self$options$xTicks > 0) {
-                plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
             # Axis Limits
             if (self$options$yAxisRangeType == "manual")
@@ -191,14 +263,14 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xLim <- c(self$options$xAxisRangeMin, self$options$xAxisRangeMax)
             else
                 xLim <- NULL
-            plot <- plot + coord_cartesian(ylim = yLim, xlim = xLim)
+            plot <- plot + ggplot2::coord_cartesian(ylim = yLim, xlim = xLim)
 
             # Facet
             if (!is.null(facetVar)) {
                 if (self$options$facetBy == "column")
-                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
                 else
-                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
             # Theme and colors
@@ -206,7 +278,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                     vijScale(self$options$colorPalette, "color", drop = FALSE)
 
             # Legend spacing
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Titles & Labels
             defaults <- list(legend = groupVar, x = xVar, y = yLab)

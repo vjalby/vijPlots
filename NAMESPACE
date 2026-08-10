@@ -1,4 +1,4 @@
 exportPattern("^[[:alpha:]]+")
-import(ggplot2)
 importFrom(jmvcore,.)
 importFrom(jmvcore,..)
+importFrom(rlang,.data)

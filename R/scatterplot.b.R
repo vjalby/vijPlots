@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "scatterplotClass",
     inherit = scatterplotBase,
@@ -71,72 +68,96 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
-            xaxis <- self$options$xaxis
-            yaxis <- self$options$yaxis
-            groupVar <- self$options$group
-            labelVar <- self$options$labelVar
-            sizeVar <- self$options$ptSize
 
+            plotData <- image$state
+
+            #### Set variables ####
+
+            xaxis <- rlang::sym(self$options$xaxis)
+            yaxis <- rlang::sym(self$options$yaxis)
+            if( !is.null(self$options$group) ) {
+                groupVar <- rlang::sym(self$options$group)
+            } else {
+                groupVar <- NULL
+            }
+            if( !is.null(self$options$labelVar) ) {
+                labelVar <- rlang::sym(self$options$labelVar)
+            } else {
+                labelVar <- NULL
+            }
+            if( !is.null(self$options$ptSize) ) {
+                sizeVar <- rlang::sym(self$options$ptSize)
+            } else {
+                sizeVar <- NULL
+            }
             if (!is.null(self$options$facet)) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
+                facetVar <- rlang::sym(self$options$facet)
             } else {
                 facetVar <- NULL
             }
 
-            xaxis <- ensym(xaxis)
-            yaxis <- ensym(yaxis)
-            if( !is.null(labelVar) ) {
-                labelVar <- ensym(labelVar)
-            }
-            if( !is.null(groupVar) ) {
-                groupVar <- ensym(groupVar)
-            }
-            if( !is.null(sizeVar) ) {
-                sizeVar <- ensym(sizeVar)
+            if (self$options$groupShapes) {
+                shapeVar <- groupVar
+            } else {
+                shapeVar <- NULL
             }
 
-            plotData <- image$state
+            #### Main plot ####
 
-            if( !is.null(sizeVar) ) {
-                plot <- ggplot(plotData, aes(x = !!xaxis, y = !!yaxis, size = !!sizeVar, color = !!groupVar, fill = !!groupVar))
-                if( is.null(groupVar)) {
-                    plot <- plot + geom_point(color = self$options$singleColor)
+            if (!is.null(sizeVar)) {
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xaxis, y = !!yaxis, size = !!sizeVar, color = !!groupVar, shape = !!shapeVar, fill = !!groupVar))
+                if (is.null(groupVar)) {
+                    plot <- plot + ggplot2::geom_point(color = self$options$singleColor)
                 } else {
-                    plot <- plot + geom_point(aes(color = !!groupVar), show.legend = TRUE)
+                    plot <- plot + ggplot2::geom_point(show.legend = TRUE)
                 }
             } else {
-                plot <- ggplot(plotData, aes(x = !!xaxis, y = !!yaxis, color = !!groupVar, fill = !!groupVar))
-                if( is.null(groupVar)) {
-                    plot <- plot + geom_point(color = self$options$singleColor, size = self$options$pointSize)
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xaxis, y = !!yaxis, color = !!groupVar, shape = !!shapeVar, fill = !!groupVar))
+                if (is.null(groupVar)) {
+                    plot <- plot + ggplot2::geom_point(color = self$options$singleColor, size = self$options$pointSize)
                 } else {
-                    plot <- plot + geom_point(aes(color = !!groupVar), size = self$options$pointSize, show.legend = TRUE)
+                    plot <- plot + ggplot2::geom_point(size = self$options$pointSize, show.legend = TRUE)
                 }
             }
+
+            #### Regression line ####
 
             if (self$options$regLine) {
                 plot <- plot + ggplot2::geom_smooth(method = self$options$lineMethod, se = self$options$lineSE, formula = y ~ x,
-                                                    size = self$options$lineSize, show.legend = FALSE)
+                                                    linewidth = self$options$lineSize, show.legend = FALSE)
             }
 
-            plot <- plot + guides(color = guide_legend(override.aes = list(size=4)))
+            plot <- plot + ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size=4)))
 
-            if( !is.null(labelVar) ) {
-                x_scale <- max(plotData[[xaxis]], na.rm=TRUE) - min(plotData[[xaxis]], na.rm=TRUE)
-                plot <- plot + geom_text(aes(label = !!labelVar), color="black",
-                                         na.rm=TRUE, size=4, hjust = 0, nudge_x = 0.02*x_scale,
+            #### Labels ####
+
+            if (!is.null(labelVar)) {
+                x_scale <- max(plotData[[xaxis]], na.rm=TRUE) - min(plotData[[xaxis]], na.rm = TRUE)
+                plot <- plot + ggplot2::geom_text(ggplot2::aes(label = !!labelVar), color = "black",
+                                         na.rm = TRUE, size = 4, hjust = 0, nudge_x = 0.02*x_scale,
                                          check_overlap = self$options$overlap)
                 # Enlarge graphic by 10% at right (for labels)
-                maxx <- max(plotData[[xaxis]], na.rm=T) + 0.1*(max(plotData[[xaxis]], na.rm=T) - min(plotData[[xaxis]], na.rm=T))
-                plot <- plot + expand_limits(x = maxx)
+                maxx <- max(plotData[[xaxis]], na.rm=T) + 0.1*x_scale
+                plot <- plot + ggplot2::expand_limits(x = maxx)
             }
+
+            #### Reference lines ####
+
             if (self$options$hline)
-                plot <- plot + geom_hline(yintercept= self$options$yinter,  color="black", size = self$options$lineSize/2)
+                plot <- plot + ggplot2::geom_hline(yintercept = self$options$yinter,  color="black", linewidth = self$options$lineSize/2)
             if (self$options$vline)
-                plot <- plot + geom_vline(xintercept= self$options$xinter,  color="black", size = self$options$lineSize/2)
+                plot <- plot + ggplot2::geom_vline(xintercept = self$options$xinter,  color="black", linewidth = self$options$lineSize/2)
+
+            #### Colors and axes ####
 
             # Theme and colors
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color", drop = FALSE) + vijScale(self$options$colorPalette, "fill", drop = FALSE)
+
+            # Shapes
+            if (self$options$groupShapes && !is.null(groupVar)) {
+                #plot <- plot + ggplot2::scale_shape_manual(values = c(16, 17, 15, 18, 8, 3, 4,16, 17, 15, 18, 8, 3, 4))
+                plot <- plot + ggplot2::scale_shape_manual(values = c(16, 17, 15, 18, 1, 2, 0, 5, 6, 3, 4), na.value = 7)
+            }
 
             # Axis Limits
             if (self$options$yAxisRangeType == "manual")
@@ -147,27 +168,29 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xLim <- c(self$options$xAxisRangeMin, self$options$xAxisRangeMax)
             else
                 xLim <- NULL
-            plot <- plot + coord_cartesian(ylim = yLim, xlim = xLim)
+            plot <- plot + ggplot2::coord_cartesian(ylim = yLim, xlim = xLim)
 
             # Ticks
             if (self$options$xTicks > 0) {
-                plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
             # Border
             if( self$options$plotBorder ) {
-                plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, size = 1))
+                plot <- plot + ggplot2::theme(axis.line = ggplot2::element_line(linewidth = 0),
+                                              panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1)
+                                        )
             }
 
             # Facet
             if (!is.null(facetVar)) {
                 if (self$options$facetBy == "column")
-                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
                 else
-                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
             # Titles & Labels

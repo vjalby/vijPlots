@@ -6,7 +6,7 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            mode = NULL,
+            mode = "oneVariable",
             timeVar = NULL,
             timeVar1 = NULL,
             vars = NULL,
@@ -21,28 +21,28 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             displayFormat = "%Y-%m-%d",
             dateBreak = "1 month",
             lineWidth = 0.5,
-            titleText = NULL,
+            titleText = "",
             titleFontFace = "bold",
             titleFontSize = "14",
             titleAlign = "0.5",
-            subtitleText = NULL,
+            subtitleText = "",
             subtitleFontFace = "plain",
             subtitleFontSize = "12",
             subtitleAlign = "0.5",
-            captionText = NULL,
+            captionText = "",
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
             xAxisRangeType = "auto",
             xAxisRangeMin = "0",
             xAxisRangeMax = "10",
-            yAxisText = NULL,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
             yAxisLabelFontSize = 12,
@@ -66,7 +66,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 mode,
                 options=list(
                     "oneVariable",
-                    "severalVariables"))
+                    "severalVariables"),
+                default="oneVariable")
             private$..timeVar <- jmvcore::OptionVariable$new(
                 "timeVar",
                 timeVar,
@@ -233,7 +234,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0.5)
             private$..titleText <- jmvcore::OptionString$new(
                 "titleText",
-                titleText)
+                titleText,
+                default="")
             private$..titleFontFace <- jmvcore::OptionList$new(
                 "titleFontFace",
                 titleFontFace,
@@ -265,7 +267,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..subtitleText <- jmvcore::OptionString$new(
                 "subtitleText",
-                subtitleText)
+                subtitleText,
+                default="")
             private$..subtitleFontFace <- jmvcore::OptionList$new(
                 "subtitleFontFace",
                 subtitleFontFace,
@@ -297,7 +300,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..captionText <- jmvcore::OptionString$new(
                 "captionText",
-                captionText)
+                captionText,
+                default="")
             private$..captionFontFace <- jmvcore::OptionList$new(
                 "captionFontFace",
                 captionFontFace,
@@ -329,7 +333,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="1")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -352,7 +357,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="right")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -389,7 +395,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="10")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -706,7 +713,7 @@ areachartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' @export
 areachart <- function(
-    mode,
+    mode = "oneVariable",
     data,
     timeVar,
     timeVar1,
@@ -722,28 +729,28 @@ areachart <- function(
     displayFormat = "%Y-%m-%d",
     dateBreak = "1 month",
     lineWidth = 0.5,
-    titleText,
+    titleText = "",
     titleFontFace = "bold",
     titleFontSize = "14",
     titleAlign = "0.5",
-    subtitleText,
+    subtitleText = "",
     subtitleFontFace = "plain",
     subtitleFontSize = "12",
     subtitleAlign = "0.5",
-    captionText,
+    captionText = "",
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
     xAxisRangeType = "auto",
     xAxisRangeMin = "0",
     xAxisRangeMax = "10",
-    yAxisText,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5",
     yAxisLabelFontSize = 12,

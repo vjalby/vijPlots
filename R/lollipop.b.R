@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "lollipopClass",
     inherit = lollipopBase,
@@ -49,27 +46,29 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .run = function() {
-            if (!is.null(self$options$aVar) && !is.null(self$options$group) && nrow(self$data) != 0) {
-                plotData <- self$data[c(self$options$aVar, self$options$group, self$options$facet)]
-                plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
-                plotData <- jmvcore::naOmit(plotData)
-                image <- self$results$plot
-                image$setState(plotData)
-            }
+            if (is.null(self$options$aVar) || is.null(self$options$group) || nrow(self$data) == 0)
+                return(FALSE)
+
+            plotData <- self$data[c(self$options$aVar, self$options$group, self$options$facet)]
+            plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
+
+            plotData <- jmvcore::naOmit(plotData)
+            if (nrow(plotData) == 0)
+                return(FALSE)
+
+            image <- self$results$plot
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {  # <-- the plot function
             if (is.null(image$state))
                 return(FALSE)
             plotData <- image$state
 
-            aVar <- self$options$aVar
-            aVar <- ensym(aVar)
-            groupVar <- self$options$group
-            groupVar <- ensym(groupVar)
+            aVar <- rlang::sym(self$options$aVar)
+            groupVar <- rlang::sym(self$options$group)
 
             if (!is.null(self$options$facet)) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
+                facetVar <- rlang::sym(self$options$facet)
             } else {
                 facetVar <- NULL
             }
@@ -79,13 +78,11 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 orderFun <- max
 
             if (self$options$order == "decreasing")
-                #plot <- ggplot(plotData, aes(x = reorder(!!groupVar,!!aVar, orderFun, decreasing = TRUE) , y = !!aVar))
-                plot <- ggplot(plotData, aes(x = forcats::fct_reorder(!!groupVar,!!aVar, .fun = orderFun, .desc = TRUE) , y = !!aVar))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = forcats::fct_reorder(!!groupVar,!!aVar, .fun = orderFun, .desc = TRUE) , y = !!aVar))
             else if (self$options$order == "increasing")
-                #plot <- ggplot(plotData, aes(x = reorder(!!groupVar,!!aVar, orderFun, decreasing = FALSE) , y = !!aVar))
-                plot <- ggplot(plotData, aes(x = forcats::fct_reorder(!!groupVar,!!aVar, .fun = orderFun, .desc = FALSE) , y = !!aVar))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = forcats::fct_reorder(!!groupVar,!!aVar, .fun = orderFun, .desc = FALSE) , y = !!aVar))
             else
-                plot <- ggplot(plotData, aes(x = !!groupVar, y = !!aVar))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupVar, y = !!aVar))
 
             summaryFun <- self$options$yaxis
             if (summaryFun == "minmax") {
@@ -93,35 +90,35 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 lightColor <- colorspace::lighten(mainColor, 0.4)
                 darkColor <- colorspace::darken(mainColor, 0.2)
                 plot <- plot +
-                    stat_summary(fun = max, fun.min = min, fun.max = max, color = self$options$lineColor) +
-                    stat_summary(fun = min, geom = "point", size = self$options$dotSize, color=lightColor) +
-                    stat_summary(fun = max, geom = "point", size = self$options$dotSize, color = darkColor)
+                    ggplot2::stat_summary(geom = "linerange", fun.min = "min", fun.max = "max", linewidth = self$options$lineWidth, color = self$options$lineColor) +
+                    ggplot2::stat_summary(geom = "point", fun = "min", size = self$options$dotSize, color = lightColor) +
+                    ggplot2::stat_summary(geom = "point", fun = "max", size = self$options$dotSize, color = darkColor)
             } else {
                 plot <- plot +
-                    stat_summary(fun = summaryFun, geom = "segment", aes(yend = 0), size = self$options$lineWidth, color = self$options$lineColor)+
-                    stat_summary(fun = summaryFun, geom = "point", size = self$options$dotSize, color = self$options$dotColor)
+                    ggplot2::stat_summary(geom = "segment", fun = summaryFun, ggplot2::aes(yend = 0), linewidth = self$options$lineWidth, color = self$options$lineColor)+
+                    ggplot2::stat_summary(geom = "point", fun = summaryFun, size = self$options$dotSize, color = self$options$dotColor)
             }
 
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
-                    plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
+                    plot <- plot + ggplot2::coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
                 } else {
-                    plot <- plot + coord_flip()
+                    plot <- plot + ggplot2::coord_flip()
                 }
-            } else if (self$options$yAxisRangeType == "manual") { # Horizontal and manual
-                plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+            } else if (self$options$yAxisRangeType == "manual") { # Vertical and manual
+                plot <- plot + ggplot2::coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
             }
 
             # Ticks
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
-            plot <- plot + scale_x_discrete(drop = FALSE) # keep unused levels
+            plot <- plot + ggplot2::scale_x_discrete(drop = FALSE) # keep unused levels
 
             # Axis Labels
             if (self$options$yaxis == "mean")
@@ -136,13 +133,11 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 ylabel = aVar
 
             # facet
-            if (!is.null(self$options$facet)) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
+            if (!is.null(facetVar)) {
                 if (self$options$facetBy == "column")
-                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
                 else
-                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
             # Theme and colors

@@ -1,12 +1,9 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "principalClass",
     inherit = principalBase,
     private = list(
         .getVarName = function(aVar) {
-            if (self$options$descAsVarName) {
+            if (self$options$descAsVarName && !is.null(aVar)) {
                 aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
                 if (!is.null(aVarName))
                     return(aVarName)
@@ -57,33 +54,57 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
 
             #### Prepare data ####
-            data <- self$data[,c(self$options$vars, self$options$labelVar, self$options$groupVar)]
+            data <- self$data[,c(self$options$vars, self$options$labelVar, self$options$groupVar), drop = FALSE]
             # Be sure data is numeric (for ordinal data)
             for (aVar in self$options$vars) {
                 data[[aVar]] <- jmvcore::toNumeric(data[[aVar]])
             }
             # remove cases with NA in vars
-            data <- data[complete.cases(data[,self$options$vars]),]
+            data <- data[stats::complete.cases(data[,self$options$vars]),]
 
             if (nrow(data) < 2) {
                 vijErrorMessage(self, .("Not enough complete observations to perform PCA."))
-                return(TRUE)
+                return(FALSE)
+            }
+
+            if (nDim > nrow(data)) {
+                vijErrorMessage(self, .("The number of dimensions cannot be greater than the number of observations"))
+                return(FALSE)
+            }
+
+            # Check for constant variables
+            varValues <- vapply(data[, self$options$vars, drop = FALSE], stats::var, FUN.VALUE = numeric(1))
+
+            if (any(varValues < .Machine$double.eps)) {
+                constantVars <- self$options$vars[varValues < .Machine$double.eps]
+                vijErrorMessage(
+                    self,
+                    jmvcore::format(
+                        .("The following variable(s) are constant and cannot be used in a principal component analysis: {vars}."),
+                        vars = paste(constantVars, collapse = ", ")
+                    )
+                )
+                return(FALSE)
             }
 
             # Compute the correlation matrix
-            corrMat <- cor(data[,self$options$vars])
+            corrMat <- stats::cor(data[,self$options$vars])
 
-            if (anyNA(corrMat)) {
+            if (anyNA(corrMat)) { # should not happen...
                 vijErrorMessage(self, .("Unable to compute the correlation matrix."))
-                return(TRUE)
+                return(FALSE)
             }
 
-            if (abs(det(corrMat)) < .Machine$double.eps) {
-                vijWarningMessage(self, .("The correlation matrix is not positive definite. Computations may not be accurate."))
+            rc <- rcond(corrMat)
+            if (!is.na(rc) && rc < sqrt(.Machine$double.eps)) {
+                vijWarningMessage(
+                    self,
+                    .("The correlation matrix is nearly singular. Computations may not be accurate.")
+                )
             }
 
             #### KMO & Bartlett's test ####
@@ -94,7 +115,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         )
                 bartlett <- tryCatch(
                                 psych::cortest.bartlett(corrMat, n = nrow(data)),
-                                error = function (e) list(cf = NA, p.value = NA)
+                                error = function (e) list(chisq = NA, df = NA, p.value = NA)
                             )
 
                 self$results$kmoTable$setRow(rowNo = 1,
@@ -109,13 +130,13 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### PCA computation ####
             res <- tryCatch(
-                        private$.pca(data[,self$options$vars], scale = self$options$stdVariables,
+                        private$.pca(data[,self$options$vars], scaleData = self$options$stdVariables,
                                nfact = nDim, rotation = self$options$rotation),
                         error = function (e) NULL
                     )
             if (is.null(res)) {
                 vijErrorMessage(self, .("Unable to compute principal components for the selected variables."))
-                return(TRUE)
+                return(FALSE)
             }
 
             if (!is.null(self$options$labelVar)) {
@@ -134,11 +155,12 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                    quartimax = "Quartimax",
                                    equamax = "Equamax",
                                    parsimax = "Parsimax",
-                                   varimin = "Varimin",
+                                   #varimin = "Varimin",
                                    entropy = "Minimum entropy",
-                                   tandemI = "Comrey's Tandem 1",
-                                   tandemII = "Comrey's Tandem 2",
-                                   bentlerT = "Bentler T"
+                                   #tandemI = "Comrey's Tandem 1",
+                                   #tandemII = "Comrey's Tandem 2",
+                                   bentlerT = "Bentler T",
+                                   self$options$rotation
                             )
 
             if (res$rotation != self$options$rotation) {
@@ -259,7 +281,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Plots ####
 
             rownames(res$loadings) <- sapply(rownames(res$loadings), FUN = private$.getVarName, USE.NAMES = FALSE)
-            rownames(res$stdLoadings) <- sapply(rownames(res$loadings), FUN = private$.getVarName, USE.NAMES = FALSE)
+            rownames(res$stdLoadings) <- sapply(rownames(res$stdLoadings), FUN = private$.getVarName, USE.NAMES = FALSE)
             res$groupVarName <- private$.getVarName(self$options$groupVar)
 
             if (self$options$showScreePlot) {
@@ -292,17 +314,17 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
 
             nd <- length(res)
-            plot <- ggplot(NULL,aes(x=1:nd, y=res))
-            plot <- plot + geom_line(size=0.8) + geom_point(size=3, color="darkgrey")
+            plot <- ggplot2::ggplot(NULL,ggplot2::aes(x = 1:nd, y = res))
+            plot <- plot + ggplot2::geom_line(linewidth = 0.8) + ggplot2::geom_point(size = 3, color = "darkgrey")
 
-            plot <- plot + scale_x_continuous(breaks = 1:nd)
+            plot <- plot + ggplot2::scale_x_continuous(breaks = 1:nd)
             plot <- plot + ggtheme
 
             # Titles & Labels
             defaults <- list(title = .("Scree Plot"), y = .("Eigenvalues"), x = .("Component"))
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = "scree") + vijTitleAndLabelFormat(self$options)
             # Reset x and y labs (which cannot be common with other plots)
-            plot <- plot + labs(x = .("Component"), y = .("Eigenvalues"))
+            plot <- plot + ggplot2::labs(x = .("Component"), y = .("Eigenvalues"))
 
             return(plot)
         },
@@ -339,13 +361,13 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 res$scores <- res$stdScores
             }
 
-            plot <- ggplot()
+            plot <- ggplot2::ggplot()
 
             # Reference lines
-            plot <- plot + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2)
+            plot <- plot + ggplot2::geom_hline(yintercept = 0, linetype = 2) + ggplot2::geom_vline(xintercept = 0, linetype = 2)
             # Unit circle
             if (self$options$stdVariables && plotType == "var" && !self$options$stdLoadings)
-                plot <- plot + ggforce::geom_circle(aes(x0 = 0, y0 = 0, r = 1), linewidth = 0.2, n = 720)
+                plot <- plot + ggforce::geom_circle(ggplot2::aes(x0 = 0, y0 = 0, r = 1), linewidth = 0.2, n = 720)
 
             #### Obs Plot ####
 
@@ -362,25 +384,23 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else
                     labelColor <- self$options$labelColor
 
-                c1 <- names(obsData)[dim1]
-                c1 <- ensym(c1)
-                c2 <- names(obsData)[dim2]
-                c2 <- ensym(c2)
+                c1 <- rlang::sym(names(obsData)[dim1])
+                c2 <- rlang::sym(names(obsData)[dim2])
 
                 if (!is.null(self$options$groupVar)) {
-                    plot <- plot + geom_point(data = obsData, aes(x = !!c1, y = !!c2, color = group), size = self$options$pointSize)
+                    plot <- plot + ggplot2::geom_point(data = obsData, ggplot2::aes(x = !!c1, y = !!c2, color = group), size = self$options$pointSize)
                 } else {
-                    plot <- plot + geom_point(data = obsData, aes(x = !!c1, y = !!c2), color = self$options$obsColor, size = self$options$pointSize)
+                    plot <- plot + ggplot2::geom_point(data = obsData, ggplot2::aes(x = !!c1, y = !!c2), color = self$options$obsColor, size = self$options$pointSize)
                 }
                 if (!is.null(self$options$labelVar)) {
                     if (!is.null(self$options$groupVar) && self$options$labelColor == "none") {
-                        plot <- plot + ggrepel::geom_text_repel(data = obsData, aes(x = !!c1, y = !!c2, label = Label, color = group),
+                        plot <- plot + ggrepel::geom_text_repel(data = obsData, ggplot2::aes(x = !!c1, y = !!c2, label = Label, color = group),
                                                                 check_overlap = TRUE, box.padding = 0.4, min.segment.length = 0.6,
-                                                                size = self$options$obsLabelSize/.pt)
+                                                                size = self$options$obsLabelSize/ggplot2::.pt, seed = 123)
                     } else {
-                        plot <- plot + ggrepel::geom_text_repel(data = obsData, aes(x = !!c1, y = !!c2, label = Label),
+                        plot <- plot + ggrepel::geom_text_repel(data = obsData, ggplot2::aes(x = !!c1, y = !!c2, label = Label),
                                                                 check_overlap = TRUE, color = labelColor, box.padding = 0.4, min.segment.length = 0.6,
-                                                                size = self$options$obsLabelSize/.pt)
+                                                                size = self$options$obsLabelSize/ggplot2::.pt, seed = 123)
                     }
                 }
             }
@@ -397,19 +417,17 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else
                     labelColor <- self$options$labelColor
 
-                c1 <- names(varData)[self$options$xaxis]
-                c1 <- ensym(c1)
-                c2 <- names(varData)[self$options$yaxis]
-                c2 <- ensym(c2)
+                c1 <- rlang::sym(names(varData)[self$options$xaxis])
+                c2 <- rlang::sym(names(varData)[self$options$yaxis])
                 if (self$options$biplotLines && plotType == "biplot")
-                    plot <- plot + geom_abline(data = varData, aes(intercept = 0, slope = !!c2/!!c1), linetype = 3, color="gray")
-                plot <- plot + geom_segment(data = varData, aes(x = 0, y = 0, xend = !!c1, yend = !!c2),
-                                            arrow = arrow(length = unit(0.05, "inches"), type = "closed"),
-                                            color = self$options$varColor, size = 0.8)
-                plot <- plot + ggrepel::geom_text_repel(data = varData, aes(x = !!c1, y = !!c2, label = Label),
+                    plot <- plot + ggplot2::geom_abline(data = varData, ggplot2::aes(intercept = 0, slope = !!c2/!!c1), linetype = 3, color="gray")
+                plot <- plot + ggplot2::geom_segment(data = varData, ggplot2::aes(x = 0, y = 0, xend = !!c1, yend = !!c2),
+                                            arrow = grid::arrow(length = grid::unit(0.05, "inches"), type = "closed"),
+                                            color = self$options$varColor, linewidth = 0.8)
+                plot <- plot + ggrepel::geom_text_repel(data = varData, ggplot2::aes(x = !!c1, y = !!c2, label = Label),
                                                         check_overlap = TRUE, min.segment.length = 2,
                                                         position = ggpp::position_nudge_center(x = 0.2, y = 0.01, center_x = 0, center_y = 0),
-                                                        size = self$options$varLabelSize/.pt, color = labelColor, fontface="bold")
+                                                        size = self$options$varLabelSize/ggplot2::.pt, color = labelColor, fontface="bold", seed = 123)
              }
 
             # Theme and colors
@@ -432,18 +450,28 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 ymin = 1.01*floor(min(obsData[[dim2]], varData[[dim2]])*2)/2
                 ymax = 1.01*ceiling(max(obsData[[dim2]], varData[[dim2]])*2)/2
             }
-            plot <- plot + coord_fixed(xlim = c(xmin,xmax), ylim = c(ymin,ymax))
+            # Security for singular data
+            if (xmin==xmax) {
+                xmin <- xmin - 0.5
+                xmax <- xmax + 0.5
+            }
+            if (ymin==ymax) {
+                ymin <- ymin - 0.5
+                ymax <- ymax + 0.5
+            }
+            plot <- plot + ggplot2::coord_fixed(xlim = c(xmin,xmax), ylim = c(ymin,ymax))
 
             # Axis ticks (be sure there's a tick at each integer)
             if (plotType != "var" && self$options$stdVariables) {
                 if( xmin < -2 && xmax > 2)
-                    plot <- plot + scale_x_continuous(breaks = c(-5:5))
+                    plot <- plot + ggplot2::scale_x_continuous(breaks = c(-5:5))
                 if( ymin < -2 && ymax > 2)
-                    plot <- plot + scale_y_continuous(breaks = c(-5:5))
+                    plot <- plot + ggplot2::scale_y_continuous(breaks = c(-5:5))
             }
 
             # Plot frame
-            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, size = 1))
+            plot <- plot + ggplot2::theme(axis.line = ggplot2::element_line(linewidth = 0),
+                                          panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1))
 
             # Plot title
             title <- switch(plotType,
@@ -476,77 +504,89 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             return(plot)
         },
-        .pca = function(data, scale = TRUE, nfact = 2, rotation = "none") {
+        .pca = function(data, scaleData = TRUE, nfact = 2, rotation = "none") {
             data <- jmvcore::naOmit(data)
-            res <- prcomp(data, scale. = scale)
+            res <- stats::prcomp(data, scale. = scaleData)
             # Full solution
             eigenvalues <- res$sdev**2
             # Loadings (principal)
-            stdLoadings <- res$rotation[,1:nfact]
-            loadings <- stdLoadings %*% diag(res$sdev[1:nfact])
+            stdLoadings <- res$rotation[,1:nfact, drop = FALSE]
+            loadings <- stdLoadings %*% diag(res$sdev[1:nfact], ncol = nfact)
             # Loading QLT (Communalities)
-            if (scale)
+            if (scaleData)
                 communalities <- rowSums(loadings**2)
             else
-                communalities <- rowSums(loadings**2) / rapply(data, var)
+                communalities <- rowSums(loadings**2) / vapply(data, stats::var, FUN.VALUE = numeric(1))
             # Principal Scores
-            scores <- res$x[,1:nfact]
+            scores <- res$x[,1:nfact, drop = FALSE]
             # Score QLT
-            zdata <- scale(data, scale = scale)
+            zdata <- scale(data, scale = scaleData)
             norm2 <- rowSums(zdata**2)
             norm2pca <- rowSums(scores**2)
-            qlt <- norm2pca / norm2
+            qlt <- ifelse(norm2 > 0, norm2pca / norm2, NA_real_)
             # Rotation
             if (rotation %in% c("Varimax", "quartimax", "equamax", "parsimax", "entropy", "bentlerT")) {
-                if (self$options$stataRotation)
-                    rotatedRes <-  try(do.call(getFromNamespace(rotation,'GPArotation'),list(stdLoadings, normalize = self$options$kaiser)))
-                else
-                    rotatedRes <-  try(do.call(getFromNamespace(rotation,'GPArotation'),list(loadings, normalize = self$options$kaiser)))
-                if (inherits(rotatedRes, as.character("try-error"))) {
+                rotatedRes <- tryCatch({
+                    if (self$options$stataRotation) {
+                        do.call(
+                            getFromNamespace(rotation, "GPArotation"),
+                            list(stdLoadings, normalize = self$options$kaiser)
+                        )
+                    } else {
+                        do.call(
+                            getFromNamespace(rotation, "GPArotation"),
+                            list(loadings, normalize = self$options$kaiser)
+                        )
+                    }
+                }, error = function(e) NULL)
+
+                if (is.null(rotatedRes) || is.null(rotatedRes$Th)) {
                     rotation <- "none"
                 } else {
                     if (self$options$stataRotation) {
                         rotatedStdLoadings <- rotatedRes$loadings
                         rotatedRes$rotmat <- rotatedRes$Th
                         rotatedSSL <- colSums((loadings %*% rotatedRes$rotmat)**2)
-                        rotatedLoadings <- rotatedStdLoadings %*% diag(sqrt(rotatedSSL))
+                        rotatedLoadings <- rotatedStdLoadings %*% diag(sqrt(rotatedSSL), ncol = nfact)
                         rotatedScores <- scores %*% rotatedRes$rotmat
-                        rotatedStdScores <- rotatedScores %*% diag(1/sqrt(rotatedSSL))
+                        rotatedStdScores <- rotatedScores %*% diag(1/sqrt(rotatedSSL), ncol = nfact)
                     } else {
                         rotatedLoadings <- rotatedRes$loadings
-                        rotatedRes$rotmat <- rotatedRes$Th # t(solve(rotatedRes$Th))
+                        rotatedRes$rotmat <- rotatedRes$Th
                         rotatedSSL <- colSums(rotatedLoadings**2)
                         rotatedStdScores <- scale(scores) %*% rotatedRes$rotmat
-                        rotatedScores <- rotatedStdScores %*% diag(sqrt(rotatedSSL))
+                        rotatedScores <- rotatedStdScores %*% diag(sqrt(rotatedSSL), ncol = nfact)
                         #
-                        rotatedStdLoadings <- rotatedLoadings %*% diag(1/sqrt(rotatedSSL))
+                        rotatedStdLoadings <- rotatedLoadings %*% diag(1/sqrt(rotatedSSL), ncol = nfact)
                     }
                 }
+            } else {
+                rotation <- "none"
             }
             if (rotation == "none") { # no rotation or rotation failed
                 rotatedSSL <- eigenvalues[1:nfact]
                 rotatedLoadings <- loadings
                 rotatedScores <- scores
                 #
-                rotatedStdScores <- rotatedScores %*% diag(1/sqrt(rotatedSSL))
+                rotatedStdScores <- rotatedScores %*% diag(1/sqrt(rotatedSSL), ncol = nfact)
                 rotatedStdLoadings <- stdLoadings
             }
             # Reoder the dims
-            dimOrder <- order(rotatedSSL,decreasing=TRUE)
+            dimOrder <- order(rotatedSSL,decreasing = TRUE)
             rotatedSSL <- rotatedSSL[dimOrder]
-            rotatedLoadings <- rotatedLoadings[,dimOrder]
-            rotatedScores <- rotatedScores[,dimOrder]
+            rotatedLoadings <- rotatedLoadings[,dimOrder, drop = FALSE]
+            rotatedScores <- rotatedScores[,dimOrder, drop = FALSE]
             #
-            rotatedStdScores <- rotatedStdScores[,dimOrder]
-            rotatedStdLoadings <- rotatedStdLoadings[,dimOrder]
+            rotatedStdScores <- rotatedStdScores[,dimOrder, drop = FALSE]
+            rotatedStdLoadings <- rotatedStdLoadings[,dimOrder, drop = FALSE]
             # Fix axis orientations (from psych::principal)
-            sign.tot <- sign(colSums(rotatedLoadings[,]))
+            sign.tot <- sign(colSums(rotatedLoadings))
             sign.tot[sign.tot==0] <- 1
-            rotatedLoadings <- rotatedLoadings %*% diag(sign.tot)
-            rotatedScores <- rotatedScores %*% diag(sign.tot)
+            rotatedLoadings <- rotatedLoadings %*% diag(sign.tot, ncol = nfact)
+            rotatedScores <- rotatedScores %*% diag(sign.tot, ncol = nfact)
             #
-            rotatedStdScores <- rotatedStdScores %*% diag(sign.tot)
-            rotatedStdLoadings <- rotatedStdLoadings %*% diag(sign.tot)
+            rotatedStdScores <- rotatedStdScores %*% diag(sign.tot, ncol = nfact)
+            rotatedStdLoadings <- rotatedStdLoadings %*% diag(sign.tot, ncol = nfact)
             #
             return(list(
                 eigenvalues = eigenvalues,

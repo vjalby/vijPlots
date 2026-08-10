@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "areachartClass",
     inherit = areachartBase,
@@ -12,7 +9,8 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Fixed dimension
             fixed_width <- 75 # Y-Axis legend
             fixed_height <- 50 # X-Axis legend
-            if (!is.null(self$options$group) || length(self$options$vars) > 1) {
+            if ( (self$options$mode == "oneVariable" && !is.null(self$options$group)) ||
+                        (self$options$mode == "severalVariables" && length(self$options$vars) > 1)) {
                 if (self$options$legendPosition %in% c('top','bottom'))
                     fixed_height <- fixed_height + 50
                 else
@@ -53,10 +51,10 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (aVar in depVars)
                 plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
             # Delete row with missing time
-            plotData <- subset(plotData, !is.na(plotData[timeVar]))
+            plotData <- plotData[!is.na(plotData[[timeVar]]),]
             # Ignore NA
             if (!is.null(groupVar) && self$options$ignoreNA)
-                plotData <- subset(plotData, !is.na(plotData[groupVar]))
+                plotData <- plotData[!is.na(plotData[[groupVar]]),]
             if (nrow(plotData) == 0)
                 return()
             image <- self$results$plot
@@ -68,27 +66,21 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plotData <- image$state
             oneVariable <- (self$options$mode == "oneVariable")
             if (oneVariable) {
-                timeVar <- self$options$timeVar
-                depVar <- self$options$var
-                groupVar <- self$options$group
+                timeVar <- rlang::sym(self$options$timeVar)
+                depVar <- rlang::sym(self$options$var)
+                if (!is.null(self$options$group))
+                    groupVar <- rlang::sym(self$options$group)
+                else
+                    groupVar <- NULL
             } else {
-                timeVar <- self$options$timeVar1
-                if (length(self$options$vars) > 0 && !is.null(timeVar)) {
-                    plotData <- plotData |>
-                                    tidyr::gather(key = "Variables", value = "Values", -timeVar)
-                    # Transform "Variables" as factor to keep the variable order.
-                    plotData$Variables <- factor(plotData$Variables, levels = self$options$vars)
-                    depVar <- "Values"
-                    groupVar <- "Variables"
-                } else {
-                    depVar <- NULL
-                }
+                timeVar <- rlang::sym(self$options$timeVar1)
+                plotData <- plotData |>
+                    tidyr::pivot_longer(cols = -!!timeVar, names_to = "Variables", values_to = "Values")
+                # Transform "Variables" as factor to keep the variable order.
+                plotData$Variables <- factor(plotData$Variables, levels = self$options$vars)
+                depVar <- rlang::sym("Values")
+                groupVar <- rlang::sym("Variables")
             }
-
-            timeVar <- ensym(timeVar)
-            depVar <- ensym(depVar)
-            if (!is.null(groupVar))
-                groupVar <- ensym(groupVar)
 
             # Time format
             timeIsNumeric <- is.numeric(plotData[[timeVar]])
@@ -99,9 +91,9 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!is.null(timeVarAsDate)) {
                     plotData[[timeVar]] <- timeVarAsDate
                 } else {
-                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = self$options$timeVar)
+                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = timeVar)
                     vijErrorMessage(self, errorMessage)
-                    return(TRUE)
+                    return(FALSE)
                 }
             }
 
@@ -118,14 +110,14 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 alpha = 1
 
             if (is.null(groupVar))
-                plot <- ggplot(plotData, aes(x = !!timeVar, group = 1)) +
-                            geom_area(aes(y = !!depVar, fill = "OneVar"),
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, group = 1)) +
+                            ggplot2::geom_area(ggplot2::aes(y = !!depVar, fill = "OneVar"),
                                       position = self$options$position,
                                       color='black', linewidth = lineWidth,
                                       alpha = alpha, show.legend = FALSE)
             else
-                plot <- ggplot(plotData, aes(x = !!timeVar, group = !!groupVar)) +
-                            geom_area(aes(y = !!depVar, fill = !!groupVar),
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, group = !!groupVar)) +
+                            ggplot2::geom_area(ggplot2::aes(y = !!depVar, fill = !!groupVar),
                                       position = self$options$position,
                                       color='black', linewidth = lineWidth,
                                       alpha = alpha)
@@ -136,7 +128,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$position == "fill")
                 labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
             else
-                labelFnct <- waiver()
+                labelFnct <- ggplot2::waiver()
 
             if (oneVariable) {
                 showLegend = TRUE
@@ -154,20 +146,22 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Date range/scale
             if (timeVarIsDate) {
                 if (self$options$xAxisRangeType == "manual") { # Date and manual
-                    plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
+                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
                                                 limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
                                                 expand = c(0, 0))
                 } else {
-                    plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
+                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
                 }
             }
 
             # Axis Ticks (always set ticks before range)
             if (timeIsNumeric && self$options$xTicks > 0) {
-                plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct)
+            } else {
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct)
             }
 
             # Axis ranges
@@ -180,15 +174,15 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 yLim <- NULL
             if (!is.null(xLim) || !is.null(yLim))
-                plot <- plot + coord_cartesian(xlim = xLim, ylim = yLim)
+                plot <- plot + ggplot2::coord_cartesian(xlim = xLim, ylim = yLim)
 
             # Titles & Labels
             defaults <- list(y = yLab, x = timeVar, legend = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Suppress black border
-            plot <- plot + guides(fill = guide_legend(override.aes = list(color = NULL)))
+            plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(color = NULL)))
 
             return(plot)
         },
@@ -241,7 +235,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(dAsDate)
         },
         .convertToDateBase = function(dAsString, fmt) {
-            n <- length(na.omit(dAsString))
+            n <- length(stats::na.omit(dAsString))
             if (fmt == "iso")
                 dAsDate <- as.Date(dAsString, optional = TRUE, tryFormats = c("%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d", "%Y%m%d"))
             else if (fmt == "us")
@@ -250,7 +244,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 dAsDate <- as.Date(dAsString, optional = TRUE, tryFormats = c("%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%d%m%Y"))
             else
                 dAsDate <- NULL
-            if (length(na.omit(dAsDate)) != n || min(as.numeric(format(dAsDate, "%Y")), na.rm=T) < 100)
+            if (length(stats::na.omit(dAsDate)) != n || min(as.numeric(format(dAsDate, "%Y")), na.rm = TRUE) < 100)
                 dAsDate <- NULL
             return(dAsDate)
         })

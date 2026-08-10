@@ -101,6 +101,29 @@ children:
         stretchFactor: 1
         children:
           - type: Label
+            label: Histogram
+            children:
+              - type: CheckBox
+                name: showBins
+                children:
+                  - type: TextBox
+                    name: binOpacity
+                    format: number
+                    enable: (showBins && !(!group) && groupingN:identity)
+              - type: CheckBox
+                name: showLines
+                children:
+                  - type: TextBox
+                    name: lineLineSize
+                    format: number
+                    enable: (showLines)
+      - type: LayoutBox
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
             label: Density
             children:
               - type: CheckBox
@@ -114,12 +137,6 @@ children:
                     name: densityLineSize
                     format: number
                     enable: (density)
-      - type: LayoutBox
-        cell:
-          column: 1
-          row: 0
-        stretchFactor: 1
-        children:
           - type: Label
             label: Normal Curve
             children:

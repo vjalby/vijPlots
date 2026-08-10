@@ -10,7 +10,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             facet = NULL,
             donut = FALSE,
             labels = "none",
-            labType = NULL,
+            labType = "text",
             overlap = FALSE,
             labOffset = 0,
             labSize = 12,
@@ -20,19 +20,19 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             accuracy = "0.1",
             facetBy = "column",
             facetNumber = 1,
-            titleText = NULL,
+            titleText = "",
             titleFontFace = "bold",
             titleFontSize = "14",
             titleAlign = "0.5",
-            subtitleText = NULL,
+            subtitleText = "",
             subtitleFontFace = "plain",
             subtitleFontSize = "12",
             subtitleAlign = "0.5",
-            captionText = NULL,
+            captionText = "",
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right", ...) {
 
@@ -77,7 +77,8 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 labType,
                 options=list(
                     "text",
-                    "label"))
+                    "label"),
+                default="text")
             private$..overlap <- jmvcore::OptionBool$new(
                 "overlap",
                 overlap,
@@ -190,7 +191,8 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=1)
             private$..titleText <- jmvcore::OptionString$new(
                 "titleText",
-                titleText)
+                titleText,
+                default="")
             private$..titleFontFace <- jmvcore::OptionList$new(
                 "titleFontFace",
                 titleFontFace,
@@ -222,7 +224,8 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..subtitleText <- jmvcore::OptionString$new(
                 "subtitleText",
-                subtitleText)
+                subtitleText,
+                default="")
             private$..subtitleFontFace <- jmvcore::OptionList$new(
                 "subtitleFontFace",
                 subtitleFontFace,
@@ -254,7 +257,8 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..captionText <- jmvcore::OptionString$new(
                 "captionText",
-                captionText)
+                captionText,
+                default="")
             private$..captionFontFace <- jmvcore::OptionList$new(
                 "captionFontFace",
                 captionFontFace,
@@ -286,7 +290,8 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="1")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -486,7 +491,7 @@ piechart <- function(
     facet,
     donut = FALSE,
     labels = "none",
-    labType,
+    labType = "text",
     overlap = FALSE,
     labOffset = 0,
     labSize = 12,
@@ -496,19 +501,19 @@ piechart <- function(
     accuracy = "0.1",
     facetBy = "column",
     facetNumber = 1,
-    titleText,
+    titleText = "",
     titleFontFace = "bold",
     titleFontSize = "14",
     titleAlign = "0.5",
-    subtitleText,
+    subtitleText = "",
     subtitleFontFace = "plain",
     subtitleFontSize = "12",
     subtitleAlign = "0.5",
-    captionText,
+    captionText = "",
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right") {
 

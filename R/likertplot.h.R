@@ -37,19 +37,19 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             pValue = "none",
             adjustMethod = "holm",
             descAsVarName = FALSE,
-            titleText = NULL,
+            titleText = "",
             titleFontFace = "bold",
             titleFontSize = "14",
             titleAlign = "0.5",
-            subtitleText = NULL,
+            subtitleText = "",
             subtitleFontFace = "plain",
             subtitleFontSize = "12",
             subtitleAlign = "0.5",
-            captionText = NULL,
+            captionText = "",
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "11",
             legendPosition = "bottom",
             yAxisLabelFontSize = 11,
@@ -261,7 +261,8 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=FALSE)
             private$..titleText <- jmvcore::OptionString$new(
                 "titleText",
-                titleText)
+                titleText,
+                default="")
             private$..titleFontFace <- jmvcore::OptionList$new(
                 "titleFontFace",
                 titleFontFace,
@@ -293,7 +294,8 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..subtitleText <- jmvcore::OptionString$new(
                 "subtitleText",
-                subtitleText)
+                subtitleText,
+                default="")
             private$..subtitleFontFace <- jmvcore::OptionList$new(
                 "subtitleFontFace",
                 subtitleFontFace,
@@ -325,7 +327,8 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..captionText <- jmvcore::OptionString$new(
                 "captionText",
-                captionText)
+                captionText,
+                default="")
             private$..captionFontFace <- jmvcore::OptionList$new(
                 "captionFontFace",
                 captionFontFace,
@@ -357,7 +360,8 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="1")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -860,19 +864,19 @@ likertplot <- function(
     pValue = "none",
     adjustMethod = "holm",
     descAsVarName = FALSE,
-    titleText,
+    titleText = "",
     titleFontFace = "bold",
     titleFontSize = "14",
     titleAlign = "0.5",
-    subtitleText,
+    subtitleText = "",
     subtitleFontFace = "plain",
     subtitleFontSize = "12",
     subtitleAlign = "0.5",
-    captionText,
+    captionText = "",
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
-    legendText,
+    legendText = "",
     legendFontSize = "11",
     legendPosition = "bottom",
     yAxisLabelFontSize = 11,

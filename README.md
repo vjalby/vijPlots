@@ -71,9 +71,19 @@
 ## Version history
 
 
-### 2026-07-?? / 1.2.2
+### 2026-08-?? / 1.2.3
 
+- Code optimization and fixes everywhere
+- MCA (Burt method): Fixed variable discrimination computation
+- Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
+- Histogram: Options to hide bins and to show lines
+- Scatter Plot: Option to use different shapes
+
+### 2026-07-31 / 1.2.2
+
+- Fixed compatibility with ggplot2 4.0 / jamovi 28.1
 - Option to ignore missing groups in Raincloud plot
+- typo / translations fixes
 
 ### 2026-06-08 / 1.2.1
 

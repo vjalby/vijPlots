@@ -6,7 +6,7 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            mode = NULL,
+            mode = "obsTable",
             rows = NULL,
             cols = NULL,
             columns = NULL,
@@ -20,8 +20,8 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showRowPlot = FALSE,
             showColPlot = FALSE,
             showBiPlot = TRUE,
-            supplementaryRows = NULL,
-            supplementaryCols = NULL,
+            supplementaryRows = "",
+            supplementaryCols = "",
             dimNum = 2,
             xaxis = 1,
             yaxis = 2,
@@ -42,16 +42,16 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             subtitleAlign = "0.5",
             subtitleFontSize = 12,
             subtitleFontFace = "italic",
-            rowCaptionText = NULL,
-            columnCaptionText = NULL,
-            biplotCaptionText = NULL,
+            rowCaptionText = "",
+            columnCaptionText = "",
+            biplotCaptionText = "",
             captionAlign = "1",
             captionFontSize = 12,
             captionFontFace = "plain",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
-            yAxisText = NULL,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
             descAsVarName = FALSE, ...) {
@@ -67,7 +67,8 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 mode,
                 options=list(
                     "obsTable",
-                    "contTable"))
+                    "contTable"),
+                default="obsTable")
             private$..rows <- jmvcore::OptionVariable$new(
                 "rows",
                 rows,
@@ -140,10 +141,12 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=TRUE)
             private$..supplementaryRows <- jmvcore::OptionString$new(
                 "supplementaryRows",
-                supplementaryRows)
+                supplementaryRows,
+                default="")
             private$..supplementaryCols <- jmvcore::OptionString$new(
                 "supplementaryCols",
-                supplementaryCols)
+                supplementaryCols,
+                default="")
             private$..dimNum <- jmvcore::OptionNumber$new(
                 "dimNum",
                 dimNum,
@@ -281,13 +284,16 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="italic")
             private$..rowCaptionText <- jmvcore::OptionString$new(
                 "rowCaptionText",
-                rowCaptionText)
+                rowCaptionText,
+                default="")
             private$..columnCaptionText <- jmvcore::OptionString$new(
                 "columnCaptionText",
-                columnCaptionText)
+                columnCaptionText,
+                default="")
             private$..biplotCaptionText <- jmvcore::OptionString$new(
                 "biplotCaptionText",
-                biplotCaptionText)
+                biplotCaptionText,
+                default="")
             private$..captionAlign <- jmvcore::OptionList$new(
                 "captionAlign",
                 captionAlign,
@@ -313,7 +319,8 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="plain")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -335,7 +342,8 @@ correspOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -869,7 +877,7 @@ correspBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @export
 corresp <- function(
     data,
-    mode,
+    mode = "obsTable",
     rows,
     cols,
     columns,
@@ -883,8 +891,8 @@ corresp <- function(
     showRowPlot = FALSE,
     showColPlot = FALSE,
     showBiPlot = TRUE,
-    supplementaryRows,
-    supplementaryCols,
+    supplementaryRows = "",
+    supplementaryCols = "",
     dimNum = 2,
     xaxis = 1,
     yaxis = 2,
@@ -905,16 +913,16 @@ corresp <- function(
     subtitleAlign = "0.5",
     subtitleFontSize = 12,
     subtitleFontFace = "italic",
-    rowCaptionText,
-    columnCaptionText,
-    biplotCaptionText,
+    rowCaptionText = "",
+    columnCaptionText = "",
+    biplotCaptionText = "",
     captionAlign = "1",
     captionFontSize = 12,
     captionFontFace = "plain",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
-    yAxisText,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5",
     descAsVarName = FALSE) {

@@ -18,28 +18,28 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             dateBreak = "1 month",
             dotSize = 2,
             lineWidth = 1,
-            titleText = NULL,
+            titleText = "",
             titleFontFace = "bold",
             titleFontSize = "14",
             titleAlign = "0.5",
-            subtitleText = NULL,
+            subtitleText = "",
             subtitleFontFace = "plain",
             subtitleFontSize = "12",
             subtitleAlign = "0.5",
-            captionText = NULL,
+            captionText = "",
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
             xAxisRangeType = "auto",
-            xAxisRangeMin = "0",
-            xAxisRangeMax = "10",
-            yAxisText = NULL,
+            xAxisRangeMin = 0,
+            xAxisRangeMax = 10,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
             yAxisLabelFontSize = 12,
@@ -209,7 +209,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=1)
             private$..titleText <- jmvcore::OptionString$new(
                 "titleText",
-                titleText)
+                titleText,
+                default="")
             private$..titleFontFace <- jmvcore::OptionList$new(
                 "titleFontFace",
                 titleFontFace,
@@ -241,7 +242,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..subtitleText <- jmvcore::OptionString$new(
                 "subtitleText",
-                subtitleText)
+                subtitleText,
+                default="")
             private$..subtitleFontFace <- jmvcore::OptionList$new(
                 "subtitleFontFace",
                 subtitleFontFace,
@@ -273,7 +275,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..captionText <- jmvcore::OptionString$new(
                 "captionText",
-                captionText)
+                captionText,
+                default="")
             private$..captionFontFace <- jmvcore::OptionList$new(
                 "captionFontFace",
                 captionFontFace,
@@ -305,7 +308,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="1")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -328,7 +332,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="right")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -355,17 +360,18 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "auto",
                     "manual"),
                 default="auto")
-            private$..xAxisRangeMin <- jmvcore::OptionString$new(
+            private$..xAxisRangeMin <- jmvcore::OptionNumber$new(
                 "xAxisRangeMin",
                 xAxisRangeMin,
-                default="0")
-            private$..xAxisRangeMax <- jmvcore::OptionString$new(
+                default=0)
+            private$..xAxisRangeMax <- jmvcore::OptionNumber$new(
                 "xAxisRangeMax",
                 xAxisRangeMax,
-                default="10")
+                default=10)
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -683,28 +689,28 @@ linechart <- function(
     dateBreak = "1 month",
     dotSize = 2,
     lineWidth = 1,
-    titleText,
+    titleText = "",
     titleFontFace = "bold",
     titleFontSize = "14",
     titleAlign = "0.5",
-    subtitleText,
+    subtitleText = "",
     subtitleFontFace = "plain",
     subtitleFontSize = "12",
     subtitleAlign = "0.5",
-    captionText,
+    captionText = "",
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
     xAxisRangeType = "auto",
-    xAxisRangeMin = "0",
-    xAxisRangeMax = "10",
-    yAxisText,
+    xAxisRangeMin = 0,
+    xAxisRangeMax = 10,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5",
     yAxisLabelFontSize = 12,

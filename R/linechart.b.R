@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "linechartClass",
     inherit = linechartBase,
@@ -45,10 +42,10 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (aVar in depVars)
                 plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
             # Delete row with missing time
-            plotData <- subset(plotData, !is.na(plotData[timeVar]))
+            plotData <- plotData[!is.na(plotData[[timeVar]]),]
             # Ignore NA
             if (!is.null(groupVar) && self$options$ignoreNA)
-                plotData <- subset(plotData, !is.na(plotData[groupVar]))
+                plotData <- plotData[!is.na(plotData[[groupVar]]),]
             if (nrow(plotData) == 0)
                 return()
             image <- self$results$plot
@@ -59,13 +56,12 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             plotData <- image$state
 
-            timeVar <- self$options$timeVar
-            groupVar <- self$options$group
+            timeVar <- rlang::sym(self$options$timeVar)
             depVars <- self$options$vars
-
-            timeVar <- ensym(timeVar)
-            if (!is.null(groupVar))
-                groupVar <- ensym(groupVar)
+            if (!is.null(self$options$group))
+                groupVar <- rlang::sym(self$options$group)
+            else
+                groupVar <- NULL
 
             # Time format
             timeIsNumeric <- is.numeric(plotData[[timeVar]])
@@ -78,34 +74,43 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 } else {
                     errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = self$options$timeVar)
                     vijErrorMessage(self, errorMessage)
-                    return(TRUE)
+                    return(FALSE)
                 }
             }
 
             dotSize <- self$options$dotSize
             lineWidth <- self$options$lineWidth
 
-            if (is.null(groupVar))
-                plot <- ggplot(plotData, aes(x = !!timeVar, group = 1))
-            else
-                plot <- ggplot(plotData, aes(x = !!timeVar, group = !!groupVar))
-
-            for (varName in depVars) {
-                aVar <- ensym(varName)
-
+            if (length(depVars) > 1) {
+                plotDataLong <- tidyr::pivot_longer(
+                    plotData,
+                    cols = tidyselect::all_of(depVars),
+                    names_to = ".variable",
+                    values_to = ".value"
+                )
                 if (is.null(groupVar)) {
-                    plot <- plot + geom_line(aes(y = !!aVar, color = !!varName), linewidth = lineWidth)
-                    if (self$options$showPoint)
-                        plot <- plot + geom_point(aes(y = !!aVar, color = !!varName), size = dotSize)
+                    plot <- ggplot2::ggplot(plotDataLong, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, group = .variable))
                 } else {
-                    if (length(depVars) > 1) {
-                        plot <- plot + geom_line(aes(y = !!aVar, color = !!varName, linetype = !!groupVar), linewidth = lineWidth)
-                        if (self$options$showPoint)
-                            plot <- plot + geom_point(aes(y = !!aVar, color = !!varName), size = dotSize)
-                    } else {
-                        plot <- plot + geom_line(aes(y = !!aVar, color = !!groupVar), linewidth = lineWidth)
-                        if (self$options$showPoint)
-                            plot <- plot + geom_point(aes(y = !!aVar, color = !!groupVar), size = dotSize)
+                    plot <- ggplot2::ggplot(plotDataLong, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, linetype = !!groupVar, group = interaction(.variable, !!groupVar)))
+                }
+                plot <- plot + ggplot2::geom_line(linewidth = lineWidth)
+                if (self$options$showPoint) {
+                    plot <- plot + ggplot2::geom_point(size = dotSize)
+                }
+            } else {
+                # A single variable
+                aVar <- rlang::sym(depVars[1])
+                if (is.null(groupVar)) {
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = !!aVar, group = 1, color = "aVar")) +
+                                ggplot2::geom_line(linewidth = lineWidth)
+                    if (self$options$showPoint) {
+                        plot <- plot + ggplot2::geom_point(size = dotSize)
+                    }
+                } else {
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = !!aVar, color = !!groupVar, group = !!groupVar)) +
+                                ggplot2::geom_line(linewidth = lineWidth)
+                    if (self$options$showPoint) {
+                        plot <- plot + ggplot2::geom_point(size = dotSize)
                     }
                 }
             }
@@ -114,7 +119,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color")
 
             if (length(depVars) > 1 ){
-                plot <- plot + guides(color = guide_legend(order = 1), linetype = guide_legend(order = 2))
+                plot <- plot + ggplot2::guides(color = ggplot2::guide_legend(order = 1), linetype = ggplot2::guide_legend(order = 2))
                 yLab <- .("Values")
                 gLab <- .("Variables")
             } else {
@@ -122,7 +127,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 gLab <- self$options$group
             }
             if (length(depVars) > 1 && is.null(groupVar))
-                plot <- plot + labs(color = '')
+                plot <- plot + ggplot2::labs(color = '')
 
             if (length(depVars) == 1 && is.null(groupVar))
                 showLegend <- FALSE
@@ -132,20 +137,20 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Date range/scale
             if (timeVarIsDate) {
                 if (self$options$xAxisRangeType == "manual") { # Date and manual
-                    plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
-                                                limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
-                                                expand = c(0, 0))
+                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
+                                                        limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
+                                                        expand = c(0, 0))
                 } else {
-                    plot <- plot + scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
+                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
                 }
             }
 
             # Axis Ticks (always set ticks before range)
             if (timeIsNumeric && self$options$xTicks > 0) {
-                plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
             # Axis ranges
@@ -158,12 +163,12 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 yLim <- NULL
             if (!is.null(xLim) || !is.null(yLim))
-                plot <- plot + coord_cartesian(xlim = xLim, ylim = yLim)
+                plot <- plot + ggplot2::coord_cartesian(xlim = xLim, ylim = yLim)
 
             # Titles & Labels
             defaults <- list(y = yLab, x = timeVar, legend = gLab)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             #self$results$text$setContent(plot)
 
@@ -218,7 +223,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(dAsDate)
         },
         .convertToDateBase = function(dAsString, fmt) {
-            n <- length(na.omit(dAsString))
+            n <- length(stats::na.omit(dAsString))
             if (fmt == "iso")
                 dAsDate <- as.Date(dAsString, optional = TRUE, tryFormats = c("%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d", "%Y%m%d"))
             else if (fmt == "us")
@@ -227,7 +232,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 dAsDate <- as.Date(dAsString, optional = TRUE, tryFormats = c("%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%d%m%Y"))
             else
                 dAsDate <- NULL
-            if (length(na.omit(dAsDate)) != n || min(as.numeric(format(dAsDate, "%Y")), na.rm=T) < 100)
+            if (length(stats::na.omit(dAsDate)) != n || min(as.numeric(format(dAsDate, "%Y")), na.rm=T) < 100)
                 dAsDate <- NULL
             return(dAsDate)
         })

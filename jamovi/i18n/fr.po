@@ -131,8 +131,8 @@ msgstr "% dans"
 msgid ""
 "<h3>Data & Sorting</h3>\n"
 "<ul>\n"
-"<li>Likert variables must be of ordinal measure-type. (Continuous "
-"measure-type works as well.)</li>\n"
+"<li>Likert variables must be of ordinal measure-type. (Continuous-Integer "
+"works as well.)</li>\n"
 "<li>If you plan to compute mean/median/sd or to use comparison tests, they "
 "must be of integer data-type.</li>\n"
 "<li><strong>Tidy up levels:</strong> when checked, try to fix the labels "
@@ -160,7 +160,7 @@ msgstr ""
 "<h3>Données & Tri</h3>\n"
 "<ul>\n"
 "<li>Les variables de Likert doivent être de type de mesure ordinal. (Le type "
-"continu fonctionne aussi.)</li>\n"
+"continu-entier fonctionne aussi.)</li>\n"
 "<li>Pour calculer les moyenne, médiane et écart-type ou pour utiliser les "
 "tests de comparaison, le type de données doit être entier.</li>\n"
 "<li><strong>Corriger les niveaux :</strong> cette option permet de corriger "
@@ -266,12 +266,12 @@ msgid ""
 "<li><strong>Burt matrix:</strong> CA of the Burt matrix. The eigenvalues are "
 "the squares of those of the indicator matrix method. </li>\n"
 "</ul>\n"
-"<p>Both methods give the same <em>standard</em> coordinates (but different "
-"<em>principal</em> coordinates).</p>\n"
+"<p>Both methods give the same <em>standard</em> coordinates and "
+"discriminations (but different <em>principal</em> coordinates).</p>\n"
 "<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are "
-"applied to eigenvalues only (<strong>Summary</strong> table). Coordinates "
-"(and inertia) of categories and observations are computed from the original "
-"eigenvalues of the Burt matrix.</p>\n"
+"applied to eigenvalues only (<strong>Summary</strong> table). Principal "
+"coordinates (and inertia) of categories and observations are computed from "
+"the original eigenvalues of the Burt matrix.</p>\n"
 "<p>The <strong>Normalization</strong> options specify how the coordinates "
 "are scaled (by eigenvalues):</p>\n"
 "<ul>\n"
@@ -298,14 +298,14 @@ msgstr ""
 "valeurs propres sont les carrés de celles de la méthode de la matrice "
 "indicatrice.</li>\n"
 "</ul>\n"
-"<p>Les deux méthodes donnent Les mêmes coordonnées <em>standards</em> (mais "
-"des coordonnées <em>principales</em> différentes).</p>\n"
+"<p>Les deux méthodes donnent Les mêmes coordonnées <em>standards</em> et "
+"discriminations (mais des coordonnées <em>principales</em> différentes).</p>\n"
 "<p>Lorsque l'option <strong>correction de Benzécri</strong> ou "
 "<strong>correction de Greenacre</strong> est sélectionnée, les corrections "
 "sont appliquées uniquement aux valeurs propres (<strong>tableau "
-"récapitulatif</strong>). Les coordonnées (et l'inertie) des catégories et "
-"des observations sont calculées à partir des valeurs propres originales de "
-"la matrice de Burt.</p>\n"
+"récapitulatif</strong>). Les coordonnées principales (et l'inertie) des "
+"catégories et des observations sont calculées à partir des valeurs propres "
+"originales de la matrice de Burt.</p>\n"
 "<p>Les options de <strong>normalisation</strong> spécifient comment les "
 "coordonnées sont mises à l'échelle (par les valeurs propres) :</p>\n"
 "<ul>\n"
@@ -706,10 +706,6 @@ msgstr "Marge active"
 #: likertplot/options/addMedianLine.title
 msgid "Add median line (Stacked only)"
 msgstr "Ajouter la ligne médiane"
-
-#: scatterplot/options/plotBorder.title
-msgid "Add plot frame"
-msgstr "Ajouter un cadre au graphique"
 
 #: R/likertplot.b.R
 msgid "Adj. p"
@@ -1676,6 +1672,11 @@ msgstr "COS2"
 #: piechart/options/labels/count.title
 msgid "Count"
 msgstr "Effectif"
+
+#: mrcrosstabs/options/showLabels.title
+#: mrfrequencies/options/showLabels.title
+msgid "Count labels"
+msgstr "Afficher les effectifs"
 
 #: mrcrosstabs/options/endorsed.title
 #: mrfrequencies/options/endorsed.title
@@ -3002,8 +3003,10 @@ msgid "Likert Plot"
 msgstr "Diagramme Likert"
 
 #: R/likertplot.b.R
-msgid "Likert Plot requires ordinal (or numeric) variables"
-msgstr "Les diagrammes de Likert nécessitent des variables ordinales (ou numériques)."
+msgid "Likert Plot requires ordinal (or continuous-integer) variables"
+msgstr ""
+"Les diagrammes de Likert nécessitent des variables ordinales (ou "
+"continues-entières)."
 
 #: likertplot/options/liks.title
 #: likertplot/ui[0][0].label
@@ -3611,7 +3614,7 @@ msgstr "Une variable"
 #: barchart/ui[4][0][0][0]/singleColor/colorNo.suffix
 #: barplot/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: boxplot/ui[2][0][0][0]/singleColor/colorNo.suffix
-#: mrfrequencies/ui[3][0][0][0][1]/colorNo.suffix
+#: mrfrequencies/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: raincloud/ui[1][1][0]/singleColor/colorNo.suffix
 msgid "only"
 msgstr "seulement"
@@ -3933,6 +3936,10 @@ msgstr "Couleurs du graphique"
 msgid "Plot Colors"
 msgstr "Couleurs du graphique"
 
+#: scatterplot/options/plotBorder.title
+msgid "Plot frame"
+msgstr "Cadre du graphique"
+
 #: areachart/ui[1][0][0].label
 #: barchart/ui[2].label
 #: barchart/ui[2][0][0][0].label
@@ -4004,6 +4011,10 @@ msgstr "Taille des points"
 #: principal/options/obsColor.title
 msgid "Points"
 msgstr "Points"
+
+#: scatterplot/options/keepNA.title
+msgid "Points with missing group/label"
+msgstr "Points avec groupe manquant"
 
 #: qqplot/options/methodQQ/pointwise.title
 msgid "Pointwise"
@@ -4643,6 +4654,14 @@ msgstr "Valeurs propres"
 msgid "SD"
 msgstr "Ecart-type"
 
+#: R/likertplot.b.R
+msgid ""
+"Select the \"Convert variables to integers\" option when the variables are "
+"not of the same type."
+msgstr ""
+"Utiliser l'option \"Convertir les variables en entiers\" lorssque les "
+"variables ne sont pas du même type."
+
 #: mrcrosstabs/options/separator.title
 #: mrfrequencies/options/separator.title
 msgid "Separator"
@@ -4718,8 +4737,6 @@ msgid "Show % labels"
 msgstr "Afficher les %"
 
 #: barplot/options/showLabels.title
-#: mrcrosstabs/options/showLabels.title
-#: mrfrequencies/options/showLabels.title
 msgid "Show count labels"
 msgstr "Afficher les effectifs"
 
@@ -4750,10 +4767,6 @@ msgstr "Afficher les extrêmes"
 #: linechart/options/showPoint.title
 msgid "Show points"
 msgstr "Afficher les points"
-
-#: scatterplot/options/keepNA.title
-msgid "Show points with missing group/label"
-msgstr "Afficher les points avec groupe manquant"
 
 #: likertplot/options/addTotals.title
 msgid "Show totals (Centered only)"
@@ -4836,6 +4849,10 @@ msgstr "Lisse"
 #: principal/ui[2][0][0].label
 msgid "Solution"
 msgstr "Solution"
+
+#: R/corresp.b.R
+msgid "Some categories have zero counts and must be removed."
+msgstr "Certaines catégories ont des effectifs nuls et doivent être supprimées."
 
 #: R/corresp.b.R
 msgid "Some values are missing from the contingency table."
@@ -5015,14 +5032,6 @@ msgstr "Somme de {var}"
 msgid "Summary"
 msgstr "Résumé"
 
-#: R/corresp.b.R
-msgid "Suppl. Column"
-msgstr "Colonne sup."
-
-#: R/corresp.b.R
-msgid "Suppl. Row"
-msgstr "Ligne sup."
-
 #: R/multcorresp.b.R
 msgid "Suppl. variables"
 msgstr "Variables sup."
@@ -5141,20 +5150,34 @@ msgid "Text Size & Facets"
 msgstr "Taille du texte & facettes"
 
 #: R/principal.b.R
-msgid ""
-"The correlation matrix is not positive definite. Computations may not be "
-"accurate."
+msgid "The correlation matrix is nearly singular. Computations may not be accurate."
 msgstr ""
-"La matrice des corrélations n'est pas définie-posivite. Les calculs peuvent "
-"être approximatifs."
+"La matrice des corrélations est quasi-singulière. Les calculs peuvent être "
+"approximatifs."
+
+#: R/principal.b.R
+msgid ""
+"The following variable(s) are constant and cannot be used in a principal "
+"component analysis: {vars}."
+msgstr ""
+"Les variables suivantes sont constantes et ne peuvent pas être utilsées dans "
+"une analyse en composantes principales : {vars}."
 
 #: R/multcorresp.b.R
 msgid "The number of dimensions cannot be greater than {max}."
 msgstr "Le nombre de dimensions ne peut pas être supérieur à {max}."
 
 #: R/principal.b.R
+msgid "The number of dimensions cannot be greater than the number of observations"
+msgstr "Le nombre de dimensions ne peut pas être supérieur au nombre d'observations."
+
+#: R/principal.b.R
 msgid "The number of dimensions cannot be greater than the number of variables."
 msgstr "Le nombre de dimensions ne peut pas être supérieur au nombre de variables."
+
+#: R/qqplot.b.R
+msgid "The variance of the variable is equal to zero."
+msgstr "La variance de la variable est égale à zéro."
 
 #: R/corresp.b.R
 msgid "The χ2 statistic is equal to zero."

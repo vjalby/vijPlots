@@ -1,12 +1,9 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "multcorrespClass",
     inherit = multcorrespBase,
     private = list(
         .getVarName = function(aVar) {
-            if (self$options$descAsVarName) {
+            if (self$options$descAsVarName && !is.null(aVar)) {
                 aVarName <- attr(self$data[[aVar]], "jmv-desc", TRUE)
                 if (!is.null(aVarName))
                     return(aVarName)
@@ -23,7 +20,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .run = function() {
             if (is.null(self$options$vars) || length(self$options$vars) < 3  || nrow(self$data) == 0)
-                return()
+                return(FALSE)
 
             # check dim values
             nDim <- self$options$dimNum
@@ -36,7 +33,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
 
             activeVars <- self$options$vars
@@ -48,19 +45,18 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 supplIdx <- (length(activeVars)+1):(length(allVars))
 
             # remove cases with with NA in vars
-            data <- self$data[complete.cases(self$data[, allVars, drop = FALSE]), , drop = FALSE]
+            data <- self$data[stats::complete.cases(self$data[, allVars, drop = FALSE]), , drop = FALSE]
             data <- droplevels(data)
 
             if (nrow(data) == 0) {
                 vijErrorMessage(self, .("Unable to compute MCA because of too many missing values."))
-                return(TRUE)
+                return(FALSE)
             }
-
 
             # list of ordered factors (used to draw path)
             ordVars <- c()
             for(i in seq_along(allVars)) {
-                if("ordered" %in% attr(data[[allVars[i]]], "class"))
+                if("ordered" %in% class(data[[allVars[i]]]))
                     ordVars <- c(ordVars, i)
             }
 
@@ -92,13 +88,13 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (is.null(res)) {
                 vijErrorMessage(self, .("Unable to compute MCA for the selected variables."))
-                return(TRUE)
+                return(FALSE)
             }
 
             if (nDim > res$nd.max) {
                 errorMessage <- jmvcore::format(.("The number of dimensions cannot be greater than {max}."), max = res$nd.max)
                 vijErrorMessage(self, errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
 
             #### Inertia Table ####
@@ -125,14 +121,14 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         cumulative = res$eig[i,3]
                     )
                     if (method == "Burt" && self$options$BenzecriAdj) {
-                        values["adjB"] <- nullOrValue(res$adjEig[i,1])
-                        values["%B"] <- nullOrValue(res$adjEig[i,2])
-                        values["C%B"] <- nullOrValue(res$adjEig[i,3])
+                        values[["adjB"]] <- nullOrValue(res$adjEig[i,1])
+                        values[["%B"]] <- nullOrValue(res$adjEig[i,2])
+                        values[["C%B"]] <- nullOrValue(res$adjEig[i,3])
                     }
                     if (method == "Burt" && self$options$GreenacreAdj) {
-                        values["adjG"] <- nullOrValue(res$adjEig[i,1])
-                        values["%G"] <- nullOrValue(res$adjEig[i,4])
-                        values["C%G"] <- nullOrValue(res$adjEig[i,5])
+                        values[["adjG"]] <- nullOrValue(res$adjEig[i,1])
+                        values[["%G"]] <- nullOrValue(res$adjEig[i,4])
+                        values[["C%G"]] <- nullOrValue(res$adjEig[i,5])
                     }
                     self$results$eigenvalues$addRow(rowKey = as.character(i), values = values)
                 }
@@ -144,14 +140,14 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     cumulative = NA
                 )
                 if (method == "Burt" && self$options$BenzecriAdj) {
-                    values["adjB"] <- res$totalInrB
-                    values["%B"] <- 1
-                    values["C%B"] <- NULL
+                    values[["adjB"]] <- res$totalInrB
+                    values[["%B"]] <- 1
+                    values[["C%B"]] <- NULL
                 }
                 if (method == "Burt" && self$options$GreenacreAdj) {
-                    values["adjG"] <- res$totalInrB
-                    values["%G"] <- sum(res$adjEig[,4], na.rm=TRUE)
-                    values["C%G"] <- NULL
+                    values[["adjG"]] <- res$totalInrB
+                    values[["%G"]] <- sum(res$adjEig[,4], na.rm=TRUE)
+                    values[["C%G"]] <- NULL
                 }
                 self$results$eigenvalues$addRow(rowKey = "Total", values = values)
                 self$results$eigenvalues$addFormat(rowKey = "Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
@@ -163,12 +159,12 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Discrimination Table ####
 
             if (self$options$showDiscriminations) {
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$discrim$addColumn(paste0("dim",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("Discrimination"))
                 for (i in seq_len(nrow(res$allvar$eta2))) {
                     values = list()
                     values[["var"]] <- rownames(res$allvar$eta2)[i]
-                    for (j in seq(nDim))
+                    for (j in seq_len(nDim))
                         values[[paste0("dim",j)]] <- res$allvar$eta2[i,j]
                     self$results$discrim$addRow(rowKey = as.character(i), values = values)
                 }
@@ -179,11 +175,11 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Category Table ####
 
             if (self$options$showCategories) {
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$categories$addColumn(paste0("coord",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$categories$addColumn(paste0("ctr",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("Contributions"))
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$categories$addColumn(paste0("co2",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("COS2"))
                 previousfactor <- res$cat$factors[1]
                 for (i in seq_len(nrow(res$cat$coord))) {
@@ -194,7 +190,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         qlt = res$cat$qlt[i],
                         inertia = nullOrValue(res$cat$inertia[i])
                     )
-                    for (j in 1:nDim) {
+                    for (j in seq_len(nDim)) {
                         if (self$options$normalization %in% c("principal", "catprincipal"))
                             values[[paste0("coord",j)]] <- res$cat$coord[i,j]
                         else
@@ -218,20 +214,19 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Observation Table ####
 
-            nrows <- length(res$rowlabels)
-            if (nrows > 100) {
-                self$results$observations$setNote("100", .("Limited to the first 100 observations"))
-                nrows <- 100
-            }
-
             if (self$options$showObservations) {
+                nrows <- length(res$rowlabels)
+                if (nrows > 100) {
+                    self$results$observations$setNote("100", .("Limited to the first 100 observations"))
+                    nrows <- 100
+                }
                 self$results$observations$addColumn("inertia", title = .("% Inertia"), type = "number", format = "zto")
                 self$results$observations$addColumn("qlt", title = "QLT", type = "number", format = "zto")
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$observations$addColumn(paste0("coord",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$observations$addColumn(paste0("ctr",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("Contributions"))
-                for (j in seq(nDim))
+                for (j in seq_len(nDim))
                     self$results$observations$addColumn(paste0("co2",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("COS2"))
                 for (i in seq_len(nrows)) {
                     values = list(
@@ -240,7 +235,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         qlt = res$ind$qlt[i],
                         inertia = res$ind$inertia[i]
                     )
-                    for (j in 1:nDim) {
+                    for (j in seq_len(nDim)) {
                         if (self$options$normalization %in% c("principal", "obsprincipal"))
                             values[[paste0("coord",j)]] <- res$ind$coord[i,j]
                         else
@@ -337,8 +332,10 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Burt fixes ####
             if (method == "Burt") {
-                # var eta2
-                res$var$eta2 <- sweep(res$var$eta2, 2, sqrt(res$eig[,1]), FUN = "*")
+                # var eta2 : Error. eta2 is scale-independent.
+                    #res$var$eta2 <- sweep(res$var$eta2, 2, sqrt(res$eig[,1]), FUN = "*")
+                    #if (!is.null(supcol))
+                    #    res$quali.sup$eta2 <- sweep(res$quali.sup$eta2, 2, sqrt(res$eig[,1]), FUN = "*")
                 ## MCA compute Pal Coordinates for Indicator Inertia only. So we have to rebuild std coordinates from
                 ## indicator-principal coordinates and redo the computation of co2 & qlt. contrib are unchanged. Inertia computed above is ok.
                 # Obs coordinates
@@ -421,16 +418,15 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             data <- res$allvar$eta2[,c(dim1, dim2)]
             colnames(data) <- c("x","y")
 
-            plot <- ggplot(data, aes(x = x, y = y, label = rownames(data)))
-            plot <- plot + geom_point()
-            plot <- plot + geom_segment(aes(xend = 0, yend = 0))
-            #plot <- plot + geom_text(show.legend = FALSE, hjust = 0.25, vjust = 1, nudge_y = 0.025, size = self$options$labelSize/.pt)
-            plot <- plot + ggrepel::geom_text_repel(show.legend = FALSE, nudge_y = 0.03/.pt, min.segment.length = 2,
-                                                    size = self$options$labelSize/.pt)
+            plot <- ggplot2::ggplot(data, ggplot2::aes(x = x, y = y, label = rownames(data)))
+            plot <- plot + ggplot2::geom_point()
+            plot <- plot + ggplot2::geom_segment(ggplot2::aes(xend = 0, yend = 0))
+            plot <- plot + ggrepel::geom_text_repel(show.legend = FALSE, nudge_y = 0.03/ggplot2::.pt, min.segment.length = 2,
+                                                    size = self$options$labelSize/ggplot2::.pt, seed = 123)
             plot <- plot + ggtheme
 
             # Axes
-            plot <- plot + coord_fixed(clip = "off")
+            plot <- plot + ggplot2::coord_fixed(clip = "off")
 
             # Titles & Labels
             defaults <- list(title = .("Discrimination Plot"), y = dim2name, x = dim1name)
@@ -473,28 +469,30 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 ggheight <- max(obsdata$y) - min(obsdata$y)
 
             # Start the plot
-            plot <- ggplot()
+            plot <- ggplot2::ggplot()
 
             #### Observation Plot ####
 
             if (plotType != "cat") {
                 # plot the points
                 if (self$options$propPoint)
-                    plot <- plot + geom_count(data = obsdata, aes(x = x, y = y), shape = 15, color = self$options$obsColor, show.legend = FALSE)
+                    plot <- plot + ggplot2::geom_count(data = obsdata, ggplot2::aes(x = x, y = y), shape = 15, color = self$options$obsColor, show.legend = FALSE)
                 else
-                    plot <- plot + geom_point(data = obsdata, aes(x = x, y = y), shape = 15, color = self$options$obsColor)
+                    plot <- plot + ggplot2::geom_point(data = obsdata, ggplot2::aes(x = x, y = y), shape = 15, color = self$options$obsColor)
                 # plot the labels
                 if (!is.null(self$options$labelVar)) {
                     obsdata$label <- res$rowlabels
                     if (self$options$ggrepel) {
-                        plot <- plot + ggrepel::geom_text_repel(data = unique(obsdata), aes(x = x, y = y, label = label),
-                                                            size = self$options$labelSize/.pt,
-                                                            color = self$options$obsColor)
+                        plot <- plot + ggrepel::geom_text_repel(data = unique(obsdata),
+                                                                ggplot2::aes(x = x, y = y, label = label),
+                                                                size = self$options$labelSize/ggplot2::.pt,
+                                                                color = self$options$obsColor, seed = 123)
                     } else {
-                        plot <- plot + geom_text(data = unique(obsdata), aes(x = x, y = y, label = label),
-                                                 size = self$options$labelSize/.pt,
-                                                 color = self$options$obsColor,
-                                                 nudge_y = ggheight*0.03, hjust = 0.5, check_overlap = TRUE)
+                        plot <- plot + ggplot2::geom_text(data = unique(obsdata),
+                                                          ggplot2::aes(x = x, y = y, label = label),
+                                                    size = self$options$labelSize/ggplot2::.pt,
+                                                    color = self$options$obsColor,
+                                                    nudge_y = ggheight*0.03, hjust = 0.5, check_overlap = TRUE)
                     }
                 }
             }
@@ -514,14 +512,16 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     catPtSize <- 2
                 }
                 # Plotting
-                plot <- plot + geom_point(data = catdata, aes(x = x, y = y, color = factors, shape = factors), size = catPtSize)
-                plot <- plot + ggrepel::geom_text_repel(data = catdata, aes(x = x, y = y, label = level, color = factors, fontface = factors),
-                                                        size = self$options$labelSize/.pt, show.legend = FALSE)
+                plot <- plot + ggplot2::geom_point(data = catdata, ggplot2::aes(x = x, y = y, color = factors, shape = factors), size = catPtSize)
+                plot <- plot + ggrepel::geom_text_repel(data = catdata,
+                                                        ggplot2::aes(x = x, y = y, label = level, color = factors, fontface = factors),
+                                                        size = self$options$labelSize/ggplot2::.pt, show.legend = FALSE, seed = 123)
                 if (self$options$connectOrdinalCat)
-                    plot <- plot + geom_path(data = catdata[catdata$factors %in% levels(catdata$factors)[res$ordVars],], aes(x = x, y = y, color = factors), show.legend = FALSE)
+                    plot <- plot + ggplot2::geom_path(data = catdata[catdata$factors %in% levels(catdata$factors)[res$ordVars],],
+                                                      ggplot2::aes(x = x, y = y, color = factors), show.legend = FALSE)
             }
 
-            plot <- plot + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2)
+            plot <- plot + ggplot2::geom_hline(yintercept = 0, linetype = 2) + ggplot2::geom_vline(xintercept = 0, linetype = 2)
 
             #### Theme and colors ####
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color")
@@ -529,16 +529,17 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Shape
             varShapes <- c(rep(16, res$varActive[1]), rep(17, res$varActive[2]))
             if (plotType != "obs")
-                plot <- plot + scale_shape_manual(values = varShapes)
+                plot <- plot + ggplot2::scale_shape_manual(values = varShapes)
             # FontFace
             if (plotType != "obs") {
                 varFontface <- c(rep(catFace, res$varActive[1]), rep(supCatFace, res$varActive[2]))
-                plot <- plot + scale_discrete_manual("fontface", values = varFontface )
+                plot <- plot + ggplot2::scale_discrete_manual("fontface", values = varFontface )
             }
 
             # Plot frame & coord
-            plot <- plot + theme(axis.line = element_line(linewidth = 0), panel.border = element_rect(color = "black", fill = NA, size = 1))
-            plot <- plot + coord_fixed()
+            plot <- plot + ggplot2::theme(axis.line = ggplot2::element_line(linewidth = 0),
+                                          panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1))
+            plot <- plot + ggplot2::coord_fixed()
 
             #### Plot title ####
             title <- switch(plotType,
@@ -569,8 +570,6 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             defaults <- list(title = title, subtitle = subtitle, y = dim2name, x = dim1name, legend = .("Variables"))
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType) + vijTitleAndLabelFormat(self$options)
 
-            #self$results$text$setContent(plot) # Show debug messages !
-
             return(plot)
         },
         .categoryplot = function(image, ggtheme, theme, ...) {
@@ -585,7 +584,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .saveCoordinates = function(coord, type) {
             if (self$options$obsCoordOV && self$results$obsCoordOV$isNotFilled()) {
                 nDim <- self$options$dimNum
-                keys <- 1:nDim
+                keys <- seq_len(nDim)
                 measureTypes <- rep("continuous", nDim)
 
                 titles <- paste(.("Dim"), keys)
@@ -611,7 +610,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 self$results$obsCoordOV$setRowNums(rownames(coord))
 
-                for (i in 1:nDim)
+                for (i in seq_len(nDim))
                     self$results$obsCoordOV$setValues(index=i, coord[, i])
             }
 
@@ -623,8 +622,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <li><strong>Indicator matrix:</strong> CA of the indicator matrix</li>
 <li><strong>Burt matrix:</strong> CA of the Burt matrix. The eigenvalues are the squares of those of the indicator matrix method. </li>
 </ul>
-<p>Both methods give the same <em>standard</em> coordinates (but different <em>principal</em> coordinates).</p>
-<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are applied to eigenvalues only (<strong>Summary</strong> table). Coordinates (and inertia) of categories and observations are computed from the original eigenvalues of the Burt matrix.</p>
+<p>Both methods give the same <em>standard</em> coordinates and discriminations (but different <em>principal</em> coordinates).</p>
+<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are applied to eigenvalues only (<strong>Summary</strong> table). Principal coordinates (and inertia) of categories and observations are computed from the original eigenvalues of the Burt matrix.</p>
 <p>The <strong>Normalization</strong> options specify how the coordinates are scaled (by eigenvalues):</p>
 <ul>
 <li><strong>Principal:</strong> Both category and observation coordinates are scaled.</li>

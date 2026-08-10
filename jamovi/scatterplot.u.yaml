@@ -90,6 +90,9 @@ children:
               - type: ComboBox
                 name: colorPalette
                 enable: (!(!group))
+              - type: CheckBox
+                name: groupShapes
+                enable: (!(!group))
       - type: LayoutBox
         cell:
           column: 1

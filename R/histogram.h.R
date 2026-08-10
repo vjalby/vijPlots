@@ -10,38 +10,42 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             group = NULL,
             facet = NULL,
             histtype = "count",
+            showBins = TRUE,
+            showLines = FALSE,
             normalCurve = FALSE,
             density = FALSE,
             dashedDensity = FALSE,
             binWidth = 0,
             binBoundary = 0,
+            lineLineSize = 1,
+            binOpacity = 0.5,
             densityOpacity = 0.2,
             densityLineSize = 0.5,
             normalCurveLineSize = 1,
             fillColor = "#A6C4F1",
             borderColor = "black",
-            groupingN = "stack",
+            groupingN = "identity",
             colorPalette = "jmv",
             usePalette = "forFilling",
-            titleText = NULL,
+            titleText = "",
             titleFontFace = "bold",
             titleFontSize = "14",
             titleAlign = "0.5",
-            subtitleText = NULL,
+            subtitleText = "",
             subtitleFontFace = "plain",
             subtitleFontSize = "12",
             subtitleAlign = "0.5",
-            captionText = NULL,
+            captionText = "",
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
-            yAxisText = NULL,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
             facetBy = "column",
@@ -96,6 +100,14 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "count",
                     "density"),
                 default="count")
+            private$..showBins <- jmvcore::OptionBool$new(
+                "showBins",
+                showBins,
+                default=TRUE)
+            private$..showLines <- jmvcore::OptionBool$new(
+                "showLines",
+                showLines,
+                default=FALSE)
             private$..normalCurve <- jmvcore::OptionBool$new(
                 "normalCurve",
                 normalCurve,
@@ -118,6 +130,18 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 binBoundary,
                 min=0,
                 default=0)
+            private$..lineLineSize <- jmvcore::OptionNumber$new(
+                "lineLineSize",
+                lineLineSize,
+                default=1,
+                min=0.1,
+                max=5)
+            private$..binOpacity <- jmvcore::OptionNumber$new(
+                "binOpacity",
+                binOpacity,
+                default=0.5,
+                min=0,
+                max=1)
             private$..densityOpacity <- jmvcore::OptionNumber$new(
                 "densityOpacity",
                 densityOpacity,
@@ -182,7 +206,7 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=list(
                     "identity",
                     "stack"),
-                default="stack")
+                default="identity")
             private$..colorPalette <- jmvcore::OptionList$new(
                 "colorPalette",
                 colorPalette,
@@ -248,7 +272,8 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="forFilling")
             private$..titleText <- jmvcore::OptionString$new(
                 "titleText",
-                titleText)
+                titleText,
+                default="")
             private$..titleFontFace <- jmvcore::OptionList$new(
                 "titleFontFace",
                 titleFontFace,
@@ -280,7 +305,8 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..subtitleText <- jmvcore::OptionString$new(
                 "subtitleText",
-                subtitleText)
+                subtitleText,
+                default="")
             private$..subtitleFontFace <- jmvcore::OptionList$new(
                 "subtitleFontFace",
                 subtitleFontFace,
@@ -312,7 +338,8 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..captionText <- jmvcore::OptionString$new(
                 "captionText",
-                captionText)
+                captionText,
+                default="")
             private$..captionFontFace <- jmvcore::OptionList$new(
                 "captionFontFace",
                 captionFontFace,
@@ -344,7 +371,8 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="1")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -367,7 +395,8 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="right")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -389,7 +418,8 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="0.5")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -489,11 +519,15 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..group)
             self$.addOption(private$..facet)
             self$.addOption(private$..histtype)
+            self$.addOption(private$..showBins)
+            self$.addOption(private$..showLines)
             self$.addOption(private$..normalCurve)
             self$.addOption(private$..density)
             self$.addOption(private$..dashedDensity)
             self$.addOption(private$..binWidth)
             self$.addOption(private$..binBoundary)
+            self$.addOption(private$..lineLineSize)
+            self$.addOption(private$..binOpacity)
             self$.addOption(private$..densityOpacity)
             self$.addOption(private$..densityLineSize)
             self$.addOption(private$..normalCurveLineSize)
@@ -543,11 +577,15 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         group = function() private$..group$value,
         facet = function() private$..facet$value,
         histtype = function() private$..histtype$value,
+        showBins = function() private$..showBins$value,
+        showLines = function() private$..showLines$value,
         normalCurve = function() private$..normalCurve$value,
         density = function() private$..density$value,
         dashedDensity = function() private$..dashedDensity$value,
         binWidth = function() private$..binWidth$value,
         binBoundary = function() private$..binBoundary$value,
+        lineLineSize = function() private$..lineLineSize$value,
+        binOpacity = function() private$..binOpacity$value,
         densityOpacity = function() private$..densityOpacity$value,
         densityLineSize = function() private$..densityLineSize$value,
         normalCurveLineSize = function() private$..normalCurveLineSize$value,
@@ -596,11 +634,15 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..group = NA,
         ..facet = NA,
         ..histtype = NA,
+        ..showBins = NA,
+        ..showLines = NA,
         ..normalCurve = NA,
         ..density = NA,
         ..dashedDensity = NA,
         ..binWidth = NA,
         ..binBoundary = NA,
+        ..lineLineSize = NA,
+        ..binOpacity = NA,
         ..densityOpacity = NA,
         ..densityLineSize = NA,
         ..normalCurveLineSize = NA,
@@ -695,11 +737,15 @@ histogramBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param group .
 #' @param facet .
 #' @param histtype .
+#' @param showBins .
+#' @param showLines .
 #' @param normalCurve .
 #' @param density .
 #' @param dashedDensity .
 #' @param binWidth .
 #' @param binBoundary .
+#' @param lineLineSize .
+#' @param binOpacity .
 #' @param densityOpacity .
 #' @param densityLineSize .
 #' @param normalCurveLineSize .
@@ -755,38 +801,42 @@ histogram <- function(
     group,
     facet,
     histtype = "count",
+    showBins = TRUE,
+    showLines = FALSE,
     normalCurve = FALSE,
     density = FALSE,
     dashedDensity = FALSE,
     binWidth = 0,
     binBoundary = 0,
+    lineLineSize = 1,
+    binOpacity = 0.5,
     densityOpacity = 0.2,
     densityLineSize = 0.5,
     normalCurveLineSize = 1,
     fillColor = "#A6C4F1",
     borderColor = "black",
-    groupingN = "stack",
+    groupingN = "identity",
     colorPalette = "jmv",
     usePalette = "forFilling",
-    titleText,
+    titleText = "",
     titleFontFace = "bold",
     titleFontSize = "14",
     titleAlign = "0.5",
-    subtitleText,
+    subtitleText = "",
     subtitleFontFace = "plain",
     subtitleFontSize = "12",
     subtitleAlign = "0.5",
-    captionText,
+    captionText = "",
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
-    yAxisText,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5",
     facetBy = "column",
@@ -825,11 +875,15 @@ histogram <- function(
         group = group,
         facet = facet,
         histtype = histtype,
+        showBins = showBins,
+        showLines = showLines,
         normalCurve = normalCurve,
         density = density,
         dashedDensity = dashedDensity,
         binWidth = binWidth,
         binBoundary = binBoundary,
+        lineLineSize = lineLineSize,
+        binOpacity = binOpacity,
         densityOpacity = densityOpacity,
         densityLineSize = densityLineSize,
         normalCurveLineSize = normalCurveLineSize,

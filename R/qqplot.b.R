@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "qqplotClass",
     inherit = qqplotBase,
@@ -42,12 +39,25 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             data[[depVar]] <- jmvcore::toNumeric(data[[depVar]])
 
             data <- jmvcore::naOmit(data)
+            if (nrow(data) == 0)
+                return(FALSE)
 
-            if (self$options$transLog)
-                data[[depVar]] <- log(data[[depVar]])
+            if (self$options$transLog) {
+                if (min(data[[depVar]]) > 0) {
+                    data[[depVar]] <- log(data[[depVar]])
+                } else {
+                    vijErrorMessage(self, .("Natural Log Transform requires positive (>0) data."))
+                    return(FALSE)
+                }
+            }
+
+            if (stats::sd(data[[depVar]]) == 0) {
+                vijErrorMessage(self, .("The variance of the variable is equal to zero."))
+                return(FALSE)
+            }
 
             if (self$options$standardize) {
-                data[[depVar]] <- (data[[depVar]] - mean(data[[depVar]]))/sd(data[[depVar]])
+                data[[depVar]] <- (data[[depVar]] - mean(data[[depVar]]))/stats::sd(data[[depVar]])
             }
             image <- self$results$plot
             image$setState(data)
@@ -55,11 +65,14 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
-            depVar <- self$options$dep
-            depVar <- ensym(depVar)
-            groupVar <- self$options$group
-            if( !is.null(groupVar) )
-                groupVar <- ensym(groupVar)
+
+            plotData <- image$state
+
+            depVar <- rlang::sym(self$options$dep)
+            if (!is.null(self$options$group))
+                groupVar <- rlang::sym(self$options$group)
+            else
+                groupVar <- NULL
 
             distrib <- self$options$distrib
 
@@ -70,14 +83,10 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             identity = (self$options$refType == "identity")
 
-            plotData <- image$state
-
             # Check data compatibility with distribution
             varMin <- min(plotData[[depVar]])
             varMax <- max(plotData[[depVar]])
-            if (self$options$transLog && !is.finite(varMin))
-                errorMessage <- .("Natural Log Transform requires positive (>0) data.")
-            else if (varMin <= 0 && distrib %in% c("lnorm", "chisq", "f", "gamma", "weibull"))
+            if (varMin <= 0 && distrib %in% c("lnorm", "chisq", "f", "gamma", "weibull"))
                 errorMessage <- jmvcore::format(.("{distrib} distribution requires positive (>0) data."), distrib = private$.distTitleName(distrib))
             else if (varMin < 0 && distrib == "exp")
                 errorMessage <- .("Exponential distribution requires non-negative (≥0) data.")
@@ -88,7 +97,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(TRUE)
+                return(FALSE)
             }
 
             # Parameter estimations
@@ -105,7 +114,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         silent = TRUE
                     ) -> tryResult
                 }
-                if (class(tryResult) == "try-error" || is.null(params)) {
+                if (inherits(tryResult, "try-error") || is.null(params)) {
                     paramErrorMessage <- .("Unable to estimate the distribution parameters.")
                 }
             } else {
@@ -117,7 +126,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(paramErrorMessage)) {
                 vijErrorMessage(self, paramErrorMessage)
-                return(TRUE)
+                return(FALSE)
             }
 
             # Everthing is OK
@@ -147,7 +156,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             self$results$paramTable$setRow(rowNo=1, params)
             self$results$paramTable$setCell(rowNo=1, col = 1, ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep))
             if (self$options$standardize)
-                self$results$paramTable$setNote("1", .("Standardized values"), init=TRUE)
+                self$results$paramTable$setNote("1", .("Standardized values"), init = TRUE)
             if (self$options$paramMethod == "paraEstimate")
                 self$results$paramTable$setTitle(paste0(.("Parameter Estimates"),ifelse(self$options$paramEstMethod == "mle", " (MLE)", " (MME)")))
             else
@@ -155,9 +164,9 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Do the plot
             if (is.null(groupVar))
-                plot <- ggplot(data = plotData, mapping = aes(sample = !!depVar))
+                plot <- ggplot2::ggplot(data = plotData, mapping = ggplot2::aes(sample = !!depVar))
             else
-                plot <- ggplot(data = plotData, mapping = aes(sample = !!depVar, color = !!groupVar, fill = !!groupVar))
+                plot <- ggplot2::ggplot(data = plotData, mapping = ggplot2::aes(sample = !!depVar, color = !!groupVar, fill = !!groupVar))
 
             if (self$options$type == "QQ") {
                 if (self$options$band) {
@@ -177,7 +186,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                              detrend = detrend)
                 }
                 plot <- plot + qqplotr::stat_qq_point(distribution = distrib, identity = identity, dparams = params,
-                                                      detrend = detrend, key_glyph = draw_key_rect, show.legend = TRUE)
+                                                      detrend = detrend, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                 if (detrend) {
                     if (self$options$standardize)
                         yLab <- .("Standardized Sample Quantiles Deviation")
@@ -201,12 +210,12 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
                 if (self$options$refLine) {
                     if (detrend)
-                        plot <- plot + geom_segment(aes(x = 0, y = 0, xend = 1, yend = 0), color = "darkgrey")
+                        plot <- plot + ggplot2::geom_segment(ggplot2::aes(x = 0, y = 0, xend = 1, yend = 0), color = "darkgrey")
                     else
-                        plot <- plot + geom_segment(aes(x = 0, y = 0, xend = 1, yend = 1), color = "darkgrey")
+                        plot <- plot + ggplot2::geom_segment(ggplot2::aes(x = 0, y = 0, xend = 1, yend = 1), color = "darkgrey")
                 }
                 plot <- plot + qqplotr::stat_pp_point(distribution = distrib, dparams = params,  detrend = detrend,
-                                                      key_glyph = draw_key_rect, show.legend = TRUE)
+                                                      key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                 xLab <- .("Theoretical Probabilities")
                 yLab <-  ifelse(detrend, .("Sample Probability Deviation"), .("Sample Probabilities"))
             }
@@ -216,9 +225,9 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Legend
             if (is.null(groupVar))
-                plot <- plot + guides(fill = "none")
+                plot <- plot + ggplot2::guides(fill = "none")
             else
-                plot <- plot + guides(fill = guide_legend(override.aes = list(alpha = 1)))
+                plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)))
 
             # Axis Limits
             if (self$options$yAxisRangeType == "manual")
@@ -229,14 +238,14 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xLim <- c(self$options$xAxisRangeMin, self$options$xAxisRangeMax)
             else
                 xLim <- NULL
-            plot <- plot + coord_cartesian(ylim = yLim, xlim = xLim)
+            plot <- plot + ggplot2::coord_cartesian(ylim = yLim, xlim = xLim)
 
             # Ticks
             if (self$options$xTicks > 0) {
-                plot <- plot  + scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
             # Titles & Labels
@@ -244,7 +253,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
 
             # Legend spacing
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             return (plot)
         },
@@ -327,7 +336,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .distParameters = function(distName, aVar) {
             m <- mean(aVar)
-            s <- sd(aVar)
+            s <- stats::sd(aVar)
             if (distName == "beta") {
                 shape1 = m*(m*(1-m)/s**2 - 1)
                 shape2 = (1-m)*(m*(1-m)/s**2 - 1)
@@ -341,7 +350,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 params <- list(shape = shape, rate = rate)
             } else if (distName == "lnorm") {
                 meanlog <- mean(log(aVar))
-                sdlog <- sd(log(aVar))
+                sdlog <- stats::sd(log(aVar))
                 params <- list(meanlog = meanlog, sdlog = sdlog)
             } else if (distName == "logis") {
                 location <- m

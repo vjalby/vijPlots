@@ -130,8 +130,8 @@ msgstr ""
 msgid ""
 "<h3>Data & Sorting</h3>\n"
 "<ul>\n"
-"<li>Likert variables must be of ordinal measure-type. (Continuous "
-"measure-type works as well.)</li>\n"
+"<li>Likert variables must be of ordinal measure-type. (Continuous-Integer "
+"works as well.)</li>\n"
 "<li>If you plan to compute mean/median/sd or to use comparison tests, they "
 "must be of integer data-type.</li>\n"
 "<li><strong>Tidy up levels:</strong> when checked, try to fix the labels "
@@ -203,12 +203,12 @@ msgid ""
 "<li><strong>Burt matrix:</strong> CA of the Burt matrix. The eigenvalues are "
 "the squares of those of the indicator matrix method. </li>\n"
 "</ul>\n"
-"<p>Both methods give the same <em>standard</em> coordinates (but different "
-"<em>principal</em> coordinates).</p>\n"
+"<p>Both methods give the same <em>standard</em> coordinates and "
+"discriminations (but different <em>principal</em> coordinates).</p>\n"
 "<p>When selected, <strong>Benzécri and Greenacre corrections</strong> are "
-"applied to eigenvalues only (<strong>Summary</strong> table). Coordinates "
-"(and inertia) of categories and observations are computed from the original "
-"eigenvalues of the Burt matrix.</p>\n"
+"applied to eigenvalues only (<strong>Summary</strong> table). Principal "
+"coordinates (and inertia) of categories and observations are computed from "
+"the original eigenvalues of the Burt matrix.</p>\n"
 "<p>The <strong>Normalization</strong> options specify how the coordinates "
 "are scaled (by eigenvalues):</p>\n"
 "<ul>\n"
@@ -500,10 +500,6 @@ msgstr ""
 
 #: likertplot/options/addMedianLine.title
 msgid "Add median line (Stacked only)"
-msgstr ""
-
-#: scatterplot/options/plotBorder.title
-msgid "Add plot frame"
 msgstr ""
 
 #: R/likertplot.b.R
@@ -1470,6 +1466,11 @@ msgstr ""
 #: histogram/ui[1][0][0]/histtype_count.label
 #: piechart/options/labels/count.title
 msgid "Count"
+msgstr ""
+
+#: mrcrosstabs/options/showLabels.title
+#: mrfrequencies/options/showLabels.title
+msgid "Count labels"
 msgstr ""
 
 #: mrcrosstabs/options/endorsed.title
@@ -2797,7 +2798,7 @@ msgid "Likert Plot"
 msgstr ""
 
 #: R/likertplot.b.R
-msgid "Likert Plot requires ordinal (or numeric) variables"
+msgid "Likert Plot requires ordinal (or continuous-integer) variables"
 msgstr ""
 
 #: likertplot/options/liks.title
@@ -3400,7 +3401,7 @@ msgstr ""
 #: barchart/ui[4][0][0][0]/singleColor/colorNo.suffix
 #: barplot/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: boxplot/ui[2][0][0][0]/singleColor/colorNo.suffix
-#: mrfrequencies/ui[3][0][0][0][1]/colorNo.suffix
+#: mrfrequencies/ui[3][0][0][0]/singleColor/colorNo.suffix
 #: raincloud/ui[1][1][0]/singleColor/colorNo.suffix
 msgid "only"
 msgstr ""
@@ -3716,6 +3717,10 @@ msgstr ""
 msgid "Plot Colors"
 msgstr ""
 
+#: scatterplot/options/plotBorder.title
+msgid "Plot frame"
+msgstr ""
+
 #: areachart/ui[1][0][0].label
 #: barchart/ui[2].label
 #: barchart/ui[2][0][0][0].label
@@ -3786,6 +3791,10 @@ msgstr ""
 
 #: principal/options/obsColor.title
 msgid "Points"
+msgstr ""
+
+#: scatterplot/options/keepNA.title
+msgid "Points with missing group/label"
 msgstr ""
 
 #: qqplot/options/methodQQ/pointwise.title
@@ -4426,6 +4435,12 @@ msgstr ""
 msgid "SD"
 msgstr ""
 
+#: R/likertplot.b.R
+msgid ""
+"Select the \"Convert variables to integers\" option when the variables are "
+"not of the same type."
+msgstr ""
+
 #: mrcrosstabs/options/separator.title
 #: mrfrequencies/options/separator.title
 msgid "Separator"
@@ -4501,8 +4516,6 @@ msgid "Show % labels"
 msgstr ""
 
 #: barplot/options/showLabels.title
-#: mrcrosstabs/options/showLabels.title
-#: mrfrequencies/options/showLabels.title
 msgid "Show count labels"
 msgstr ""
 
@@ -4532,10 +4545,6 @@ msgstr ""
 
 #: linechart/options/showPoint.title
 msgid "Show points"
-msgstr ""
-
-#: scatterplot/options/keepNA.title
-msgid "Show points with missing group/label"
 msgstr ""
 
 #: likertplot/options/addTotals.title
@@ -4618,6 +4627,10 @@ msgstr ""
 #: multcorresp/ui[2][0].label
 #: principal/ui[2][0][0].label
 msgid "Solution"
+msgstr ""
+
+#: R/corresp.b.R
+msgid "Some categories have zero counts and must be removed."
 msgstr ""
 
 #: R/corresp.b.R
@@ -4798,14 +4811,6 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: R/corresp.b.R
-msgid "Suppl. Column"
-msgstr ""
-
-#: R/corresp.b.R
-msgid "Suppl. Row"
-msgstr ""
-
 #: R/multcorresp.b.R
 msgid "Suppl. variables"
 msgstr ""
@@ -4920,9 +4925,13 @@ msgid "Text Size & Facets"
 msgstr ""
 
 #: R/principal.b.R
+msgid "The correlation matrix is nearly singular. Computations may not be accurate."
+msgstr ""
+
+#: R/principal.b.R
 msgid ""
-"The correlation matrix is not positive definite. Computations may not be "
-"accurate."
+"The following variable(s) are constant and cannot be used in a principal "
+"component analysis: {vars}."
 msgstr ""
 
 #: R/multcorresp.b.R
@@ -4930,7 +4939,15 @@ msgid "The number of dimensions cannot be greater than {max}."
 msgstr ""
 
 #: R/principal.b.R
+msgid "The number of dimensions cannot be greater than the number of observations"
+msgstr ""
+
+#: R/principal.b.R
 msgid "The number of dimensions cannot be greater than the number of variables."
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "The variance of the variable is equal to zero."
 msgstr ""
 
 #: R/corresp.b.R

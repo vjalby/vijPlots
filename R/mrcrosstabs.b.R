@@ -155,7 +155,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             bartype <- self$options$bartype
             reverseStack <- (!self$options$reverseStack && bartype == "stack")
             if (reverseStack)
-                bartype <- position_stack(reverse = TRUE)
+                bartype <- ggplot2::position_stack(reverse = TRUE)
 
             # Data
             plotData <- cbind("Options" = factor(rownames(image$state), levels=rownames(image$state)),image$state)
@@ -164,18 +164,18 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Plot
             optionsVar <- "Options"
             if (self$options$xaxis == "xcols") {
-                xVarName <- ensym(groupVar)
-                zVarName <- ensym(optionsVar)
+                xVarName <- rlang::sym(groupVar)
+                zVarName <- rlang::sym(optionsVar)
                 xLab <- groupVar
                 gLab <- optionName
             } else {
-                xVarName <- ensym(optionsVar)
-                zVarName <- ensym(groupVar)
+                xVarName <- rlang::sym(optionsVar)
+                zVarName <- rlang::sym(groupVar)
                 xLab <- optionName
                 gLab <- groupVar
             }
-            plot <- ggplot(plotData, aes(x=!!xVarName, y = Count, label = doNumber(Count)))
-            plot <- plot + geom_col( aes(fill=!!zVarName), position = bartype, color = borderColor)
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = Count, label = doNumber(Count)))
+            plot <- plot + ggplot2::geom_col(ggplot2::aes(fill=!!zVarName), position = bartype, color = borderColor)
 
             #### Labels ####
             if( self$options$showLabels ) {
@@ -185,15 +185,15 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 if (self$options$bartype == "stack") {
                     if(reverseStack)
-                        labelPosition <- position_stack(vjust = 0.5, reverse = TRUE)
+                        labelPosition <- ggplot2::position_stack(vjust = 0.5, reverse = TRUE)
                     else
-                        labelPosition <- position_stack(vjust = 0.5)
+                        labelPosition <- ggplot2::position_stack(vjust = 0.5)
                 } else {
                     if (self$options$labelPosition == "middle") {
-                        labelPosition <- position_dodge(width = 0.9)
+                        labelPosition <- ggplot2::position_dodge(width = 0.9)
                         vfactor <- 2
                     } else {
-                        labelPosition <- position_dodge(width = 0.9)
+                        labelPosition <- ggplot2::position_dodge(width = 0.9)
                         if (self$options$horizontal) {
                             hjust2 <- -0.2
                         } else {
@@ -209,13 +209,13 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
                 if (self$options$textColor == "auto" && self$options$labelPosition == "middle") { # using hex_bw
-                    plot <- plot + geom_text(aes(fill = !!zVarName, y = Count / vfactor, color = after_scale(ggstats::hex_bw(.data$fill))),
-                                             position = labelPosition, vjust = vjust2, hjust = hjust2,
-                                             fontface = "bold", size = self$options$labelFontSize / .pt)
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = Count / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                                                        position = labelPosition, vjust = vjust2, hjust = hjust2,
+                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                 } else {
-                    plot <- plot + geom_text(aes(fill = !!zVarName, y = Count / vfactor), color = textColor,
-                                             position = labelPosition, vjust = vjust2, hjust = hjust2,
-                                             fontface = "bold", size = self$options$labelFontSize / .pt)
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = Count / vfactor), color = textColor,
+                                                        position = labelPosition, vjust = vjust2, hjust = hjust2,
+                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                 }
             }
 
@@ -236,7 +236,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 yLab <- paste(.("% within"), optionName)
                 yScaleFactor <- 100
             } else {
-                labelFnct <- waiver()
+                labelFnct <- ggplot2::waiver()
                 yLab <- .("Count")
                 yScaleFactor <- 1
             }
@@ -244,35 +244,35 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
-                    plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
+                    plot <- plot + ggplot2::coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
                 } else {
-                    plot <- plot + coord_flip(clip = "off")
+                    plot <- plot + ggplot2::coord_flip(clip = "off")
                 }
             } else {
                 if (self$options$yAxisRangeType == "manual") {
-                    plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin/yScaleFactor, self$options$yAxisRangeMax/yScaleFactor))
+                    plot <- plot + ggplot2::coord_cartesian(ylim = c(self$options$yAxisRangeMin/yScaleFactor, self$options$yAxisRangeMax/yScaleFactor))
                 } else {
-                    plot <- plot + coord_cartesian(clip = "off")
+                    plot <- plot + ggplot2::coord_cartesian(clip = "off")
                 }
             }
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
             if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
-                expand_arg <- expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
+                expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
             }
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
             } else {
-                plot <- plot  + scale_y_continuous(labels = labelFnct, expand = expand_arg)
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct, expand = expand_arg)
             }
 
             # Titles & Labels
             defaults <- list(y = yLab, x = xLab, legend = gLab)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             return(plot)
         },

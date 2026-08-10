@@ -31,17 +31,17 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             titleAlign = "0.5",
             titleFontSize = 16,
             titleFontFace = "plain",
-            discrimSubtitleText = NULL,
+            discrimSubtitleText = "",
             catSubtitleText = "default",
             obsSubtitleText = "default",
             biplotSubtitleText = "default",
             subtitleAlign = "0.5",
             subtitleFontSize = 12,
             subtitleFontFace = "plain",
-            discrimCaptionText = NULL,
-            catCaptionText = NULL,
-            obsCaptionText = NULL,
-            biplotCaptionText = NULL,
+            discrimCaptionText = "",
+            catCaptionText = "",
+            obsCaptionText = "",
+            biplotCaptionText = "",
             captionAlign = "1",
             captionFontSize = 12,
             captionFontFace = "plain",
@@ -53,13 +53,13 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             ggrepel = FALSE,
             boldCat = FALSE,
             descAsVarName = FALSE,
-            legendText = NULL,
+            legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
-            xAxisText = NULL,
+            xAxisText = "",
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
-            yAxisText = NULL,
+            yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5", ...) {
 
@@ -206,7 +206,8 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="plain")
             private$..discrimSubtitleText <- jmvcore::OptionString$new(
                 "discrimSubtitleText",
-                discrimSubtitleText)
+                discrimSubtitleText,
+                default="")
             private$..catSubtitleText <- jmvcore::OptionString$new(
                 "catSubtitleText",
                 catSubtitleText,
@@ -244,16 +245,20 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="plain")
             private$..discrimCaptionText <- jmvcore::OptionString$new(
                 "discrimCaptionText",
-                discrimCaptionText)
+                discrimCaptionText,
+                default="")
             private$..catCaptionText <- jmvcore::OptionString$new(
                 "catCaptionText",
-                catCaptionText)
+                catCaptionText,
+                default="")
             private$..obsCaptionText <- jmvcore::OptionString$new(
                 "obsCaptionText",
-                obsCaptionText)
+                obsCaptionText,
+                default="")
             private$..biplotCaptionText <- jmvcore::OptionString$new(
                 "biplotCaptionText",
-                biplotCaptionText)
+                biplotCaptionText,
+                default="")
             private$..captionAlign <- jmvcore::OptionList$new(
                 "captionAlign",
                 captionAlign,
@@ -374,7 +379,8 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default=FALSE)
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
-                legendText)
+                legendText,
+                default="")
             private$..legendFontSize <- jmvcore::OptionList$new(
                 "legendFontSize",
                 legendFontSize,
@@ -397,7 +403,8 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="right")
             private$..xAxisText <- jmvcore::OptionString$new(
                 "xAxisText",
-                xAxisText)
+                xAxisText,
+                default="")
             private$..xAxisFontSize <- jmvcore::OptionList$new(
                 "xAxisFontSize",
                 xAxisFontSize,
@@ -419,7 +426,8 @@ multcorrespOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default="0.5")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
-                yAxisText)
+                yAxisText,
+                default="")
             private$..yAxisFontSize <- jmvcore::OptionList$new(
                 "yAxisFontSize",
                 yAxisFontSize,
@@ -1051,17 +1059,17 @@ multcorresp <- function(
     titleAlign = "0.5",
     titleFontSize = 16,
     titleFontFace = "plain",
-    discrimSubtitleText,
+    discrimSubtitleText = "",
     catSubtitleText = "default",
     obsSubtitleText = "default",
     biplotSubtitleText = "default",
     subtitleAlign = "0.5",
     subtitleFontSize = 12,
     subtitleFontFace = "plain",
-    discrimCaptionText,
-    catCaptionText,
-    obsCaptionText,
-    biplotCaptionText,
+    discrimCaptionText = "",
+    catCaptionText = "",
+    obsCaptionText = "",
+    biplotCaptionText = "",
     captionAlign = "1",
     captionFontSize = 12,
     captionFontFace = "plain",
@@ -1073,13 +1081,13 @@ multcorresp <- function(
     ggrepel = FALSE,
     boldCat = FALSE,
     descAsVarName = FALSE,
-    legendText,
+    legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
-    xAxisText,
+    xAxisText = "",
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
-    yAxisText,
+    yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5") {
 

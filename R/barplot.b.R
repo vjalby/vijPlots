@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "barplotClass",
     inherit = barplotBase,
@@ -58,14 +55,12 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Variables ####
 
-            category <- self$options$rows
-            category <- ensym(category)
+            categoryVar <- rlang::sym(self$options$rows)
 
-            columns <- self$options$columns
-            if (!is.null(columns))
-                group <- ensym(columns)
+            if (!is.null(self$options$columns))
+                groupVar <- rlang::sym(self$options$columns)
             else
-                group <- NULL
+                groupVar <- NULL
 
             if (self$options$borderColor == "none")
                 borderColor = NA
@@ -73,22 +68,24 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 borderColor = self$options$borderColor
 
             positionStack <- (self$options$barType == "stack")
-            if(self$options$barType == "dodge2")
-                position <- position_dodge2(preserve = "single")
+            if (self$options$barType == "dodge2")
+                position <- ggplot2::position_dodge2(preserve = "single", width = 0.9)
+            else if(self$options$barType == "dodge")
+                position <- ggplot2::position_dodge(width = 0.9)
             else
                 position <- self$options$barType
 
             yaxis <- self$options$yaxis
 
             if (self$options$order == "decreasing")
-                plotData[[category]] <- forcats::fct_infreq(plotData[[category]])
+                plotData[[categoryVar]] <- forcats::fct_infreq(plotData[[categoryVar]])
             else if (self$options$order == "increasing")
-                plotData[[category]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[category]]))
+                plotData[[categoryVar]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryVar]]))
 
             reverseStack <- (!self$options$reverseStack && positionStack)
 
             if (reverseStack)
-                position <- position_stack(reverse = TRUE)
+                position <- ggplot2::position_stack(reverse = TRUE)
 
             # Percent format (scales)
             doPercent <- scales::label_percent(
@@ -101,15 +98,16 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 doNumber <- as.character
 
             # Correct Single color option
-            if (positionStack || !is.null(group))
+            if (positionStack || !is.null(groupVar))
                 singleColor <- FALSE
             else
                 singleColor <- self$options$singleColor
 
             if (singleColor) {
-                nbColors <- attr(vijPalette(self$options$colorPalette, "fill"),"nlevels")
+                selectedColorPalette <- vijPalette(self$options$colorPalette, "fill")
+                nbColors <- vijPaletteNlevels(selectedColorPalette)
                 colorNo <- as.numeric(self$options$colorNo)
-                oneColorOfPalette <- vijPalette(self$options$colorPalette, "fill")(nbColors)[min(colorNo,nbColors)]
+                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
             }
 
             # Correct labelPosition option
@@ -129,39 +127,39 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### AES ####
 
-            if (is.null(group)) { # No group
-                bby <- 1
-                ffill <- category
+            if (is.null(groupVar)) { # No group
+                byVar <- 1
+                fillVar <- categoryVar
                 if (positionStack)
-                    xx <- 1
+                    xVar <- 1
                 else
-                    xx <- category
+                    xVar <- categoryVar
             } else { # with group
-                xx <- category
-                ffill <- group
+                xVar <- categoryVar
+                fillVar <- groupVar
                 if (self$options$percentWithin == "group")
-                    bby <- group
+                    byVar <- groupVar
                 else
-                    bby <- category
+                    byVar <- categoryVar
             }
 
-            plot <- ggplot(plotData, aes(x = !!xx, fill = !!ffill, by = !!bby))
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xVar, fill = !!fillVar, by = !!byVar))
 
             #### Bars ####
 
             if (yaxis == "count") {
                 if (singleColor)
-                    plot <- plot + geom_bar(aes(y = after_stat(count)), stat = "count", position = position,
+                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(count)), stat = "count", position = position,
                                             color = borderColor, fill = oneColorOfPalette)
                 else
-                    plot <- plot + geom_bar(aes(y = after_stat(count)), stat = "count", position = position,
+                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(count)), stat = "count", position = position,
                                             color = borderColor, show.legend = TRUE) # show.legend needed to display unused levels
             } else {
                 if (singleColor)
-                    plot <- plot + geom_bar(aes(y = after_stat(prop)), stat = ggstats::StatProp, position = position,
+                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, position = position,
                                             color = borderColor, fill = oneColorOfPalette)
                 else
-                    plot <- plot + geom_bar(aes(y = after_stat(prop)), stat = ggstats::StatProp, position = position,
+                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, position = position,
                                             color = borderColor, show.legend = TRUE)
             }
 
@@ -176,19 +174,17 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # Change justifications
                 if (positionStack) {
                     if (reverseStack)
-                        labPosition <- position_stack(vjust = 0.5, reverse = TRUE)
+                        labPosition <- ggplot2::position_stack(vjust = 0.5, reverse = TRUE)
                     else
-                        labPosition <- position_stack(vjust = 0.5)
+                        labPosition <- ggplot2::position_stack(vjust = 0.5)
                 } else {
                     if(self$options$barType == "dodge2")
-                        labPosition <- position_dodge2(preserve = "single", width = 0.9)
+                        labPosition <- ggplot2::position_dodge2(preserve = "single", width = 0.9)
                     else
-                        labPosition <- position_dodge(width = 0.9)
+                        labPosition <- ggplot2::position_dodge(width = 0.9)
                     if (self$options$labelPosition == "middle") {
-                        #labPosition <- position_dodge(width = 0.9)
                         vfactor <- 2
                     } else {
-                        #labPosition <- position_dodge(width = 0.9)
                         if (self$options$horizontal) {
                             hjust2 <- -0.2
                         } else {
@@ -200,25 +196,25 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # geom_text
                 if (yaxis == "count") {
                     if (textColor == "auto") {
-                        plot <- plot + geom_text(aes(y = after_stat(count)/vfactor, label = doNumber(after_stat(count)),
-                                                                                        color = after_scale(ggstats::hex_bw(.data$fill))),
+                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count)),
+                                                                                        color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                  stat = "count", position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 fontface = "bold", size = self$options$labelFontSize / .pt)
+                                                 fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                     } else {
-                        plot <- plot + geom_text(aes(y = after_stat(count)/vfactor, label = doNumber(after_stat(count))),
+                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count))),
                                                  stat = "count", position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 color = textColor, fontface = "bold", size = self$options$labelFontSize / .pt)
+                                                 color = textColor, fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                     }
                 } else { # Percent
                     if (textColor == "auto") {
-                        plot <- plot + geom_text(aes(y = after_stat(prop)/vfactor, label = doPercent(after_stat(prop)),
-                                                                                        color = after_scale(ggstats::hex_bw(.data$fill))),
+                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop)),
+                                                                                        color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                  stat = ggstats::StatProp, position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 fontface = "bold", size = self$options$labelFontSize / .pt)
+                                                 fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                     } else {
-                        plot <- plot + geom_text(aes(y = after_stat(prop)/vfactor, label = doPercent(after_stat(prop))),
+                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop))),
                                                  stat = ggstats::StatProp, position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 color = textColor, fontface = "bold", size = self$options$labelFontSize / .pt)
+                                                 color = textColor, fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
                     }
                 }
             }
@@ -226,14 +222,14 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Finishing ####
 
             # Legend
-            if (is.null(group) && !positionStack)
-                plot <- plot + guides(fill = "none")
+            if (is.null(groupVar) && !positionStack)
+                plot <- plot + ggplot2::guides(fill = "none")
 
             # Axis labels and scales
             if (yaxis == "count") {
                 yLab <- .("Count")
                 yScaleFactor <- 1
-                labelFnct <- waiver()
+                labelFnct <- ggplot2::waiver()
             } else {
                 yLab <- .("Percent")
                 yScaleFactor <- 100
@@ -241,56 +237,58 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Show unused levels (if checked in data/var setting)
-            plot <- plot + scale_x_discrete(drop = FALSE)
+            plot <- plot + ggplot2::scale_x_discrete(drop = FALSE)
 
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") { # Horizontal and manual
-                    plot <- plot + coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
+                    plot <- plot + ggplot2::coord_flip(ylim = c(self$options$xAxisRangeMin/yScaleFactor, self$options$xAxisRangeMax/yScaleFactor))
                 } else {
-                    plot <- plot + coord_flip(clip = "off")
+                    plot <- plot + ggplot2::coord_flip(clip = "off")
                 }
             } else {
                 if (self$options$yAxisRangeType == "manual") {
-                    plot <- plot + coord_cartesian(ylim = c(self$options$yAxisRangeMin/yScaleFactor, self$options$yAxisRangeMax/yScaleFactor))
+                    plot <- plot + ggplot2::coord_cartesian(ylim = c(self$options$yAxisRangeMin/yScaleFactor, self$options$yAxisRangeMax/yScaleFactor))
                 } else {
-                    plot <- plot + coord_cartesian(clip = "off")
+                    plot <- plot + ggplot2::coord_cartesian(clip = "off")
                 }
             }
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
-                expand_arg <- expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
+            if (self$options$showLabels && self$options$labelPosition == "top") {
+                if (self$options$horizontal  && self$options$xAxisRangeType == "auto")
+                    expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
+                else if (!self$options$horizontal  && self$options$yAxisRangeType == "auto")
+                    expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
             }
 
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
             } else {
-                plot <- plot  + scale_y_continuous(labels = labelFnct, expand = expand_arg)
+                plot <- plot + ggplot2::scale_y_continuous(labels = labelFnct, expand = expand_arg)
             }
 
             # facet
             if (!is.null(self$options$facet)) {
-                facetVar <- self$options$facet
-                facetVar <- ensym(facetVar)
+                facetVar <- rlang::sym(self$options$facet)
                 if (self$options$facetBy == "column")
-                    plot <- plot + facet_wrap(vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
                 else
-                    plot <- plot + facet_wrap(vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
             }
 
             # Theme and colors
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE) # drop to include unused levels in color scales
 
             # Titles & Labels
-            defaults <- list(y = yLab, x = category, legend = group)
+            defaults <- list(y = yLab, x = categoryVar, legend = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
 
             # Legend position
-            plot <- plot + theme(legend.key.spacing.y = unit(1, "mm"), legend.byrow = TRUE)
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             return(plot)
 

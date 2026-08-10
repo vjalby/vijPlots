@@ -48,7 +48,12 @@ jmvtools::i18nUpdate("fr")
 jmvtools::i18nUpdate("es")
 jmvtools::i18nUpdate('catalog')
 
+# Run local
 
+devtools::load_all()
+vijPlots::boxplot(data=iris, vars = c("Petal.Width", "Petal.Length"), group = NULL, label = NULL, facet = NULL)
+
+vijPlots::boxplotOptions
 
 
 ## i18n (creation)
@@ -58,6 +63,12 @@ jmvtools::i18nCreate("es")
 jmvtools::i18nCreate('catalog')
 
 
+# Testthat files
+
+usethis::use_test("histogram")
+usethis::use_test("barchart")
+
+devtools::test()
 
 ## old i18n
 # Find the correct path

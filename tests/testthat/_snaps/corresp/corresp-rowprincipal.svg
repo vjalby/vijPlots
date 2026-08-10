@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.000000000000064' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.55; stroke: none;' />
+</g>
+<defs>
+  <clipPath id='cpNTguODh8NzA1LjA2fDY0LjkzfDUxNy4wNA=='>
+    <rect x='58.88' y='64.93' width='646.18' height='452.11' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNTguODh8NzA1LjA2fDY0LjkzfDUxNy4wNA==)'>
+<rect x='58.88' y='64.93' width='646.18' height='452.11' style='stroke-width: 1.55; stroke: none;' />
+<circle cx='351.00' cy='443.22' r='2.84' style='stroke-width: 1.03; stroke: #0000FF; fill: #0000FF;' />
+<circle cx='321.45' cy='426.13' r='2.84' style='stroke-width: 1.03; stroke: #0000FF; fill: #0000FF;' />
+<circle cx='399.74' cy='427.97' r='2.84' style='stroke-width: 1.03; stroke: #0000FF; fill: #0000FF;' />
+<circle cx='333.90' cy='409.03' r='2.84' style='stroke-width: 1.03; stroke: #0000FF; fill: #0000FF;' />
+<circle cx='403.12' cy='387.65' r='2.84' style='stroke-width: 1.03; stroke: #0000FF; fill: #0000FF;' />
+<polygon points='675.68,492.07 679.51,498.70 671.85,498.70 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
+<polygon points='299.60,332.26 303.43,338.90 295.77,338.90 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
+<polygon points='203.07,368.61 206.90,375.24 199.24,375.24 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
+<polygon points='88.25,455.30 92.08,461.93 84.42,461.93 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
+<polygon points='579.48,81.06 583.31,87.69 575.65,87.69 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
+<polygon points='330.39,454.94 334.22,461.57 326.56,461.57 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
+<text x='339.92' y='455.07' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='91.40px' lengthAdjust='spacingAndGlyphs'>Senior Managers</text>
+<text x='284.53' y='421.55' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='89.40px' lengthAdjust='spacingAndGlyphs'>Junior Managers</text>
+<text x='412.20' y='423.34' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='97.40px' lengthAdjust='spacingAndGlyphs'>Senior Employees</text>
+<text x='321.38' y='404.34' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='95.40px' lengthAdjust='spacingAndGlyphs'>Junior Employees</text>
+<text x='415.51' y='383.04' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Secretaries</text>
+<text x='687.07' y='491.88' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='28.69px' lengthAdjust='spacingAndGlyphs'>None</text>
+<text x='311.91' y='332.13' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='26.02px' lengthAdjust='spacingAndGlyphs'>Light</text>
+<text x='190.49' y='385.99' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
+<text x='79.51' y='472.62' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='34.03px' lengthAdjust='spacingAndGlyphs'>Heavy</text>
+<text x='567.04' y='98.42' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='58.04px' lengthAdjust='spacingAndGlyphs'>No Alcohol</text>
+<text x='317.98' y='472.23' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='39.36px' lengthAdjust='spacingAndGlyphs'>Alcohol</text>
+<line x1='58.88' y1='414.81' x2='705.06' y2='414.81' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
+<line x1='360.08' y1='517.04' x2='360.08' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
+<rect x='58.88' y='64.93' width='646.18' height='452.11' style='stroke-width: 2.13;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<polyline points='58.88,517.04 58.88,64.93 ' style='stroke-width: 0.00; stroke: #333333; stroke-linecap: butt;' />
+<text x='44.57' y='516.47' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='10.67px' lengthAdjust='spacingAndGlyphs'>-1</text>
+<text x='44.57' y='418.94' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='44.57' y='321.40' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>1</text>
+<text x='44.57' y='223.86' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='44.57' y='126.32' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>3</text>
+<polyline points='54.89,512.35 58.88,512.35 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='54.89,414.81 58.88,414.81 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='54.89,317.27 58.88,317.27 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='54.89,219.73 58.88,219.73 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='54.89,122.19 58.88,122.19 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='58.88,517.04 705.06,517.04 ' style='stroke-width: 0.00; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='192.24,521.03 192.24,517.04 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='360.08,521.03 360.08,517.04 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='527.91,521.03 527.91,517.04 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='695.75,521.03 695.75,517.04 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<text x='192.24' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='10.67px' lengthAdjust='spacingAndGlyphs'>-1</text>
+<text x='360.08' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='527.91' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>1</text>
+<text x='695.75' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='381.97' y='559.40' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='152.62px' lengthAdjust='spacingAndGlyphs'>Dimension 1 (60.9 %)</text>
+<text transform='translate(27.62,290.99) rotate(-90)' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='152.62px' lengthAdjust='spacingAndGlyphs'>Dimension 2 (34.8 %)</text>
+<text x='381.97' y='47.50' text-anchor='middle' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='146.74px' lengthAdjust='spacingAndGlyphs'>Row principal normalization</text>
+<text x='381.97' y='27.62' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='343.30px' lengthAdjust='spacingAndGlyphs'>Row and Column Points for STAFF and SMOKE</text>
+</g>
+</svg>

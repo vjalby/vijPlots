@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.55; stroke: none;' />
+</g>
+<defs>
+  <clipPath id='cpMzAuNTh8NzA1LjA2fDE0Ljk0fDU0MS4zNA=='>
+    <rect x='30.58' y='14.94' width='674.47' height='526.40' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzAuNTh8NzA1LjA2fDE0Ljk0fDU0MS4zNA==)'>
+<rect x='30.58' y='14.94' width='674.47' height='526.40' style='stroke-width: 1.55; stroke: none;' />
+<line x1='214.53' y1='397.78' x2='214.53' y2='348.52' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<line x1='214.53' y1='503.34' x2='214.53' y2='517.41' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polygon points='99.56,397.78 99.56,503.34 329.50,503.34 329.50,397.78 99.56,397.78 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter; fill: #F0CD8C;' />
+<line x1='99.56' y1='432.96' x2='329.50' y2='432.96' style='stroke-width: 3.10; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter;' />
+<line x1='521.11' y1='165.54' x2='521.11' y2='38.87' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<line x1='521.11' y1='411.85' x2='521.11' y2='454.08' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polygon points='406.14,165.54 406.14,411.85 636.08,411.85 636.08,165.54 406.14,165.54 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<line x1='406.14' y1='218.32' x2='636.08' y2='218.32' style='stroke-width: 3.10; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<polyline points='30.58,541.34 30.58,14.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='18.28' y='528.58' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='18.28' y='387.83' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='18.28' y='247.08' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='18.28' y='106.34' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>6</text>
+<polyline points='26.60,524.45 30.58,524.45 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='26.60,383.70 30.58,383.70 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='26.60,242.96 30.58,242.96 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='26.60,102.21 30.58,102.21 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='30.58,541.34 705.06,541.34 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='214.53,545.33 214.53,541.34 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='521.11,545.33 521.11,541.34 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<text x='214.53' y='559.81' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='61.36px' lengthAdjust='spacingAndGlyphs'>Petal.Width</text>
+<text x='521.11' y='559.81' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='67.39px' lengthAdjust='spacingAndGlyphs'>Petal.Length</text>
+</g>
+</svg>

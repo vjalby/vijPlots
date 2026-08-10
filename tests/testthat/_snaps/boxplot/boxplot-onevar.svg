@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.55; stroke: none;' />
+</g>
+<defs>
+  <clipPath id='cpNDAuNTl8NzA1LjA2fDE0Ljk0fDU0MS4zNA=='>
+    <rect x='40.59' y='14.94' width='664.46' height='526.40' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDAuNTl8NzA1LjA2fDE0Ljk0fDU0MS4zNA==)'>
+<rect x='40.59' y='14.94' width='664.46' height='526.40' style='stroke-width: 1.55; stroke: none;' />
+<line x1='372.82' y1='178.45' x2='372.82' y2='38.87' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<line x1='372.82' y1='477.53' x2='372.82' y2='517.41' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polygon points='165.18,178.45 165.18,477.53 580.47,477.53 580.47,178.45 165.18,178.45 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<line x1='165.18' y1='278.14' x2='580.47' y2='278.14' style='stroke-width: 3.10; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<polyline points='40.59,541.34 40.59,14.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='23.29' y='541.48' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='23.29' y='441.79' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='23.29' y='342.09' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='23.29' y='242.39' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>1.5</text>
+<text x='23.29' y='142.70' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>2.0</text>
+<text x='23.29' y='43.00' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>2.5</text>
+<polyline points='36.61,537.35 40.59,537.35 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='36.61,437.66 40.59,437.66 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='36.61,337.96 40.59,337.96 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='36.61,238.26 40.59,238.26 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='36.61,138.57 40.59,138.57 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='36.61,38.87 40.59,38.87 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='40.59,541.34 705.06,541.34 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='372.82,545.33 372.82,541.34 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<text x='372.82' y='559.81' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='61.36px' lengthAdjust='spacingAndGlyphs'>Petal.Width</text>
+</g>
+</svg>

@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.55; stroke: none;' />
+<rect x='79.03' y='63.14' width='626.02' height='395.79' style='stroke-width: 1.55; stroke: none;' />
+<rect x='101.39' y='81.13' width='134.15' height='359.81' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='250.44' y='164.16' width='134.15' height='276.78' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='399.50' y='274.88' width='134.15' height='166.07' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='548.55' y='302.55' width='134.15' height='138.39' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<polyline points='79.03,458.93 79.03,63.14 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='54.65' y='445.76' text-anchor='middle' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='23.04px' lengthAdjust='spacingAndGlyphs'>0 %</text>
+<text x='54.65' y='351.65' text-anchor='middle' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.83px' lengthAdjust='spacingAndGlyphs'>20 %</text>
+<text x='54.65' y='257.55' text-anchor='middle' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.83px' lengthAdjust='spacingAndGlyphs'>40 %</text>
+<text x='54.65' y='163.45' text-anchor='middle' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.83px' lengthAdjust='spacingAndGlyphs'>60 %</text>
+<text x='54.65' y='69.34' text-anchor='middle' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.83px' lengthAdjust='spacingAndGlyphs'>80 %</text>
+<polyline points='75.05,440.94 79.03,440.94 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='75.05,346.84 79.03,346.84 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='75.05,252.73 79.03,252.73 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='75.05,158.63 79.03,158.63 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='75.05,64.53 79.03,64.53 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='79.03,458.93 705.06,458.93 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='168.47,462.92 168.47,458.93 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='317.52,462.92 317.52,458.93 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='466.57,462.92 466.57,458.93 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='615.62,462.92 615.62,458.93 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<text transform='translate(171.39,496.78) rotate(-45)' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='27.35px' lengthAdjust='spacingAndGlyphs'>VISA</text>
+<text transform='translate(320.44,496.78) rotate(-45)' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='60.03px' lengthAdjust='spacingAndGlyphs'>Mastercard</text>
+<text transform='translate(469.49,496.78) rotate(-45)' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='62.70px' lengthAdjust='spacingAndGlyphs'>Diners Club</text>
+<text transform='translate(618.54,496.78) rotate(-45)' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Amex</text>
+<text x='392.04' y='542.47' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='34.68px' lengthAdjust='spacingAndGlyphs'>Card</text>
+<text transform='translate(27.62,261.04) rotate(-90)' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='119.20px' lengthAdjust='spacingAndGlyphs'>Percent of cases</text>
+<text x='392.04' y='45.71' text-anchor='middle' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='145.42px' lengthAdjust='spacingAndGlyphs'>Check-all-that-apply survey</text>
+<text x='79.03' y='26.03' style='font-size: 14.00px; font-weight: bold; font-style: italic; fill: #333333; font-family: sans;' textLength='120.63px' lengthAdjust='spacingAndGlyphs'>Credit cards owned</text>
+<text x='705.06' y='558.98' text-anchor='end' style='font-size: 10.00px; font-style: italic; font-family: sans;' textLength='127.86px' lengthAdjust='spacingAndGlyphs'>Source: fictitious survey data</text>
+</g>
+</svg>

@@ -4,6 +4,40 @@ testData <- data.frame(
     COUNT = c(4L, 2L, 3L, 2L, 4L, 3L, 7L, 4L, 25L, 10L, 12L, 4L, 18L, 24L, 33L, 13L, 10L, 6L, 7L, 2L, 11L, 1L, 17L, 5L, 46L, 10L, 78L, 7L, 18L)
 )
 
+# Same smoking data as testData, pivoted into a ready-made row x column contingency
+# table (STAFF x the 4 core smoking categories), for testing mode = "contTable"
+wideData <- data.frame(
+    STAFF = factor(c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries"),
+                   levels = c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries")),
+    None = c(4L, 4L, 25L, 18L, 10L),
+    Light = c(2L, 3L, 10L, 24L, 6L),
+    Medium = c(3L, 7L, 12L, 33L, 7L),
+    Heavy = c(2L, 4L, 4L, 13L, 2L)
+)
+
+test_that("corresp: contingency table mode (mode = contTable)", {
+    r <- vijPlots::corresp(
+        data = wideData,
+        mode = "contTable",
+        rows = NULL,
+        cols = NULL,
+        columns = c("None", "Light", "Medium", "Heavy"),
+        rowLabels = "STAFF",
+        counts = NULL,
+        showContingency = TRUE
+    )
+    ct <- r$contingency$asDF
+    expect_equal(unname(ct$STAFF), c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries", "Active Margin"))
+    expect_equal(unname(ct$None), c(4, 4, 25, 18, 10, 61))
+    expect_equal(unname(ct$`Active Margin`), c(11, 18, 51, 88, 25, 193))
+
+    eig <- r$eigenvalues$asDF
+    expect_equal(unname(eig$dim), c("1", "2", "Total"))
+    expect_equal(unname(eig$inertia), c(0.07475910589, 0.01001718051, 0.0847762864), tolerance = 1e-6)
+    expect_equal(unname(eig$proportion), c(0.8775587314, 0.117586535, 1), tolerance = 1e-6)
+    expect_equal(r$eigenvalues$notes$chisq$note, "X-squared = 16.44, df = 12,\n                               p-value = 0.17183")
+})
+
 test_that("corresp: inertia (eigenvalues) table", {
     r <- vijPlots::corresp(
         data = testData,

@@ -289,7 +289,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             chisqres <- tryCatch(
-                            stats::chisq.test(activeContingencyTable),
+                            suppressWarnings(stats::chisq.test(activeContingencyTable)),
                             error = function (e) NULL
                         )
 

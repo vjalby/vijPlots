@@ -57,6 +57,6 @@
 <text x='392.98' y='556.07' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='3.55px' lengthAdjust='spacingAndGlyphs'>i</text>
 <text x='396.54' y='556.07' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='8.90px' lengthAdjust='spacingAndGlyphs'>e</text>
 <text x='405.43' y='556.07' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='8.01px' lengthAdjust='spacingAndGlyphs'>s</text>
-<text transform='translate(27.62,264.04) rotate(-90)' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='211.54px' lengthAdjust='spacingAndGlyphs'>Petal.Width (Mean ± 95%  CI)</text>
+<text transform='translate(27.62,264.04) rotate(-90)' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='207.09px' lengthAdjust='spacingAndGlyphs'>Petal.Width (Mean ± 95% CI)</text>
 </g>
 </svg>

@@ -250,7 +250,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else if (errorBars == "se")
                     ylabel <- jmvcore::format(.('{var} (Mean ± SE)'), var = yVar)
                 else if (errorBars == "ci")
-                    ylabel <- jmvcore::format(.('{var} (Mean ± {level}%  CI)'), var = yVar, level = self$options$ciLevel)
+                    ylabel <- jmvcore::format(.('{var} (Mean ± {level}% CI)'), var = yVar, level = self$options$ciLevel)
             } else if (self$options$yaxis == "median")
                 ylabel <- jmvcore::format(.('Median of {var}'), var = yVar)
             else if (self$options$yaxis == "min")

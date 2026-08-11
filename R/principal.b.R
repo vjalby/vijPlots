@@ -72,7 +72,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             if (nDim > nrow(data)) {
-                vijErrorMessage(self, .("The number of dimensions cannot be greater than the number of observations"))
+                vijErrorMessage(self, .("The number of dimensions cannot be greater than the number of observations."))
                 return(FALSE)
             }
 

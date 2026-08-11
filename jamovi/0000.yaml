@@ -143,13 +143,13 @@ datasets:
     description: A demonstration dataset for vijPlots/Multiple Response plots.
   - name: Likert
     path: likert.omv
-    description: A demonstration dataset for vijPlots/Likert plots.
+    description: A demonstration dataset for vijPlots/Likert plot.
   - name: vijPlots
     path: vijPlots.omv
     description: A demonstration dataset for vijPlots module.
   - name: Time Series
     path: TimeSeries.omv
-    description: A demonstration dataset for vijPlots/Time Serie plots.
+    description: A demonstration dataset for vijPlots/Time Series plots.
   - name: Raincloud
     path: raincloud.omv
     description: A demonstration dataset for vijPlots/Raincloud plot.

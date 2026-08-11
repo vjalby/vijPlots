@@ -32,7 +32,7 @@ msgid "{rotation} rotation with Kaiser normalization was used."
 msgstr ""
 
 #: R/barchart.b.R
-msgid "{var} (Mean ± {level}%  CI)"
+msgid "{var} (Mean ± {level}% CI)"
 msgstr ""
 
 #: R/barchart.b.R
@@ -454,7 +454,7 @@ msgid "A demonstration dataset for vijPlots/Correspondence Analysis."
 msgstr ""
 
 #: package/datasets/Likert.description
-msgid "A demonstration dataset for vijPlots/Likert plots."
+msgid "A demonstration dataset for vijPlots/Likert plot."
 msgstr ""
 
 #: package/datasets/Cars.description
@@ -474,7 +474,7 @@ msgid "A demonstration dataset for vijPlots/Raincloud plot."
 msgstr ""
 
 #: package/datasets/TimeSeries.description
-msgid "A demonstration dataset for vijPlots/Time Serie plots."
+msgid "A demonstration dataset for vijPlots/Time Series plots."
 msgstr ""
 
 #: areachart/options/colorPalette/Accent.title
@@ -4447,14 +4447,14 @@ msgid ""
 "not of the same type."
 msgstr ""
 
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid "Sep"
+msgstr ""
+
 #: mrcrosstabs/options/separator.title
 #: mrfrequencies/options/separator.title
 msgid "Separator"
-msgstr ""
-
-#: R/areachart.b.R
-#: R/linechart.b.R
-msgid "Sept"
 msgstr ""
 
 #: R/areachart.b.R
@@ -4954,7 +4954,7 @@ msgid "The number of dimensions cannot be greater than {max}."
 msgstr ""
 
 #: R/principal.b.R
-msgid "The number of dimensions cannot be greater than the number of observations"
+msgid "The number of dimensions cannot be greater than the number of observations."
 msgstr ""
 
 #: R/principal.b.R

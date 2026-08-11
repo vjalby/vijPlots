@@ -33,8 +33,8 @@ msgid "{rotation} rotation with Kaiser normalization was used."
 msgstr "La rotation {rotation} avec normalisation de Kaiser a été utilisée."
 
 #: R/barchart.b.R
-msgid "{var} (Mean ± {level}%  CI)"
-msgstr "{var} (Moyenne ± {level}%  IC)"
+msgid "{var} (Mean ± {level}% CI)"
+msgstr "{var} (Moyenne ± {level}% IC)"
 
 #: R/barchart.b.R
 msgid "{var} (Mean ± SD)"
@@ -87,7 +87,7 @@ msgstr "% d'inertie"
 
 #: likertplot/ui[4][1][0][0].label
 msgid "% Labels"
-msgstr "Etiquettes des %"
+msgstr "Étiquettes des %"
 
 #: mrcrosstabs/options/computedValues/cases.title
 #: mrfrequencies/options/showCases.title
@@ -492,9 +492,9 @@ msgstr ""
 "détaillées sont disponibles dans la documentation de l'extension sur le site "
 "CRAN.</p>\n"
 "<p><strong>Droite de référence :</strong> Trace soit la <em>droite "
-"identitée</em> (y = x) ou la <em>droite Q-Q</em> usuelle qui relie deux "
+"identité</em> (y = x) ou la <em>droite Q-Q</em> usuelle qui relie deux "
 "quantiles (Q<sub>0.25</sub> et Q<sub>0.75</sub>). Le diagramme P-P n'utilise "
-"que la droite identitée.</p>\n"
+"que la droite identité.</p>\n"
 "<p><strong>Bande de confiance :</strong> Trace une bande de confiance autour "
 "de la droite de référence. Le package qqplotr propose plusieurs méthodes "
 "pour calculer la bande de confiance :</p>\n"
@@ -613,7 +613,7 @@ msgstr "2035 oct."
 #: areachart/options/displayFormat/%Y%B.title
 #: linechart/options/displayFormat/%Y%B.title
 msgid "2035 October"
-msgstr "2023 octobre"
+msgstr "2035 octobre"
 
 #: areachart/options/displayFormat/%Y%B%e.title
 #: linechart/options/displayFormat/%Y%B%e.title
@@ -659,7 +659,7 @@ msgid "A demonstration dataset for vijPlots/Correspondence Analysis."
 msgstr "Fichier de démonstration pour vijPlots/Analyse des correspondances."
 
 #: package/datasets/Likert.description
-msgid "A demonstration dataset for vijPlots/Likert plots."
+msgid "A demonstration dataset for vijPlots/Likert plot."
 msgstr "Fichier de démonstration pour vijPlots/Likert."
 
 #: package/datasets/Cars.description
@@ -679,7 +679,7 @@ msgid "A demonstration dataset for vijPlots/Raincloud plot."
 msgstr "Fichier de démonstration pour vijPlots/Diagramme Raincloud."
 
 #: package/datasets/TimeSeries.description
-msgid "A demonstration dataset for vijPlots/Time Serie plots."
+msgid "A demonstration dataset for vijPlots/Time Series plots."
 msgstr "Fichier de démonstration pour vijPlots/Séries temporelles."
 
 #: areachart/options/colorPalette/Accent.title
@@ -922,7 +922,7 @@ msgstr "Beta"
 
 #: R/qqplot.b.R
 msgid "Beta distribution requires data between 0 and 1."
-msgstr "La loi Bêta nécessite des données comprise entre 0 et 1"
+msgstr "La loi Bêta nécessite des données comprises entre 0 et 1."
 
 #: likertplot/options/adjustMethod/BH.title
 msgid "BH"
@@ -1279,7 +1279,7 @@ msgstr "Impossible de convertir une variable de type texte en entiers."
 
 #: R/likertplot.b.R
 msgid "Cannot tidy up text variables"
-msgstr "Impossible de corriger les niveaux d'un variable de type texte."
+msgstr "Impossible de corriger les niveaux d'une variable de type texte."
 
 #: areachart/ui[4][2].label
 #: barchart/ui[8][2].label
@@ -2426,7 +2426,7 @@ msgstr "Graphe horizontal"
 #: qqplot/options/refType/identity.title
 #: qqplot/ui[2][1][0]/refLine[0]/refType_identity.label
 msgid "Identity line"
-msgstr "Droite identitée"
+msgstr "Droite identité"
 
 #: barchart/options/ignoreNA.title
 #: likertplot/options/ignoreNA.title
@@ -3482,7 +3482,7 @@ msgstr "Nombre d'observations insuffisant pour procéder à une ACP."
 
 #: R/corresp.b.R
 msgid "Not enough data to compute CA."
-msgstr "Données insuffisantes pour effectuer une analyse des correspondances"
+msgstr "Données insuffisantes pour effectuer une analyse des correspondances."
 
 #: boxplot/options/notchWidth.title
 msgid "Notch width"
@@ -4563,7 +4563,7 @@ msgstr "Résumés des lignes et colonnes"
 #: corresp/options/rowLabels.title
 #: corresp/ui/mode/contTable[0][0][1].label
 msgid "Row Labels"
-msgstr "Etiquette des lignes"
+msgstr "Étiquette des lignes"
 
 #: corresp/results/rowplot.title
 msgid "Row Plot"
@@ -4658,25 +4658,25 @@ msgstr "Valeurs propres"
 
 #: R/likertplot.b.R
 msgid "SD"
-msgstr "Ecart-type"
+msgstr "Écart-type"
 
 #: R/likertplot.b.R
 msgid ""
 "Select the \"Convert variables to integers\" option when the variables are "
 "not of the same type."
 msgstr ""
-"Utiliser l'option \"Convertir les variables en entiers\" lorssque les "
+"Utiliser l'option \"Convertir les variables en entiers\" lorsque les "
 "variables ne sont pas du même type."
+
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid "Sep"
+msgstr "sept."
 
 #: mrcrosstabs/options/separator.title
 #: mrfrequencies/options/separator.title
 msgid "Separator"
 msgstr "Séparateur"
-
-#: R/areachart.b.R
-#: R/linechart.b.R
-msgid "Sept"
-msgstr "sept."
 
 #: R/areachart.b.R
 #: R/linechart.b.R
@@ -4945,7 +4945,7 @@ msgstr "Coordonnées standardisées"
 
 #: barchart/options/errorBars/sd.title
 msgid "Standard deviation"
-msgstr "Ecart-type"
+msgstr "Écart-type"
 
 #: barchart/options/errorBars/se.title
 msgid "Standard error"
@@ -4965,7 +4965,7 @@ msgstr "Coord. des observations standardisées"
 
 #: qqplot/options/standardize.title
 msgid "Standardize values"
-msgstr "Valeurs standadisées"
+msgstr "Valeurs standardisées"
 
 #: principal/options/stdVariables.title
 msgid "Standardize variables"
@@ -5175,7 +5175,7 @@ msgid ""
 "The following variable(s) are constant and cannot be used in a principal "
 "component analysis: {vars}."
 msgstr ""
-"Les variables suivantes sont constantes et ne peuvent pas être utilsées dans "
+"Les variables suivantes sont constantes et ne peuvent pas être utilisées dans "
 "une analyse en composantes principales : {vars}."
 
 #: R/multcorresp.b.R
@@ -5183,7 +5183,7 @@ msgid "The number of dimensions cannot be greater than {max}."
 msgstr "Le nombre de dimensions ne peut pas être supérieur à {max}."
 
 #: R/principal.b.R
-msgid "The number of dimensions cannot be greater than the number of observations"
+msgid "The number of dimensions cannot be greater than the number of observations."
 msgstr "Le nombre de dimensions ne peut pas être supérieur au nombre d'observations."
 
 #: R/principal.b.R
@@ -5196,7 +5196,7 @@ msgstr "La variance de la variable est égale à zéro."
 
 #: R/corresp.b.R
 msgid "The χ2 statistic is equal to zero."
-msgstr "La statistique du χ2 est égale à 0 !"
+msgstr "La statistique du χ2 est égale à zéro."
 
 #: R/qqplot.b.R
 msgid "Theoretical Probabilities"
@@ -5548,7 +5548,7 @@ msgstr "Description des variables comme nom"
 
 #: barchart/ui[2][0][1][0].label
 msgid "Value Labels"
-msgstr "Etiquettes des valeurs"
+msgstr "Étiquettes des valeurs"
 
 #: R/areachart.b.R
 #: R/linechart.b.R

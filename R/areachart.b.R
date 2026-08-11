@@ -193,7 +193,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             longMonths <- c(.("January"), .("February"), .("March"), .("April"), .("May"), .("June"),
                             .("July"), .("August"), .("September"), .("October"), .("November"), .("December"))
             shortMonths <- c(.("Jan"), .("Feb"), .("Mar"), .("Apr"), .("May"), .("Jun"),
-                             .("Jul"), .("Aug"), .("Sept"), .("Oct"), .("Nov"), .("Dec"))
+                             .("Jul"), .("Aug"), .("Sep"), .("Oct"), .("Nov"), .("Dec"))
             shortMonth <- shortMonths[as.integer(format.Date(aDate, "%m"))]
             longMonth <- longMonths[as.integer(format.Date(aDate, "%m"))]
             firstUp <- function(s){paste0(toupper(substring(s, 1, 1)), substring(s, 2))}

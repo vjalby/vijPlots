@@ -71,7 +71,7 @@
 ## Version history
 
 
-### 2026-08-?? / 1.2.3
+### 2026-08-?? / 1.2.5
 
 - Code optimization and fixes everywhere
 - MCA (Burt method): Fixed variable discrimination computation

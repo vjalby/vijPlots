@@ -18,5 +18,4 @@ computations/
 .positai
 .git.nosync/
 *_log.md
-CLAUDE.md
 .claude/

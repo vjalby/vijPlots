@@ -25,8 +25,8 @@
             "{rotation} rotation with Kaiser normalization was used.": [
                 "La rotation {rotation} avec normalisation de Kaiser a été utilisée."
             ],
-            "{var} (Mean ± {level}%  CI)": [
-                "{var} (Moyenne ± {level}%  IC)"
+            "{var} (Mean ± {level}% CI)": [
+                "{var} (Moyenne ± {level}% IC)"
             ],
             "{var} (Mean ± SD)": [
                 "{var} (Moyenne ± SD)"
@@ -53,7 +53,7 @@
                 "% d'inertie"
             ],
             "% Labels": [
-                "Etiquettes des %"
+                "Étiquettes des %"
             ],
             "% of cases": [
                 "% d'observations"
@@ -95,7 +95,7 @@
                 "<p>Ce module calcule les fréquences croisées des questions à réponses multiples, également appelées questions « Cochez toutes les réponses qui s'appliquent » (CATA).</p>\n<p>Les questions peuvent être codées comme suit :</p>\n<ul>\n<li>plusieurs variables dichotomiques (ou variables indicatrices) utilisant 0/1, 1/2 ou O/N pour chaque réponse possible ;</li>\n<li>une seule variable à valeurs multiples contenant les réponses cochées, séparées par un symbole (généralement « , » ou « ; »).</li>\n</ul>\n<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de données > vijPlots > Credit Cards</p>"
             ],
             "<p>This module uses <a href = \"https://CRAN.R-project.org/package=qqplotr\" target=\"_blank\">qqplotr R package<a/> by Alexandre Almeida, Adam Loy and Heike Hofmann. In-depth information can be found in the package documentation on CRAN site.</p>\n<p><strong>Reference line:</strong> Draws either the <em>identity line</em> (y = x) or the commonly-used <em>Q-Q line</em> that intercepts two data quantiles (Q<sub>0.25</sub> and Q<sub>0.75</sub>). P-P plot only supports identity line.</p>\n<p><strong>Confidence band:</strong> Draws a confidence band around the reference line. qqplotr package provides several methods to compute the confidence band:</p>\n<ul>\n<li><strong><em>Pointwise</em></strong> constructs pointwise confidence bands based on Normal confidence intervals;</li>\n<li><strong><em>Bootstrap</em></strong> creates pointwise confidence bands based on a parametric bootstrap;</li>\n<li><strong><em>Kolmogorov-Smirnov</em></strong> band is based on the Kolmogorov-Smirnov test;</li>\n<li><strong><em>Tail-Sensitive</em></strong> constructs a tail-sensitive confidence bands but is only implemented for Normal Q-Q plots;</li>\n<li><strong><em>Equal Local Levels (ELL)</em></strong> constructs simultaneous bands using the equal local levels.</li>\n</ul>\n<p>P-P plots only support \"ELL\" and \"Bootstrap\" methods.</p>\n<p><strong>Detrended plot:</strong> The objects are <em>detrended</em> according to the reference line. This procedure may help reducing visual bias caused by the orthogonal distances from the points to the reference line.</p>\n<p><strong>Parameter values:</strong> The distribution parameters can be estimated from data using:</p>\n<ul>\n<li><strong>Maximum Likelihood Method</strong> (using MASS package) : it should work with all distributions but \"t\" and \"uniform\";</li>\n<li><strong>Method of Moments</strong> for moment based parameters : it should work with \"normal\", \"log-normal\", \"Beta\", \"Exponential\", \"Gamma\", \"Logistic\" and \"Uniform\" distributions;</li>\n</ul>\n<p>or entered by user:</p>\n<ul>\n<li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 (F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>\n<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 (Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma, Weibull) and max (Uniform).</li>\n</ul>\n</p>": [
-                "<p>Ce module utilise l'extension R <a href = \"https://CRAN.R-project.org/package=qqplotr\" target=\"_blank\">qqplotr<a/> par Alexandre Almeida, Adam Loy et Heike Hofmann. Les informations détaillées sont disponibles dans la documentation de l'extension sur le site CRAN.</p>\n<p><strong>Droite de référence :</strong> Trace soit la <em>droite identitée</em> (y = x) ou la <em>droite Q-Q</em> usuelle qui relie deux quantiles (Q<sub>0.25</sub> et Q<sub>0.75</sub>). Le diagramme P-P n'utilise que la droite identitée.</p>\n<p><strong>Bande de confiance :</strong> Trace une bande de confiance autour de la droite de référence. Le package qqplotr propose plusieurs méthodes pour calculer la bande de confiance :</p>\n<ul>\n<li><strong><em>Pointwise</em></strong> construit des bandes de confiance ponctuelles basées sur des intervalles de confiance normaux ;</li>\n<li><strong><em>Bootstrap</em></strong> crée des bandes de confiance ponctuelles basées sur un bootstrap paramétrique ;</li>\n<li><strong><em>Kolmogorov-Smirnov</em></strong> est basé sur le test de Kolmogorov-Smirnov ;</li>\n<li><strong><em>Tail-Sensitive</em></strong> construit des bandes de confiance sensibles à la queue de distribution, mais n'est implémenté que pour les graphiques Q-Q normaux ;</li>\n<li><strong><em>Equal Local Levels (ELL)</em></strong> construit des bandes simultanées utilisant des niveaux locaux égaux.</li>\n</ul>\n<p>Les graphiques P-P ne prennent en charge que les méthodes \"ELL\" et \"Bootstrap\".</p>\n<p><strong>Graphique redressé :</strong> Le graphique est <em>redressé</em> par rapport à la droite de référence. Cette procédure peut contribuer à réduire le biais visuel causé par les distances orthogonales entre les points et la droite de référence.</p>\n<p><strong>Valeurs des paramètres :</strong> Les paramètres de la distribution peuvent être estimés à partir des données à l'aide de :</p>\n<ul>\n<li><strong>Méthode du maximum de vraisemblance</strong> (avec le package MASS) : elle devrait fonctionner avec toutes les distributions sauf \"Student\" et \"Uniforme\";</li>\n<li><strong>Méthode des moments</strong> pour les paramètres basés sur les moments : elle devrait fonctionner avec les distributions \"Normale\", \"Log-normale\", \"Beta\", \"Exponentielle\", \"Gamma\", \"Logistique\" et \"Uniforme\";</li>\n</ul>\n<p>ou saisi par l'utilisateur :</p>\n<ul>\n<li><strong>Paramètre 1 :</strong> moyenne (normale), moyenne logarithmique (log-normale), forme 1 (bêta), position (Cauchy, logistique), ddl (Khi-deux, Student), ddl 1 (F), taux (exponentielle), forme (gamma, Weibull) et min (uniforme) ;</li>\n<li><strong>Paramètre 2 :</strong> écart-type (normale), écart-type logarithmique (log-normale), forme 2 (bêta), échelle (Cauchy, logistique), ddl 2 (F), taux (gamma, Weibull) et max (uniforme).</li>\n</ul>\n</p>"
+                "<p>Ce module utilise l'extension R <a href = \"https://CRAN.R-project.org/package=qqplotr\" target=\"_blank\">qqplotr<a/> par Alexandre Almeida, Adam Loy et Heike Hofmann. Les informations détaillées sont disponibles dans la documentation de l'extension sur le site CRAN.</p>\n<p><strong>Droite de référence :</strong> Trace soit la <em>droite identité</em> (y = x) ou la <em>droite Q-Q</em> usuelle qui relie deux quantiles (Q<sub>0.25</sub> et Q<sub>0.75</sub>). Le diagramme P-P n'utilise que la droite identité.</p>\n<p><strong>Bande de confiance :</strong> Trace une bande de confiance autour de la droite de référence. Le package qqplotr propose plusieurs méthodes pour calculer la bande de confiance :</p>\n<ul>\n<li><strong><em>Pointwise</em></strong> construit des bandes de confiance ponctuelles basées sur des intervalles de confiance normaux ;</li>\n<li><strong><em>Bootstrap</em></strong> crée des bandes de confiance ponctuelles basées sur un bootstrap paramétrique ;</li>\n<li><strong><em>Kolmogorov-Smirnov</em></strong> est basé sur le test de Kolmogorov-Smirnov ;</li>\n<li><strong><em>Tail-Sensitive</em></strong> construit des bandes de confiance sensibles à la queue de distribution, mais n'est implémenté que pour les graphiques Q-Q normaux ;</li>\n<li><strong><em>Equal Local Levels (ELL)</em></strong> construit des bandes simultanées utilisant des niveaux locaux égaux.</li>\n</ul>\n<p>Les graphiques P-P ne prennent en charge que les méthodes \"ELL\" et \"Bootstrap\".</p>\n<p><strong>Graphique redressé :</strong> Le graphique est <em>redressé</em> par rapport à la droite de référence. Cette procédure peut contribuer à réduire le biais visuel causé par les distances orthogonales entre les points et la droite de référence.</p>\n<p><strong>Valeurs des paramètres :</strong> Les paramètres de la distribution peuvent être estimés à partir des données à l'aide de :</p>\n<ul>\n<li><strong>Méthode du maximum de vraisemblance</strong> (avec le package MASS) : elle devrait fonctionner avec toutes les distributions sauf \"Student\" et \"Uniforme\";</li>\n<li><strong>Méthode des moments</strong> pour les paramètres basés sur les moments : elle devrait fonctionner avec les distributions \"Normale\", \"Log-normale\", \"Beta\", \"Exponentielle\", \"Gamma\", \"Logistique\" et \"Uniforme\";</li>\n</ul>\n<p>ou saisi par l'utilisateur :</p>\n<ul>\n<li><strong>Paramètre 1 :</strong> moyenne (normale), moyenne logarithmique (log-normale), forme 1 (bêta), position (Cauchy, logistique), ddl (Khi-deux, Student), ddl 1 (F), taux (exponentielle), forme (gamma, Weibull) et min (uniforme) ;</li>\n<li><strong>Paramètre 2 :</strong> écart-type (normale), écart-type logarithmique (log-normale), forme 2 (bêta), échelle (Cauchy, logistique), ddl 2 (F), taux (gamma, Weibull) et max (uniforme).</li>\n</ul>\n</p>"
             ],
             "1 day": [
                 "1 jour"
@@ -140,7 +140,7 @@
                 "2035 oct."
             ],
             "2035 October": [
-                "2023 octobre"
+                "2035 octobre"
             ],
             "2035 October 20": [
                 "2035 octobre 20"
@@ -169,7 +169,7 @@
             "A demonstration dataset for vijPlots/Correspondence Analysis.": [
                 "Fichier de démonstration pour vijPlots/Analyse des correspondances."
             ],
-            "A demonstration dataset for vijPlots/Likert plots.": [
+            "A demonstration dataset for vijPlots/Likert plot.": [
                 "Fichier de démonstration pour vijPlots/Likert."
             ],
             "A demonstration dataset for vijPlots/Multiple Correspondence Analysis.": [
@@ -184,7 +184,7 @@
             "A demonstration dataset for vijPlots/Raincloud plot.": [
                 "Fichier de démonstration pour vijPlots/Diagramme Raincloud."
             ],
-            "A demonstration dataset for vijPlots/Time Serie plots.": [
+            "A demonstration dataset for vijPlots/Time Series plots.": [
                 "Fichier de démonstration pour vijPlots/Séries temporelles."
             ],
             "Accent": [
@@ -269,7 +269,7 @@
                 "Beta"
             ],
             "Beta distribution requires data between 0 and 1.": [
-                "La loi Bêta nécessite des données comprise entre 0 et 1"
+                "La loi Bêta nécessite des données comprises entre 0 et 1."
             ],
             "BH": [
                 "BH"
@@ -350,7 +350,7 @@
                 "Impossible de convertir une variable de type texte en entiers."
             ],
             "Cannot tidy up text variables": [
-                "Impossible de corriger les niveaux d'un variable de type texte."
+                "Impossible de corriger les niveaux d'une variable de type texte."
             ],
             "Caption": [
                 "Légende"
@@ -836,7 +836,7 @@
                 "Graphe horizontal"
             ],
             "Identity line": [
-                "Droite identitée"
+                "Droite identité"
             ],
             "Ignore missing groups": [
                 "Ignorer les groupes manquants"
@@ -1175,7 +1175,7 @@
                 "Nombre d'observations insuffisant pour procéder à une ACP."
             ],
             "Not enough data to compute CA.": [
-                "Données insuffisantes pour effectuer une analyse des correspondances"
+                "Données insuffisantes pour effectuer une analyse des correspondances."
             ],
             "Notch width": [
                 "Largeur de l'encoche"
@@ -1556,7 +1556,7 @@
                 "Résumés des lignes et colonnes"
             ],
             "Row Labels": [
-                "Etiquette des lignes"
+                "Étiquette des lignes"
             ],
             "Row Plot": [
                 "Graphique des lignes"
@@ -1616,16 +1616,16 @@
                 "Valeurs propres"
             ],
             "SD": [
-                "Ecart-type"
+                "Écart-type"
             ],
             "Select the \"Convert variables to integers\" option when the variables are not of the same type.": [
-                "Utiliser l'option \"Convertir les variables en entiers\" lorssque les variables ne sont pas du même type."
+                "Utiliser l'option \"Convertir les variables en entiers\" lorsque les variables ne sont pas du même type."
+            ],
+            "Sep": [
+                "sept."
             ],
             "Separator": [
                 "Séparateur"
-            ],
-            "Sept": [
-                "sept."
             ],
             "September": [
                 "septembre"
@@ -1736,7 +1736,7 @@
                 "Coordonnées standardisées"
             ],
             "Standard deviation": [
-                "Ecart-type"
+                "Écart-type"
             ],
             "Standard error": [
                 "Erreur standard"
@@ -1751,7 +1751,7 @@
                 "Coord. des observations standardisées"
             ],
             "Standardize values": [
-                "Valeurs standadisées"
+                "Valeurs standardisées"
             ],
             "Standardize variables": [
                 "Standardiser les variables"
@@ -1868,12 +1868,12 @@
                 "La matrice des corrélations est quasi-singulière. Les calculs peuvent être approximatifs."
             ],
             "The following variable(s) are constant and cannot be used in a principal component analysis: {vars}.": [
-                "Les variables suivantes sont constantes et ne peuvent pas être utilsées dans une analyse en composantes principales : {vars}."
+                "Les variables suivantes sont constantes et ne peuvent pas être utilisées dans une analyse en composantes principales : {vars}."
             ],
             "The number of dimensions cannot be greater than {max}.": [
                 "Le nombre de dimensions ne peut pas être supérieur à {max}."
             ],
-            "The number of dimensions cannot be greater than the number of observations": [
+            "The number of dimensions cannot be greater than the number of observations.": [
                 "Le nombre de dimensions ne peut pas être supérieur au nombre d'observations."
             ],
             "The number of dimensions cannot be greater than the number of variables.": [
@@ -1883,7 +1883,7 @@
                 "La variance de la variable est égale à zéro."
             ],
             "The χ2 statistic is equal to zero.": [
-                "La statistique du χ2 est égale à 0 !"
+                "La statistique du χ2 est égale à zéro."
             ],
             "Theoretical Probabilities": [
                 "Probabilités théoriques"
@@ -1997,7 +1997,7 @@
                 "Description des variables comme nom"
             ],
             "Value Labels": [
-                "Etiquettes des valeurs"
+                "Étiquettes des valeurs"
             ],
             "Values": [
                 "Valeurs"

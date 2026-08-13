@@ -1,4 +1,5 @@
 install.packages('jmvtools', repos=c('https://repo.jamovi.org', 'https://cran.r-project.org'))
+install.packages('jmvcore', repos=c('https://repo.jamovi.org', 'https://cran.r-project.org'))
 options(jamovi_home='/Applications/_Applications/jamovi') # => Put in .Rprofile
 options(jamovi_home='C:\\Program Files\\jamovi 2.7.5.0')
 jmvtools::check()

@@ -1,0 +1,14 @@
+---
+name:  mosaic
+title: Mosaic Plot
+jrs:   '1.1'
+
+items:
+    - name: plot
+      title: ""
+      type: Image
+      width:  600
+      height: 400
+      renderFun: .plot
+
+...

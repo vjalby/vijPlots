@@ -1,0 +1,467 @@
+title: Mosaic Plot
+name: mosaic
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Category Axis
+        children:
+          - type: VariablesListBox
+            name: category
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Group
+        children:
+          - type: VariablesListBox
+            name: group
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Facet
+        children:
+          - type: VariablesListBox
+            name: facet
+            maxItemCount: 1
+            isTarget: true
+  - type: LayoutBox
+    margin: large
+    stretchFactor: 1
+    style: inline
+    children:
+      - type: LayoutBox
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Label Type
+            children:
+              - type: RadioButton
+                name: labelType_none
+                optionName: labelType
+                optionPart: none
+              - type: RadioButton
+                name: labelType_count
+                optionName: labelType
+                optionPart: count
+                label: Count
+              - type: RadioButton
+                name: labelType_percent
+                optionName: labelType
+                optionPart: percent
+                label: Percent
+      - type: LayoutBox
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Bar Type
+            children:
+              - type: RadioButton
+                name: barType_dodge
+                optionName: barType
+                optionPart: dodge2
+              - type: RadioButton
+                name: barType_dodge2
+                optionName: barType
+                optionPart: dodge
+              - type: RadioButton
+                name: barType_stack
+                optionName: barType
+                optionPart: stack
+      - type: LayoutBox
+        cell:
+          column: 2
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Sorting
+            children:
+              - type: RadioButton
+                name: order_none
+                optionName: order
+                optionPart: none
+                label: None
+              - type: RadioButton
+                name: order_increasing
+                optionName: order
+                optionPart: increasing
+                label: Increasing
+              - type: RadioButton
+                name: order_decreasing
+                optionName: order
+                optionPart: decreasing
+                label: Decreasing
+  - type: CollapseBox
+    label: Plot Options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Plot Options
+                children:
+                  - type: CheckBox
+                    name: ignoreNA
+                  - type: CheckBox
+                    name: reverseStack
+                    enable: (barType_stack)
+                  - type: CheckBox
+                    name: horizontal
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Label Position
+                children: []
+          - type: LayoutBox
+            cell:
+              column: 2
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: '% Accuracy'
+                children:
+                  - type: RadioButton
+                    name: accuracy_1
+                    optionName: accuracy
+                    optionPart: '1'
+                    label: '1'
+                    enable: (showLabels && yaxis_percent)
+                  - type: RadioButton
+                    name: accuracy_01
+                    optionName: accuracy
+                    optionPart: '0.1'
+                    label: '0.1'
+                    enable: (showLabels && yaxis_percent)
+                  - type: RadioButton
+                    name: accuracy_001
+                    optionName: accuracy
+                    optionPart: '0.01'
+                    label: '0.01'
+                    enable: (showLabels && yaxis_percent)
+  - type: CollapseBox
+    label: Colors
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Palette
+                children:
+                  - type: ComboBox
+                    name: colorPalette
+                    label: ''
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Options
+                children:
+                  - type: ComboBox
+                    name: labelColor
+                    enable: (showLabels)
+  - type: CollapseBox
+    label: Text Size & Facets
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Text Size
+                children:
+                  - type: TextBox
+                    name: labelFontSize
+                    format: number
+                    enable: (showLabels)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facets
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: RadioButton
+                        name: facetBy_row
+                        optionName: facetBy
+                        optionPart: row
+                        label: Row
+                        enable: (!(!facet))
+                      - type: RadioButton
+                        name: facetBy_column
+                        optionName: facetBy
+                        optionPart: column
+                        label: Column
+                        enable: (!(!facet))
+                  - type: TextBox
+                    name: facetNumber
+                    format: number
+                    enable: (!(!facet))
+  - type: CollapseBox
+    label: Axes
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: X-Axis
+                children:
+                  - type: TextBox
+                    name: xAxisLabelFontSize
+                    format: number
+                  - type: TextBox
+                    name: xAxisLabelRotation
+                    suffix: °
+                    format: number
+                  - type: TextBox
+                    name: xTicks
+                    format: number
+                    enable: (horizontal)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Y-Axis
+                children:
+                  - type: TextBox
+                    name: yAxisLabelFontSize
+                    format: number
+                  - type: TextBox
+                    name: yAxisLabelRotation
+                    suffix: °
+                    format: number
+                  - type: TextBox
+                    name: yTicks
+                    format: number
+                    enable: (!horizontal)
+  - type: CollapseBox
+    label: Legend & Axis Titles
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: Label
+        label: Legend
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: legendText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: legendFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: legendPosition
+      - type: Label
+        label: X-Axis
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: xAxisText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: xAxisFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: xAxisPosition
+      - type: Label
+        label: Y-Axis
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: yAxisText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: yAxisFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: yAxisPosition
+  - type: CollapseBox
+    label: Plot Titles
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: Label
+        label: Title
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: titleText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: ComboBox
+                    name: titleFontFace
+                  - type: ComboBox
+                    name: titleFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: titleAlign
+      - type: Label
+        label: Subtitle
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: subtitleText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: ComboBox
+                    name: subtitleFontFace
+                  - type: ComboBox
+                    name: subtitleFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: subtitleAlign
+      - type: Label
+        label: Caption
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: TextBox
+                    name: captionText
+                    format: string
+                    width: largest
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: ComboBox
+                    name: captionFontFace
+                  - type: ComboBox
+                    name: captionFontSize
+              - type: LayoutBox
+                margin: large
+                children:
+                  - type: ComboBox
+                    name: captionAlign

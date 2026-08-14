@@ -86,11 +86,11 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (stacked) {
                 if (self$options$reverseStack) {
-                    position <- ggplot2::position_stack()
-                    labPosition <- ggplot2::position_stack(vjust = 0.5)
-                } else {
                     position <- ggplot2::position_stack(reverse = TRUE)
                     labPosition <- ggplot2::position_stack(vjust = 0.5, reverse = TRUE)
+                } else {
+                    position <- ggplot2::position_stack()
+                    labPosition <- ggplot2::position_stack(vjust = 0.5)
                 }
             } else if (dodge2) {
                 position <- ggplot2::position_dodge2(preserve = "single", width = 0.9)

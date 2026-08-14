@@ -71,13 +71,14 @@
 ## Version history
 
 
-### 2026-08-?? / 1.2.5
+### 2026-08-14 / 1.2.5
 
 - Code optimization and fixes everywhere
 - MCA (Burt method): Fixed variable discrimination computation
 - Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
 - Histogram: Options to hide bins and to show lines
 - Scatter Plot: Option to use different shapes
+- Fixed stacking order in barplot/barchart/mrcrosstab
 
 ### 2026-07-31 / 1.2.2
 

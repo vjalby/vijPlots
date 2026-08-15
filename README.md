@@ -22,9 +22,17 @@
 
 ![](img/lollipop.jpg)
 
+## Raincloud Plot
+
+![](img/raincloud.jpg)
+
+## QQ Plot
+
+![](img/qqplot.jpg)
+
 ## Bar Plot (for qualitative variables)
 
-![](img/bar.jpg)
+![](img/barplot.jpg)
 
 ## Pie Chart
 
@@ -40,21 +48,12 @@
 
 ## Line Charts
 
-![](img/linechart1.jpg)
-
-![](img/linechart2.jpg)
+![](img/line.jpg)
 
 ## Area Chart
 
 ![](img/areachart.jpg)
 
-## Raincloud Plot
-
-![](img/raincloud.jpg)
-
-## QQ Plot
-
-![](img/qqplot.jpg)
 
 ## Principal Component Analysis
 
@@ -69,7 +68,6 @@
 ![](img/mca.jpg)
 
 ## Version history
-
 
 ### 2026-08-15 / 1.2.5
 

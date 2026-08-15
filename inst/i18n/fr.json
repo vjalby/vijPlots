@@ -520,6 +520,15 @@
             "Counts (optional)": [
                 "Effectifs (optionnel)"
             ],
+            "Counts may not be infinite.": [
+                "Les effectifs ne peuvent pas être infinis."
+            ],
+            "Counts may not be negative.": [
+                "Les effectifs ne peuvent pas être négatifs."
+            ],
+            "Counts may not contain missing values.": [
+                "Les effectifs ne peuvent pas contenir de valeurs manquantes."
+            ],
             "Cov (Loading principal)": [
                 "Cov (Var. principales)"
             ],

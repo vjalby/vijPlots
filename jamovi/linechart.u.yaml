@@ -118,7 +118,15 @@ children:
                     name: xAxisRangeType_manual
                     optionName: xAxisRangeType
                     optionPart: manual
-                    children: []
+                    children:
+                      - type: TextBox
+                        name: xAxisRangeMin
+                        format: number
+                        enable: (xAxisRangeType:manual)
+                      - type: TextBox
+                        name: xAxisRangeMax
+                        format: number
+                        enable: (xAxisRangeType:manual)
           - type: LayoutBox
             cell:
               column: 1
@@ -238,12 +246,6 @@ children:
                 children:
                   - type: ComboBox
                     name: yAxisPosition
-  - type: LayoutBox
-    margin: large
-    children:
-      - type: TextBox
-        name: xAxisRangeMin
-        format: number
   - type: CollapseBox
     label: Plot Titles
     collapsed: true
@@ -333,9 +335,3 @@ children:
                 children:
                   - type: ComboBox
                     name: captionAlign
-  - type: LayoutBox
-    margin: large
-    children:
-      - type: TextBox
-        name: xAxisRangeMax
-        format: number

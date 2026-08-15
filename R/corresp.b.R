@@ -124,12 +124,12 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     return(FALSE)
                 }
 
-                if (any(data$.COUNTS < 0, na.rm=TRUE)) {
-                    vijErrorMessage(self, .('Counts may not be negative'))
+                if (any(data$.COUNTS < 0)) {
+                    vijErrorMessage(self, .('Counts may not be negative.'))
                     return(FALSE)
                 }
                 if (any(is.infinite(data$.COUNTS))) {
-                    vijErrorMessage(self, .('Counts may not be infinite'))
+                    vijErrorMessage(self, .('Counts may not be infinite.'))
                     return(FALSE)
                 }
 

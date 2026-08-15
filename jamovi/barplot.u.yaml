@@ -23,6 +23,13 @@ children:
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
+        label: Counts (optional)
+        children:
+          - type: VariablesListBox
+            name: counts
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
         label: Facet
         children:
           - type: VariablesListBox
@@ -151,13 +158,13 @@ children:
                     name: labelPosition_middle
                     optionName: labelPosition
                     optionPart: middle
-                    label: 'Middle'
+                    label: Middle
                     enable: (showLabels && !barType_stack)
                   - type: RadioButton
                     name: labelPosition_top
                     optionName: labelPosition
                     optionPart: top
-                    label: 'Top'
+                    label: Top
                     enable: (showLabels && !barType_stack)
           - type: LayoutBox
             cell:
@@ -186,8 +193,6 @@ children:
                     optionPart: '0.01'
                     label: '0.01'
                     enable: (showLabels && yaxis_percent)
-
-
   - type: CollapseBox
     label: Colors
     collapsed: true

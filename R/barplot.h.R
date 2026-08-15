@@ -9,6 +9,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             rows = NULL,
             columns = NULL,
             facet = NULL,
+            counts = NULL,
             ignoreNA = TRUE,
             horizontal = FALSE,
             showLabels = TRUE,
@@ -91,6 +92,13 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
+            private$..counts <- jmvcore::OptionVariable$new(
+                "counts",
+                counts,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..ignoreNA <- jmvcore::OptionBool$new(
                 "ignoreNA",
                 ignoreNA,
@@ -489,6 +497,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..rows)
             self$.addOption(private$..columns)
             self$.addOption(private$..facet)
+            self$.addOption(private$..counts)
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..horizontal)
             self$.addOption(private$..showLabels)
@@ -545,6 +554,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         rows = function() private$..rows$value,
         columns = function() private$..columns$value,
         facet = function() private$..facet$value,
+        counts = function() private$..counts$value,
         ignoreNA = function() private$..ignoreNA$value,
         horizontal = function() private$..horizontal$value,
         showLabels = function() private$..showLabels$value,
@@ -600,6 +610,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..rows = NA,
         ..columns = NA,
         ..facet = NA,
+        ..counts = NA,
         ..ignoreNA = NA,
         ..horizontal = NA,
         ..showLabels = NA,
@@ -691,7 +702,7 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 pause = NULL,
                 completeWhenFilled = FALSE,
                 requiresMissings = FALSE,
-                weightsSupport = 'auto')
+                weightsSupport = 'full')
         }))
 
 #' Bar Plot
@@ -701,6 +712,7 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param rows .
 #' @param columns .
 #' @param facet .
+#' @param counts .
 #' @param ignoreNA .
 #' @param horizontal .
 #' @param showLabels .
@@ -763,6 +775,7 @@ barplot <- function(
     rows,
     columns,
     facet,
+    counts,
     ignoreNA = TRUE,
     horizontal = FALSE,
     showLabels = TRUE,
@@ -821,12 +834,14 @@ barplot <- function(
     if ( ! missing(rows)) rows <- jmvcore::resolveQuo(jmvcore::enquo(rows))
     if ( ! missing(columns)) columns <- jmvcore::resolveQuo(jmvcore::enquo(columns))
     if ( ! missing(facet)) facet <- jmvcore::resolveQuo(jmvcore::enquo(facet))
+    if ( ! missing(counts)) counts <- jmvcore::resolveQuo(jmvcore::enquo(counts))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(rows), rows, NULL),
             `if`( ! missing(columns), columns, NULL),
-            `if`( ! missing(facet), facet, NULL))
+            `if`( ! missing(facet), facet, NULL),
+            `if`( ! missing(counts), counts, NULL))
 
     for (v in rows) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in columns) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
@@ -836,6 +851,7 @@ barplot <- function(
         rows = rows,
         columns = columns,
         facet = facet,
+        counts = counts,
         ignoreNA = ignoreNA,
         horizontal = horizontal,
         showLabels = showLabels,

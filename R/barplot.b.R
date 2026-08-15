@@ -1,8 +1,25 @@
 barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "barplotClass",
     inherit = barplotBase,
+    #### Active bindings ---- from jmv/conttables.b.R
+    active = list(
+        countsName = function() {
+            if ( ! is.null(self$options$counts)) {
+                return(self$options$counts)
+            } else if ( ! is.null(attr(self$data, "jmv-weights-name"))) {
+                return (attr(self$data, "jmv-weights-name"))
+            }
+            NULL
+        }
+    ),
     private = list(
         .init = function() {
+            # Weight message
+            countsName <- self$countsName
+            if (!is.null(countsName)) {
+                warningMessage <- ..('The data is weighted by the variable {}.', countsName)
+                vijWarningMessage(self, warningMessage, '.weights')
+            }
             # Stretchable dimensions
             if (!is.null(self$options$facet)) {
                 nbOfFacet <- nlevels(self$data[[self$options$facet]])
@@ -40,10 +57,39 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(self$options$rows))
                 return()
             plotData <- self$data[c(self$options$rows, self$options$columns, self$options$facet)]
+
+            # Weight data
+            countsName <- self$options$counts
+            if (!is.null(countsName)) {
+                # vijPlots weights
+                plotData[['.COUNTS']] <- jmvcore::toNumeric(self$data[[countsName]])
+            } else if (!is.null(attr(self$data, "jmv-weights"))) {
+                # jamovi built-in weights
+                plotData[['.COUNTS']] <- jmvcore::toNumeric(attr(self$data, "jmv-weights"))
+            } else {
+                # no weights
+                plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
+            }
+
             if (self$options$ignoreNA)
                 plotData <- jmvcore::naOmit(plotData)
             if (nrow(plotData) == 0)
                 return()
+
+            # Validate .COUNTS (NA / non negative / not infinite)
+            if (any(is.na(plotData$.COUNTS)))  {
+                vijErrorMessage(self, .('Counts may not contain missing values.'))
+                return(FALSE)
+            }
+            if (any(plotData$.COUNTS < 0)) {
+                vijErrorMessage(self, .('Counts may not be negative.'))
+                return(FALSE)
+            }
+            if (any(is.infinite(plotData$.COUNTS))) {
+                vijErrorMessage(self, .('Counts may not be infinite.'))
+                return(FALSE)
+            }
+
             image <- self$results$plot
             image$setState(plotData)
         },
@@ -77,10 +123,12 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             yaxis <- self$options$yaxis
 
-            if (self$options$order == "decreasing")
-                plotData[[categoryVar]] <- forcats::fct_infreq(plotData[[categoryVar]])
-            else if (self$options$order == "increasing")
-                plotData[[categoryVar]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryVar]]))
+            if (self$options$order != "none") {
+                if (self$options$order == "decreasing")
+                    plotData[[categoryVar]] <- forcats::fct_infreq(plotData[[categoryVar]], w = plotData$.COUNTS)
+                else
+                    plotData[[categoryVar]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryVar]], w = plotData$.COUNTS))
+            }
 
             reverseStack <- (self$options$reverseStack && positionStack)
 
@@ -143,7 +191,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     byVar <- categoryVar
             }
 
-            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xVar, fill = !!fillVar, by = !!byVar))
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xVar, fill = !!fillVar, by = !!byVar, weight = .data[[".COUNTS"]]))
 
             #### Bars ####
 

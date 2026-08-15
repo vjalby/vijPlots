@@ -1697,10 +1697,30 @@ msgstr "Valeur comptée"
 msgid "Counts"
 msgstr "Effectifs"
 
+#: barplot/options/counts.title
+#: barplot/ui[0][2].label
 #: corresp/options/counts.title
 #: corresp/ui/mode/obsTable[0][0][2].label
+#: piechart/options/counts.title
+#: piechart/ui[0][1].label
 msgid "Counts (optional)"
 msgstr "Effectifs (optionnel)"
+
+#: R/barplot.b.R
+#: R/corresp.b.R
+#: R/piechart.b.R
+msgid "Counts may not be infinite."
+msgstr "Les effectifs ne peuvent pas être infinis."
+
+#: R/barplot.b.R
+#: R/corresp.b.R
+#: R/piechart.b.R
+msgid "Counts may not be negative."
+msgstr "Les effectifs ne peuvent pas être négatifs."
+
+#: R/barplot.b.R
+msgid "Counts may not contain missing values."
+msgstr "Les effectifs ne peuvent pas contenir de valeurs manquantes."
 
 #: principal/ui[3][2][0]/biplotType_covPlot.label
 msgid "Cov (Loading principal)"
@@ -2038,7 +2058,7 @@ msgstr "Sommes des carrés des composantes extraites"
 #: barchart/ui[0][3].label
 #: barplot/options/facet.title
 #: barplot/options/facetBy.title
-#: barplot/ui[0][2].label
+#: barplot/ui[0][3].label
 #: boxplot/options/facet.title
 #: boxplot/ui[0][3].label
 #: histogram/options/facet.title
@@ -2047,7 +2067,7 @@ msgstr "Sommes des carrés des composantes extraites"
 #: lollipop/options/facetBy.title
 #: lollipop/ui[0][2].label
 #: piechart/options/facet.title
-#: piechart/ui[0][1].label
+#: piechart/ui[0][2].label
 #: scatterplot/options/facet.title
 #: scatterplot/ui[0][5].label
 msgid "Facet"
@@ -5175,8 +5195,8 @@ msgid ""
 "The following variable(s) are constant and cannot be used in a principal "
 "component analysis: {vars}."
 msgstr ""
-"Les variables suivantes sont constantes et ne peuvent pas être utilisées dans "
-"une analyse en composantes principales : {vars}."
+"Les variables suivantes sont constantes et ne peuvent pas être utilisées "
+"dans une analyse en composantes principales : {vars}."
 
 #: R/multcorresp.b.R
 msgid "The number of dimensions cannot be greater than {max}."

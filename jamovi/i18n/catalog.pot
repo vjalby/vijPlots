@@ -1492,9 +1492,29 @@ msgstr ""
 msgid "Counts"
 msgstr ""
 
+#: barplot/options/counts.title
+#: barplot/ui[0][2].label
 #: corresp/options/counts.title
 #: corresp/ui/mode/obsTable[0][0][2].label
+#: piechart/options/counts.title
+#: piechart/ui[0][1].label
 msgid "Counts (optional)"
+msgstr ""
+
+#: R/barplot.b.R
+#: R/corresp.b.R
+#: R/piechart.b.R
+msgid "Counts may not be infinite."
+msgstr ""
+
+#: R/barplot.b.R
+#: R/corresp.b.R
+#: R/piechart.b.R
+msgid "Counts may not be negative."
+msgstr ""
+
+#: R/barplot.b.R
+msgid "Counts may not contain missing values."
 msgstr ""
 
 #: principal/ui[3][2][0]/biplotType_covPlot.label
@@ -1833,7 +1853,7 @@ msgstr ""
 #: barchart/ui[0][3].label
 #: barplot/options/facet.title
 #: barplot/options/facetBy.title
-#: barplot/ui[0][2].label
+#: barplot/ui[0][3].label
 #: boxplot/options/facet.title
 #: boxplot/ui[0][3].label
 #: histogram/options/facet.title
@@ -1842,7 +1862,7 @@ msgstr ""
 #: lollipop/options/facetBy.title
 #: lollipop/ui[0][2].label
 #: piechart/options/facet.title
-#: piechart/ui[0][1].label
+#: piechart/ui[0][2].label
 #: scatterplot/options/facet.title
 #: scatterplot/ui[0][5].label
 msgid "Facet"

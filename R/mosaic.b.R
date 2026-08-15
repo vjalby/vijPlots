@@ -1,11 +1,25 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "mosaicClass",
     inherit = mosaicBase,
+    #### Active bindings ---- from jmv/conttables.b.R
+    active = list(
+        countsName = function() {
+            if ( ! is.null(self$options$counts)) {
+                return(self$options$counts)
+            } else if ( ! is.null(attr(self$data, "jmv-weights-name"))) {
+                return (attr(self$data, "jmv-weights-name"))
+            }
+            NULL
+        }
+    ),
     private = list(
         .init = function() {
+            # Weight message
+            countsName <- self$countsName
+            if (!is.null(countsName)) {
+                warningMessage <- ..('The data is weighted by the variable {}.', countsName)
+                vijWarningMessage(self, warningMessage, '.weights')
+            }
             # Stretchable dimensions
             if (!is.null(self$options$facet)) {
                 nbOfFacet <- nlevels(self$data[[self$options$facet]])
@@ -43,69 +57,43 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(self$options$category) || is.null(self$options$group) || nrow(self$data) == 0)
                 return()
 
-            plotData <- self$data[c(self$options$category, self$options$group, self$options$facet)]
+            # Get raw data
+            categoryName <- self$options$category
+            groupName <- self$options$group
+            facetName <- self$options$facet
+            plotData <- self$data[c(categoryName, groupName, facetName)]
+
+            # Weight data
+            countsName <- self$options$counts
+            if (!is.null(countsName)) {
+                # vijPlots/Mosaic weights
+                plotData[['.COUNTS']] <- jmvcore::toNumeric(self$data[[countsName]])
+            } else if (!is.null(attr(self$data, "jmv-weights"))) {
+                # jamovi built-in weights
+                plotData[['.COUNTS']] <- jmvcore::toNumeric(attr(self$data, "jmv-weights"))
+            } else {
+                # no weights
+                plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
+            }
+
+            # Remove NA (including weights !)
             if( self$options$ignoreNA )
                 plotData <- jmvcore::naOmit(plotData)
 
-            mdf <- private$.mosaicData(plotData, self$options$category, self$options$group, self$options$facet, self$options$order)
+            # Validate .COUNTS (non negative / not infinite)
+            if (any(plotData$.COUNTS < 0, na.rm=TRUE)) {
+                vijErrorMessage(self, .('Counts may not be negative'))
+                return(FALSE)
+            }
+            if (any(is.infinite(plotData$.COUNTS))) {
+                vijErrorMessage(self, .('Counts may not be infinite'))
+                return(FALSE)
+            }
+
+            mdf <- private$.mosaicData(plotData, categoryName, groupName, facetName, self$options$order, self$options$reverseStack)
 
             image <- self$results$plot
             image$setState(mdf)
-        },
-        .mosaicData = function(df, categoryName, groupName, facetName = NULL, order = "none") {
-            category <- rlang::sym(categoryName)
-            group <- rlang::sym(groupName)
-            facet <- if (!is.null(facetName)) rlang::sym(facetName) else NULL
-            freq <- rlang::sym("Freq")
-            joinBy <- if (is.null(facetName)) rlang::as_string(category) else c(rlang::as_string(category), facetName)
-
-            df <- df |>
-                dplyr::group_by(!!category, !!group, !!facet) |>
-                dplyr::summarise(Freq = dplyr::n(), .groups = 'drop')
-
-            # Global category total (summed across facets), used to order categories
-            globalOrder <- df |>
-                dplyr::group_by(!!category) |>
-                dplyr::summarise(global_total = sum(!!freq), .groups = 'drop')
-
-            widths <- df |>
-                dplyr::group_by(!!category, !!facet) |>
-                dplyr::summarise(x_total = sum(!!freq), .groups = 'drop') |>
-                dplyr::left_join(globalOrder, by = rlang::as_string(category)) |>
-                dplyr::group_by(!!facet)
-
-            widths <- switch(order,
-                "increasing" = dplyr::arrange(widths, global_total, .by_group = TRUE),
-                "decreasing" = dplyr::arrange(widths, dplyr::desc(global_total), .by_group = TRUE),
-                dplyr::arrange(widths, !!category, .by_group = TRUE)
-            )
-
-            widths <- widths |>
-                dplyr::mutate(
-                    xmax = cumsum(x_total) / sum(x_total),
-                    xmin = xmax - (x_total / sum(x_total)),
-                    xwidth = xmax - xmin,
-                    x_center = xmin + (xmax - xmin) / 2
-                ) |>
-                dplyr::ungroup() |>
-                dplyr::select(!!category, !!facet, xmin, xmax, x_center, xwidth)
-
-            mosaic_data <- df |>
-                dplyr::group_by(!!category, !!facet) |>
-                dplyr::mutate(x_total = sum(!!freq)) |>
-                dplyr::ungroup() |>
-                dplyr::group_by(!!category, !!facet) |>
-                dplyr::arrange(desc(!!group), .by_group = TRUE) |>
-                dplyr::mutate(
-                    ymax = cumsum(!!freq) / x_total,
-                    ymin = ymax - (!!freq / x_total),
-                    pourcentage = !!freq / x_total,
-                    freq = !!freq,
-                    y_center = ymin + (ymax - ymin) / 2
-                ) |>
-                dplyr::ungroup() |>
-                dplyr::left_join(widths, by = joinBy)
-            return(mosaic_data)
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
@@ -130,54 +118,72 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 accuracy = as.numeric(self$options$accuracy),
                 suffix = '\u2009%',
                 decimal.mark = self$options[['decSymbol']])
+            doNumber<- scales::label_number(
+                accuracy = as.numeric(self$options$accuracy),
+                decimal.mark = self$options[['decSymbol']])
 
             if (self$options$labelType != "none") {
-                if (self$options$labelType == "count") {
-                    if (self$options$labelColor == "auto") {
-                        labelAes <- ggplot2::aes(x = x_center, y = y_center, label = freq, fill = !!group,
-                                                 color = ggplot2::after_scale(ggstats::hex_bw(.data$fill)))
-                        textColor <- NULL
-                    } else {
-                        labelAes <- ggplot2::aes(x = x_center, y = y_center, label = freq)
-                        textColor <- self$options$labelColor
-                    }
-                } else if (self$options$labelType == "percent") {
-                    if (self$options$labelColor == "auto") {
-                        labelAes <- ggplot2::aes(x = x_center, y = y_center, label = doPercent(pourcentage), fill = !!group,
-                                                 color = ggplot2::after_scale(ggstats::hex_bw(.data$fill)))
-                        textColor <- NULL
-                    } else {
-                        labelAes <- ggplot2::aes(x = x_center, y = y_center, label = doPercent(pourcentage))
-                        textColor <- self$options$labelColor
-                    }
-                }
-                plot <- plot + ggplot2::geom_text(data = dplyr::filter(plotData, pourcentage > 0.05 &  xwidth > 0.05),
-                                                  mapping = labelAes, color = textColor,
-                                                  size = self$options$labelFontSize / ggplot2::.pt, fontface = "bold")
+                plotData <- plotData |>
+                    dplyr::mutate(
+                        label_text = switch(self$options$labelType,
+                                            "count"     = as.character(freq),
+                                            "percent"   = doPercent(percentage),
+                                            "residuals" = doNumber(residuals)
+                        )
+                    )
 
+                if (self$options$labelColor == "auto") {
+                    labelAes <- ggplot2::aes(
+                                            x = x_center, y = y_center, label = label_text, fill = !!group,
+                                            color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))
+                                        )
+                    textColor <- NULL
+                } else {
+                    labelAes <- ggplot2::aes(x = x_center, y = y_center, label = label_text)
+                    textColor <- self$options$labelColor
+                }
+
+                plot <- plot + ggplot2::geom_text(
+                                            data = dplyr::filter(plotData, percentage > 0.05 & xwidth > 0.05),
+                                            mapping = labelAes,
+                                            color = textColor,
+                                            size = self$options$labelFontSize / ggplot2::.pt,
+                                            fontface = "bold"
+                                        )
             }
+
+            #### X-Axis ####
+            expFactMult <- ifelse(self$options$noPadding, 0.0, 0.04)
 
             if (is.null(self$options$facet)) {
-                plot <- plot + ggplot2::scale_x_continuous(breaks = unique(plotData$x_center), labels = unique(plotData[[category]]))
+                plot <- plot + ggplot2::scale_x_continuous(breaks = unique(plotData$x_center),
+                                                           labels = unique(plotData[[category]]),
+                                                           expand = ggplot2::expansion(mult = expFactMult))
             }
 
-            # Axis Limits & flip
+            #### Horizontal ####
             if (self$options$horizontal) {
                 plot <- plot + ggplot2::coord_flip()
             }
 
-            # Ticks
+            #### Ticks ####
             labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
 
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct, breaks = scales::breaks_extended(self$options$xTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
+                                                            breaks = scales::breaks_extended(self$options$xTicks + 1),
+                                                            expand = ggplot2::expansion(mult = expFactMult))
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct, breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
+                                                            breaks = scales::breaks_extended(self$options$yTicks + 1),
+                                                            expand = ggplot2::expansion(mult = expFactMult))
             } else {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct)
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
+                                                            expand = ggplot2::expansion(mult = expFactMult))
             }
 
-            #### facet ####
+            #### Facet ####
+
             if (!is.null(self$options$facet)) {
                 facetVar <- rlang::sym(self$options$facet)
 
@@ -185,7 +191,10 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 facetLevels <- levels(droplevels(plotData[[self$options$facet]]))
                 xScales <- lapply(facetLevels, function(lv) {
                     subData <- plotData[plotData[[self$options$facet]] == lv, ]
-                    ggplot2::scale_x_continuous(breaks = unique(subData$x_center), labels = unique(subData[[category]]))
+                    ggplot2::scale_x_continuous(breaks = unique(subData$x_center),
+                                                labels = unique(subData[[category]]),
+                                                expand = ggplot2::expansion(mult = expFactMult)
+                                                )
                 })
 
                 # coord_flip() below needs the OPPOSITE free scale from what you'd expect:
@@ -211,72 +220,115 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
             #plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
 
+            # Hide axes
+            if (self$options$noAxes) {
+                plot <- plot + ggplot2::theme(
+                    axis.line = ggplot2::element_blank(),
+                    axis.ticks = ggplot2::element_blank()
+                )
+            }
+            if (self$options$noPercent) {
+                if (self$options$horizontal)
+                    plot <- plot + ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank())
+                else
+                    plot <- plot + ggplot2::theme(axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank())
+            }
+
             vijDebugMessage(self, plot)
 
             return(plot)
-
         },
-        # Demonstration only — not applied to R/mosaic.b.R.
-        # .mosaicData() with a `gap` parameter: fraction of the [0,1] axis reserved
-        # for EACH inter-rectangle gap (x direction: between categories within a facet;
-        # y direction: between group segments within a category+facet).
-        # gap = 0 reproduces the exact current geometry.
-
-        .mosaicData2 = function(df, categoryName, groupName, facetName = NULL, gap = 0.01) {
+        .mosaicData = function(df, categoryName, groupName, facetName = NULL, order = "none", reverseStack = FALSE) {
             category <- rlang::sym(categoryName)
             group <- rlang::sym(groupName)
             facet <- if (!is.null(facetName)) rlang::sym(facetName) else NULL
             freq <- rlang::sym("Freq")
-            joinBy <- if (is.null(facetName)) rlang::as_string(category) else c(rlang::as_string(category), facetName)
+            joinBy <- if (is.null(facetName)) categoryName else c(categoryName, facetName)
+            residualsJoinBy <- if (is.null(facetName)) c(categoryName, groupName) else c(categoryName, groupName, facetName)
 
             df <- df |>
                 dplyr::group_by(!!category, !!group, !!facet) |>
-                dplyr::summarise(Freq = dplyr::n(), .groups = 'drop')
+                dplyr::summarise(Freq = sum(.data[[".COUNTS"]]), .groups = 'drop')
+
+            # Pearson residuals (stats::chisq.test()$residuals) from a chi-squared test of
+            # category x group independence, computed separately per facet
+            residuals <- df |>
+                dplyr::group_by(!!facet) |>
+                dplyr::group_modify(function(subDf, ...) {
+                    tab <- stats::xtabs(stats::reformulate(c(categoryName, groupName), response = "Freq"), data = subDf)
+                    # a 2x2-or-larger table is required: below that, chisq.test() either errors
+                    # (fully empty table) or silently returns a 1-D vector instead of a matrix
+                    # of residuals (single category or single group), which would break the
+                    # column renaming below just the same
+                    chisqres <- if (nrow(tab) >= 2 && ncol(tab) >= 2) {
+                        tryCatch(suppressWarnings(stats::chisq.test(tab)), error = function(e) NULL)
+                    } else {
+                        NULL
+                    }
+                    if (is.null(chisqres)) {
+                        # keep the same column structure as the success case, just NA,
+                        # so group_modify() doesn't choke combining facets across groups
+                        residDf <- unique(subDf[c(categoryName, groupName)])
+                        residDf$residuals <- NA_real_
+                        return(residDf)
+                    }
+                    residDf <- as.data.frame(chisqres$residuals)
+                    names(residDf) <- c(categoryName, groupName, "residuals")
+                    residDf
+                }) |>
+                dplyr::ungroup()
+
+            # Global category total (summed across facets), used to order categories
+            globalOrder <- df |>
+                dplyr::group_by(!!category) |>
+                dplyr::summarise(global_total = sum(!!freq), .groups = 'drop')
+
+            widths <- df |>
+                dplyr::group_by(!!category, !!facet) |>
+                dplyr::summarise(x_total = sum(!!freq), .groups = 'drop') |>
+                dplyr::left_join(globalOrder, by = categoryName) |>
+                dplyr::group_by(!!facet)
+
+            widths <- switch(order,
+                             "increasing" = dplyr::arrange(widths, global_total, .by_group = TRUE),
+                             "decreasing" = dplyr::arrange(widths, dplyr::desc(global_total), .by_group = TRUE),
+                             dplyr::arrange(widths, !!category, .by_group = TRUE)
+            )
+
+            widths <- widths |>
+                dplyr::mutate(
+                    xmax = cumsum(x_total) / sum(x_total),
+                    xmin = xmax - (x_total / sum(x_total)),
+                    xwidth = xmax - xmin,
+                    x_center = xmin + (xmax - xmin) / 2
+                ) |>
+                dplyr::ungroup() |>
+                dplyr::select(!!category, !!facet, xmin, xmax, x_center, xwidth)
 
             mosaic_data <- df |>
                 dplyr::group_by(!!category, !!facet) |>
                 dplyr::mutate(x_total = sum(!!freq)) |>
                 dplyr::ungroup() |>
-                dplyr::group_by(!!category, !!facet) |>
-                dplyr::arrange(desc(!!group), .by_group = TRUE) |>
+                dplyr::group_by(!!category, !!facet)
+
+            mosaic_data <- if (reverseStack) {
+                dplyr::arrange(mosaic_data, !!group, .by_group = TRUE)
+            } else {
+                dplyr::arrange(mosaic_data, dplyr::desc(!!group), .by_group = TRUE)
+            }
+
+            mosaic_data <- mosaic_data |>
                 dplyr::mutate(
-                    n_group = dplyr::n(),
-                    pourcentage = !!freq / x_total,
-                    # shrink each slice so (n_group - 1) gaps of size `gap` fit in [0,1],
-                    # then reinsert the gaps between cumulative positions
-                    scaledHeight = pourcentage * pmax(0, 1 - gap * (n_group - 1)),
-                    ymax = cumsum(scaledHeight) + gap * (dplyr::row_number() - 1),
-                    ymin = ymax - scaledHeight,
+                    ymax = cumsum(!!freq) / x_total,
+                    ymin = ymax - (!!freq / x_total),
+                    percentage = !!freq / x_total,
                     freq = !!freq,
                     y_center = ymin + (ymax - ymin) / 2
                 ) |>
                 dplyr::ungroup() |>
-                dplyr::select(-n_group, -scaledHeight) |>
-                dplyr::left_join(
-                    df |>
-                        dplyr::group_by(!!category, !!facet) |>
-                        dplyr::summarise(x_total = sum(!!freq), .groups = 'drop') |>
-                        dplyr::group_by(!!facet) |>
-                        dplyr::arrange(!!category, .by_group = TRUE) |>
-                        dplyr::mutate(
-                            n_cat = dplyr::n(),
-                            p = x_total / sum(x_total),
-                            scaledWidth = p * pmax(0, 1 - gap * (n_cat - 1)),
-                            xmax = cumsum(scaledWidth) + gap * (dplyr::row_number() - 1),
-                            xmin = xmax - scaledWidth,
-                            xwidth = xmax - xmin,
-                            x_center = xmin + (xmax - xmin) / 2
-                        ) |>
-                        dplyr::ungroup() |>
-                        dplyr::select(!!category, !!facet, xmin, xmax, x_center, xwidth),
-                    by = joinBy
-                )
+                dplyr::left_join(widths, by = joinBy) |>
+                dplyr::left_join(residuals, by = residualsJoinBy)
             return(mosaic_data)
         }
-
-        # --- .plot() geom_rect: linewidth is no longer needed for separation ---
-        # plot <- plot + ggplot2::geom_rect(
-        #     ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = !!group),
-        #     color = NA)   # or a hairline (linewidth = 0.2) purely for anti-aliasing, not for spacing
-        )
+    )
 )

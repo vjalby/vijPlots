@@ -23,6 +23,13 @@ children:
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
+        label: Counts (optional)
+        children:
+          - type: VariablesListBox
+            name: counts
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
         label: Facet
         children:
           - type: VariablesListBox
@@ -41,22 +48,14 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Label Type
+            label: Plot Options
             children:
-              - type: RadioButton
-                name: labelType_none
-                optionName: labelType
-                optionPart: none
-              - type: RadioButton
-                name: labelType_count
-                optionName: labelType
-                optionPart: count
-                label: Count
-              - type: RadioButton
-                name: labelType_percent
-                optionName: labelType
-                optionPart: percent
-                label: Percent
+              - type: CheckBox
+                name: ignoreNA
+              - type: CheckBox
+                name: reverseStack
+              - type: CheckBox
+                name: horizontal
       - type: LayoutBox
         cell:
           column: 1
@@ -64,20 +63,14 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Bar Type
+            label: Axis Options
             children:
-              - type: RadioButton
-                name: barType_dodge
-                optionName: barType
-                optionPart: dodge2
-              - type: RadioButton
-                name: barType_dodge2
-                optionName: barType
-                optionPart: dodge
-              - type: RadioButton
-                name: barType_stack
-                optionName: barType
-                optionPart: stack
+              - type: CheckBox
+                name: noPadding
+              - type: CheckBox
+                name: noAxes
+              - type: CheckBox
+                name: noPercent
       - type: LayoutBox
         cell:
           column: 2
@@ -103,7 +96,7 @@ children:
                 optionPart: decreasing
                 label: Decreasing
   - type: CollapseBox
-    label: Plot Options
+    label: Label Options
     collapsed: true
     stretchFactor: 1
     children:
@@ -118,15 +111,24 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: Plot Options
+                label: Label Type
                 children:
-                  - type: CheckBox
-                    name: ignoreNA
-                  - type: CheckBox
-                    name: reverseStack
-                    enable: (barType_stack)
-                  - type: CheckBox
-                    name: horizontal
+                  - type: RadioButton
+                    name: labelType_none
+                    optionName: labelType
+                    optionPart: none
+                  - type: RadioButton
+                    name: labelType_count
+                    optionName: labelType
+                    optionPart: count
+                  - type: RadioButton
+                    name: labelType_percent
+                    optionName: labelType
+                    optionPart: percent
+                  - type: RadioButton
+                    name: labelType_residuals
+                    optionName: labelType
+                    optionPart: residuals
           - type: LayoutBox
             cell:
               column: 1
@@ -134,8 +136,15 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: Label Position
-                children: []
+                label: Label Format
+                children:
+                  - type: ComboBox
+                    name: labelColor
+                    enable: (!labelType:none)
+                  - type: TextBox
+                    name: labelFontSize
+                    format: number
+                    enable: (!labelType:none)
           - type: LayoutBox
             cell:
               column: 2
@@ -143,26 +152,26 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: '% Accuracy'
+                label: 'Accuracy'
                 children:
                   - type: RadioButton
                     name: accuracy_1
                     optionName: accuracy
                     optionPart: '1'
                     label: '1'
-                    enable: (showLabels && yaxis_percent)
+                    enable: (!labelType:none && !labelType:count)
                   - type: RadioButton
                     name: accuracy_01
                     optionName: accuracy
                     optionPart: '0.1'
                     label: '0.1'
-                    enable: (showLabels && yaxis_percent)
+                    enable: (!labelType:none && !labelType:count)
                   - type: RadioButton
                     name: accuracy_001
                     optionName: accuracy
                     optionPart: '0.01'
                     label: '0.01'
-                    enable: (showLabels && yaxis_percent)
+                    enable: (!labelType:none && !labelType:count)
   - type: CollapseBox
     label: Colors
     collapsed: true
@@ -184,20 +193,8 @@ children:
                   - type: ComboBox
                     name: colorPalette
                     label: ''
-          - type: LayoutBox
-            cell:
-              column: 1
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Color Options
-                children:
-                  - type: ComboBox
-                    name: labelColor
-                    enable: (showLabels)
   - type: CollapseBox
-    label: Text Size & Facets
+    label: Facets
     collapsed: true
     stretchFactor: 1
     children:
@@ -209,19 +206,6 @@ children:
           - type: LayoutBox
             cell:
               column: 0
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Text Size
-                children:
-                  - type: TextBox
-                    name: labelFontSize
-                    format: number
-                    enable: (showLabels)
-          - type: LayoutBox
-            cell:
-              column: 1
               row: 0
             stretchFactor: 1
             children:

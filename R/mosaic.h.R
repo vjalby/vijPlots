@@ -8,13 +8,16 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             category = NULL,
             group = NULL,
+            counts = NULL,
             facet = NULL,
             ignoreNA = TRUE,
             horizontal = FALSE,
             order = "none",
             reverseStack = FALSE,
+            noPadding = FALSE,
+            noAxes = FALSE,
+            noPercent = FALSE,
             labelType = "none",
-            barType = "dodge2",
             accuracy = "0.1",
             colorPalette = "jmv",
             labelColor = "auto",
@@ -71,6 +74,13 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
+            private$..counts <- jmvcore::OptionVariable$new(
+                "counts",
+                counts,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..facet <- jmvcore::OptionVariable$new(
                 "facet",
                 facet,
@@ -99,22 +109,27 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "reverseStack",
                 reverseStack,
                 default=FALSE)
+            private$..noPadding <- jmvcore::OptionBool$new(
+                "noPadding",
+                noPadding,
+                default=FALSE)
+            private$..noAxes <- jmvcore::OptionBool$new(
+                "noAxes",
+                noAxes,
+                default=FALSE)
+            private$..noPercent <- jmvcore::OptionBool$new(
+                "noPercent",
+                noPercent,
+                default=FALSE)
             private$..labelType <- jmvcore::OptionList$new(
                 "labelType",
                 labelType,
                 options=list(
                     "none",
                     "count",
-                    "percent"),
+                    "percent",
+                    "residuals"),
                 default="none")
-            private$..barType <- jmvcore::OptionList$new(
-                "barType",
-                barType,
-                options=list(
-                    "dodge2",
-                    "dodge",
-                    "stack"),
-                default="dodge2")
             private$..accuracy <- jmvcore::OptionList$new(
                 "accuracy",
                 accuracy,
@@ -410,13 +425,16 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..category)
             self$.addOption(private$..group)
+            self$.addOption(private$..counts)
             self$.addOption(private$..facet)
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..horizontal)
             self$.addOption(private$..order)
             self$.addOption(private$..reverseStack)
+            self$.addOption(private$..noPadding)
+            self$.addOption(private$..noAxes)
+            self$.addOption(private$..noPercent)
             self$.addOption(private$..labelType)
-            self$.addOption(private$..barType)
             self$.addOption(private$..accuracy)
             self$.addOption(private$..colorPalette)
             self$.addOption(private$..labelColor)
@@ -454,13 +472,16 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         category = function() private$..category$value,
         group = function() private$..group$value,
+        counts = function() private$..counts$value,
         facet = function() private$..facet$value,
         ignoreNA = function() private$..ignoreNA$value,
         horizontal = function() private$..horizontal$value,
         order = function() private$..order$value,
         reverseStack = function() private$..reverseStack$value,
+        noPadding = function() private$..noPadding$value,
+        noAxes = function() private$..noAxes$value,
+        noPercent = function() private$..noPercent$value,
         labelType = function() private$..labelType$value,
-        barType = function() private$..barType$value,
         accuracy = function() private$..accuracy$value,
         colorPalette = function() private$..colorPalette$value,
         labelColor = function() private$..labelColor$value,
@@ -497,13 +518,16 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     private = list(
         ..category = NA,
         ..group = NA,
+        ..counts = NA,
         ..facet = NA,
         ..ignoreNA = NA,
         ..horizontal = NA,
         ..order = NA,
         ..reverseStack = NA,
+        ..noPadding = NA,
+        ..noAxes = NA,
+        ..noPercent = NA,
         ..labelType = NA,
-        ..barType = NA,
         ..accuracy = NA,
         ..colorPalette = NA,
         ..labelColor = NA,
@@ -577,7 +601,7 @@ mosaicBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 pause = NULL,
                 completeWhenFilled = FALSE,
                 requiresMissings = FALSE,
-                weightsSupport = 'auto')
+                weightsSupport = 'full')
         }))
 
 #' Mosaic Plot
@@ -586,13 +610,16 @@ mosaicBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param category .
 #' @param group .
+#' @param counts .
 #' @param facet .
 #' @param ignoreNA .
 #' @param horizontal .
 #' @param order .
 #' @param reverseStack .
+#' @param noPadding .
+#' @param noAxes .
+#' @param noPercent .
 #' @param labelType .
-#' @param barType .
 #' @param accuracy .
 #' @param colorPalette .
 #' @param labelColor .
@@ -636,13 +663,16 @@ mosaic <- function(
     data,
     category,
     group,
+    counts,
     facet,
     ignoreNA = TRUE,
     horizontal = FALSE,
     order = "none",
     reverseStack = FALSE,
+    noPadding = FALSE,
+    noAxes = FALSE,
+    noPercent = FALSE,
     labelType = "none",
-    barType = "dodge2",
     accuracy = "0.1",
     colorPalette = "jmv",
     labelColor = "auto",
@@ -682,12 +712,14 @@ mosaic <- function(
 
     if ( ! missing(category)) category <- jmvcore::resolveQuo(jmvcore::enquo(category))
     if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
+    if ( ! missing(counts)) counts <- jmvcore::resolveQuo(jmvcore::enquo(counts))
     if ( ! missing(facet)) facet <- jmvcore::resolveQuo(jmvcore::enquo(facet))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(category), category, NULL),
             `if`( ! missing(group), group, NULL),
+            `if`( ! missing(counts), counts, NULL),
             `if`( ! missing(facet), facet, NULL))
 
     for (v in category) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
@@ -697,13 +729,16 @@ mosaic <- function(
     options <- mosaicOptions$new(
         category = category,
         group = group,
+        counts = counts,
         facet = facet,
         ignoreNA = ignoreNA,
         horizontal = horizontal,
         order = order,
         reverseStack = reverseStack,
+        noPadding = noPadding,
+        noAxes = noAxes,
+        noPercent = noPercent,
         labelType = labelType,
-        barType = barType,
         accuracy = accuracy,
         colorPalette = colorPalette,
         labelColor = labelColor,

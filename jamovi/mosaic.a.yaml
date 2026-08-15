@@ -8,6 +8,8 @@ menuSubgroup: Categorical
 version: '1.0.0'
 jas: '1.2'
 
+weightsSupport: 'full'
+
 options:
     - name: data
       type: Data
@@ -29,6 +31,14 @@ options:
         - ordinal
       permitted:
         - factor
+
+    - name: counts
+      title: Counts (optional)
+      type: Variable
+      suggested:
+        - continuous
+      permitted:
+        - numeric
 
     - name: facet
       title: Facet
@@ -66,6 +76,21 @@ options:
       type: Bool
       default: false
 
+    - name: noPadding
+      title: Remove padding
+      type: Bool
+      default: false
+
+    - name: noAxes
+      title: Hide axes
+      type: Bool
+      default: false
+
+    - name: noPercent
+      title: Hide % values
+      type: Bool
+      default: false
+
     - name: labelType
       title: labelType
       type: List
@@ -76,19 +101,9 @@ options:
           name:  count
         - title: Percent
           name:  percent
+        - title: Pearson residuals
+          name:  residuals
       default: none
-
-    - name: barType
-      title: Bar Type
-      type: List
-      options:
-        - title: Grouped
-          name:  dodge2
-        - title: Grouped (tight)
-          name:  dodge
-        - title: Stacked
-          name:  stack
-      default: dodge2
 
     - name: accuracy
       title: "% Accuracy"
@@ -211,7 +226,7 @@ options:
       default: jmv
 
     - name: labelColor
-      title: Label
+      title: Color
       type: List
       options:
         - title: Black
@@ -224,7 +239,7 @@ options:
 
     - name: labelFontSize
       type: Number
-      title: Label
+      title: Size
       min: 8
       max: 24
       default: 12

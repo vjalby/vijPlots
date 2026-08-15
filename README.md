@@ -79,6 +79,7 @@
 - Histogram: Options to hide bins and to show lines
 - Scatter Plot: Option to use different shapes
 - Fixed stacking order in barplot/barchart/mrcrosstab
+- Support for weights in barplot/piechart
 
 ### 2026-07-31 / 1.2.2
 

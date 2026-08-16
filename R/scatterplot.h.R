@@ -24,6 +24,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             facetNumber = 1,
             pointSize = 3,
             lineSize = 1,
+            labelTextSize = 12,
             regLine = FALSE,
             lineMethod = "lm",
             lineSE = TRUE,
@@ -172,6 +173,12 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 default=1,
                 min=0.1,
                 max=5)
+            private$..labelTextSize <- jmvcore::OptionNumber$new(
+                "labelTextSize",
+                labelTextSize,
+                default=12,
+                min=6,
+                max=18)
             private$..regLine <- jmvcore::OptionBool$new(
                 "regLine",
                 regLine,
@@ -515,6 +522,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..facetNumber)
             self$.addOption(private$..pointSize)
             self$.addOption(private$..lineSize)
+            self$.addOption(private$..labelTextSize)
             self$.addOption(private$..regLine)
             self$.addOption(private$..lineMethod)
             self$.addOption(private$..lineSE)
@@ -573,6 +581,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         facetNumber = function() private$..facetNumber$value,
         pointSize = function() private$..pointSize$value,
         lineSize = function() private$..lineSize$value,
+        labelTextSize = function() private$..labelTextSize$value,
         regLine = function() private$..regLine$value,
         lineMethod = function() private$..lineMethod$value,
         lineSE = function() private$..lineSE$value,
@@ -630,6 +639,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..facetNumber = NA,
         ..pointSize = NA,
         ..lineSize = NA,
+        ..labelTextSize = NA,
         ..regLine = NA,
         ..lineMethod = NA,
         ..lineSE = NA,
@@ -733,6 +743,7 @@ scatterplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param facetNumber .
 #' @param pointSize .
 #' @param lineSize .
+#' @param labelTextSize .
 #' @param regLine .
 #' @param lineMethod .
 #' @param lineSE .
@@ -797,6 +808,7 @@ scatterplot <- function(
     facetNumber = 1,
     pointSize = 3,
     lineSize = 1,
+    labelTextSize = 12,
     regLine = FALSE,
     lineMethod = "lm",
     lineSE = TRUE,
@@ -877,6 +889,7 @@ scatterplot <- function(
         facetNumber = facetNumber,
         pointSize = pointSize,
         lineSize = lineSize,
+        labelTextSize = labelTextSize,
         regLine = regLine,
         lineMethod = lineMethod,
         lineSE = lineSE,

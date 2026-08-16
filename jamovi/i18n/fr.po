@@ -2708,9 +2708,10 @@ msgstr "Tests de Kruskal-Wallis"
 #: principal/options/labelVar.title
 #: principal/ui[0][1].label
 #: scatterplot/options/labelVar.title
+#: scatterplot/options/labelTextSize.title
 #: scatterplot/ui[0][3].label
 msgid "Label"
-msgstr "Étiquettes"
+msgstr "Étiquette"
 
 #: likertplot/options/labelColor.title
 msgid "Label color"
@@ -4372,7 +4373,7 @@ msgstr "Rouge et gris"
 #: raincloud/options/colorPalette/RdPu.title
 #: scatterplot/options/colorPalette/RdPu.title
 msgid "Red to Purple"
-msgstr "Rouge et violet"
+msgstr "Rouge à violet"
 
 #: likertplot/options/plotColor/RdYlBu.title
 msgid "Red, Yellow and Blue"

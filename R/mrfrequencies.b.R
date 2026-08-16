@@ -204,7 +204,9 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             # Titles & Labels
             defaults <- list(y = yLab, x = "")
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)
+
+            vijDebugPlot(self, plot)
 
             return(plot)
 

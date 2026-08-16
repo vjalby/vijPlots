@@ -292,7 +292,9 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 defaults$x <- NULL
                 defaults$y <- NULL
             }
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         },

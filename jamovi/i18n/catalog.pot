@@ -1082,7 +1082,7 @@ msgstr ""
 #: boxplot/ui[6][2].label
 #: histogram/ui[7][2].label
 #: likertplot/ui[8][2].label
-#: linechart/ui[5][2].label
+#: linechart/ui[4][2].label
 #: lollipop/ui[7][2].label
 #: mrcrosstabs/ui[6][2].label
 #: mrfrequencies/ui[6][2].label
@@ -2503,6 +2503,7 @@ msgstr ""
 #: principal/options/labelVar.title
 #: principal/ui[0][1].label
 #: scatterplot/options/labelVar.title
+#: scatterplot/options/labelTextSize.title
 #: scatterplot/ui[0][3].label
 msgid "Label"
 msgstr ""
@@ -3772,7 +3773,7 @@ msgstr ""
 #: boxplot/ui[6].label
 #: histogram/ui[7].label
 #: likertplot/ui[8].label
-#: linechart/ui[5].label
+#: linechart/ui[4].label
 #: lollipop/ui[7].label
 #: mrcrosstabs/ui[6].label
 #: mrfrequencies/ui[6].label
@@ -4806,7 +4807,7 @@ msgstr ""
 #: boxplot/ui[6][1].label
 #: histogram/ui[7][1].label
 #: likertplot/ui[8][1].label
-#: linechart/ui[5][1].label
+#: linechart/ui[4][1].label
 #: lollipop/ui[7][1].label
 #: mrcrosstabs/ui[6][1].label
 #: mrfrequencies/ui[6][1].label
@@ -5178,7 +5179,7 @@ msgstr ""
 #: boxplot/ui[6][0].label
 #: histogram/ui[7][0].label
 #: likertplot/ui[8][0].label
-#: linechart/ui[5][0].label
+#: linechart/ui[4][0].label
 #: lollipop/ui[7][0].label
 #: mrcrosstabs/ui[6][0].label
 #: mrfrequencies/ui[6][0].label

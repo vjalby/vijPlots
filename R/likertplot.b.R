@@ -482,10 +482,12 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::scale_fill_brewer(palette = self$options$plotColor)
 
             #### Title & subtitle ####
-            plot <- plot + vijTitlesAndLabels(self$options) + vijTitleAndLabelFormat(self$options, showLegend = TRUE)
+            plot <- plot + vijTitlesAndLabels(self$options, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = TRUE)
 
             # Adjust strip (= Facet = Group) text (vijTitleAndLabelFormat uses subtittle format)
             plot <- plot + ggplot2::theme(strip.text = ggplot2::element_text(size = self$options$groupSize, face = "plain", hjust = 0.5))
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         },

@@ -67,7 +67,7 @@ vijPaletteNlevels = function(pal) {
     return(nl)
 }
 
-vijTitlesAndLabels = function(options, defaults = list(), plotType = '') {
+vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = NULL) {
     horizontal <- options[["horizontal"]]  %||% FALSE
     # Title & Subtitle
     if (plotType == '') {
@@ -123,7 +123,35 @@ vijTitlesAndLabels = function(options, defaults = list(), plotType = '') {
     if (y == "")
         y <- defaults$y
 
-    return(ggplot2::labs(title = title, subtitle = subtitle, caption = caption, fill = legend, color = legend, shape = legend, size = sizeLegend, x = x, y = y))
+    labsArgs <- list(title = title, subtitle = subtitle, caption = caption, size = sizeLegend, x = x, y = y)
+
+    # Legend should be set only when used in aes to prevent ggplot message (hidden from user, though)
+    # So we read the mappings to find the the name actually used. (using get_labs would call ggplot_build)
+    if (is.null(plot)) {
+        presentAes <- c("fill","colour")
+    } else {
+        presentAes <- character(0)
+        for (l in plot$layers) {
+            layerAes <- character(0)
+            if (isTRUE(l$inherit.aes))
+                layerAes <- c(layerAes, names(plot$mapping))
+            layerAes <- c(layerAes, names(l$mapping))
+            # A layer's own fixed parameter (e.g. geom_histogram(fill = fillColor))
+            # shadows an inherited aes mapping for that layer, same as ggplot2's
+            # own setup_plot_labels() exclusion of layer$aes_params.
+            layerAes <- setdiff(layerAes, names(l$aes_params))
+            presentAes <- c(presentAes, layerAes)
+        }
+        presentAes <- unique(presentAes)
+    }
+    if ("fill" %in% presentAes)
+        labsArgs[["fill"]] <- legend
+    if ("colour" %in% presentAes)
+        labsArgs[["colour"]] <- legend
+    if ("shape" %in% presentAes)
+        labsArgs[["shape"]] <- legend
+
+    return(ggplot2::labs(!!!labsArgs))
 }
 
 vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
@@ -223,13 +251,37 @@ vijErrorMessage = function(self, errorMessage) {
     self$results$insert(1, errorNotice)
 }
 
-vijWarningMessage = function(self, warningMessage, name = '.warning') {
+vijWarningMessage = function(self, warningMessage, name = NULL) {
+    name <- name %||% rlang::hash(warningMessage)
     warningNotice <- jmvcore::Notice$new(self$options, type = jmvcore::NoticeType$WARNING, name = name, content = warningMessage)
     self$results$insert(1, warningNotice)
 }
 
-vijDebugMessage = function(self, debugMessage, name = '.debug', title = "Debug") {
+vijDebugMessage = function(self, debugMessage, name = NULL, title = "Debug") {
+    name <- name %||% rlang::hash(debugMessage)
     debugMsg <- jmvcore::Preformatted$new(self$options, name = name, title = title)
     debugMsg$setContent(debugMessage)
     self$results$insert(1, debugMsg)
+}
+
+# Debug helper: forces the plot to build now (instead of waiting for jmvcore's own
+# print(), which swallows warnings/messages via suppressWarnings/suppressMessages),
+# surfacing any ggplot2 warning or message (e.g. cli_inform() diagnostics like
+# "Ignoring unknown labels") as a Notice in the results pane. Called for its side
+# effect, e.g. `vijDebugPlot(self, plot); return(plot)` at the end of .plot().
+# No-op on a release version (a plain x.y.z DESCRIPTION Version); only active on a
+# development version (x.y.z.w), so it never surfaces to end users of a published module.
+vijDebugPlot = function(self, p) {
+    if (length(unclass(utils::packageVersion("vijPlots"))[[1]]) < 4)
+        return(invisible(NULL))
+    withCallingHandlers({
+        ggplot2::ggplot_build(p)
+    }, warning = function(w) {
+        vijDebugMessage(self, conditionMessage(w))
+        invokeRestart("muffleWarning")
+    }, message = function(m) {
+        vijDebugMessage(self, conditionMessage(m))
+        invokeRestart("muffleMessage")
+    })
+    invisible(NULL)
 }

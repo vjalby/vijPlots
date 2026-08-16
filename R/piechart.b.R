@@ -117,7 +117,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 suffix = '\u2009%',
                 decimal.mark = self$options[['decSymbol']])
 
-            #### Build the lot ####
+            #### Build the plot ####
 
             if(self$options$donut) {
                 plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 10, fill = !!aVar, by = 1, weight = .data[[".COUNTS"]])) + ggplot2::xlim(c(8.5,NA))
@@ -205,7 +205,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(y = "", x = "", legend = aVar)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options)
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Labs
@@ -213,6 +213,9 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                  axis.line.x = ggplot2::element_blank(), axis.line.y = ggplot2::element_blank(),
                                  axis.text.x = ggplot2::element_blank(),axis.text.y = ggplot2::element_blank(),
                                  panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank())
+
+            vijDebugPlot(self, plot)
+
             return(plot)
         }
 

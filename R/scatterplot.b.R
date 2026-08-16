@@ -104,19 +104,19 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Main plot ####
 
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xaxis, y = !!yaxis, color = !!groupVar, fill = !!groupVar))
+
             if (!is.null(sizeVar)) {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xaxis, y = !!yaxis, size = !!sizeVar, color = !!groupVar, shape = !!shapeVar, fill = !!groupVar))
                 if (is.null(groupVar)) {
-                    plot <- plot + ggplot2::geom_point(color = self$options$singleColor)
+                    plot <- plot + ggplot2::geom_point(ggplot2::aes(size = !!sizeVar), color = self$options$singleColor)
                 } else {
-                    plot <- plot + ggplot2::geom_point(show.legend = TRUE)
+                    plot <- plot + ggplot2::geom_point(ggplot2::aes(size = !!sizeVar, shape = !!shapeVar))
                 }
             } else {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xaxis, y = !!yaxis, color = !!groupVar, shape = !!shapeVar, fill = !!groupVar))
                 if (is.null(groupVar)) {
                     plot <- plot + ggplot2::geom_point(color = self$options$singleColor, size = self$options$pointSize)
                 } else {
-                    plot <- plot + ggplot2::geom_point(size = self$options$pointSize, show.legend = TRUE)
+                    plot <- plot + ggplot2::geom_point(ggplot2::aes(shape = !!shapeVar), size = self$options$pointSize)
                 }
             }
 
@@ -127,14 +127,20 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                     linewidth = self$options$lineSize, show.legend = FALSE)
             }
 
-            plot <- plot + ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size=4)))
+            # order must be set explicitly on every merged aesthetic (color/fill/shape),
+            # not just size: an unset order (0) is broken by an internal hash rather than
+            # code order, so its position relative to size's order=99 is not deterministic.
+            plot <- plot + ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size=4), order = 1),
+                                           fill = ggplot2::guide_legend(order = 1),
+                                           shape = ggplot2::guide_legend(order = 1),
+                                           size = ggplot2::guide_legend(order = 99))
 
             #### Labels ####
 
             if (!is.null(labelVar)) {
                 x_scale <- max(plotData[[xaxis]], na.rm=TRUE) - min(plotData[[xaxis]], na.rm = TRUE)
                 plot <- plot + ggplot2::geom_text(ggplot2::aes(label = !!labelVar), color = "black",
-                                         na.rm = TRUE, size = 4, hjust = 0, nudge_x = 0.02*x_scale,
+                                         na.rm = TRUE, size = self$options$labelTextSize / ggplot2::.pt, hjust = 0, nudge_x = 0.02*x_scale,
                                          check_overlap = self$options$overlap)
                 # Enlarge graphic by 10% at right (for labels)
                 maxx <- max(plotData[[xaxis]], na.rm=T) + 0.1*x_scale
@@ -195,7 +201,9 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(y = yaxis, x = xaxis, legend = groupVar, sizeLegend = sizeVar)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options)
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         }

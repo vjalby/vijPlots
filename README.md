@@ -54,7 +54,6 @@
 
 ![](img/areachart.jpg)
 
-
 ## Principal Component Analysis
 
 ![](img/principal.jpg)
@@ -69,15 +68,16 @@
 
 ## Version history
 
-### 2026-08-15 / 1.2.5
+### 2026-08-17 / 1.3.0
 
 - Code optimization and fixes everywhere
 - MCA (Burt method): Fixed variable discrimination computation
 - Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
 - Histogram: Options to hide bins and to show lines
-- Scatter Plot: Option to use different shapes
+- Scatter Plot: Option to use different shapes. Option to set label text size
 - Fixed stacking order in barplot/barchart/mrcrosstab
 - Support for weights in barplot/piechart
+- Improved ggplot2 4.0 support
 
 ### 2026-07-31 / 1.2.2
 

@@ -71,6 +71,8 @@ children:
                 name: noAxes
               - type: CheckBox
                 name: noPercent
+              - type: CheckBox
+                name: groupAxisLabels
       - type: LayoutBox
         cell:
           column: 2

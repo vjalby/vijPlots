@@ -17,6 +17,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             noPadding = FALSE,
             noAxes = FALSE,
             noPercent = FALSE,
+            groupAxisLabels = FALSE,
             labelType = "none",
             accuracy = "0.1",
             colorPalette = "jmv",
@@ -120,6 +121,10 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..noPercent <- jmvcore::OptionBool$new(
                 "noPercent",
                 noPercent,
+                default=FALSE)
+            private$..groupAxisLabels <- jmvcore::OptionBool$new(
+                "groupAxisLabels",
+                groupAxisLabels,
                 default=FALSE)
             private$..labelType <- jmvcore::OptionList$new(
                 "labelType",
@@ -434,6 +439,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..noPadding)
             self$.addOption(private$..noAxes)
             self$.addOption(private$..noPercent)
+            self$.addOption(private$..groupAxisLabels)
             self$.addOption(private$..labelType)
             self$.addOption(private$..accuracy)
             self$.addOption(private$..colorPalette)
@@ -481,6 +487,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         noPadding = function() private$..noPadding$value,
         noAxes = function() private$..noAxes$value,
         noPercent = function() private$..noPercent$value,
+        groupAxisLabels = function() private$..groupAxisLabels$value,
         labelType = function() private$..labelType$value,
         accuracy = function() private$..accuracy$value,
         colorPalette = function() private$..colorPalette$value,
@@ -527,6 +534,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..noPadding = NA,
         ..noAxes = NA,
         ..noPercent = NA,
+        ..groupAxisLabels = NA,
         ..labelType = NA,
         ..accuracy = NA,
         ..colorPalette = NA,
@@ -619,6 +627,7 @@ mosaicBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param noPadding .
 #' @param noAxes .
 #' @param noPercent .
+#' @param groupAxisLabels .
 #' @param labelType .
 #' @param accuracy .
 #' @param colorPalette .
@@ -672,6 +681,7 @@ mosaic <- function(
     noPadding = FALSE,
     noAxes = FALSE,
     noPercent = FALSE,
+    groupAxisLabels = FALSE,
     labelType = "none",
     accuracy = "0.1",
     colorPalette = "jmv",
@@ -738,6 +748,7 @@ mosaic <- function(
         noPadding = noPadding,
         noAxes = noAxes,
         noPercent = noPercent,
+        groupAxisLabels = groupAxisLabels,
         labelType = labelType,
         accuracy = accuracy,
         colorPalette = colorPalette,

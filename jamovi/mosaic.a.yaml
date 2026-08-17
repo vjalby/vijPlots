@@ -91,6 +91,11 @@ options:
       type: Bool
       default: false
 
+    - name: groupAxisLabels
+      title: Show labels
+      type: Bool
+      default: false
+
     - name: labelType
       title: labelType
       type: List

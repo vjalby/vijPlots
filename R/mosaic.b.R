@@ -92,6 +92,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             mdf <- private$.mosaicData(plotData, categoryName, groupName, facetName, self$options$order, self$options$reverseStack)
 
+            vijDebugMessage(self, mdf[c("Class","Survived","x_center","y_center")])
+
             image <- self$results$plot
             image$setState(mdf)
         },
@@ -170,7 +172,15 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Ticks ####
             labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
 
-            if (self$options$horizontal && self$options$xTicks > 0) {
+            if (self$options$groupAxisLabels) { # TEMP: first-column group labels experiment
+                if (is.null(self$options$facet)) {
+                    firstColBreaks <- dplyr::filter(plotData, x_center == min(x_center))
+                    plot <- plot + ggplot2::scale_y_continuous(breaks = firstColBreaks$y_center,
+                                                                labels = firstColBreaks[[group]],
+                                                                expand = ggplot2::expansion(mult = expFactMult))
+                }
+                # else: per-facet breaks/labels added below via facetted_pos_scales(y = ...)
+            } else if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
                                                             breaks = scales::breaks_extended(self$options$xTicks + 1),
                                                             expand = ggplot2::expansion(mult = expFactMult))
@@ -200,13 +210,35 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 # coord_flip() below needs the OPPOSITE free scale from what you'd expect:
                 # free_x when horizontal, free_y otherwise (confirmed empirically, see conversation)
-                freeScale <- if (self$options$horizontal) "free_y" else "free_x"
+                # TEMP: with groupAxisLabels, ggh4x::facetted_pos_scales() only assigns distinct
+                # per-panel breaks correctly to BOTH x and y when the facet frees both dimensions
+                # (confirmed empirically) — a single free_x/free_y silently reuses one panel's
+                # scale for every panel on the non-freed dimension
+                freeScale <- if (self$options$groupAxisLabels) {
+                    "free"
+                } else if (self$options$horizontal) {
+                    "free_y"
+                } else {
+                    "free_x"
+                }
                 if (self$options$facetBy == "column")
                     plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = freeScale)
                 else
                     plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = freeScale)
 
-                plot <- plot + ggh4x::facetted_pos_scales(x = xScales)
+                posScales <- list(x = xScales)
+
+                if (self$options$groupAxisLabels) { # TEMP: first-column group labels experiment, per facet
+                    posScales$y <- lapply(facetLevels, function(lv) {
+                        subData <- plotData[plotData[[self$options$facet]] == lv, ]
+                        firstColBreaks <- dplyr::filter(subData, x_center == min(x_center))
+                        ggplot2::scale_y_continuous(breaks = firstColBreaks$y_center,
+                                                    labels = firstColBreaks[[group]],
+                                                    expand = ggplot2::expansion(mult = expFactMult))
+                    })
+                }
+
+                plot <- plot + do.call(ggh4x::facetted_pos_scales, posScales)
             }
 
 
@@ -218,8 +250,12 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options)
 
             # Legend position
-            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
-            #plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
+            if (self$options$groupAxisLabels) { # TEMP: legend redundant with the axis labels
+                plot <- plot + ggplot2::guides(fill = "none")
+            } else {
+                plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
+                #plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
+            }
 
             # Hide axes
             if (self$options$noAxes) {

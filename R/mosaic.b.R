@@ -133,23 +133,24 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     )
 
                 if (self$options$labelColor == "auto") {
-                    labelAes <- ggplot2::aes(
-                                            x = x_center, y = y_center, label = label_text, fill = !!group,
-                                            color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))
-                                        )
-                    textColor <- NULL
+                    plot <- plot + ggplot2::geom_text(
+                        data = dplyr::filter(plotData, percentage > 0.05 & xwidth > 0.05),
+                        mapping = ggplot2::aes(
+                                    x = x_center, y = y_center, label = label_text, fill = !!group,
+                                    color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))
+                                    ),
+                        size = self$options$labelFontSize / ggplot2::.pt,
+                        fontface = "bold"
+                    )
                 } else {
-                    labelAes <- ggplot2::aes(x = x_center, y = y_center, label = label_text)
-                    textColor <- self$options$labelColor
+                    plot <- plot + ggplot2::geom_text(
+                        data = dplyr::filter(plotData, percentage > 0.05 & xwidth > 0.05),
+                        mapping = ggplot2::aes(x = x_center, y = y_center, label = label_text),
+                        size = self$options$labelFontSize / ggplot2::.pt,
+                        fontface = "bold",
+                        color = self$options$labelColor
+                    )
                 }
-
-                plot <- plot + ggplot2::geom_text(
-                                            data = dplyr::filter(plotData, percentage > 0.05 & xwidth > 0.05),
-                                            mapping = labelAes,
-                                            color = textColor,
-                                            size = self$options$labelFontSize / ggplot2::.pt,
-                                            fontface = "bold"
-                                        )
             }
 
             #### X-Axis ####
@@ -214,7 +215,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(y = self$options$group, x = self$options$category, legend = self$options$group)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options)
 
             # Legend position
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
@@ -234,7 +235,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + ggplot2::theme(axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank())
             }
 
-            vijDebugMessage(self, plot)
+            vijDebugPlot(self, plot)
 
             return(plot)
         },

@@ -29,8 +29,23 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             colVarName <- self$options$cols
             if (is.null(rowVarName) || is.null(colVarName))
                 return(NULL)
-            data <- private$.cleanData()
-            data <- jmvcore::naOmit(data[,c(rowVarName,colVarName,'.COUNTS')])
+
+            data <- self$data[c(rowVarName, colVarName)]
+
+            # Weight data
+            countsName <- self$options$counts
+            if (!is.null(countsName)) {
+                # vijPlots/Mosaic weights
+                data[['.COUNTS']] <- jmvcore::toNumeric(self$data[[countsName]])
+            } else if (!is.null(attr(self$data, "jmv-weights"))) {
+                # jamovi built-in weights
+                data[['.COUNTS']] <- jmvcore::toNumeric(attr(self$data, "jmv-weights"))
+            } else {
+                # no weights
+                data[['.COUNTS']] <- as.integer(rep(1, nrow(data)))
+            }
+
+            data <- jmvcore::naOmit(data)
             return(data)
         },
         .getProfile = function(contingencyTable, supplementaryRows, supplementaryCols) {
@@ -106,6 +121,15 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     self$results$colSummary$addColumn(".", type="text")
                     self$results$eigenvalues$addRow(".")
                     self$results$eigenvalues$setNote("chisq", NULL)
+                    return(FALSE)
+                }
+
+                if (any(data$.COUNTS < 0)) {
+                    vijErrorMessage(self, .('Counts may not be negative.'))
+                    return(FALSE)
+                }
+                if (any(is.infinite(data$.COUNTS))) {
+                    vijErrorMessage(self, .('Counts may not be infinite.'))
                     return(FALSE)
                 }
 
@@ -592,7 +616,9 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(title = title, subtitle = subtitle, y = dim2name, x = dim1name)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         },
@@ -604,41 +630,6 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .biplot = function(image, ggtheme, theme, ...) {
             return(private$.caplot(plotType = 'biplot', image, ggtheme, theme))
-        },
-
-        #### Helper functions ---- modified from jmv/conttables.b.R
-        .cleanData = function(B64 = FALSE) {
-
-            data <- self$data
-
-            rowVarName <- self$options$rows
-            colVarName <- self$options$cols
-            countsName <- self$options$counts
-
-            columns <- list()
-
-            if (!is.null(rowVarName)) {
-                columns[[rowVarName]] <- as.factor(data[[rowVarName]])
-            }
-            if (!is.null(colVarName)) {
-                columns[[colVarName]] <- as.factor(data[[colVarName]])
-            }
-
-            if (!is.null(countsName)) {
-                columns[['.COUNTS']] <- jmvcore::toNumeric(data[[countsName]])
-            } else if (!is.null(attr(data, "jmv-weights"))) {
-                columns[['.COUNTS']] <- jmvcore::toNumeric(attr(data, "jmv-weights"))
-            } else {
-                columns[['.COUNTS']] <- as.integer(rep(1, nrow(data)))
-            }
-
-            if (B64)
-                names(columns) <- jmvcore::toB64(names(columns))
-
-            attr(columns, 'row.names') <- paste(seq_len(length(columns[[1]])))
-            class(columns) <- 'data.frame'
-
-            columns
         },
         .showHelpMessage = function() {
             helpMsg <- .('<p>This module computes <strong>Correspondence Analysis (CA)</strong> for two categorical variables. Computations are based on <a href = "https://CRAN.R-project.org/package=FactoMineR" target="_blank">FactoMineR<a/> package by F. Husson, J. Josse, S. Le, J. Mazet.</p>

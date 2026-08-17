@@ -134,6 +134,13 @@ options:
       min: 0.1
       max: 5
 
+    - name: labelTextSize
+      title: Label
+      type: Number
+      default: 12
+      min: 6
+      max: 18
+
     - name: regLine
       title: Show line
       type: Bool

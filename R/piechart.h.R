@@ -8,6 +8,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             aVar = NULL,
             facet = NULL,
+            counts = NULL,
             donut = FALSE,
             labels = "none",
             labType = "text",
@@ -57,6 +58,13 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor"))
+            private$..counts <- jmvcore::OptionVariable$new(
+                "counts",
+                counts,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..donut <- jmvcore::OptionBool$new(
                 "donut",
                 donut,
@@ -315,6 +323,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..aVar)
             self$.addOption(private$..facet)
+            self$.addOption(private$..counts)
             self$.addOption(private$..donut)
             self$.addOption(private$..labels)
             self$.addOption(private$..labType)
@@ -346,6 +355,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         aVar = function() private$..aVar$value,
         facet = function() private$..facet$value,
+        counts = function() private$..counts$value,
         donut = function() private$..donut$value,
         labels = function() private$..labels$value,
         labType = function() private$..labType$value,
@@ -376,6 +386,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     private = list(
         ..aVar = NA,
         ..facet = NA,
+        ..counts = NA,
         ..donut = NA,
         ..labels = NA,
         ..labType = NA,
@@ -443,7 +454,7 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 pause = NULL,
                 completeWhenFilled = FALSE,
                 requiresMissings = FALSE,
-                weightsSupport = 'auto')
+                weightsSupport = 'full')
         }))
 
 #' Pie Chart
@@ -452,6 +463,7 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param aVar .
 #' @param facet .
+#' @param counts .
 #' @param donut .
 #' @param labels .
 #' @param labType .
@@ -489,6 +501,7 @@ piechart <- function(
     data,
     aVar,
     facet,
+    counts,
     donut = FALSE,
     labels = "none",
     labType = "text",
@@ -522,11 +535,13 @@ piechart <- function(
 
     if ( ! missing(aVar)) aVar <- jmvcore::resolveQuo(jmvcore::enquo(aVar))
     if ( ! missing(facet)) facet <- jmvcore::resolveQuo(jmvcore::enquo(facet))
+    if ( ! missing(counts)) counts <- jmvcore::resolveQuo(jmvcore::enquo(counts))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(aVar), aVar, NULL),
-            `if`( ! missing(facet), facet, NULL))
+            `if`( ! missing(facet), facet, NULL),
+            `if`( ! missing(counts), counts, NULL))
 
     for (v in aVar) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in facet) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
@@ -534,6 +549,7 @@ piechart <- function(
     options <- piechartOptions$new(
         aVar = aVar,
         facet = facet,
+        counts = counts,
         donut = donut,
         labels = labels,
         labType = labType,

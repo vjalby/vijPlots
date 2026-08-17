@@ -178,11 +178,13 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(y = yLab, x = timeVar, legend = groupVar)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Suppress black border
             plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(color = NULL)))
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         },

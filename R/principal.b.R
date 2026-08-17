@@ -322,9 +322,11 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(title = .("Scree Plot"), y = .("Eigenvalues"), x = .("Component"))
-            plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = "scree") + vijTitleAndLabelFormat(self$options)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = "scree", plot = plot) + vijTitleAndLabelFormat(self$options)
             # Reset x and y labs (which cannot be common with other plots)
             plot <- plot + ggplot2::labs(x = .("Component"), y = .("Eigenvalues"))
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         },
@@ -500,7 +502,9 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(title = title, subtitle = subtitle, caption = caption, legend = legend, y = dim2name, x = dim1name)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType) + vijTitleAndLabelFormat(self$options)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plotType = plotType, plot = plot) + vijTitleAndLabelFormat(self$options)
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         },

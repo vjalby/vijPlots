@@ -520,6 +520,15 @@
             "Counts (optional)": [
                 "Effectifs (optionnel)"
             ],
+            "Counts may not be infinite.": [
+                "Les effectifs ne peuvent pas être infinis."
+            ],
+            "Counts may not be negative.": [
+                "Les effectifs ne peuvent pas être négatifs."
+            ],
+            "Counts may not contain missing values.": [
+                "Les effectifs ne peuvent pas contenir de valeurs manquantes."
+            ],
             "Cov (Loading principal)": [
                 "Cov (Var. principales)"
             ],
@@ -932,7 +941,7 @@
                 "Tests de Kruskal-Wallis"
             ],
             "Label": [
-                "Étiquettes"
+                "Étiquette"
             ],
             "Label color": [
                 "Couleur des %"
@@ -1502,7 +1511,7 @@
                 "Rouge et gris"
             ],
             "Red to Purple": [
-                "Rouge et violet"
+                "Rouge à violet"
             ],
             "Red, Yellow and Blue": [
                 "Rouge, jaune et bleu"

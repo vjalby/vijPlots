@@ -16,6 +16,13 @@ children:
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
+        label: Counts (optional)
+        children:
+          - type: VariablesListBox
+            name: counts
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
         label: Facet
         children:
           - type: VariablesListBox

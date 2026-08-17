@@ -23,7 +23,7 @@ against it before making the module public.
 
 ```r
 devtools::load_all(".")                                   # load the package for interactive dev
-devtools::document()                                       # regenerate man/ from roxygen comments
+devtools::document()                                       # regenerate man/ from roxygen comments — stubs only (empty @param text); man/ isn't tracked in git and isn't actively maintained, since vijPlots is used via jamovi's GUI, not `?fun`
 jmvtools::prepare()                                         # regenerate R/*.h.R from jamovi/*.yaml after editing options
 jmvtools::install()                                         # build & install the .jmo into a local jamovi (requires options(jamovi_home=...), see build.R)
 ```
@@ -68,9 +68,11 @@ All prefixed `vij*` for easy grepping: `vijScale()`/`vijPalette()`/`vijPaletteNl
 palette scales from the `colorPalette` option; `vijTitlesAndLabels()`/`vijTitleAndLabelFormat()`
 build `labs()` and axis/legend theme from the title/subtitle/caption/axis options every module
 exposes; `vijHelpMessage()`/`vijErrorMessage()`/`vijWarningMessage()`/`vijDebugMessage()` write to
-`self$results$todo`.
+`self$results$todo`; `vijDebugPlot(self, plot)` — called at the end of every `.plot()` — forces an
+eager build to surface any ggplot2 warning/message as a Notice instead of letting jmvcore silently
+swallow it (see gotcha below).
 
-### Three non-obvious runtime gotchas
+### Non-obvious runtime gotchas
 
 - The generated `<name>(...)` wrapper's `for (v in group) ...` / `for (v in facet) ...` lines are
   **not** guarded by `missing()`. Calling it with `data=` supplied directly (as tests do) and
@@ -93,6 +95,31 @@ exposes; `vijHelpMessage()`/`vijErrorMessage()`/`vijWarningMessage()`/`vijDebugM
   analysis's generated `<name>.h.R` signature for arguments without a default before writing its
   test file (and passing those explicitly), since nothing prevents a future option from
   reintroducing this.
+- `jmvcore::Analysis$.render()` always wraps the real plot print in
+  `suppressWarnings(suppressMessages(print(result)))` — any ggplot2 warning/message raised while
+  rendering through the normal jamovi/testthat pipeline is silently swallowed, including the
+  `cli_inform()`-based "Ignoring unknown labels"/"Scale ... already present" diagnostics (these are
+  `message`-class conditions, not `warning`-class, despite reading like warnings — a `warning=`
+  handler alone won't catch them). `vijDebugPlot(self, plot)` forces an eager
+  `ggplot2::ggplot_build()` to catch and surface them as Notices in the results pane instead — but
+  only when `DESCRIPTION`'s `Version` has a 4th component (e.g. `1.3.0.0`); it's a no-op on the
+  plain `x.y.z` release version. Bump to a 4-part version locally to see these during testing, and
+  use a 3-part version before publishing. `jamovi/0000.yaml`'s own `version:` field is a separate
+  number and must always stay strict 3-part (jamovi module registry requirement) — never give it a
+  4th component.
+- `vijTitlesAndLabels()` takes an optional `plot` argument: when supplied, it inspects
+  `plot$mapping`/`layer$mapping` (minus each layer's `aes_params`, which shadow an inherited
+  mapping — e.g. `geom_histogram(fill = fixedColor)`) to decide which of `fill`/`colour`/`shape`
+  are actually used, so it only sets a `labs()` legend title for aesthetics really present in the
+  plot. Skipping this (or passing no `plot`) risks ggplot2's "Ignoring unknown labels" diagnostic.
+  Don't use `ggplot2::get_labs()` for this check — it calls a full `ggplot2::ggplot_build()`
+  internally (~300x slower in informal benchmarking), doubling the real render cost on every plot.
+- When forcing legend order via `guides(aes = guide_legend(order = N))` on a plot with multiple
+  legends, set an explicit `order` on *every* merged aesthetic (e.g. `color`/`fill`/`shape` all
+  mapped to the same grouping variable), not just the one you care about positioning — an
+  aesthetic left at the default `order = 0` sorts by an internal hash rather than code order, so
+  its position relative to an explicitly-ordered one is not deterministic across different
+  grouping variables/data (seen in `scatterplot.b.R`'s size-vs-group legend ordering).
 
 ### Dependency graph has soft/transitive requirements
 
@@ -103,6 +130,19 @@ required at runtime by another dependency and would break at render time if remo
 `principal.b.R`), `labelled` (an optional dependency of `ggstats::gglikert_data()`, checked via
 `rlang::check_installed("labelled")`, called from `likertplot.b.R`). Before removing an Import that
 looks unused by a plain grep, check whether the package that *is* called depends on it.
+
+### Translations (`jamovi/i18n/*.po`)
+
+Regenerated via `jmvtools::i18nUpdate("<lang>")` (see `build.R`), which merges newly-extracted
+strings into the existing `.po` file by exact string match — reusing one `msgid`/`msgstr` pair
+across every `.a.yaml`/`.u.yaml` location where that exact English string occurs, even across
+unrelated options. A new option that reuses a common short title (e.g. `title: Label`) silently
+inherits whatever translation that string already has elsewhere, which may be wrong in the new
+context (plural vs singular, different meaning) — check `grep -n '^msgid "<string>"$'` and read
+every `#:` reference before trusting a shared translation. Long strings also wrap across
+continuation lines (`msgstr ""` followed by quoted-string lines) — a naive per-line/per-block
+regex check for empty translations will misreport every long string as untranslated; parse
+`msgid`/`msgstr` by concatenating all consecutive `"..."` lines that follow the keyword.
 
 ## Testing
 

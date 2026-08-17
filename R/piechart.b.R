@@ -1,8 +1,25 @@
 piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "piechartClass",
     inherit = piechartBase,
+    #### Active bindings ---- from jmv/conttables.b.R
+    active = list(
+        countsName = function() {
+            if ( ! is.null(self$options$counts)) {
+                return(self$options$counts)
+            } else if ( ! is.null(attr(self$data, "jmv-weights-name"))) {
+                return (attr(self$data, "jmv-weights-name"))
+            }
+            NULL
+        }
+    ),
     private = list(
         .init = function() {
+            # Weight message
+            countsName <- self$countsName
+            if (!is.null(countsName)) {
+                warningMessage <- ..('The data is weighted by the variable {}.', countsName)
+                vijWarningMessage(self, warningMessage, '.weights')
+            }
             # Stretchable dimensions
             if (!is.null(self$options$facet)) {
                 nbOfFacet <- nlevels(self$data[[self$options$facet]])
@@ -43,9 +60,32 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- self$data[c(self$options$aVar, self$options$facet)]
 
+            # Weight data
+            countsName <- self$options$counts
+            if (!is.null(countsName)) {
+                # vijPlots weights
+                plotData[['.COUNTS']] <- jmvcore::toNumeric(self$data[[countsName]])
+            } else if (!is.null(attr(self$data, "jmv-weights"))) {
+                # jamovi built-in weights
+                plotData[['.COUNTS']] <- jmvcore::toNumeric(attr(self$data, "jmv-weights"))
+            } else {
+                # no weights
+                plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
+            }
+
             plotData <- jmvcore::naOmit(plotData)
             if (nrow(plotData) == 0)
                 return(FALSE)
+
+            # Validate .COUNTS (non negative / not infinite)
+            if (any(plotData$.COUNTS < 0)) {
+                vijErrorMessage(self, .('Counts may not be negative.'))
+                return(FALSE)
+            }
+            if (any(is.infinite(plotData$.COUNTS))) {
+                vijErrorMessage(self, .('Counts may not be infinite.'))
+                return(FALSE)
+            }
 
             image <- self$results$plot
             image$setState(plotData)
@@ -77,13 +117,13 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 suffix = '\u2009%',
                 decimal.mark = self$options[['decSymbol']])
 
-            #### Build the lot ####
+            #### Build the plot ####
 
             if(self$options$donut) {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 10, fill = !!aVar, by = 1)) + ggplot2::xlim(c(8.5,NA))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 10, fill = !!aVar, by = 1, weight = .data[[".COUNTS"]])) + ggplot2::xlim(c(8.5,NA))
                 xOffset <- 10
             } else {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = "", fill = !!aVar, by = 1))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = "", fill = !!aVar, by = 1, weight = .data[[".COUNTS"]]))
                 xOffset <- 1
             }
 
@@ -165,7 +205,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(y = "", x = "", legend = aVar)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) + vijTitleAndLabelFormat(self$options)
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options)
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Labs
@@ -173,6 +213,9 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                  axis.line.x = ggplot2::element_blank(), axis.line.y = ggplot2::element_blank(),
                                  axis.text.x = ggplot2::element_blank(),axis.text.y = ggplot2::element_blank(),
                                  panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank())
+
+            vijDebugPlot(self, plot)
+
             return(plot)
         }
 

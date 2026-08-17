@@ -166,6 +166,10 @@ children:
                     name: lineSize
                     format: number
                     enable: (hline || vline || regLine)
+                  - type: TextBox
+                    name: labelTextSize
+                    format: number
+                    enable: (!(!labelVar))
           - type: LayoutBox
             cell:
               column: 1

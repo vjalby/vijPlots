@@ -1287,7 +1287,7 @@ msgstr "Impossible de corriger les niveaux d'une variable de type texte."
 #: boxplot/ui[6][2].label
 #: histogram/ui[7][2].label
 #: likertplot/ui[8][2].label
-#: linechart/ui[5][2].label
+#: linechart/ui[4][2].label
 #: lollipop/ui[7][2].label
 #: mrcrosstabs/ui[6][2].label
 #: mrfrequencies/ui[6][2].label
@@ -1697,10 +1697,30 @@ msgstr "Valeur comptée"
 msgid "Counts"
 msgstr "Effectifs"
 
+#: barplot/options/counts.title
+#: barplot/ui[0][2].label
 #: corresp/options/counts.title
 #: corresp/ui/mode/obsTable[0][0][2].label
+#: piechart/options/counts.title
+#: piechart/ui[0][1].label
 msgid "Counts (optional)"
 msgstr "Effectifs (optionnel)"
+
+#: R/barplot.b.R
+#: R/corresp.b.R
+#: R/piechart.b.R
+msgid "Counts may not be infinite."
+msgstr "Les effectifs ne peuvent pas être infinis."
+
+#: R/barplot.b.R
+#: R/corresp.b.R
+#: R/piechart.b.R
+msgid "Counts may not be negative."
+msgstr "Les effectifs ne peuvent pas être négatifs."
+
+#: R/barplot.b.R
+msgid "Counts may not contain missing values."
+msgstr "Les effectifs ne peuvent pas contenir de valeurs manquantes."
 
 #: principal/ui[3][2][0]/biplotType_covPlot.label
 msgid "Cov (Loading principal)"
@@ -2038,7 +2058,7 @@ msgstr "Sommes des carrés des composantes extraites"
 #: barchart/ui[0][3].label
 #: barplot/options/facet.title
 #: barplot/options/facetBy.title
-#: barplot/ui[0][2].label
+#: barplot/ui[0][3].label
 #: boxplot/options/facet.title
 #: boxplot/ui[0][3].label
 #: histogram/options/facet.title
@@ -2047,7 +2067,7 @@ msgstr "Sommes des carrés des composantes extraites"
 #: lollipop/options/facetBy.title
 #: lollipop/ui[0][2].label
 #: piechart/options/facet.title
-#: piechart/ui[0][1].label
+#: piechart/ui[0][2].label
 #: scatterplot/options/facet.title
 #: scatterplot/ui[0][5].label
 msgid "Facet"
@@ -2688,9 +2708,10 @@ msgstr "Tests de Kruskal-Wallis"
 #: principal/options/labelVar.title
 #: principal/ui[0][1].label
 #: scatterplot/options/labelVar.title
+#: scatterplot/options/labelTextSize.title
 #: scatterplot/ui[0][3].label
 msgid "Label"
-msgstr "Étiquettes"
+msgstr "Étiquette"
 
 #: likertplot/options/labelColor.title
 msgid "Label color"
@@ -3971,7 +3992,7 @@ msgstr "Options du graphique"
 #: boxplot/ui[6].label
 #: histogram/ui[7].label
 #: likertplot/ui[8].label
-#: linechart/ui[5].label
+#: linechart/ui[4].label
 #: lollipop/ui[7].label
 #: mrcrosstabs/ui[6].label
 #: mrfrequencies/ui[6].label
@@ -4352,7 +4373,7 @@ msgstr "Rouge et gris"
 #: raincloud/options/colorPalette/RdPu.title
 #: scatterplot/options/colorPalette/RdPu.title
 msgid "Red to Purple"
-msgstr "Rouge et violet"
+msgstr "Rouge à violet"
 
 #: likertplot/options/plotColor/RdYlBu.title
 msgid "Red, Yellow and Blue"
@@ -5007,7 +5028,7 @@ msgstr "Student"
 #: boxplot/ui[6][1].label
 #: histogram/ui[7][1].label
 #: likertplot/ui[8][1].label
-#: linechart/ui[5][1].label
+#: linechart/ui[4][1].label
 #: lollipop/ui[7][1].label
 #: mrcrosstabs/ui[6][1].label
 #: mrfrequencies/ui[6][1].label
@@ -5175,8 +5196,8 @@ msgid ""
 "The following variable(s) are constant and cannot be used in a principal "
 "component analysis: {vars}."
 msgstr ""
-"Les variables suivantes sont constantes et ne peuvent pas être utilisées dans "
-"une analyse en composantes principales : {vars}."
+"Les variables suivantes sont constantes et ne peuvent pas être utilisées "
+"dans une analyse en composantes principales : {vars}."
 
 #: R/multcorresp.b.R
 msgid "The number of dimensions cannot be greater than {max}."
@@ -5387,7 +5408,7 @@ msgstr "Séries temporelles"
 #: boxplot/ui[6][0].label
 #: histogram/ui[7][0].label
 #: likertplot/ui[8][0].label
-#: linechart/ui[5][0].label
+#: linechart/ui[4][0].label
 #: lollipop/ui[7][0].label
 #: mrcrosstabs/ui[6][0].label
 #: mrfrequencies/ui[6][0].label

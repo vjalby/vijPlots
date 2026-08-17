@@ -22,9 +22,17 @@
 
 ![](img/lollipop.jpg)
 
+## Raincloud Plot
+
+![](img/raincloud.jpg)
+
+## QQ Plot
+
+![](img/qqplot.jpg)
+
 ## Bar Plot (for qualitative variables)
 
-![](img/bar.jpg)
+![](img/barplot.jpg)
 
 ## Pie Chart
 
@@ -40,21 +48,11 @@
 
 ## Line Charts
 
-![](img/linechart1.jpg)
-
-![](img/linechart2.jpg)
+![](img/line.jpg)
 
 ## Area Chart
 
 ![](img/areachart.jpg)
-
-## Raincloud Plot
-
-![](img/raincloud.jpg)
-
-## QQ Plot
-
-![](img/qqplot.jpg)
 
 ## Principal Component Analysis
 
@@ -70,17 +68,20 @@
 
 ## Version history
 
-### 2026-08-?? / 1.2.9
+### 2026-08-?? / 1.4.0
 
 - Mosaic Plot
 
-### 2026-08-?? / 1.2.5
+### 2026-08-17 / 1.3.0
 
 - Code optimization and fixes everywhere
 - MCA (Burt method): Fixed variable discrimination computation
 - Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
 - Histogram: Options to hide bins and to show lines
-- Scatter Plot: Option to use different shapes
+- Scatter Plot: Option to use different shapes. Option to set label text size
+- Fixed stacking order in barplot/barchart/mrcrosstab
+- Support for weights in barplot/piechart
+- Improved ggplot2 4.0 support
 
 ### 2026-07-31 / 1.2.2
 

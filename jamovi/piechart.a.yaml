@@ -6,6 +6,7 @@ menuGroup: vijPlots
 menuSubgroup: Categorical
 version: '1.0.0'
 jas: '1.2'
+weightsSupport: 'full'
 
 options:
     - name: data
@@ -27,6 +28,14 @@ options:
         - ordinal
       permitted:
         - factor
+
+    - name: counts
+      title: Counts (optional)
+      type: Variable
+      suggested:
+        - continuous
+      permitted:
+        - numeric
 
     - name: donut
       title: Donut chart

@@ -417,7 +417,7 @@ options:
       default: jmv
 
     - name: labelSize
-      title: Labels
+      title: Label
       type: Number
       default: 12
       min: 8

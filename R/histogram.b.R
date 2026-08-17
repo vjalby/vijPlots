@@ -282,8 +282,10 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Titles & Labels
             defaults <- list(legend = groupVar, x = xVar, y = yLab)
-            plot <- plot + vijTitlesAndLabels(self$options, defaults) +
+            plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) +
                             vijTitleAndLabelFormat(self$options)
+
+            vijDebugPlot(self, plot)
 
             return(plot)
         }

@@ -59,8 +59,20 @@ options:
       type: Bool
       default: false
 
+    - name: yAxis
+      title: Y-Axis
+      type: List
+      options:
+        - title: Percent
+          name:  percent
+        - title: Group label
+          name:  label
+        - title: None
+          name:  none
+      default: percent
+
     - name: order
-      title: Sorting
+      title: X-Axis order
       type: List
       options:
         - title: Decreasing
@@ -76,23 +88,25 @@ options:
       type: Bool
       default: false
 
-    - name: noPadding
-      title: Remove padding
+    - name: residualsAsOpacity
+      title: Use Pearson residuals
       type: Bool
       default: false
 
-    - name: noAxes
+    - name: showOpacityLegend
+      title: Show legend
+      type: Bool
+      default: false
+
+    - name: borderWidth
+      type: Number
+      title: Width
+      min: 0
+      max: 5
+      default: 1
+
+    - name: hideAxes
       title: Hide axes
-      type: Bool
-      default: false
-
-    - name: noPercent
-      title: Hide % values
-      type: Bool
-      default: false
-
-    - name: groupAxisLabels
-      title: Show labels
       type: Bool
       default: false
 
@@ -111,7 +125,7 @@ options:
       default: none
 
     - name: accuracy
-      title: "% Accuracy"
+      title: "Accuracy"
       type: List
       options:
         - title: "1"

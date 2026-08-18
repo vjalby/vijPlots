@@ -12,12 +12,13 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             facet = NULL,
             ignoreNA = TRUE,
             horizontal = FALSE,
+            yAxis = "percent",
             order = "none",
             reverseStack = FALSE,
-            noPadding = FALSE,
-            noAxes = FALSE,
-            noPercent = FALSE,
-            groupAxisLabels = FALSE,
+            residualsAsOpacity = FALSE,
+            showOpacityLegend = FALSE,
+            borderWidth = 1,
+            hideAxes = FALSE,
             labelType = "none",
             accuracy = "0.1",
             colorPalette = "jmv",
@@ -98,6 +99,14 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "horizontal",
                 horizontal,
                 default=FALSE)
+            private$..yAxis <- jmvcore::OptionList$new(
+                "yAxis",
+                yAxis,
+                options=list(
+                    "percent",
+                    "label",
+                    "none"),
+                default="percent")
             private$..order <- jmvcore::OptionList$new(
                 "order",
                 order,
@@ -110,21 +119,23 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "reverseStack",
                 reverseStack,
                 default=FALSE)
-            private$..noPadding <- jmvcore::OptionBool$new(
-                "noPadding",
-                noPadding,
+            private$..residualsAsOpacity <- jmvcore::OptionBool$new(
+                "residualsAsOpacity",
+                residualsAsOpacity,
                 default=FALSE)
-            private$..noAxes <- jmvcore::OptionBool$new(
-                "noAxes",
-                noAxes,
+            private$..showOpacityLegend <- jmvcore::OptionBool$new(
+                "showOpacityLegend",
+                showOpacityLegend,
                 default=FALSE)
-            private$..noPercent <- jmvcore::OptionBool$new(
-                "noPercent",
-                noPercent,
-                default=FALSE)
-            private$..groupAxisLabels <- jmvcore::OptionBool$new(
-                "groupAxisLabels",
-                groupAxisLabels,
+            private$..borderWidth <- jmvcore::OptionNumber$new(
+                "borderWidth",
+                borderWidth,
+                min=0,
+                max=5,
+                default=1)
+            private$..hideAxes <- jmvcore::OptionBool$new(
+                "hideAxes",
+                hideAxes,
                 default=FALSE)
             private$..labelType <- jmvcore::OptionList$new(
                 "labelType",
@@ -434,12 +445,13 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..facet)
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..horizontal)
+            self$.addOption(private$..yAxis)
             self$.addOption(private$..order)
             self$.addOption(private$..reverseStack)
-            self$.addOption(private$..noPadding)
-            self$.addOption(private$..noAxes)
-            self$.addOption(private$..noPercent)
-            self$.addOption(private$..groupAxisLabels)
+            self$.addOption(private$..residualsAsOpacity)
+            self$.addOption(private$..showOpacityLegend)
+            self$.addOption(private$..borderWidth)
+            self$.addOption(private$..hideAxes)
             self$.addOption(private$..labelType)
             self$.addOption(private$..accuracy)
             self$.addOption(private$..colorPalette)
@@ -482,12 +494,13 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         facet = function() private$..facet$value,
         ignoreNA = function() private$..ignoreNA$value,
         horizontal = function() private$..horizontal$value,
+        yAxis = function() private$..yAxis$value,
         order = function() private$..order$value,
         reverseStack = function() private$..reverseStack$value,
-        noPadding = function() private$..noPadding$value,
-        noAxes = function() private$..noAxes$value,
-        noPercent = function() private$..noPercent$value,
-        groupAxisLabels = function() private$..groupAxisLabels$value,
+        residualsAsOpacity = function() private$..residualsAsOpacity$value,
+        showOpacityLegend = function() private$..showOpacityLegend$value,
+        borderWidth = function() private$..borderWidth$value,
+        hideAxes = function() private$..hideAxes$value,
         labelType = function() private$..labelType$value,
         accuracy = function() private$..accuracy$value,
         colorPalette = function() private$..colorPalette$value,
@@ -529,12 +542,13 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..facet = NA,
         ..ignoreNA = NA,
         ..horizontal = NA,
+        ..yAxis = NA,
         ..order = NA,
         ..reverseStack = NA,
-        ..noPadding = NA,
-        ..noAxes = NA,
-        ..noPercent = NA,
-        ..groupAxisLabels = NA,
+        ..residualsAsOpacity = NA,
+        ..showOpacityLegend = NA,
+        ..borderWidth = NA,
+        ..hideAxes = NA,
         ..labelType = NA,
         ..accuracy = NA,
         ..colorPalette = NA,
@@ -622,12 +636,13 @@ mosaicBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param facet .
 #' @param ignoreNA .
 #' @param horizontal .
+#' @param yAxis .
 #' @param order .
 #' @param reverseStack .
-#' @param noPadding .
-#' @param noAxes .
-#' @param noPercent .
-#' @param groupAxisLabels .
+#' @param residualsAsOpacity .
+#' @param showOpacityLegend .
+#' @param borderWidth .
+#' @param hideAxes .
 #' @param labelType .
 #' @param accuracy .
 #' @param colorPalette .
@@ -676,12 +691,13 @@ mosaic <- function(
     facet,
     ignoreNA = TRUE,
     horizontal = FALSE,
+    yAxis = "percent",
     order = "none",
     reverseStack = FALSE,
-    noPadding = FALSE,
-    noAxes = FALSE,
-    noPercent = FALSE,
-    groupAxisLabels = FALSE,
+    residualsAsOpacity = FALSE,
+    showOpacityLegend = FALSE,
+    borderWidth = 1,
+    hideAxes = FALSE,
     labelType = "none",
     accuracy = "0.1",
     colorPalette = "jmv",
@@ -743,12 +759,13 @@ mosaic <- function(
         facet = facet,
         ignoreNA = ignoreNA,
         horizontal = horizontal,
+        yAxis = yAxis,
         order = order,
         reverseStack = reverseStack,
-        noPadding = noPadding,
-        noAxes = noAxes,
-        noPercent = noPercent,
-        groupAxisLabels = groupAxisLabels,
+        residualsAsOpacity = residualsAsOpacity,
+        showOpacityLegend = showOpacityLegend,
+        borderWidth = borderWidth,
+        hideAxes = hideAxes,
         labelType = labelType,
         accuracy = accuracy,
         colorPalette = colorPalette,

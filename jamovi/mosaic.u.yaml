@@ -55,6 +55,8 @@ children:
               - type: CheckBox
                 name: reverseStack
               - type: CheckBox
+                name: hideAxes
+              - type: CheckBox
                 name: horizontal
       - type: LayoutBox
         cell:
@@ -63,24 +65,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Axis Options
-            children:
-              - type: CheckBox
-                name: noPadding
-              - type: CheckBox
-                name: noAxes
-              - type: CheckBox
-                name: noPercent
-              - type: CheckBox
-                name: groupAxisLabels
-      - type: LayoutBox
-        cell:
-          column: 2
-          row: 0
-        stretchFactor: 1
-        children:
-          - type: Label
-            label: Sorting
+            label: X-Axis Order
             children:
               - type: RadioButton
                 name: order_none
@@ -97,6 +82,27 @@ children:
                 optionName: order
                 optionPart: decreasing
                 label: Decreasing
+      - type: LayoutBox
+        cell:
+          column: 2
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Y-Axis
+            children:
+              - type: RadioButton
+                name: yAxis_percent
+                optionName: yAxis
+                optionPart: percent
+              - type: RadioButton
+                name: yAxis_label
+                optionName: yAxis
+                optionPart: label
+              - type: RadioButton
+                name: yAxis_none
+                optionName: yAxis
+                optionPart: none
   - type: CollapseBox
     label: Label Options
     collapsed: true
@@ -154,7 +160,7 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: 'Accuracy'
+                label: Accuracy
                 children:
                   - type: RadioButton
                     name: accuracy_1
@@ -175,13 +181,14 @@ children:
                     label: '0.01'
                     enable: (!labelType:none && !labelType:count)
   - type: CollapseBox
-    label: Colors
+    label: Tile Options
     collapsed: true
     stretchFactor: 1
     children:
       - type: LayoutBox
         margin: large
         stretchFactor: 1
+        style: inline
         children:
           - type: LayoutBox
             cell:
@@ -195,6 +202,33 @@ children:
                   - type: ComboBox
                     name: colorPalette
                     label: ''
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Opacity
+                children:
+                  - type: CheckBox
+                    name: residualsAsOpacity
+                    label: "Map to residuals"
+                  - type: CheckBox
+                    name: showOpacityLegend
+                    enable: (residualsAsOpacity)
+          - type: LayoutBox
+            cell:
+              column: 2
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Border
+                children:
+                  - type: TextBox
+                    name: borderWidth
+                    format: number
   - type: CollapseBox
     label: Facets
     collapsed: true

@@ -13,6 +13,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ignoreNA = TRUE,
             horizontal = FALSE,
             yAxis = "percent",
+            alwaysShowGroupLegend = FALSE,
             order = "none",
             reverseStack = FALSE,
             residualsAsOpacity = FALSE,
@@ -107,6 +108,10 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "label",
                     "none"),
                 default="percent")
+            private$..alwaysShowGroupLegend <- jmvcore::OptionBool$new(
+                "alwaysShowGroupLegend",
+                alwaysShowGroupLegend,
+                default=FALSE)
             private$..order <- jmvcore::OptionList$new(
                 "order",
                 order,
@@ -446,6 +451,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..horizontal)
             self$.addOption(private$..yAxis)
+            self$.addOption(private$..alwaysShowGroupLegend)
             self$.addOption(private$..order)
             self$.addOption(private$..reverseStack)
             self$.addOption(private$..residualsAsOpacity)
@@ -495,6 +501,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ignoreNA = function() private$..ignoreNA$value,
         horizontal = function() private$..horizontal$value,
         yAxis = function() private$..yAxis$value,
+        alwaysShowGroupLegend = function() private$..alwaysShowGroupLegend$value,
         order = function() private$..order$value,
         reverseStack = function() private$..reverseStack$value,
         residualsAsOpacity = function() private$..residualsAsOpacity$value,
@@ -543,6 +550,7 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ignoreNA = NA,
         ..horizontal = NA,
         ..yAxis = NA,
+        ..alwaysShowGroupLegend = NA,
         ..order = NA,
         ..reverseStack = NA,
         ..residualsAsOpacity = NA,
@@ -637,6 +645,7 @@ mosaicBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ignoreNA .
 #' @param horizontal .
 #' @param yAxis .
+#' @param alwaysShowGroupLegend .
 #' @param order .
 #' @param reverseStack .
 #' @param residualsAsOpacity .
@@ -692,6 +701,7 @@ mosaic <- function(
     ignoreNA = TRUE,
     horizontal = FALSE,
     yAxis = "percent",
+    alwaysShowGroupLegend = FALSE,
     order = "none",
     reverseStack = FALSE,
     residualsAsOpacity = FALSE,
@@ -760,6 +770,7 @@ mosaic <- function(
         ignoreNA = ignoreNA,
         horizontal = horizontal,
         yAxis = yAxis,
+        alwaysShowGroupLegend = alwaysShowGroupLegend,
         order = order,
         reverseStack = reverseStack,
         residualsAsOpacity = residualsAsOpacity,

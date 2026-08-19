@@ -39,9 +39,10 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Fixed dimension
             fixed_width <- 50 # Y-Axis legend
             fixed_height <- 50 # X-Axis legend
-            if (self$options$yAxis != "label" || (self$options$residualsAsOpacity && self$options$showOpacityLegend)) {
+            showGroupLegend <- self$options$yAxis != "label" || self$options$alwaysShowGroupLegend
+            if (showGroupLegend || (self$options$residualsAsOpacity && self$options$showOpacityLegend)) {
                 if (self$options$legendPosition %in% c('top','bottom')) {
-                    if (self$options$yAxis != "label" && self$options$residualsAsOpacity && self$options$showOpacityLegend)
+                    if (showGroupLegend && self$options$residualsAsOpacity && self$options$showOpacityLegend)
                         fixed_height <- fixed_height + 100
                     else
                         fixed_height <- fixed_height + 50
@@ -193,40 +194,35 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (self$options$yAxis == "label") {
                 if (is.null(self$options$facet)) {
+                    # KNOWN LIMITATION: see matching comment in the facet block below — a group with
+                    # zero count in the first column is silently missing from the y-axis labels.
                     firstColBreaks <- dplyr::filter(plotData, x_center == min(x_center))
                     plot <- plot + ggplot2::scale_y_continuous(breaks = firstColBreaks$y_center,
                                                                 labels = firstColBreaks[[group]],
                                                                 expand = ggplot2::expansion(mult = expFactMult))
                 }
                 # else: per-facet breaks/labels added below via facetted_pos_scales(y = ...)
-            } else if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
-                                                            breaks = scales::breaks_extended(self$options$xTicks + 1),
-                                                            expand = ggplot2::expansion(mult = expFactMult))
-            } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
-                                                            breaks = scales::breaks_extended(self$options$yTicks + 1),
-                                                            expand = ggplot2::expansion(mult = expFactMult))
-            } else {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
-                                                            expand = ggplot2::expansion(mult = expFactMult))
+            } else if (self$options$yAxis == "percent") {
+                if (self$options$horizontal && self$options$xTicks > 0) {
+                    plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
+                                                                breaks = scales::breaks_extended(self$options$xTicks + 1),
+                                                                expand = ggplot2::expansion(mult = expFactMult))
+                } else if (!self$options$horizontal && self$options$yTicks > 0) {
+                    plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
+                                                                breaks = scales::breaks_extended(self$options$yTicks + 1),
+                                                                expand = ggplot2::expansion(mult = expFactMult))
+                } else {
+                    plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct,
+                                                                expand = ggplot2::expansion(mult = expFactMult))
+                }
+            } else { # yAxis == "none
+                plot <- plot  + ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = expFactMult))
             }
 
             #### Facet ####
 
             if (!is.null(self$options$facet)) {
                 facetVar <- rlang::sym(self$options$facet)
-
-                # Column widths are computed per facet, so each panel needs its own x breaks/labels
-                facetLevels <- levels(droplevels(plotData[[self$options$facet]]))
-                xScales <- lapply(facetLevels, function(lv) {
-                    subData <- plotData[plotData[[self$options$facet]] == lv, ]
-                    ggplot2::scale_x_continuous(breaks = unique(subData$x_center),
-                                                labels = unique(subData[[category]]),
-                                                expand = ggplot2::expansion(mult = expFactMult)
-                                                )
-                })
-
                 # coord_flip() below needs the OPPOSITE free scale from what you'd expect:
                 # free_x when horizontal, free_y otherwise (confirmed empirically, see conversation)
                 # TEMP: with self$options$yAxis == "label", ggh4x::facetted_pos_scales() only assigns distinct
@@ -245,10 +241,23 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else
                     plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = freeScale)
 
-                posScales <- list(x = xScales)
+                # xScales
+                facetLevels <- levels(droplevels(plotData[[self$options$facet]]))
+                # Column widths are computed per facet, so each panel needs its own x breaks/labels
+                xScales <- lapply(facetLevels, function(lv) {
+                    subData <- plotData[plotData[[self$options$facet]] == lv, ]
+                    ggplot2::scale_x_continuous(breaks = unique(subData$x_center),
+                                                labels = unique(subData[[category]]),
+                                                expand = ggplot2::expansion(mult = expFactMult)
+                                                )
+                })
 
+                # yScales
                 if (self$options$yAxis == "label") {
-                    posScales$y <- lapply(facetLevels, function(lv) {
+                    # KNOWN LIMITATION: breaks/labels come only from the first (leftmost) column, so a
+                    # group with zero count there is silently missing from the y-axis even if present
+                    # in other columns.
+                    yScales <- lapply(facetLevels, function(lv) {
                         subData <- plotData[plotData[[self$options$facet]] == lv, ]
                         firstColBreaks <- dplyr::filter(subData, x_center == min(x_center))
                         ggplot2::scale_y_continuous(breaks = firstColBreaks$y_center,
@@ -257,9 +266,16 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     })
                 }
 
-                plot <- plot + do.call(ggh4x::facetted_pos_scales, posScales)
+                # Apply scales using ggh4x::facetted_pos_scales
+                if (self$options$yAxis == "label") {
+                    plot <- plot + ggh4x::facetted_pos_scales(x = xScales, y = yScales)
+                } else {
+                    plot <- plot + ggh4x::facetted_pos_scales(x = xScales)
+                }
+
             }
 
+            #### Theme, Legend & Axes ####
 
             # Theme and colors
             plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE) # drop to include unused levels in color scales
@@ -270,10 +286,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Legend position
 
-            if (self$options$yAxis == "label") {
-                plot <- plot + ggplot2::guides(fill = "none")
-            } else {
+            showGroupLegend <- self$options$yAxis != "label" || self$options$alwaysShowGroupLegend
+            if (showGroupLegend) {
                 plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(linewidth = 0.5), order = 1))
+            } else {
+                plot <- plot + ggplot2::guides(fill = "none")
             }
 
             if (self$options$showOpacityLegend) {
@@ -282,7 +299,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::guides(alpha = "none")
             }
 
-            if (self$options$yAxis != "label" || self$options$showOpacityLegend)
+            if (showGroupLegend || self$options$showOpacityLegend)
                 plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 
             # Hide axes

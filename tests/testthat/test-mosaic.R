@@ -71,6 +71,19 @@ test_that("mosaic: y-axis as group labels", {
     expect_plot_snapshot("mosaic-yaxis-label", testPlot)
 })
 
+test_that("mosaic: y-axis as group labels, legend forced on", {
+    testPlot <- vijPlots::mosaic(
+        data = testData,
+        category = "species",
+        group = "sex",
+        counts = NULL,
+        facet = NULL,
+        yAxis = "label",
+        alwaysShowGroupLegend = TRUE
+    )$plot
+    expect_plot_snapshot("mosaic-yaxis-label-legend-forced", testPlot)
+})
+
 test_that("mosaic: y-axis hidden", {
     testPlot <- vijPlots::mosaic(
         data = testData,

@@ -71,6 +71,11 @@ options:
           name:  none
       default: percent
 
+    - name: alwaysShowGroupLegend
+      title: Always show group legend
+      type: Bool
+      default: false
+
     - name: order
       title: X-Axis order
       type: List

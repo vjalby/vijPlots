@@ -57,6 +57,9 @@ children:
               - type: CheckBox
                 name: hideAxes
               - type: CheckBox
+                name: alwaysShowGroupLegend
+                enable: (yAxis:label)
+              - type: CheckBox
                 name: horizontal
       - type: LayoutBox
         cell:
@@ -295,7 +298,7 @@ children:
                   - type: TextBox
                     name: xTicks
                     format: number
-                    enable: (horizontal)
+                    enable: (horizontal && yAxis:percent)
           - type: LayoutBox
             cell:
               column: 1
@@ -315,7 +318,7 @@ children:
                   - type: TextBox
                     name: yTicks
                     format: number
-                    enable: (!horizontal)
+                    enable: (!horizontal && yAxis:percent)
   - type: CollapseBox
     label: Legend & Axis Titles
     collapsed: true

@@ -35,19 +35,11 @@ jmvtools::addAnalysis(name='mosaic', title='Mosaic Plot')
 jmvtools::install()
 
 
-
-
-## i18n
-
-jmvtools::i18nUpdate("fr")
-jmvtools::i18nUpdate('catalog')
-
-
 ## i18n (update)
-jmvtools::i18nUpdate("en")
+
 jmvtools::i18nUpdate("fr")
-jmvtools::i18nUpdate("es")
 jmvtools::i18nUpdate('catalog')
+
 
 # Run local
 
@@ -58,10 +50,9 @@ vijPlots::boxplotOptions
 
 
 ## i18n (creation)
-jmvtools::i18nCreate("en")
-jmvtools::i18nCreate("fr")
-jmvtools::i18nCreate("es")
 jmvtools::i18nCreate('catalog')
+jmvtools::i18nCreate("fr")
+
 
 
 # Testthat files

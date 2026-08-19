@@ -38,6 +38,10 @@
 
 ![](img/pie.jpg)
 
+## Mosaic Plot
+
+![](img/mosaic.jpg)
+
 ## Likert Plot
 
 ![](img/likert.jpg)

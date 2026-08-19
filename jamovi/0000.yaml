@@ -10,11 +10,19 @@ date: '2026-08-17'
 category: plots
 type: R
 description: >-
-  Main statistical charts (histogram, boxplot, point, bar, line, raincloud…)
-  with many options along with Likert plot, multiple response barplot, Principal
-  Component and (Multiple) Correspondence Analyses. The module is available in
-  the <strong>Plots tab</strong>. Project source (and changelog) is available at
-  <a href="https://github.com/vjalby/vijPlots" target="_blank">Github</a>.
+  <p>Main statistical charts, all built with <b>ggplot2</b> and offering
+  extensive customization options:</p> <ul> <li><strong>Continuous
+  variables</strong>: Histogram, Box plot, Raincloud plot, Scatter plot, Error
+  bar chart, Lollipop plot, QQ plot</li> <li><strong>Categorical
+  variables</strong>: Bar plot, Pie chart, Mosaic plot, Likert plot</li>
+  <li><strong>Time series</strong>: Line chart, Area chart</li>
+  <li><strong>Multiple Response</strong>: Frequencies, Crosstab</li> </ul>
+  <p><strong>Main classic multivariate data analyses</strong> are also
+  available:</p> <ul> <li>Principal Component Analysis</li> <li>Correspondence
+  Analysis</li> <li>Multiple Correspondence Analysis</li> </ul> <p>The module is
+  available in the <strong>Plots</strong> tab.</p> <p>Project source (and
+  changelog) is available at <a href="https://github.com/vjalby/vijPlots"
+  target="_blank">Github</a>.</p>
 analyses:
   - title: Histogram
     name: histogram
@@ -51,6 +59,13 @@ analyses:
     menuTitle: Pie Chart
     menuSubgroup: Categorical
     category: plots
+  - title: Mosaic Plot
+    name: mosaic
+    ns: vijPlots
+    category: plots
+    menuGroup: vijPlots
+    menuTitle: Mosaic Plot
+    menuSubgroup: Categorical
   - title: Likert Plot
     name: likertplot
     ns: vijPlots
@@ -79,12 +94,12 @@ analyses:
     menuTitle: Scatter Plot
     menuSubgroup: Continuous
     category: plots
-  - title: Bar Chart
+  - title: Error Bar Chart
     name: barchart
     ns: vijPlots
     category: plots
     menuGroup: vijPlots
-    menuTitle: Bar Chart
+    menuTitle: Error Bar Chart
     menuSubgroup: Continuous
   - title: Lollipop Plot
     name: lollipop
@@ -135,15 +150,8 @@ analyses:
     menuGroup: vijPlots
     menuTitle: Multiple Correspondence Analysis
     menuSubgroup: Multivariate
-  - title: Mosaic Plot
-    name: mosaic
-    ns: vijPlots
-    category: plots
-    menuGroup: vijPlots
-    menuTitle: Mosaic Plot
-    menuSubgroup: Categorical
 usesNative: true
-minApp: 1.0.8
+minApp: 2.7.1
 datasets:
   - name: Credit Cards
     path: creditcards.omv

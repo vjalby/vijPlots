@@ -190,6 +190,40 @@ msgstr ""
 "<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de "
 "données > vijPlots > Likert</p>"
 
+#: package.description
+msgid ""
+"<p>Main statistical charts, all built with <b>ggplot2</b> and offering "
+"extensive customization options:</p> <ul> <li><strong>Continuous "
+"variables</strong>: Histogram, Box plot, Raincloud plot, Scatter plot, Error "
+"bar chart, Lollipop plot, QQ plot</li> <li><strong>Categorical "
+"variables</strong>: Bar plot, Pie chart, Mosaic plot, Likert plot</li> "
+"<li><strong>Time series</strong>: Line chart, Area chart</li> "
+"<li><strong>Multiple Response</strong>: Frequencies, Crosstab</li> </ul> "
+"<p><strong>Main classic multivariate data analyses</strong> are also "
+"available:</p> <ul> <li>Principal Component Analysis</li> <li>Correspondence "
+"Analysis</li> <li>Multiple Correspondence Analysis</li> </ul> <p>The module "
+"is available in the <strong>Plots</strong> tab.</p> <p>Project source (and "
+"changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" "
+"target=\"_blank\">Github</a>.</p>"
+msgstr ""
+"<p>Principaux graphiques statistiques, tous construits avec <b>ggplot2</b> "
+"et offrant de nombreuses options de personnalisation :</p> <ul> "
+"<li><strong>Variables continues</strong> : Histogramme, Boite à "
+"moustaches, Diagramme Raincloud, Nuage de points, Graphique à barres "
+"d'erreur, Lollipop (Sucettes), Diagrammes Q-Q & P-P</li> "
+"<li><strong>Variables catégorielles</strong> : Diagramme en barres, "
+"Diagramme en secteurs, Diagramme en mosaïque, Diagramme Likert</li> "
+"<li><strong>Séries temporelles</strong> : Graphique en courbes, Diagramme "
+"en aires</li> <li><strong>Réponses multiples</strong> : Fréquences, "
+"Tableau croisé</li> </ul> <p><strong>Les principales analyses "
+"multivariées classiques</strong> sont également disponibles :</p> <ul> "
+"<li>Analyse en composantes principales</li> <li>Analyse des "
+"correspondances</li> <li>Analyse des correspondances multiples</li> "
+"</ul> <p>Le module est disponible dans l'onglet <strong>Graphiques</strong>."
+"</p> <p>Le code source du projet (et le changelog) est disponible sur "
+"<a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
+"</p>"
+
 #: R/corresp.b.R
 msgid ""
 "<p>This module computes <strong>Correspondence Analysis (CA)</strong> for "
@@ -890,14 +924,6 @@ msgstr "Les axes doivent être inférieurs ou égaux au nombre de dimensions ({n
 msgid "Axis Titles"
 msgstr "Titre des axes"
 
-#: package/analyses/barchart.title
-#: package/analyses/barchart.menuTitle
-#: barchart/options.title
-#: barchart/ui.title
-#: barchart/results.title
-msgid "Bar Chart"
-msgstr "Diagramme en barres"
-
 #: package/analyses/barplot.title
 #: package/analyses/barplot.menuTitle
 #: barplot/options.title
@@ -1347,8 +1373,8 @@ msgstr "Cars"
 
 #: package/analyses/barplot.menuSubgroup
 #: package/analyses/piechart.menuSubgroup
-#: package/analyses/likertplot.menuSubgroup
 #: package/analyses/mosaic.menuSubgroup
+#: package/analyses/likertplot.menuSubgroup
 #: barplot/options.menuSubgroup
 #: likertplot/options.menuSubgroup
 #: mosaic/options.menuSubgroup
@@ -2075,6 +2101,14 @@ msgstr "Equal Local Levels"
 #: principal/options/rotation/equamax.title
 msgid "Equamax"
 msgstr "Equamax"
+
+#: package/analyses/barchart.title
+#: package/analyses/barchart.menuTitle
+#: barchart/options.title
+#: barchart/ui.title
+#: barchart/results.title
+msgid "Error Bar Chart"
+msgstr "Graphique à barres d’erreur"
 
 #: barchart/ui[3][1][0].label
 msgid "Error Bar Size"
@@ -3207,22 +3241,6 @@ msgstr "Taille des sucettes"
 msgid "Lollipop Size & Colors"
 msgstr "Taille et couleurs des sucettes"
 
-#: package.description
-msgid ""
-"Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) "
-"with many options along with Likert plot, multiple response barplot, "
-"Principal Component and (Multiple) Correspondence Analyses. The module is "
-"available in the <strong>Plots tab</strong>. Project source (and changelog) "
-"is available at <a href=\"https://github.com/vjalby/vijPlots\" "
-"target=\"_blank\">Github</a>."
-msgstr ""
-"Principaux graphiques statistiques (histogramme, boite à moustache, bâtons, "
-"lignes, secteurs…) avec de nombreuses options ainsi que diagramme de Likert, "
-"réponses multiples, analyse en composantes principales et analyse des "
-"correspondances (multiples). Le module est disponible dans l'<strong>onglet "
-"Graphes</strong>. Le code source du projet est disponible sur <a "
-"href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
-
 #: likertplot/options/showMannU.title
 msgid "Mann-Whitney U"
 msgstr "Mann-Whitney U"
@@ -3455,7 +3473,7 @@ msgstr "Minimum de {var}"
 #: mosaic/ui.title
 #: mosaic/results.title
 msgid "Mosaic Plot"
-msgstr "Graphique en mosaïque"
+msgstr "Diagramme en mosaïque"
 
 #: mrcrosstabs/options/mode/onevar.title
 #: mrcrosstabs/ui/mode/onevar[0][0][0].label
@@ -5860,6 +5878,7 @@ msgstr "Ligne verticale à"
 #: package/analyses/raincloud.menuGroup
 #: package/analyses/barplot.menuGroup
 #: package/analyses/piechart.menuGroup
+#: package/analyses/mosaic.menuGroup
 #: package/analyses/likertplot.menuGroup
 #: package/analyses/mrfrequencies.menuGroup
 #: package/analyses/mrcrosstabs.menuGroup
@@ -5872,7 +5891,6 @@ msgstr "Ligne verticale à"
 #: package/analyses/principal.menuGroup
 #: package/analyses/corresp.menuGroup
 #: package/analyses/multcorresp.menuGroup
-#: package/analyses/mosaic.menuGroup
 #: package/datasets/vijPlots.name
 #: areachart/options.menuGroup
 #: barchart/options.menuGroup

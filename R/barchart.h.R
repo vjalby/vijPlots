@@ -706,7 +706,7 @@ barchartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Bar Chart")
+                title="Error Bar Chart")
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -736,7 +736,7 @@ barchartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 weightsSupport = 'auto')
         }))
 
-#' Bar Chart
+#' Error Bar Chart
 #'
 #' 
 #' @param data .

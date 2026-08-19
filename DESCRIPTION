@@ -4,11 +4,15 @@ Title: vijPlots: Yet Another jamovi Plotting Module
 Version: 1.4.0.0
 Author: Vincent Jalby
 Maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
-Description: Main statistical charts (histogram, boxplot, point, bar, line, 
-    raincloud…) with many options along with Likert plot, multiple response barplot,
-    Principal Component and (Multiple) Correspondence Analyses. 
-    The module is available in the <strong>Plots</strong> tab.
-    Project source (and changelog) is available at  
+Description: Main statistical charts for continuous variables (Histogram, Box plot,
+    Raincloud plot, Scatter plot, Error bar chart, Lollipop plot, QQ plot), for
+    categorical variables (Bar plot, Pie chart, Mosaic plot, Likert plot), for 
+    time series (Line chart, Area chart), along with Multiple Response plots. 
+    All plots are built with ggplot2 and offer extensive customization options. 
+    Main classic multivariate data analyses are also available (Principal 
+    Component Analysis, Correspondence Analysis and Multiple Correspondence 
+    Analysis). The module is available in the <strong>Plots</strong> tab.
+    Project source (and changelog) is available at
     <a href="https://github.com/vjalby/vijPlots" target="_blank">Github</a>.
 License: GPL (>=2)
 Encoding: UTF-8

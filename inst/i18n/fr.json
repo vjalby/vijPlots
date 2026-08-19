@@ -79,6 +79,9 @@
             "<h3>Data & Sorting</h3>\n<ul>\n<li>Likert variables must be of ordinal measure-type. (Continuous-Integer works as well.)</li>\n<li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>\n<li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>\n<li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>\n<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>\n</ul>\n<h3>Comparison Tests</h3>\n<p>When using a group variable, several tests are available:</p>\n<ul>\n<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>\n</ul>\n<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>\n<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>": [
                 "<h3>Données & Tri</h3>\n<ul>\n<li>Les variables de Likert doivent être de type de mesure ordinal. (Le type continu-entier fonctionne aussi.)</li>\n<li>Pour calculer les moyenne, médiane et écart-type ou pour utiliser les tests de comparaison, le type de données doit être entier.</li>\n<li><strong>Corriger les niveaux :</strong> cette option permet de corriger l'ordre des niveaux lorsque certains niveaux sont absents de certaines variables.</li>\n<li><strong>Convertir les variables en entiers :</strong> avec cette option, les étiquettes des niveaux sont ignorées et seules les valeurs numériques (entières) sont utilisées.</li>\n<li><strong>Trier les variables selon la médiane :</strong> ordonne la liste des variables de Likert selon la valeur de leur médiane.</li>\n</ul>\n<h3>Tests de comparaison</h3>\n<p>Lorsqu'une variable de groupe est utilisée, plusieurs tests sont disponibles :</p>\n<ul>\n<li><strong>Mann-Whitney U :</strong> comparaison de deux groupes</li>\n<li><strong>Kruskal-Wallis:</strong> comparaison de n groupes</li>\n<li><strong>Tests Post-hoc :</strong> tests de comparaison par paires de Dunn, Conover et Dwass-Steel-Critchlow-Fligner (DSCF).</li>\n</ul>\n<p>Les p-valeurs peuvent être corrigées <strong>par groupe</strong> (pour chaque variable) pour les tests post-hoc ou <strong>globalement</strong> (par groupe et par variable) pour les tests Mann-Withney U, Kruskal-Wallis et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; aucune autre correction n'est possible.</p>\n<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de données > vijPlots > Likert</p>"
             ],
+            "<p>Main statistical charts, all built with <b>ggplot2</b> and offering extensive customization options:</p> <ul> <li><strong>Continuous variables</strong>: Histogram, Box plot, Raincloud plot, Scatter plot, Error bar chart, Lollipop plot, QQ plot</li> <li><strong>Categorical variables</strong>: Bar plot, Pie chart, Mosaic plot, Likert plot</li> <li><strong>Time series</strong>: Line chart, Area chart</li> <li><strong>Multiple Response</strong>: Frequencies, Crosstab</li> </ul> <p><strong>Main classic multivariate data analyses</strong> are also available:</p> <ul> <li>Principal Component Analysis</li> <li>Correspondence Analysis</li> <li>Multiple Correspondence Analysis</li> </ul> <p>The module is available in the <strong>Plots</strong> tab.</p> <p>Project source (and changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.</p>": [
+                ""
+            ],
             "<p>This module computes <strong>Correspondence Analysis (CA)</strong> for two categorical variables. Computations are based on <a href = \"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR<a/> package by F. Husson, J. Josse, S. Le, J. Mazet.</p>\n<p>The data can be</p>\n<ul>\n<li>an <strong>Observation table</strong> (raw data), possibly weighted using <em>jamovi</em> built-in weight system or using the \"Counts\" variable</li>\n<li>or a <strong>Contingency table</strong></li>\n</ul>\n<p><strong>Supplementary row or column</strong> numbers may be entered as integer lists : 1,3,6</p>\n<p>Four normalizations (scaling of row and column scores before plotting) are available :</p>\n<ul>\n<li><strong>Principal:</strong> Row and column scores are scaled by eigenvalues.</li>\n<li><strong>Symmetric:</strong> Row and column scores are scaled by the square root of eigenvalues. </li>\n<li><strong>Row Principal:</strong> Only row scores are scaled by eigenvalues.</li>\n<li><strong>Column Principal:</strong> Only column scores are scaled by eigenvalues.</li>\n<li><strong>Standard:</strong> The raw coordinates without normalization.</li>\n</ul>\n<p>A sample file is included at Open > Data Library > vijPlots > Smoking</p>": [
                 "<p>Ce module effectue une <strong>Analyse des Correspondances (CA)</strong> pour deux variables catégorielles. Les calculs sont basés sur le package <a href=\"https://CRAN.R-project.org/package=FactoMineR\" target=\"_blank\">FactoMineR</a/> de F. Husson, J. Josse, S. Le et J. Mazet.</p>\n<p>Les données peuvent être</p>\n<ul>\n<li>la <strong>table des observations</strong> (données brutes) éventuellement pondérées à l'aide du système de pondération intégré de <em>jamovi</em> ou de la variable « Effectifs ».</li>\n<li>ou un <strong>tableau de contingence</strong></li>\n</ul>\n<p>Les numéros de <strong>lignes ou de colonnes supplémentaires</strong> doivent être saisis sous forme de listes d'entiers : 1, 3, 6</p>\n<p>Quatre normalisations (mise à l'échelle des coordonnées des points-lignes et des points-colonnes) sont disponibles :</p>\n<ul>\n<li><strong>Principal :</strong> Les coordonnées des points-lignes et des points-colonnes sont normalisées par les valeurs propres.</li>\n<li><strong>Symétrique :</strong> Les coordonnées des points-lignes et des points-colonnes sont normalisées par la racine carrée des valeurs propres.</li>\n<li><strong>Principal des lignes :</strong> Seules les coordonnées des points-lignes sont normalisées par les valeurs propres.</li>\n<li><strong>Principal des colonnes :</strong> Seules les coordonnées des points-colonnes sont normalisées par les valeurs propres.</li>\n<li><strong>Standard :</strong> Les coordonnées ne sont pas normalisées.</li>\n</ul>\n<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de données > vijPlots > Smoking</p>"
             ],
@@ -190,6 +193,9 @@
             "Accent": [
                 "Accentué"
             ],
+            "Accuracy": [
+                "Précision"
+            ],
             "Active Margin": [
                 "Marge active"
             ],
@@ -207,6 +213,9 @@
             ],
             "Alpha": [
                 "Alpha"
+            ],
+            "Always show group legend": [
+                "Toujours afficher la légende"
             ],
             "Apr": [
                 "avr."
@@ -243,9 +252,6 @@
             ],
             "Axis Titles": [
                 "Titre des axes"
-            ],
-            "Bar Chart": [
-                "Diagramme en barres"
             ],
             "Bar Plot": [
                 "Diagramme en barres"
@@ -402,6 +408,9 @@
             ],
             "Chi-squared": [
                 "Khi-deux"
+            ],
+            "Color": [
+                "Couleur"
             ],
             "Color Number": [
                 "Numéro de la couleur"
@@ -682,6 +691,9 @@
             "Equamax": [
                 "Equamax"
             ],
+            "Error Bar Chart": [
+                "Graphique à barres d’erreur"
+            ],
             "Error Bar Size": [
                 "Taille des barres d'erreur"
             ],
@@ -805,6 +817,9 @@
             "Group By": [
                 "Grouper par"
             ],
+            "Group label": [
+                "Etiquette de groupe"
+            ],
             "Grouped": [
                 "Groupé"
             ],
@@ -822,6 +837,9 @@
             ],
             "Hide % labels below 5%": [
                 "Masquer les % inférieurs à 5 %"
+            ],
+            "Hide axes": [
+                "Masquer les axes"
             ],
             "Histogram": [
                 "Histogramme"
@@ -949,6 +967,9 @@
             "Label font size": [
                 "Taille des étiquettes"
             ],
+            "Label Format": [
+                "Format d'étiquettes"
+            ],
             "Label Options": [
                 "Options des étiquettes"
             ],
@@ -960,6 +981,9 @@
             ],
             "Label Size": [
                 "Taille des étiquettes"
+            ],
+            "Label Type": [
+                "Type d'étiquettes"
             ],
             "Labels": [
                 "Étiquettes"
@@ -1054,9 +1078,6 @@
             "Lollipop Size & Colors": [
                 "Taille et couleurs des sucettes"
             ],
-            "Main statistical charts (histogram, boxplot, point, bar, line, raincloud…) with many options along with Likert plot, multiple response barplot, Principal Component and (Multiple) Correspondence Analyses. The module is available in the <strong>Plots tab</strong>. Project source (and changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.": [
-                "Principaux graphiques statistiques (histogramme, boite à moustache, bâtons, lignes, secteurs…) avec de nombreuses options ainsi que diagramme de Likert, réponses multiples, analyse en composantes principales et analyse des correspondances (multiples). Le module est disponible dans l'<strong>onglet Graphes</strong>. Le code source du projet est disponible sur <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>."
-            ],
             "Mann-Whitney U": [
                 "Mann-Whitney U"
             ],
@@ -1065,6 +1086,9 @@
             ],
             "Manual": [
                 "Manuel"
+            ],
+            "Map to residuals": [
+                "Liée aux résidus"
             ],
             "Mar": [
                 "mars"
@@ -1134,6 +1158,9 @@
             ],
             "Minimum of {var}": [
                 "Minimum de {var}"
+            ],
+            "Mosaic Plot": [
+                "Diagramme en mosaïque"
             ],
             "Multi-valued Variable": [
                 "Variable à valeurs multiples"
@@ -1270,6 +1297,9 @@
             "only": [
                 "seulement"
             ],
+            "Opacity": [
+                "Opacité"
+            ],
             "Option name": [
                 "Nom des options"
             ],
@@ -1362,6 +1392,9 @@
             ],
             "PCA Standard Coordinates": [
                 "Coordonnées standardisées ACP"
+            ],
+            "Pearson residuals": [
+                "Résidus de Pearson"
             ],
             "Percent": [
                 "Pourcent"
@@ -1537,6 +1570,9 @@
             "Regression Line": [
                 "Courbe de régression"
             ],
+            "Residuals": [
+                "Résidus"
+            ],
             "Reverse disposition": [
                 "Renverser la disposition"
             ],
@@ -1660,11 +1696,17 @@
             "Show bins": [
                 "Afficher les bâtons"
             ],
+            "Show category %": [
+                "Afficher les %"
+            ],
             "Show count labels": [
                 "Afficher les effectifs"
             ],
             "Show density": [
                 "Afficher la densité"
+            ],
+            "Show legend": [
+                "Afficher la légende"
             ],
             "Show line": [
                 "Afficher la courbe"
@@ -1930,6 +1972,9 @@
             "Tidy:Seaside": [
                 "Tidy:Seaside"
             ],
+            "Tile Options": [
+                "Options des tuiles"
+            ],
             "Time Series": [
                 "Séries temporelles"
             ],
@@ -2088,6 +2133,9 @@
             ],
             "X-Axis is a date": [
                 "L'axe X est une date"
+            ],
+            "X-Axis Order": [
+                "Ordre de l'axe des x"
             ],
             "X-Axis Range": [
                 "Étendue axe X"

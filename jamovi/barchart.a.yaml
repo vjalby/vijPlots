@@ -1,6 +1,6 @@
 ---
 name:  barchart
-title: Bar Chart
+title: Error Bar Chart
 category: plots
 menuGroup: vijPlots
 menuSubgroup: Continuous

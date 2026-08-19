@@ -68,6 +68,11 @@ children:
         stretchFactor: 1
         children:
           - type: Label
+            label: X-Axis
+            children:
+              - type: CheckBox
+                name: showCategoryPercent
+          - type: Label
             label: X-Axis Order
             children:
               - type: RadioButton

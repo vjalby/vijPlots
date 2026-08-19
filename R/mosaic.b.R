@@ -97,11 +97,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Validate .COUNTS (non negative / not infinite)
             if (any(plotData$.COUNTS < 0, na.rm=TRUE)) {
-                vijErrorMessage(self, .('Counts may not be negative'))
+                vijErrorMessage(self, .('Counts may not be negative.'))
                 return(FALSE)
             }
             if (any(is.infinite(plotData$.COUNTS))) {
-                vijErrorMessage(self, .('Counts may not be infinite'))
+                vijErrorMessage(self, .('Counts may not be infinite.'))
                 return(FALSE)
             }
 
@@ -179,8 +179,14 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             expFactMult <- ifelse(self$options$hideAxes, 0.0, 0.04)
 
             if (is.null(self$options$facet)) {
-                plot <- plot + ggplot2::scale_x_continuous(breaks = unique(plotData$x_center),
-                                                           labels = unique(plotData[[category]]),
+                xAxisData <- unique(plotData[c("x_center", as.character(category), "xwidth")])
+                if (self$options$showCategoryPercent) {
+                    xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$xwidth), ")")
+                } else {
+                    xAxisLabels <- xAxisData[[category]]
+                }
+                plot <- plot + ggplot2::scale_x_continuous(breaks = xAxisData$x_center,
+                                                           labels = xAxisLabels,
                                                            expand = ggplot2::expansion(mult = expFactMult))
             }
 
@@ -246,8 +252,14 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # Column widths are computed per facet, so each panel needs its own x breaks/labels
                 xScales <- lapply(facetLevels, function(lv) {
                     subData <- plotData[plotData[[self$options$facet]] == lv, ]
-                    ggplot2::scale_x_continuous(breaks = unique(subData$x_center),
-                                                labels = unique(subData[[category]]),
+                    xAxisData <- unique(subData[c("x_center", as.character(category), "xwidth")])
+                    if (self$options$showCategoryPercent) {
+                        xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$xwidth), ")")
+                    } else {
+                        xAxisLabels <- xAxisData[[category]]
+                    }
+                    ggplot2::scale_x_continuous(breaks = xAxisData$x_center,
+                                                labels = xAxisLabels,
                                                 expand = ggplot2::expansion(mult = expFactMult)
                                                 )
                 })

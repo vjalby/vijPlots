@@ -108,6 +108,18 @@ test_that("mosaic: axes hidden", {
     expect_plot_snapshot("mosaic-hideAxes", testPlot)
 })
 
+test_that("mosaic: category % shown", {
+    testPlot <- vijPlots::mosaic(
+        data = testData,
+        category = "species",
+        group = "sex",
+        counts = NULL,
+        facet = NULL,
+        showCategoryPercent = TRUE
+    )$plot
+    expect_plot_snapshot("mosaic-category-percent-shown", testPlot)
+})
+
 test_that("mosaic: faceted", {
     testPlot <- vijPlots::mosaic(
         data = testData,
@@ -361,6 +373,6 @@ test_that("mosaic: negative counts are rejected", {
         facet = NULL
     )
     expect_true(".warning" %in% names(r))
-    expect_equal(r[[".warning"]]$content, "Counts may not be negative")
+    expect_equal(r[[".warning"]]$content, "Counts may not be negative.")
     expect_null(r$plot$state)
 })

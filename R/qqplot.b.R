@@ -47,13 +47,11 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     data[[depVar]] <- log(data[[depVar]])
                 } else {
                     vijErrorMessage(self, .("Natural Log Transform requires positive (>0) data."))
-                    return(FALSE)
                 }
             }
 
             if (stats::sd(data[[depVar]]) == 0) {
                 vijErrorMessage(self, .("The variance of the variable is equal to zero."))
-                return(FALSE)
             }
 
             if (self$options$standardize) {
@@ -97,7 +95,6 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(FALSE)
             }
 
             # Parameter estimations
@@ -126,7 +123,6 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(paramErrorMessage)) {
                 vijErrorMessage(self, paramErrorMessage)
-                return(FALSE)
             }
 
             # Everthing is OK

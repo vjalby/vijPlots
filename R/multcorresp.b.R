@@ -33,7 +33,6 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(FALSE)
             }
 
             activeVars <- self$options$vars
@@ -50,7 +49,6 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (nrow(data) == 0) {
                 vijErrorMessage(self, .("Unable to compute MCA because of too many missing values."))
-                return(FALSE)
             }
 
             # list of ordered factors (used to draw path)
@@ -88,13 +86,11 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (is.null(res)) {
                 vijErrorMessage(self, .("Unable to compute MCA for the selected variables."))
-                return(FALSE)
             }
 
             if (nDim > res$nd.max) {
                 errorMessage <- jmvcore::format(.("The number of dimensions cannot be greater than {max}."), max = res$nd.max)
                 vijErrorMessage(self, errorMessage)
-                return(FALSE)
             }
 
             #### Inertia Table ####

@@ -93,7 +93,6 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 } else {
                     errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = timeVar)
                     vijErrorMessage(self, errorMessage)
-                    return(FALSE)
                 }
             }
 

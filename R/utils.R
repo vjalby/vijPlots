@@ -240,21 +240,13 @@ vijHelpMessage = function(self, htmlText) {
 }
 
 vijErrorMessage = function(self, errorMessage) {
-    # Hide other results
-    for (resName in names(self$results)) {
-        aResult <- get0(resName, self$results)
-        if (!is.null(aResult))
-            aResult$setVisible(FALSE)
-    }
-    # Display Error message
-    errorNotice <- jmvcore::Notice$new(self$options, type = jmvcore::NoticeType$ERROR, name = '.warning', content = errorMessage)
-    self$results$insert(1, errorNotice)
+    return(jmvcore::reject(errorMessage))
 }
 
-vijWarningMessage = function(self, warningMessage, name = NULL) {
+vijWarningMessage = function(self, warningMessage, name = NULL, pos = 1) {
     name <- name %||% rlang::hash(warningMessage)
     warningNotice <- jmvcore::Notice$new(self$options, type = jmvcore::NoticeType$WARNING, name = name, content = warningMessage)
-    self$results$insert(1, warningNotice)
+    self$results$insert(pos, warningNotice)
 }
 
 vijDebugMessage = function(self, debugMessage, name = NULL, title = "Debug") {

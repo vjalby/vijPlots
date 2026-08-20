@@ -91,18 +91,18 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Remove NA (including weights !)
             if (self$options$ignoreNA)
                 plotData <- jmvcore::naOmit(plotData)
-
             if (nrow(plotData) == 0)
                 return(FALSE)
 
-            # Validate .COUNTS (non negative / not infinite)
-            if (any(plotData$.COUNTS < 0, na.rm=TRUE)) {
+            # Validate .COUNTS (NA / non negative / not infinite)
+            if (any(is.na(plotData$.COUNTS)))  {
+                vijErrorMessage(self, .('Counts may not contain missing values.'))
+            }
+            if (any(plotData$.COUNTS < 0)) {
                 vijErrorMessage(self, .('Counts may not be negative.'))
-                return(FALSE)
             }
             if (any(is.infinite(plotData$.COUNTS))) {
                 vijErrorMessage(self, .('Counts may not be infinite.'))
-                return(FALSE)
             }
 
             mdf <- private$.mosaicData(plotData, categoryName, groupName, facetName, self$options$order, self$options$reverseStack)
@@ -122,16 +122,16 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plot <- ggplot2::ggplot(plotData)
 
-            #### Rectangles ####
+            #### Tiles ####
 
             if (self$options$residualsAsOpacity){
                 plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = x_center, y = y_center, width = xwidth, height = percentage, fill = !!group, alpha = abs(residuals)),
-                                                  color = "white", linewidth = self$options$borderWidth)
+                                                  color = "white", linewidth = self$options$borderWidth, show.legend = TRUE) # show.legend needed to display unused levels
                 # Alpha scale
                 plot <- plot + ggplot2::scale_alpha_continuous(name = .("Residuals"), range = c(0.1, 1))
             } else {
                 plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = x_center, y = y_center, width = xwidth, height = percentage, fill = !!group),
-                                                  color = "white", linewidth = self$options$borderWidth)
+                                                  color = "white", linewidth = self$options$borderWidth, show.legend = TRUE) # show.legend needed to display unused levels
             }
 
             #### Label ####
@@ -140,7 +140,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 accuracy = as.numeric(self$options$accuracy),
                 suffix = '\u2009%',
                 decimal.mark = self$options[['decSymbol']])
-            doNumber<- scales::label_number(
+            doNumber <- scales::label_number(
                 accuracy = as.numeric(self$options$accuracy),
                 decimal.mark = self$options[['decSymbol']])
 

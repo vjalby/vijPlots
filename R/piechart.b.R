@@ -80,11 +80,9 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Validate .COUNTS (non negative / not infinite)
             if (any(plotData$.COUNTS < 0)) {
                 vijErrorMessage(self, .('Counts may not be negative.'))
-                return(FALSE)
             }
             if (any(is.infinite(plotData$.COUNTS))) {
                 vijErrorMessage(self, .('Counts may not be infinite.'))
-                return(FALSE)
             }
 
             image <- self$results$plot

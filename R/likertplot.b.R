@@ -39,7 +39,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 varClass <- class(mainData[[ques]])
                 if ( (("factor" %in% varClass)  && !("ordered" %in% varClass)) || varClass[1] == "numeric" ) {
                     vijErrorMessage(self, .("Likert Plot requires ordinal (or continuous-integer) variables"))
-                    return(FALSE)
                 }
             }
             # Check if variables are of the same type when "convert to integer" is not selected
@@ -49,7 +48,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     varClass <- class(mainData[[ques]])
                     if (!is.null(commonClass) && varClass[1] != commonClass) {
                         vijErrorMessage(self, .("Select the \"Convert variables to integers\" option when the variables are not of the same type."))
-                        return(FALSE)
                     } else {
                         commonClass <- varClass[1]
                     }
@@ -73,7 +71,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(errorMessage)) {
                 vijErrorMessage(self, errorMessage)
-                return(FALSE)
             }
 
             #### Convert to integer ####

@@ -12,12 +12,11 @@ jamovi's **Plots** ribbon tab: `histogram`, `boxplot`, `raincloud`, `scatterplot
 
 ### Target jamovi version
 
-Development currently targets jamovi's **stable** channel (2.7.37), not **current** (28.1). This
-means the bundled `jmvcore` still calls the deprecated `ggplot2::element_line(size = ...)` (fixed
-upstream in jmvcore as shipped with jamovi 28.1) — the resulting "The `size` argument of
-`element_line()` is deprecated" warning seen when rendering/testing any plot is expected and not a
-vijPlots bug. The plan is to switch development to jamovi 28.1 once the module is ready, to test
-against it before making the module public.
+Development now targets jamovi's **current** channel (28.2), having moved off the **stable**
+channel (2.7.37) referenced in older notes/commits. As of jamovi 28.1, the bundled `jmvcore` no
+longer calls the deprecated `ggplot2::element_line(size = ...)`, so the "The `size` argument of
+`element_line()` is deprecated" warning that used to be expected/ignorable on 2.7.37 should no
+longer appear — if it does show up again, treat it as a real regression, not a known non-issue.
 
 ## Commands
 
@@ -27,6 +26,14 @@ devtools::document()                                       # regenerate man/ fro
 jmvtools::prepare()                                         # regenerate R/*.h.R from jamovi/*.yaml after editing options
 jmvtools::install()                                         # build & install the .jmo into a local jamovi (requires options(jamovi_home=...), see build.R)
 ```
+
+`inst/` (and `R/*.h.R`) are fully build-generated — regenerated wholesale by `jmvtools::prepare()`/
+`jmvtools::install()`. Don't fuss over preserving, restoring, or diffing uncommitted changes under
+`inst/` before running either command: `jmvtools::prepare()` has been observed to delete files
+there outright (e.g. `inst/i18n/fr.json`) as part of its regeneration pass rather than just
+overwrite them. If you need to keep in-progress edits to a tracked file under `inst/`, commit or
+copy it out *before* running `prepare()`/`install()`, since anything lost this way isn't
+recoverable from the working tree afterward.
 
 Testing (testthat edition 3, run from the package root after `devtools::load_all(".")`):
 
@@ -120,6 +127,24 @@ swallow it (see gotcha below).
   aesthetic left at the default `order = 0` sorts by an internal hash rather than code order, so
   its position relative to an explicitly-ordered one is not deterministic across different
   grouping variables/data (seen in `scatterplot.b.R`'s size-vs-group legend ordering).
+- `Table$setNote(key, NULL)` (or `""`) does **not** reliably clear a previously-shown note on the
+  jamovi client (confirmed live on jamovi 28.2/jmvcore 2.7.38) unless the table's `rows:` in its
+  `.r.yaml` is a non-zero value — a `rows: 0` (fully dynamic) table keeps showing a stale note from
+  the last successful run even though its rows/columns correctly reset to empty. This was root-caused
+  and fixed for `corresp`'s `eigenvalues`/`chisq` note (`rows: 1` + an explicit `deleteRows()` before
+  repopulating, to work around the phantom placeholder row `rows: 1` itself introduces — see
+  `corresp.b.R`'s `.run()`). Note this is specifically a `reject()`-interrupted-run problem, not a
+  general one: an `if (...) setNote(key, text)` with no `else setNote(key, NULL)` branch is safe on a
+  normal *successful* run — confirmed live that toggling an option so the guard turns false (e.g.
+  `principal`'s rotation option going from `Varimax` back to `none`) correctly clears the note,
+  presumably via `clearWith` doing its usual client-side job when the run actually completes. The
+  failure mode only shows up when that same option change *also* causes an unrelated validation
+  `reject()` before `.run()` reaches the `setNote()` line — then the note is left showing the stale
+  pre-change text, same as the `chisq` case. `principal.b.R`'s unguarded notes (`summaryTable`/
+  `loadingTable`/`obsTable`'s `'rot'`, `loadingTable`/`obsTable`'s `'norm'`, `obsTable`'s `"100"`) are
+  left unfixed for now on that basis — the overlap needed to actually trigger it is narrow, and
+  fixing it would need the same `rows: N` + `deleteRows()` treatment as `chisq`, which isn't
+  worthwhile pre-emptively without a concrete repro.
 
 ### Dependency graph has soft/transitive requirements
 

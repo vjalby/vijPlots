@@ -112,7 +112,10 @@ items:
         - kaiser
         - stdScores
         - stataRotation
-      columns: []
+      columns:
+        - name: obs
+          title: Observation
+          type: text
       notes:
         norm: Principal coordinates
 
@@ -124,6 +127,7 @@ items:
       visible: (showScreePlot)
       renderFun: .screeplot
       clearWith:
+        - dimNum
         - vars
         - stdVariables
         - screeTitleText

@@ -867,7 +867,11 @@ principalResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "kaiser",
                     "stdScores",
                     "stataRotation"),
-                columns=list(),
+                columns=list(
+                    list(
+                        `name`="obs", 
+                        `title`="Observation", 
+                        `type`="text")),
                 notes=list(
                     `norm`="Principal coordinates")))
             self$add(jmvcore::Image$new(
@@ -879,6 +883,7 @@ principalResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(showScreePlot)",
                 renderFun=".screeplot",
                 clearWith=list(
+                    "dimNum",
                     "vars",
                     "stdVariables",
                     "screeTitleText",

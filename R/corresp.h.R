@@ -548,7 +548,11 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Contingency Table",
                 visible="(showContingency)",
                 rows=0,
-                columns=list(),
+                columns=list(
+                    list(
+                        `name`="row", 
+                        `title`="", 
+                        `type`="text")),
                 clearWith=list(
                     "rows",
                     "cols",
@@ -562,7 +566,11 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Row Profiles",
                 visible="(showProfiles)",
                 rows=0,
-                columns=list(),
+                columns=list(
+                    list(
+                        `name`="row", 
+                        `title`="", 
+                        `type`="text")),
                 clearWith=list(
                     "rows",
                     "cols",
@@ -576,7 +584,11 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Column Profiles",
                 visible="(showProfiles)",
                 rows=0,
-                columns=list(),
+                columns=list(
+                    list(
+                        `name`="row", 
+                        `title`="", 
+                        `type`="text")),
                 clearWith=list(
                     "rows",
                     "cols",
@@ -589,7 +601,7 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="eigenvalues",
                 title="Summary",
                 visible="(showInertia)",
-                rows=0,
+                rows=1,
                 columns=list(
                     list(
                         `name`="dim", 
@@ -616,6 +628,7 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number", 
                         `format`="pc")),
                 clearWith=list(
+                    "dimNum",
                     "rows",
                     "cols",
                     "counts",
@@ -627,7 +640,15 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Row Summary",
                 rows=0,
                 visible="(showSummaries)",
-                columns=list(),
+                columns=list(
+                    list(
+                        `name`="id", 
+                        `title`="#", 
+                        `type`="integer"),
+                    list(
+                        `name`="row", 
+                        `title`="", 
+                        `type`="text")),
                 clearWith=list(
                     "rows",
                     "cols",
@@ -643,7 +664,15 @@ correspResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Column Summary",
                 rows=0,
                 visible="(showSummaries)",
-                columns=list(),
+                columns=list(
+                    list(
+                        `name`="id", 
+                        `title`="#", 
+                        `type`="integer"),
+                    list(
+                        `name`="col", 
+                        `title`="", 
+                        `type`="text")),
                 clearWith=list(
                     "rows",
                     "cols",

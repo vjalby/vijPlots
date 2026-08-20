@@ -96,6 +96,77 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             contingencyTable[nrow(contingencyTable), supplementaryCols] <- NA
             return(contingencyTable)
         },
+        .fillProfileTable = function(profileTable, profiles, suppl, rowName, colName) {
+            profileTable$addColumn("row", type = "text", title = rowName)
+            for (j in seq(ncol(profiles))) {
+                profileTable$addColumn(colnames(profiles)[j], type = "number", format = "zto", superTitle = colName)
+            }
+            for (i in seq(nrow(profiles))) {
+                profileTable$addRow(i, values = profiles[i,])
+                profileTable$setCell(rowNo = i, "row", rownames(profiles)[i])
+            }
+            profileTable$addFormat(rowNo = nrow(profiles), 1, jmvcore::Cell.BEGIN_END_GROUP)
+            if (suppl)
+                profileTable$setNote("supp", paste("* :", .("Supplementary rows/columns")))
+        },
+        .fillSummaryTable = function(table, items, labelCol, labelTitle, coord, coordSup, marge,
+                                      supplementary, suppText, nDim, normalizationString) {
+            # table = table to fill
+            # item = row/col names
+            # labelCol = "row" or "col"
+            # labelTitle = col/rowVarNameString
+            table$addColumn(name = "id", title = "#", type = "integer")
+            table$addColumn(name = labelCol, title = labelTitle, type = "text")
+            table$addColumn(name = "margin", title = "Mass", type = "number", format = "zto")
+            for (i in seq(nDim))
+                table$addColumn(name = paste0("score",i), title = paste("Dim",i), superTitle = paste(.("Coordinates"),"†"), type = "number", format = "zto")
+            table$addColumn(name = "inertia", title = "% Inertia", type = "number", format = "zto")
+            for (i in seq(nDim))
+                table$addColumn(name = paste0("contrib",i), title = paste("Dim",i), superTitle = "Contributions", type = "number", format = "zto")
+            table$addColumn(name = "qlt", title = "QLT", type = "number", format = "zto")
+            for (i in seq(nDim))
+                table$addColumn(name = paste0("cos",i), title = paste("Dim",i), superTitle = "CO2", type = "number", format = "zto")
+            # Populate Summary table
+            for (i in seq_along(items)) {
+                anItem <- items[i]
+                if (anItem %in% rownames(coord$coord)) { # Active row/col
+                    theValues <- list(id = i, margin = marge[anItem], inertia = coord$inertia[anItem],
+                                       qlt = sum(coord$cos2[anItem,1:nDim]))
+                    theValues[[labelCol]] <- anItem
+                    for (j in seq(nDim)) {
+                        theValues[[paste0("score",j)]] <- coord$coord[anItem,j]
+                        theValues[[paste0("contrib",j)]] <- coord$contrib[anItem,j]
+                        theValues[[paste0("cos",j)]] <- coord$cos2[anItem,j]
+                    }
+                } else { # Supplementary row/col
+                    theValues <- list(id = i, margin = "", inertia = "",
+                                       qlt = sum(coordSup$cos2[anItem,1:nDim], na.rm = TRUE))
+                    theValues[[labelCol]] <- anItem
+                    for (j in seq(nDim)) {
+                        theValues[[paste0("score",j)]] <- coordSup$coord[anItem,j]
+                        theValues[[paste0("contrib",j)]] <- ""
+                        theValues[[paste0("cos",j)]] <- coordSup$cos2[anItem,j]
+                    }
+                }
+                table$addRow(i, values = theValues)
+            }
+            if (!is.null(supplementary))
+                table$setNote("supp", paste("* :", suppText))
+            table$setNote("norm", paste("† :", normalizationString))
+        },
+        .parseSupplementary = function(optionValue, nmax, parseErrorMsg, rangeErrorMsg) {
+            if (is.null(optionValue) || optionValue == "0" || optionValue == "")
+                return(NULL)
+            supp <- as.integer(unlist(strsplit(optionValue, ",")))
+            if (any(is.na(supp))) {
+                vijErrorMessage(self, parseErrorMsg)
+            } else {
+                supp <- sort(unique(supp))
+                if (!all(supp %in% 1:nmax))
+                    vijErrorMessage(self, jmvcore::format(rangeErrorMsg, nmax = nmax))
+            }
+            supp
+        },
         .init = function() {
             #
             if ((self$options$mode == "obsTable" && (is.null(self$options$rows) || is.null(self$options$cols))) ||
@@ -114,23 +185,14 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$mode == "obsTable") {
                 data <- private$.getData()
                 if (is.null(data) || nrow(data) == 0) {
-                    self$results$contingency$addColumn(".", type="text")
-                    self$results$rowProfiles$addColumn(".", type="text")
-                    self$results$colProfiles$addColumn(".", type="text")
-                    self$results$rowSummary$addColumn(".", type="text")
-                    self$results$colSummary$addColumn(".", type="text")
-                    self$results$eigenvalues$addRow(".")
-                    self$results$eigenvalues$setNote("chisq", NULL)
                     return(FALSE)
                 }
 
                 if (any(data$.COUNTS < 0)) {
                     vijErrorMessage(self, .('Counts may not be negative.'))
-                    return(FALSE)
                 }
                 if (any(is.infinite(data$.COUNTS))) {
                     vijErrorMessage(self, .('Counts may not be infinite.'))
-                    return(FALSE)
                 }
 
                 rowVarName <- self$options$rows
@@ -149,7 +211,9 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 contingencyTable <- self$data[,self$options$columns, drop = FALSE]
                 if (anyNA(contingencyTable)) {
                     vijErrorMessage(self, .("Some values are missing from the contingency table."))
-                    return(FALSE)
+                }
+                if (any(contingencyTable < 0)) {
+                    vijErrorMessage(self, .('Counts may not be negative.'))
                 }
                 row.names(contingencyTable) <- self$data[[self$options$rowLabels]]
                 contingencyTable <- as.matrix(contingencyTable)
@@ -162,76 +226,24 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Supplementary Rows & Column ####
 
-            # Rows
-            if (is.null(self$options$supplementaryRows) || self$options$supplementaryRows == "0" || self$options$supplementaryRows == "") {
-                supplementaryRows <- NULL
-            } else {
-                supplementaryRows <- as.integer(unlist(strsplit(self$options$supplementaryRows,",")))
-                if (any(is.na(supplementaryRows))) {
-                    vijErrorMessage(self, .("Supplementary row numbers must be a list of numbers, e.g. 1,2,9"))
-                    return(FALSE)
-                } else {
-                    supplementaryRows <- sort(unique(supplementaryRows))
-                    nmax <- nrow(contingencyTable) #nlevels(self$data[[rowVarName]])
-                    if (!all(supplementaryRows %in% 1:nmax)) {
-                        errorMessage <- jmvcore::format(.("Supplementary row numbers must be between 1 and {nmax}."), nmax = nmax)
-                        vijErrorMessage(self, errorMessage)
-                        return(FALSE)
-                    }
-                }
-            }
-            # Columns
-            if (is.null(self$options$supplementaryCols) || self$options$supplementaryCols == "0" || self$options$supplementaryCols == "") {
-                supplementaryCols <- NULL
-            } else {
-                supplementaryCols <- as.integer(unlist(strsplit(self$options$supplementaryCols,",")))
-                if (any(is.na(supplementaryCols))) {
-                    vijErrorMessage(self,.("Supplementary column numbers must be a list of numbers, e.g. 1,2,9"))
-                    return(FALSE)
-                } else {
-                    supplementaryCols <- sort(unique(supplementaryCols))
-                    nmax <- ncol(contingencyTable) #nlevels(self$data[[colVarName]])
-                    if (!all(supplementaryCols %in% 1:nmax)) {
-                        errorMessage <- jmvcore::format(.("Supplementary column numbers must be between 1 and {nmax}."), nmax=nmax)
-                        vijErrorMessage(self, errorMessage)
-                        return(FALSE)
-                    }
-                }
-            }
+            supplementaryRows <- private$.parseSupplementary(
+                self$options$supplementaryRows, nrow(contingencyTable),
+                .("Supplementary row numbers must be a list of numbers, e.g. 1,2,9"),
+                .("Supplementary row numbers must be between 1 and {nmax}.")
+            )
+            supplementaryCols <- private$.parseSupplementary(
+                self$options$supplementaryCols, ncol(contingencyTable),
+                .("Supplementary column numbers must be a list of numbers, e.g. 1,2,9"),
+                .("Supplementary column numbers must be between 1 and {nmax}.")
+            )
             # Modify the supplementary row/col names
             for (i in supplementaryRows)
                 rownames(contingencyTable)[i] <- paste(rownames(contingencyTable)[i], "*")
             for (j in supplementaryCols)
                 colnames(contingencyTable)[j] <- paste(colnames(contingencyTable)[j], "*")
 
-            #### Dimensions and axes  ####
-
-            # Solution dimension
-            maxDim = min(nrow(contingencyTable)-length(supplementaryRows), ncol(contingencyTable)-length(supplementaryCols)) - 1
-            if (maxDim < 2) {
-                vijErrorMessage(self, .("Not enough data to compute CA."))
-                return(FALSE)
-            }
-            nDim <-self$options$dimNum
-            if (nDim > maxDim) {
-                errorMessage <- jmvcore::format(.("Number of dimensions must be less than or equal to {maxDim}."), maxDim = maxDim)
-                vijErrorMessage(self,errorMessage)
-                return(FALSE)
-            }
-            # Axis
-            xaxis <- self$options$xaxis
-            yaxis <- self$options$yaxis
-            if (xaxis > nDim || yaxis > nDim) {
-                errorMessage <- jmvcore::format(.("Axis numbers must be less than or equal to the number of dimensions ({nDim})."), nDim = nDim)
-                vijErrorMessage(self, errorMessage)
-                return(FALSE)
-            }
-            if (xaxis == yaxis) {
-                vijErrorMessage(self, .("Axis numbers cannot be equal."))
-                return(FALSE)
-            }
-
             #### Normalisation ####
+
             normalizationString <- switch(self$options$normalization,
                                           principal = .("Principal normalization"),
                                           symmetric = .("Symmetric normalization"),
@@ -245,7 +257,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             fullTable <- private$.getContingencyTable(contingencyTable, supplementaryRows, supplementaryCols)
             rownames(fullTable)[nrow(fullTable)] <- .("Active Margin")
             colnames(fullTable)[length(colnames(fullTable))] <- .("Active Margin")
-            self$results$contingency$addColumn(rowVarName, type="text", title = rowVarNameString)
+            self$results$contingency$addColumn("row", type="text", title = rowVarNameString)
             for (col in colnames(fullTable)) {
                 if (col != .("Active Margin"))
                     self$results$contingency$addColumn(col, type="integer", superTitle = colVarNameString)
@@ -254,7 +266,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             for (i in seq(nrow(fullTable))) {
                 self$results$contingency$addRow(i, values = fullTable[i,])
-                self$results$contingency$setCell(rowNo = i, rowVarName, rownames(fullTable)[i])
+                self$results$contingency$setCell(rowNo = i, "row", rownames(fullTable)[i])
             }
             self$results$contingency$addFormat(rowNo = nrow(fullTable), 1, jmvcore::Cell.BEGIN_END_GROUP)
             # Change NaN/NA to NULL. Is there another way to have empty cells ?
@@ -270,32 +282,13 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Row and Column Profile Tables ####
 
             if(self$options$showProfiles) {
+                hasSupp <- !is.null(supplementaryRows) || !is.null(supplementaryCols)
                 # Row Profiles
                 rowProfiles <- private$.getProfile(contingencyTable, supplementaryRows, supplementaryCols)
-                self$results$rowProfiles$addColumn(rowVarName, type = "text", title = rowVarNameString)
-                for (j in seq(ncol(rowProfiles))) {
-                    self$results$rowProfiles$addColumn(colnames(rowProfiles)[j], type = "number", format = "zto", superTitle = colVarNameString)
-                }
-                for (i in seq(nrow(rowProfiles))) {
-                    self$results$rowProfiles$addRow(i, values = rowProfiles[i,])
-                    self$results$rowProfiles$setCell(rowNo = i, rowVarName, rownames(rowProfiles)[i])
-                }
-                self$results$rowProfiles$addFormat(rowNo = nrow(rowProfiles), 1, jmvcore::Cell.BEGIN_END_GROUP)
-                if (!is.null(supplementaryRows) || !is.null(supplementaryCols))
-                    self$results$rowProfiles$setNote("supp", paste("* :", .("Supplementary rows/columns")))
+                private$.fillProfileTable(self$results$rowProfiles, rowProfiles, hasSupp, rowVarNameString, colVarNameString)
                 # Column Profiles
                 colProfiles <- t(private$.getProfile(t(contingencyTable),supplementaryCols, supplementaryRows))
-                self$results$colProfiles$addColumn(rowVarName, type = "text", title = rowVarNameString)
-                for (j in seq(ncol(colProfiles))) {
-                    self$results$colProfiles$addColumn(colnames(colProfiles)[j], type = "number", format = "zto", superTitle = colVarNameString)
-                }
-                for (i in seq(nrow(colProfiles))) {
-                    self$results$colProfiles$addRow(i, values = colProfiles[i,])
-                    self$results$colProfiles$setCell(rowNo = i, rowVarName, rownames(colProfiles)[i])
-                }
-                self$results$colProfiles$addFormat(rowNo = nrow(colProfiles), 1, jmvcore::Cell.BEGIN_END_GROUP)
-                if (!is.null(supplementaryRows) || !is.null(supplementaryCols))
-                    self$results$colProfiles$setNote("supp",paste("* :", .("Supplementary rows/columns")))
+                private$.fillProfileTable(self$results$colProfiles, colProfiles, hasSupp, rowVarNameString, colVarNameString)
             }
 
             #### Chi-Squared test ####
@@ -309,7 +302,6 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (any(rowSums(activeContingencyTable) == 0) ||
                 any(colSums(activeContingencyTable) == 0)) {
                 vijErrorMessage(self, .("Some categories have zero counts and must be removed."))
-                return(FALSE)
             }
 
             chisqres <- tryCatch(
@@ -319,11 +311,20 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (is.null(chisqres) || !is.finite(chisqres$statistic) ) {
                 vijErrorMessage(self, .("Unable to compute the χ2 statistic."))
-                return(FALSE)
             }
             if (chisqres$statistic <= .Machine$double.eps) {
                 vijErrorMessage(self, .("The χ2 statistic is equal to zero."))
-                return(FALSE)
+            }
+
+            # Check solution dimension
+            maxDim = min(nrow(contingencyTable)-length(supplementaryRows), ncol(contingencyTable)-length(supplementaryCols)) - 1
+            if (maxDim < 2) {
+                vijErrorMessage(self, .("Not enough data to compute CA."))
+            }
+            nDim <-self$options$dimNum
+            if (nDim > maxDim) {
+                errorMessage <- jmvcore::format(.("Number of dimensions must be less than or equal to {maxDim}."), maxDim = maxDim)
+                vijErrorMessage(self,errorMessage)
             }
 
             #### Compute CA ####
@@ -344,10 +345,12 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (is.null(res) ) {
                 vijErrorMessage(self, .("Unable to compute correspondence analysis for the selected data."))
-                return(FALSE)
             }
 
             #### Inertia Table ####
+            # rows is set to 1 in yaml to force jamovi to refresh the table note after a reject().
+            # we need to delete this (empty) row before to populate the table.
+            self$results$eigenvalues$deleteRows()
             # Populate the inertia table
             for (i in seq_along(res$sv)) {
                 self$results$eigenvalues$addRow(i, values = list(
@@ -368,116 +371,40 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ))
             self$results$eigenvalues$addFormat(rowKey="Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
             # Chi-squared test
-            self$results$eigenvalues$setNote("chisq",
-                                             paste0("X-squared = ", round(chisqres$statistic,2), ", df = ", chisqres$parameter, ",
-                               p-value = ", format.pval(chisqres$p.value, eps = 0.001)),
-                                             init = FALSE)
+            chisqNote <- jmvcore::format(.("χ² = {chisq}, df = {df}, p-value = {pval}"),
+                                         chisq = round(chisqres$statistic,2),
+                                         df = chisqres$parameter,
+                                         pval = format.pval(chisqres$p.value, eps = 0.001)
+            )
+            self$results$eigenvalues$setNote(key = "chisq", note = chisqNote, init = FALSE)
+
+
+            # Check axis values
+            xaxis <- self$options$xaxis
+            yaxis <- self$options$yaxis
+            if (xaxis > nDim || yaxis > nDim) {
+                errorMessage <- jmvcore::format(.("Axis numbers must be less than or equal to the number of dimensions ({nDim})."), nDim = nDim)
+                vijErrorMessage(self, errorMessage)
+            }
+            if (xaxis == yaxis) {
+                vijErrorMessage(self, .("Axis numbers cannot be equal."))
+            }
+            if (res$sv[max(xaxis, yaxis)] < .Machine$double.eps) {
+                message <- jmvcore::format(.("The singular value for dimension {n} is close to zero. The plots may not be accurate."), n = max(xaxis, yaxis))
+                pos <- ifelse(is.null(self$countsName), 1, 2)
+                vijWarningMessage(self, message, pos = pos)
+            }
+
             #### Summary Tables ####
 
             if(self$options$showSummaries) {
-                # Row Summary Table
-                self$results$rowSummary$addColumn(name = "id", title = "#", type = "integer")
-                self$results$rowSummary$addColumn(name = "row", title = rowVarNameString, type = "text")
-                self$results$rowSummary$addColumn(name = "margin", title = "Mass", type = "number", format = "zto")
-                for (i in seq(nDim))
-                    self$results$rowSummary$addColumn(name = paste0("score",i), title = paste("Dim",i), superTitle = paste(.("Coordinates"),"†"), type = "number", format = "zto")
-                self$results$rowSummary$addColumn(name = "inertia", title = "% Inertia", type = "number", format = "zto")
-                for (i in seq(nDim))
-                    self$results$rowSummary$addColumn(name = paste0("contrib",i), title = paste("Dim",i), superTitle = "Contributions", type = "number", format = "zto")
-                self$results$rowSummary$addColumn(name = "qlt", title = "QLT", type = "number", format = "zto")
-                for (i in seq(nDim))
-                    self$results$rowSummary$addColumn(name = paste0("cos",i), title = paste("Dim",i), superTitle = "CO2", type = "number", format = "zto")
-                # Populate Row Summary
-                for (i in seq_len(nrow(contingencyTable))) {
-                    aRow <- rownames(contingencyTable)[i]
-                    if (aRow %in% rownames(res$row$coord)) {
-                        theValues = list(
-                            id = i,
-                            row = aRow,
-                            margin = res$call$marge.row[aRow],
-                            inertia = res$row$inertia[aRow],
-                            qlt = sum(res$row$cos2[aRow,1:nDim])
-                        )
-                        for (j in seq(nDim)) {
-                            theValues[[paste0("score",j)]] <- res$row$coord[aRow,j]
-                            theValues[[paste0("contrib",j)]] <- res$row$contrib[aRow,j]
-                            theValues[[paste0("cos",j)]] <- res$row$cos2[aRow,j]
-                        }
-                    } else {
-                        # Supplementary row
-                        theValues = list(
-                            id = i,
-                            row = aRow,
-                            margin = "",
-                            inertia = "",
-                            qlt = sum(res$row.sup$cos2[aRow,1:nDim], na.rm = TRUE)
-                        )
-                        for (j in seq(nDim)) {
-                            theValues[[paste0("score",j)]] <- res$row.sup$coord[aRow,j]
-                            theValues[[paste0("contrib",j)]] <- ""
-                            theValues[[paste0("cos",j)]] <- res$row.sup$cos2[aRow,j]
-                        }
-
-                    }
-                    self$results$rowSummary$addRow(i, values = theValues)
-                }
-                if (!is.null(supplementaryRows))
-                    self$results$rowSummary$setNote("supp",paste("* :", .("Supplementary rows")))
-                self$results$rowSummary$setNote("norm", paste("† :", normalizationString))
-
-                # Column Summary Table
-                self$results$colSummary$addColumn(name = "id", title = "#", type = "integer")
-                self$results$colSummary$addColumn(name = "col", title = colVarNameString, type = "text")
-                self$results$colSummary$addColumn(name = "margin", title = "Mass", type = "number", format = "zto")
-                for (i in seq_len(nDim))
-                    self$results$colSummary$addColumn(name = paste0("score",i), title = paste("Dim",i), superTitle = paste(.("Coordinates"),"†"), type = "number", format = "zto")
-                self$results$colSummary$addColumn(name = "inertia", title = "% Inertia", type = "number", format = "zto")
-                for (i in seq_len(nDim))
-                    self$results$colSummary$addColumn(name = paste0("contrib",i), title = paste("Dim",i), superTitle = "Contributions", type = "number", format = "zto")
-                self$results$colSummary$addColumn(name = "qlt", title = "QLT", type = "number", format = "zto")
-                for (i in seq_len(nDim))
-                    self$results$colSummary$addColumn(name = paste0("cos",i), title = paste("Dim",i), superTitle = "CO2", type = "number", format = "zto")
-                # Populate Col Summary
-                for (i in seq_len(ncol(contingencyTable))) {
-                    aCol <- colnames(contingencyTable)[i]
-                    if (aCol %in% rownames(res$col$coord)) {
-                        theValues = list(
-                            id = i,
-                            col = aCol,
-                            margin = res$call$marge.col[aCol],
-                            inertia = res$col$inertia[aCol],
-                            qlt = sum(res$col$cos2[aCol,1:nDim])
-                        )
-                        for (j in seq(nDim)) {
-                            theValues[[paste0("score",j)]] <- res$col$coord[aCol,j]
-                            theValues[[paste0("contrib",j)]] <- res$col$contrib[aCol,j]
-                            theValues[[paste0("cos",j)]] <- res$col$cos2[aCol,j]
-                        }
-                    } else {
-                        # Supplementary col
-                        theValues = list(
-                            id = i,
-                            col = aCol,
-                            margin = "",
-                            inertia = "",
-                            qlt = sum(res$col.sup$cos2[aCol,1:nDim], na.rm = TRUE)
-                        )
-                        for (j in seq(nDim)) {
-                            theValues[[paste0("score",j)]] <- res$col.sup$coord[aCol,j]
-                            theValues[[paste0("contrib",j)]] <- ""
-                            theValues[[paste0("cos",j)]] <- res$col.sup$cos2[aCol,j]
-                        }
-                    }
-                    self$results$colSummary$addRow(i, values = theValues)
-                }
-                if (!is.null(supplementaryCols))
-                    self$results$colSummary$setNote("supp", paste("* :", .("Supplementary columns")))
-                self$results$colSummary$setNote("norm", paste("† :", normalizationString))
+                private$.fillSummaryTable(self$results$rowSummary, rownames(contingencyTable), "row", rowVarNameString,
+                                           res$row, res$row.sup, res$call$marge.row, supplementaryRows,
+                                           .("Supplementary rows"), nDim, normalizationString)
+                private$.fillSummaryTable(self$results$colSummary, colnames(contingencyTable), "col", colVarNameString,
+                                           res$col, res$col.sup, res$call$marge.col, supplementaryCols,
+                                           .("Supplementary columns"), nDim, normalizationString)
             }
-            if (length(res$sv) < 2)
-                return(FALSE)
-            if (res$sv[2] < .Machine$double.eps)
-                return(FALSE)
 
             #### Plots ####
 

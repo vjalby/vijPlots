@@ -41,21 +41,12 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .run = function() {
             if (is.null(self$options$vars) || length(self$options$vars) < 2 || nrow(self$data) == 0)
                 return()
-            # check dim values
+
+            # Check dim values
+            # Checking that axes < nDim is done later to allow summary table to display
             nDim <- self$options$dimNum
             if (nDim > length(self$options$vars))
-                errorMessage <- .("The number of dimensions cannot be greater than the number of variables.")
-            else if (self$options$xaxis > nDim || self$options$yaxis > nDim)
-                errorMessage <- .("X-Axis and Y-Axis cannot be greater than the number of dimensions.")
-            else if (self$options$xaxis == self$options$yaxis)
-                errorMessage <- .("X-Axis and Y-Axis cannot be equal.")
-            else
-                errorMessage <- NULL
-
-            if (!is.null(errorMessage)) {
-                vijErrorMessage(self, errorMessage)
-                return(FALSE)
-            }
+                vijErrorMessage(self, .("The number of dimensions cannot be greater than the number of variables."))
 
             #### Prepare data ####
             data <- self$data[,c(self$options$vars, self$options$labelVar, self$options$groupVar), drop = FALSE]
@@ -68,12 +59,10 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (nrow(data) < 2) {
                 vijErrorMessage(self, .("Not enough complete observations to perform PCA."))
-                return(FALSE)
             }
 
             if (nDim > nrow(data)) {
                 vijErrorMessage(self, .("The number of dimensions cannot be greater than the number of observations."))
-                return(FALSE)
             }
 
             # Check for constant variables
@@ -88,7 +77,6 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         vars = paste(constantVars, collapse = ", ")
                     )
                 )
-                return(FALSE)
             }
 
             # Compute the correlation matrix
@@ -96,7 +84,6 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (anyNA(corrMat)) { # should not happen...
                 vijErrorMessage(self, .("Unable to compute the correlation matrix."))
-                return(FALSE)
             }
 
             rc <- rcond(corrMat)
@@ -108,6 +95,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### KMO & Bartlett's test ####
+
             if (self$options$showKMO) {
                 kmo <- tryCatch(
                             psych::KMO(corrMat),
@@ -129,6 +117,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### PCA computation ####
+
             res <- tryCatch(
                         private$.pca(data[,self$options$vars], scaleData = self$options$stdVariables,
                                nfact = nDim, rotation = self$options$rotation),
@@ -136,7 +125,6 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     )
             if (is.null(res)) {
                 vijErrorMessage(self, .("Unable to compute principal components for the selected variables."))
-                return(FALSE)
             }
 
             if (!is.null(self$options$labelVar)) {
@@ -180,6 +168,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Summary Table ####
+
             if (self$options$showSummary) {
                 eigen <- res$eigenvalues
                 eigenSum <- sum(eigen)
@@ -214,7 +203,15 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     self$results$summaryTable$setNote('rot', rotationNote)
             }
 
+            # Check that axes < nDim here to allow summary table to display
+            if (self$options$xaxis > nDim || self$options$yaxis > nDim)
+                vijErrorMessage(self, .("X-Axis and Y-Axis cannot be greater than the number of dimensions."))
+            else if (self$options$xaxis == self$options$yaxis)
+                vijErrorMessage(self, .("X-Axis and Y-Axis cannot be equal."))
+
+
             #### Loading Table ####
+
             if (self$options$showLoadings) {
                 for(i in 1:nDim) {
                     self$results$loadingTable$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = "Component", type = "number") #, format = "zto")
@@ -241,6 +238,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Observation Table ####
+
             if (self$options$showObservations) {
                 if (is.null(self$options$labelVar))
                     self$results$obsTable$addColumn("obs", title = "Observation", type = "integer")
@@ -302,6 +300,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Saving coordinates  ####
+
             if (self$options$stdScores)
                 private$.saveCoordinates(res$stdScores, norm = "standard")
             else

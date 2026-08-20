@@ -224,14 +224,14 @@ test_that("barplot: weighted via jamovi's built-in weights (jmv-weights attribut
 test_that("barplot: negative counts are rejected", {
     negData <- weightedData
     negData$w[1] <- -3
-    r <- vijPlots::barplot(
-        data = negData,
-        rows = "cat",
-        columns = "grp",
-        facet = NULL,
-        counts = "w"
+    expect_error(
+        vijPlots::barplot(
+            data = negData,
+            rows = "cat",
+            columns = "grp",
+            facet = NULL,
+            counts = "w"
+        ),
+        "Counts may not be negative."
     )
-    expect_true(".warning" %in% names(r))
-    expect_equal(r[[".warning"]]$content, "Counts may not be negative.")
-    expect_null(r$plot$state)
 })

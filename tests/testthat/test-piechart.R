@@ -206,14 +206,14 @@ test_that("piechart: weighted via jamovi's built-in weights (jmv-weights attribu
 test_that("piechart: negative counts are rejected", {
     negData <- weightedData
     negData$w[1] <- -3
-    r <- vijPlots::piechart(
-        data = negData,
-        aVar = "cat",
-        facet = NULL,
-        counts = "w",
-        labType = "text"
+    expect_error(
+        vijPlots::piechart(
+            data = negData,
+            aVar = "cat",
+            facet = NULL,
+            counts = "w",
+            labType = "text"
+        ),
+        "Counts may not be negative."
     )
-    expect_true(".warning" %in% names(r))
-    expect_equal(r[[".warning"]]$content, "Counts may not be negative.")
-    expect_null(r$plot$state)
 })

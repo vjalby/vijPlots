@@ -365,14 +365,14 @@ test_that("mosaic: ordered factor as category does not break the residuals join"
 test_that("mosaic: negative counts are rejected", {
     negData <- weightedData
     negData$w[1] <- -3
-    r <- vijPlots::mosaic(
-        data = negData,
-        category = "cat",
-        group = "grp",
-        counts = "w",
-        facet = NULL
+    expect_error(
+        vijPlots::mosaic(
+            data = negData,
+            category = "cat",
+            group = "grp",
+            counts = "w",
+            facet = NULL
+        ),
+        "Counts may not be negative."
     )
-    expect_true(".warning" %in% names(r))
-    expect_equal(r[[".warning"]]$content, "Counts may not be negative.")
-    expect_null(r$plot$state)
 })

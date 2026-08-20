@@ -27,7 +27,7 @@ test_that("corresp: contingency table mode (mode = contTable)", {
         showContingency = TRUE
     )
     ct <- r$contingency$asDF
-    expect_equal(unname(ct$STAFF), c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries", "Active Margin"))
+    expect_equal(unname(ct$row), c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries", "Active Margin"))
     expect_equal(unname(ct$None), c(4, 4, 25, 18, 10, 61))
     expect_equal(unname(ct$`Active Margin`), c(11, 18, 51, 88, 25, 193))
 
@@ -35,7 +35,25 @@ test_that("corresp: contingency table mode (mode = contTable)", {
     expect_equal(unname(eig$dim), c("1", "2", "Total"))
     expect_equal(unname(eig$inertia), c(0.07475910589, 0.01001718051, 0.0847762864), tolerance = 1e-6)
     expect_equal(unname(eig$proportion), c(0.8775587314, 0.117586535, 1), tolerance = 1e-6)
-    expect_equal(r$eigenvalues$notes$chisq$note, "X-squared = 16.44, df = 12,\n                               p-value = 0.17183")
+    expect_equal(r$eigenvalues$notes$chisq$note, "χ² = 16.44, df = 12, p-value = 0.17183")
+})
+
+test_that("corresp: negative counts are rejected (mode = contTable)", {
+    negData <- wideData
+    negData$None[1] <- -4
+    expect_error(
+        vijPlots::corresp(
+            data = negData,
+            mode = "contTable",
+            rows = NULL,
+            cols = NULL,
+            columns = c("None", "Light", "Medium", "Heavy"),
+            rowLabels = "STAFF",
+            counts = NULL,
+            showContingency = TRUE
+        ),
+        "Counts may not be negative."
+    )
 })
 
 test_that("corresp: inertia (eigenvalues) table", {
@@ -52,7 +70,7 @@ test_that("corresp: inertia (eigenvalues) table", {
     expect_equal(unname(eig$dim), c("1", "2", "Total"))
     expect_equal(unname(eig$inertia), c(0.03947232601, 0.02254491281, 0.06201723883), tolerance = 1e-6)
     expect_equal(unname(eig$proportion), c(0.6087989096, 0.3477200288, 1), tolerance = 1e-6)
-    expect_equal(r$eigenvalues$notes$chisq$note, "X-squared = 25.03, df = 20,\n                               p-value = 0.20041")
+    expect_equal(r$eigenvalues$notes$chisq$note, "χ² = 25.03, df = 20, p-value = 0.20041")
 })
 
 test_that("corresp: contingency table", {
@@ -67,7 +85,7 @@ test_that("corresp: contingency table", {
         showContingency = TRUE
     )
     ct <- r$contingency$asDF
-    expect_equal(unname(ct$STAFF), c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries", "Active Margin"))
+    expect_equal(unname(ct$row), c("Senior Managers", "Junior Managers", "Senior Employees", "Junior Employees", "Secretaries", "Active Margin"))
     expect_equal(unname(ct$None), c(4, 4, 25, 18, 10, 61))
     expect_equal(unname(ct$`Active Margin`), c(22, 36, 102, 176, 50, 386))
 })

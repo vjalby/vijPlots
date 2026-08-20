@@ -332,30 +332,28 @@ test_that("likertplot: titles, axis and legend text options", {
 })
 
 test_that("likertplot: mixing types without toInteger is rejected", {
-    r <- vijPlots::likertplot(
-        data = testData,
-        liks = c("Question 1", "Q1"),
-        group = NULL,
-        toInteger = FALSE
+    expect_error(
+        vijPlots::likertplot(
+            data = testData,
+            liks = c("Question 1", "Q1"),
+            group = NULL,
+            toInteger = FALSE
+        ),
+        "Select the \"Convert variables to integers\" option when the variables are not of the same type."
     )
-    expect_true(".warning" %in% names(r))
-    expect_equal(r[[".warning"]]$content,
-                 "Select the \"Convert variables to integers\" option when the variables are not of the same type.")
-    expect_null(r$plot$state)
 })
 
 test_that("likertplot: tidyUp alone does not bypass the same-type check", {
-    r <- vijPlots::likertplot(
-        data = testData,
-        liks = c("Question 1", "Q1"),
-        group = NULL,
-        toInteger = FALSE,
-        tidyUp = TRUE
+    expect_error(
+        vijPlots::likertplot(
+            data = testData,
+            liks = c("Question 1", "Q1"),
+            group = NULL,
+            toInteger = FALSE,
+            tidyUp = TRUE
+        ),
+        "Select the \"Convert variables to integers\" option when the variables are not of the same type."
     )
-    expect_true(".warning" %in% names(r))
-    expect_equal(r[[".warning"]]$content,
-                 "Select the \"Convert variables to integers\" option when the variables are not of the same type.")
-    expect_null(r$plot$state)
 })
 
 test_that("likertplot: toInteger reconciles an ordered factor with a plain integer (Question 1 + Q1)", {

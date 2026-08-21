@@ -53,6 +53,81 @@ test_that("mrcrosstabs: multi-valued variable mode (onevar) matches dummy variab
     expect_equal(unname(ct$Total), c(13, 10, 6, 5, 34, 17))
 })
 
+test_that("mrcrosstabs: dummy variables mode supports Y/N coding (not just 0/1)", {
+    ynData <- data.frame(
+        Q1 = factor(c("Y","N","Y","Y","N","Y")),
+        Q2 = factor(c("N","Y","Y","N","Y","N")),
+        Grp = factor(c("A","A","B","B","A","B"))
+    )
+    r <- vijPlots::mrcrosstabs(
+        data = ynData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Q1", "Q2"),
+        group = "Grp",
+        group2 = NULL,
+        endorsed = "Y",
+        order = "none"
+    )
+    ct <- r$crosstab$asDF
+    expect_equal(unname(ct$var), c("Q1", "Q2", "Total", "Number of cases"))
+    expect_equal(unname(ct$A), c(1, 2, 3, 3))
+    expect_equal(unname(ct$B), c(3, 1, 4, 3))
+    expect_equal(unname(ct$Total), c(4, 3, 7, 6))
+})
+
+test_that("mrcrosstabs: dummy variables mode supports 1/2 coding", {
+    numData <- data.frame(
+        Q1 = factor(c(1, 2, 1, 1)),
+        Q2 = factor(c(2, 1, 1, 2)),
+        Grp = factor(c("A", "A", "B", "B"))
+    )
+    r <- vijPlots::mrcrosstabs(
+        data = numData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Q1", "Q2"),
+        group = "Grp",
+        group2 = NULL,
+        endorsed = "1",
+        order = "none"
+    )
+    ct <- r$crosstab$asDF
+    expect_equal(unname(ct$var), c("Q1", "Q2", "Total", "Number of cases"))
+    expect_equal(unname(ct$Total), c(3, 2, 5, 4))
+})
+
+test_that("mrcrosstabs: empty endorsed value is rejected", {
+    ynData <- data.frame(Q1 = factor(c("Y","N")), Q2 = factor(c("N","Y")), Grp = factor(c("A","B")))
+    expect_error(
+        vijPlots::mrcrosstabs(
+            data = ynData,
+            mode = "morevar",
+            repVar = NULL,
+            resps = c("Q1", "Q2"),
+            group = "Grp",
+            group2 = NULL,
+            endorsed = ""
+        ),
+        "Counted value string may not be empty."
+    )
+})
+
+test_that("mrcrosstabs: empty separator is rejected (mode = onevar)", {
+    expect_error(
+        vijPlots::mrcrosstabs(
+            data = testData,
+            mode = "onevar",
+            repVar = "Credit Cards",
+            resps = NULL,
+            separator = "",
+            group = NULL,
+            group2 = "Age"
+        ),
+        "Separator string may not be empty."
+    )
+})
+
 test_that("mrcrosstabs: computedValues = % of cases", {
     r <- vijPlots::mrcrosstabs(
         data = testData,

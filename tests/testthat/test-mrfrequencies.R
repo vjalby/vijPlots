@@ -95,6 +95,60 @@ test_that("mrfrequencies: emptyAsNA = FALSE counts the all-missing row as a case
     expect_equal(r$responses$notes$noc$note, "Number of cases: 18")
 })
 
+test_that("mrfrequencies: dummy variables mode supports Y/N coding (not just 0/1)", {
+    ynData <- data.frame(
+        Q1 = factor(c("Y","N","Y","Y","N","Y")),
+        Q2 = factor(c("N","Y","Y","N","Y","N")),
+        Q3 = factor(c("Y","Y","N","Y","N",NA))
+    )
+    r <- vijPlots::mrfrequencies(
+        data = ynData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Q1", "Q2", "Q3"),
+        endorsed = "Y",
+        order = "none"
+    )
+    freq <- r$responses$asDF
+    expect_equal(unname(freq$var), c("Q1", "Q2", "Q3", "Total"))
+    expect_equal(unname(freq$freq), c(4, 3, 3, 10))
+    expect_equal(unname(freq$responsepercent), c(0.4, 0.3, 0.3, 1))
+    expect_equal(unname(freq$casepercent), c(4/6, 3/6, 3/6, 10/6), tolerance = 1e-9)
+    expect_equal(r$responses$notes$noc$note, "Number of cases: 6")
+})
+
+test_that("mrfrequencies: dummy variables mode supports 1/2 coding", {
+    numData <- data.frame(
+        Q1 = factor(c(1, 2, 1, 1)),
+        Q2 = factor(c(2, 1, 1, 2))
+    )
+    r <- vijPlots::mrfrequencies(
+        data = numData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Q1", "Q2"),
+        endorsed = "1",
+        order = "none"
+    )
+    freq <- r$responses$asDF
+    expect_equal(unname(freq$var), c("Q1", "Q2", "Total"))
+    expect_equal(unname(freq$freq), c(3, 2, 5))
+})
+
+test_that("mrfrequencies: empty endorsed value is rejected", {
+    ynData <- data.frame(Q1 = factor(c("Y","N")), Q2 = factor(c("N","Y")))
+    expect_error(
+        vijPlots::mrfrequencies(
+            data = ynData,
+            mode = "morevar",
+            repVar = NULL,
+            resps = c("Q1", "Q2"),
+            endorsed = ""
+        ),
+        "Counted value string may not be empty."
+    )
+})
+
 test_that("mrfrequencies: plot, dummy variables mode (default)", {
     testPlot <- vijPlots::mrfrequencies(
         data = testData,

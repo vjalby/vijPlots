@@ -72,9 +72,10 @@
 
 ## Version history
 
-### 2026-08-?? / 1.4.0
+### 2026-08-?? / 1.3.1
 
 - Mosaic Plot
+- Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N).
 
 ### 2026-08-17 / 1.3.0
 

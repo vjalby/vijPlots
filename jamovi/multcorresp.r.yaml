@@ -30,6 +30,7 @@ items:
           type: number
           format: pc
       clearWith:
+        - dimNum
         - vars
         - supplVars
         - method
@@ -112,6 +113,7 @@ items:
       height: 600
       renderFun: .discrimplot
       clearWith:
+        - dimNum
         - vars
         - supplVars
         - method
@@ -147,6 +149,7 @@ items:
       height: 600
       renderFun: .categoryplot
       clearWith:
+        - dimNum
         - vars
         - supplVars
         - method
@@ -188,6 +191,7 @@ items:
       height: 600
       renderFun: .obsplot
       clearWith:
+        - dimNum
         - vars
         - supplVars
         - labelVar
@@ -229,6 +233,7 @@ items:
       height: 600
       renderFun: .biplot
       clearWith:
+        - dimNum
         - vars
         - supplVars
         - labelVar

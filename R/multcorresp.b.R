@@ -22,19 +22,6 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(self$options$vars) || length(self$options$vars) < 3  || nrow(self$data) == 0)
                 return(FALSE)
 
-            # check dim values
-            nDim <- self$options$dimNum
-            if (self$options$xaxis > nDim || self$options$yaxis > nDim)
-                errorMessage <- .("X-Axis and Y-Axis cannot be greater than the number of dimensions.")
-            else if (self$options$xaxis == self$options$yaxis)
-                errorMessage <- .("X-Axis and Y-Axis cannot be equal.")
-            else
-                errorMessage <- NULL
-
-            if (!is.null(errorMessage)) {
-                vijErrorMessage(self, errorMessage)
-            }
-
             activeVars <- self$options$vars
             supplVars <- self$options$supplVars
             allVars <- c(activeVars, supplVars)
@@ -78,6 +65,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Compute MCA ####
 
+            nDim <- self$options$dimNum
+
             res <- tryCatch(
                     private$.mca(data[,allVars], method = method, nd = nDim, supcol = supplIdx,
                                  rowlabels = rowLabels, rownames = rownames(data)),
@@ -92,6 +81,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 errorMessage <- jmvcore::format(.("The number of dimensions cannot be greater than {max}."), max = res$nd.max)
                 vijErrorMessage(self, errorMessage)
             }
+
 
             #### Inertia Table ####
 
@@ -248,6 +238,15 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Plots  ####
+
+            # Check axis values
+            if (self$options$xaxis > nDim || self$options$yaxis > nDim) {
+                errorMessage <- .("X-Axis and Y-Axis cannot be greater than the number of dimensions.")
+                vijErrorMessage(self, errorMessage)
+            } else if (self$options$xaxis == self$options$yaxis) {
+                errorMessage <- .("X-Axis and Y-Axis cannot be equal.")
+                vijErrorMessage(self, errorMessage)
+            }
 
             res$ordVars <- ordVars # List of ordered factors
 

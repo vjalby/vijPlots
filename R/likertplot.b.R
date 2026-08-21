@@ -59,19 +59,11 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 canbeNum <- canbeNum && jmvcore::canBeNumeric(mainData[[ques]])
 
             if (!canbeNum && self$options$frequencyTable && (self$options$showMedian || self$options$showMean))
-                errorMessage <- .("Median and mean require numeric variables")
-            else if (!canbeNum && (self$options$showMannU || self$options$showKW || self$options$showPostHoc))
-                errorMessage <- .("Comparison tests require numeric variables")
+                vijErrorMessage(self, .("Median and mean require numeric variables"))
             else if (!canbeNum && self$options$toInteger)
-                errorMessage <- .("Cannot convert text variables to integers")
+                vijErrorMessage(self, .("Cannot convert text variables to integers"))
             else if (!canbeNum && self$options$tidyUp)
-                errorMessage <- .("Cannot tidy up text variables")
-            else
-                errorMessage <- NULL
-
-            if (!is.null(errorMessage)) {
-                vijErrorMessage(self, errorMessage)
-            }
+                vijErrorMessage(self, .("Cannot tidy up text variables"))
 
             #### Convert to integer ####
             if (self$options$toInteger) {
@@ -209,6 +201,12 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             } # End Frenquency Table
 
+            # check if variables are numeric
+            if (!canbeNum && (self$options$showMannU || self$options$showKW || self$options$showPostHoc)) {
+                vijWarningMessage(self, .("Comparison tests require numeric variables"))
+                self$results$comp$setVisible(FALSE)
+            }
+
             # p correction method
             adjustMethod <- self$options$adjustMethod
             adjustMethodStr <- paste0(toupper(substring(adjustMethod, 1, 1)), substring(adjustMethod, 2))
@@ -218,7 +216,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 adjustMethodStr <- "Benjamini-Yekutieli"
 
             #### Mann Whitney U ####
-            if ( ng > 1 && self$options$showMannU) {
+            if ( ng > 1 && self$options$showMannU && canbeNum) {
                 if (ng != 2) {
                     self$results$comp$uTestTable$setNote("p","Mann-Whitney tests require two groups")
                     for (ques in questions) { # Empty table
@@ -246,7 +244,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Kruskal-Wallis tests ####
-            if (ng > 1 && self$options$showKW) {
+            if (ng > 1 && self$options$showKW && canbeNum) {
                 p <- c()
                 for (ques in questions) {
                     res <- private$.kruskalW(ques, groupingVar, mainData)
@@ -266,7 +264,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Pairwise comparison table ####
-            if (ng > 1 && self$options$showPostHoc) {
+            if (ng > 1 && self$options$showPostHoc && canbeNum) {
                 # Set title and statistic column title
                 self$results$comp$pwTable$setTitle(switch(self$options$postHoc,
                                                           "conover" = .("Conover's Pairwise Comparisons"),

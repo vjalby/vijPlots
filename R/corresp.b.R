@@ -378,6 +378,16 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             )
             self$results$eigenvalues$setNote(key = "chisq", note = chisqNote, init = FALSE)
 
+            #### Summary Tables ####
+
+            if(self$options$showSummaries) {
+                private$.fillSummaryTable(self$results$rowSummary, rownames(contingencyTable), "row", rowVarNameString,
+                                           res$row, res$row.sup, res$call$marge.row, supplementaryRows,
+                                           .("Supplementary rows"), nDim, normalizationString)
+                private$.fillSummaryTable(self$results$colSummary, colnames(contingencyTable), "col", colVarNameString,
+                                           res$col, res$col.sup, res$call$marge.col, supplementaryCols,
+                                           .("Supplementary columns"), nDim, normalizationString)
+            }
 
             # Check axis values
             xaxis <- self$options$xaxis
@@ -393,17 +403,6 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 message <- jmvcore::format(.("The singular value for dimension {n} is close to zero. The plots may not be accurate."), n = max(xaxis, yaxis))
                 pos <- ifelse(is.null(self$countsName), 1, 2)
                 vijWarningMessage(self, message, pos = pos)
-            }
-
-            #### Summary Tables ####
-
-            if(self$options$showSummaries) {
-                private$.fillSummaryTable(self$results$rowSummary, rownames(contingencyTable), "row", rowVarNameString,
-                                           res$row, res$row.sup, res$call$marge.row, supplementaryRows,
-                                           .("Supplementary rows"), nDim, normalizationString)
-                private$.fillSummaryTable(self$results$colSummary, colnames(contingencyTable), "col", colVarNameString,
-                                           res$col, res$col.sup, res$call$marge.col, supplementaryCols,
-                                           .("Supplementary columns"), nDim, normalizationString)
             }
 
             #### Plots ####

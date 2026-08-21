@@ -676,6 +676,7 @@ multcorrespResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                         `type`="number", 
                         `format`="pc")),
                 clearWith=list(
+                    "dimNum",
                     "vars",
                     "supplVars",
                     "method",
@@ -766,6 +767,7 @@ multcorrespResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 height=600,
                 renderFun=".discrimplot",
                 clearWith=list(
+                    "dimNum",
                     "vars",
                     "supplVars",
                     "method",
@@ -801,6 +803,7 @@ multcorrespResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 height=600,
                 renderFun=".categoryplot",
                 clearWith=list(
+                    "dimNum",
                     "vars",
                     "supplVars",
                     "method",
@@ -842,6 +845,7 @@ multcorrespResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 height=600,
                 renderFun=".obsplot",
                 clearWith=list(
+                    "dimNum",
                     "vars",
                     "supplVars",
                     "labelVar",
@@ -883,6 +887,7 @@ multcorrespResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 height=600,
                 renderFun=".biplot",
                 clearWith=list(
+                    "dimNum",
                     "vars",
                     "supplVars",
                     "labelVar",

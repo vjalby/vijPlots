@@ -49,8 +49,8 @@ options:
 
     - name: endorsed
       title: Counted value
-      type: Integer
-      default: 1
+      type: String
+      default: "1"
 
     - name: optionname
       title: Option name

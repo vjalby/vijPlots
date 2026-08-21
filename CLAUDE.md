@@ -144,7 +144,11 @@ swallow it (see gotcha below).
   `loadingTable`/`obsTable`'s `'rot'`, `loadingTable`/`obsTable`'s `'norm'`, `obsTable`'s `"100"`) are
   left unfixed for now on that basis — the overlap needed to actually trigger it is narrow, and
   fixing it would need the same `rows: N` + `deleteRows()` treatment as `chisq`, which isn't
-  worthwhile pre-emptively without a concrete repro.
+  worthwhile pre-emptively without a concrete repro. `multcorresp.b.R` has the same unfixed pattern,
+  on `eigenvalues`'s `'method'`/`'adjusted'` notes, `discrim`'s `'sup'` note, `categories`'s
+  `'normalization'`/`'sup'` notes, and `observations`'s `"100"`/`'normalization'` notes — all set
+  after `.run()`'s early reject points (no data, MCA failed, `dimNum > res$nd.max`), all on `rows: 0`
+  tables. Same call: not worth fixing pre-emptively.
 
 ### Dependency graph has soft/transitive requirements
 

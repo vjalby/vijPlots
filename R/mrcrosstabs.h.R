@@ -13,7 +13,7 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             resps = NULL,
             group = NULL,
             group2 = NULL,
-            endorsed = 1,
+            endorsed = "1",
             optionname = "Options",
             order = "decreasing",
             computedValues = "count",
@@ -116,10 +116,10 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                     "ordinal"),
                 permitted=list(
                     "factor"))
-            private$..endorsed <- jmvcore::OptionInteger$new(
+            private$..endorsed <- jmvcore::OptionString$new(
                 "endorsed",
                 endorsed,
-                default=1)
+                default="1")
             private$..optionname <- jmvcore::OptionString$new(
                 "optionname",
                 optionname,
@@ -835,7 +835,7 @@ mrcrosstabs <- function(
     resps,
     group,
     group2,
-    endorsed = 1,
+    endorsed = "1",
     optionname = "Options",
     order = "decreasing",
     computedValues = "count",

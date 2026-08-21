@@ -11,7 +11,7 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
             separator = ";",
             emptyAsNA = TRUE,
             resps = NULL,
-            endorsed = 1,
+            endorsed = "1",
             optionname = "Options",
             order = "decreasing",
             showTotal = TRUE,
@@ -95,10 +95,10 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
                     "nominal"),
                 permitted=list(
                     "factor"))
-            private$..endorsed <- jmvcore::OptionInteger$new(
+            private$..endorsed <- jmvcore::OptionString$new(
                 "endorsed",
                 endorsed,
-                default=1)
+                default="1")
             private$..optionname <- jmvcore::OptionString$new(
                 "optionname",
                 optionname,
@@ -774,7 +774,7 @@ mrfrequencies <- function(
     separator = ";",
     emptyAsNA = TRUE,
     resps,
-    endorsed = 1,
+    endorsed = "1",
     optionname = "Options",
     order = "decreasing",
     showTotal = TRUE,

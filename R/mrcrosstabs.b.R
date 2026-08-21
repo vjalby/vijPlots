@@ -83,19 +83,35 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$mode == "morevar") { # Several dichotomous variables
                 if (length(self$options$resps) < 1 || is.null(self$options$group) || nrow(self$data) == 0) {
                     return()
+                } else if (all(is.na(self$data[, self$options$resps, drop = FALSE]))) {
+                    return()
+                } else if (self$options$endorsed == '') {
+                    vijErrorMessage(self, .("Counted value string may not be empty."))
                 } else {
                     nGroups <- nlevels(self$data[,self$options$group])
                     nAnswers <- length(self$options$resps)
-                    crosstab <- private$.crossTab(self$data, self$options$resps, self$options$group,
-                                                  self$options$endorsed, self$options$order, self$options$computedValues)
+                    # Encode as 0/1 by comparing each level's text to the endorsed value.
+                    encodedData <- as.data.frame(lapply(self$data[, self$options$resps, drop = FALSE], function(col) {
+                        as.integer(as.character(col) == self$options$endorsed)
+                    }), check.names = FALSE)
+                    encodedData[, self$options$group] <- self$data[, self$options$group]
+                    crosstab <- private$.crossTab(encodedData, self$options$resps, self$options$group,
+                                                  1, self$options$order, self$options$computedValues)
                 }
             } else { # One Multiple Value Variables
-                if (is.null(self$options$repVar) || self$options$separator == '' || is.null(self$options$group2) || nrow(self$data) == 0) {
+                if (is.null(self$options$repVar) || is.null(self$options$group2) || nrow(self$data) == 0) {
                     return()
+                } else if (all(is.na(self$data[[self$options$repVar]]))) {
+                    return()
+                } else if (self$options$separator == '') {
+                    vijErrorMessage(self, .("Separator string may not be empty."))
                 } else {
                     nGroups <- nlevels(self$data[,self$options$group2])
                     rawData <- self$data[[self$options$repVar]]
                     oneHotData <- private$.oneHotEncoding(rawData, self$options$separator, self$options$emptyAsNA)
+                    if (length(oneHotData) == 0) {
+                        vijErrorMessage(self, .("No distinct values found in the selected variable."))
+                    }
                     answerList <- names(oneHotData)
                     nAnswers <- length(answerList)
                     oneHotData[, self$options$group2] <- self$data[,self$options$group2]
@@ -333,6 +349,10 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Return the list of values/columns for table init
             if (init)
                 return(uniqueValues)
+            # No distinct value found: return an empty (0-column) table instead of
+            # letting sapply()/`+` below crash on a zero-length input
+            if (length(uniqueValues) == 0)
+                return(as.data.frame(matrix(nrow = length(aCol), ncol = 0)))
             # Build the encoded table
             rawValues <- as.character(aCol)
             # split then clean (heading/trailing spaces) the values

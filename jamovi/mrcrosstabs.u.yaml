@@ -38,15 +38,16 @@ children:
               - type: LayoutBox
                 stretchFactor: 1
                 style: inline
+                margin: large
                 children:
                   - type: TextBox
                     name: endorsed
-                    format: number
-                    stretchFactor: 1
+                    format: string
+                    width: normal
                   - type: TextBox
                     name: optionname
                     format: string
-                    stretchFactor: 1
+                    width: largest
       - type: Content
         name: onevar
         children:

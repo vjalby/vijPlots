@@ -493,13 +493,13 @@ options:
 
     - name: xAxisRangeMin
       title: Min
-      type: Number
-      default: 0
+      type: String
+      default: "0"
 
     - name: xAxisRangeMax
       title: Max
-      type: Number
-      default: 10
+      type: String
+      default: "10"
 
     - name: yAxisText
       title: ""

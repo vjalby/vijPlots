@@ -121,11 +121,13 @@ children:
                     children:
                       - type: TextBox
                         name: xAxisRangeMin
-                        format: number
+                        format: string
+                        width: large
                         enable: (xAxisRangeType:manual)
                       - type: TextBox
                         name: xAxisRangeMax
-                        format: number
+                        format: string
+                        width: large
                         enable: (xAxisRangeType:manual)
           - type: LayoutBox
             cell:

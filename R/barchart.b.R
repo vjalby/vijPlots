@@ -42,7 +42,10 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .run = function() {
             if (is.null(self$options$yVar) || is.null(self$options$xVar))
                 return()
-            plotData <- self$data[c(self$options$yVar, self$options$xVar, self$options$group, self$options$facet)]
+
+            varNames <- c(self$options$yVar, self$options$xVar, self$options$group, self$options$facet)
+            plotData <- jmvcore::select(self$data, varNames)
+
             plotData[[self$options$yVar]] <- jmvcore::toNumeric(plotData[[self$options$yVar]])
             # missing data
             plotData <- plotData[!is.na(plotData[[self$options$yVar]]),]

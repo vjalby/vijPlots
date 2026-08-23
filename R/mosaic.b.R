@@ -66,7 +66,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             categoryName <- self$options$category
             groupName <- self$options$group
             facetName <- self$options$facet
-            plotData <- self$data[c(categoryName, groupName, facetName)]
+            plotData <- jmvcore::select(self$data, c(categoryName, groupName, facetName))
 
             # Drop ordered-ness (level order is preserved): nothing downstream relies on
             # it, and chisq.test()$residuals loses it when converted back to a data frame,
@@ -138,7 +138,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             doPercent <- scales::label_percent(
                 accuracy = as.numeric(self$options$accuracy),
-                suffix = '\u2009%',
+                suffix = ' %',
                 decimal.mark = self$options[['decSymbol']])
             doNumber <- scales::label_number(
                 accuracy = as.numeric(self$options$accuracy),
@@ -196,7 +196,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Ticks ####
-            labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
+            labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
 
             if (self$options$yAxis == "label") {
                 if (is.null(self$options$facet)) {

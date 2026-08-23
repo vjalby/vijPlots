@@ -28,26 +28,52 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             depVars <- self$options$vars
             groupVar <- self$options$group
             varNames <- c(timeVar, depVars, groupVar)
+
             if (length(depVars) == 0 || is.null(timeVar))
                 return()
+
             plotData <- jmvcore::select(self$data, varNames)
-
-            if (!self$options$isDate && !is.numeric(plotData[[timeVar]]) && (self$options$xTicks > 0 || self$options$xAxisRangeType == "manual"))
-                vijWarningMessage(self,"\"Tick Count\" and \"Range\" options for the X-axis are only available for numeric variables.")
-
-            if (self$options$isDate && is.numeric(plotData[[timeVar]]))
-                vijWarningMessage(self,"A date variable must be in text format.")
 
             # Be sure dep var are numeric
             for (aVar in depVars)
                 plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
             # Delete row with missing time
             plotData <- plotData[!is.na(plotData[[timeVar]]),]
+
             # Ignore NA
             if (!is.null(groupVar) && self$options$ignoreNA)
                 plotData <- plotData[!is.na(plotData[[groupVar]]),]
+
             if (nrow(plotData) == 0)
                 return()
+
+            # Time format
+            timeVarIsNumeric <- is.numeric(plotData[[timeVar]])
+            timeVarIsDate <- (self$options$isDate && !timeVarIsNumeric)
+
+            # Check time format
+            if (self$options$isDate && timeVarIsNumeric) {
+                vijWarningMessage(self,.("A date variable must be in text format."))
+            }
+
+            # Convert timeVar as date
+            if (timeVarIsDate) {
+                timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], self$options$dateFormat)
+                if (!is.null(timeVarAsDate)) {
+                    plotData[[timeVar]] <- timeVarAsDate
+                } else {
+                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = self$options$timeVar)
+                    vijWarningMessage(self, errorMessage)
+                    timeVarIsDate <- FALSE
+                }
+            }
+
+            # Check axis options
+            if (!timeVarIsNumeric && self$options$xTicks > 0)
+                vijWarningMessage(self, .("\"Tick Count\" option for the X-axis is only available for numeric variables."))
+            if (!timeVarIsNumeric && !timeVarIsDate && self$options$xAxisRangeType == "manual")
+                vijWarningMessage(self, .("\"Range\" option for the X-axis is only available for numeric and date variables."))
+
             image <- self$results$plot
             image$setState(plotData)
         },
@@ -63,19 +89,9 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 groupVar <- NULL
 
-            # Time format
-            timeIsNumeric <- is.numeric(plotData[[timeVar]])
-            timeVarIsDate <- (self$options$isDate && !timeIsNumeric)
-
-            if (timeVarIsDate) {
-                timeVarAsDate <- private$.convertToDate(plotData[[timeVar]], self$options$dateFormat)
-                if (!is.null(timeVarAsDate)) {
-                    plotData[[timeVar]] <- timeVarAsDate
-                } else {
-                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = self$options$timeVar)
-                    vijErrorMessage(self, errorMessage)
-                }
-            }
+            # timeVar format
+            timeVarIsNumeric <- is.numeric(plotData[[timeVar]])
+            timeVarIsDate <- inherits(plotData[[timeVar]], "Date")
 
             dotSize <- self$options$dotSize
             lineWidth <- self$options$lineWidth
@@ -145,7 +161,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Axis Ticks (always set ticks before range)
-            if (timeIsNumeric && self$options$xTicks > 0) {
+            if (timeVarIsNumeric && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
             if (self$options$yTicks > 0) {
@@ -153,7 +169,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Axis ranges
-            if (!timeVarIsDate && timeIsNumeric && self$options$xAxisRangeType == "manual")
+            if (timeVarIsNumeric && self$options$xAxisRangeType == "manual")
                 xLim <- c(as.double(self$options$xAxisRangeMin), as.double(self$options$xAxisRangeMax))
             else
                 xLim <- NULL

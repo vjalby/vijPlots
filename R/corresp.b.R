@@ -30,7 +30,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(rowVarName) || is.null(colVarName))
                 return(NULL)
 
-            data <- self$data[c(rowVarName, colVarName)]
+            data <- jmvcore::select(self$data, c(rowVarName, colVarName))
 
             # Weight data
             countsName <- self$options$counts
@@ -115,17 +115,18 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # item = row/col names
             # labelCol = "row" or "col"
             # labelTitle = col/rowVarNameString
+            dimN <- function(n) jmvcore::format(.("Dim {n}"), n = n)
             table$addColumn(name = "id", title = "#", type = "integer")
             table$addColumn(name = labelCol, title = labelTitle, type = "text")
-            table$addColumn(name = "margin", title = "Mass", type = "number", format = "zto")
+            table$addColumn(name = "margin", title = .("Mass"), type = "number", format = "zto")
             for (i in seq(nDim))
-                table$addColumn(name = paste0("score",i), title = paste("Dim",i), superTitle = paste(.("Coordinates"),"†"), type = "number", format = "zto")
-            table$addColumn(name = "inertia", title = "% Inertia", type = "number", format = "zto")
+                table$addColumn(name = paste0("score",i), title = dimN(i), superTitle = paste(.("Coordinates"),"†"), type = "number", format = "zto")
+            table$addColumn(name = "inertia", title = .("% Inertia"), type = "number", format = "zto")
             for (i in seq(nDim))
-                table$addColumn(name = paste0("contrib",i), title = paste("Dim",i), superTitle = "Contributions", type = "number", format = "zto")
+                table$addColumn(name = paste0("contrib",i), title = dimN(i), superTitle = .("Contributions"), type = "number", format = "zto")
             table$addColumn(name = "qlt", title = "QLT", type = "number", format = "zto")
             for (i in seq(nDim))
-                table$addColumn(name = paste0("cos",i), title = paste("Dim",i), superTitle = "CO2", type = "number", format = "zto")
+                table$addColumn(name = paste0("cos",i), title = dimN(i), superTitle = "CO2", type = "number", format = "zto")
             # Populate Summary table
             for (i in seq_along(items)) {
                 anItem <- items[i]
@@ -208,7 +209,11 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else { # self$options$mode == "contTable"
                 if (is.null(self$options$rowLabels) || length(self$options$columns) < 3 || nrow(self$data) < 3)
                     return(FALSE)
-                contingencyTable <- self$data[,self$options$columns, drop = FALSE]
+
+                contingencyTable <- jmvcore::select(self$data,self$options$columns)
+                for (colName in self$options$columns)
+                    contingencyTable[[colName]] <- jmvcore::toNumeric(contingencyTable[[colName]])
+
                 if (anyNA(contingencyTable)) {
                     vijErrorMessage(self, .("Some values are missing from the contingency table."))
                 }
@@ -497,10 +502,10 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Plot axis
             xaxis <- self$options$xaxis
             xaxisdim <- paste("Dim", xaxis)
-            dim1name <- paste0(.("Dimension"), " ", xaxis, " (", percentInertia[xaxis], '\u2009%)')
+            dim1name <- jmvcore::format(.("Dimension {n} ({perc} %)"), n = xaxis, perc = percentInertia[xaxis])
             yaxis <- self$options$yaxis
             yaxisdim <- paste("Dim", yaxis)
-            dim2name <- paste0(.("Dimension"), " ", yaxis, " (", percentInertia[yaxis], '\u2009%)')
+            dim2name <- jmvcore::format(.("Dimension {n} ({perc} %)"), n = yaxis, perc = percentInertia[yaxis])
 
             # Building the plot
             plot <-  ggplot2::ggplot(ptcoord, ggplot2::aes(x = .data[[xaxisdim]], y = .data[[yaxisdim]], color = .data[["sup"]], shape = .data[["sup"]]))

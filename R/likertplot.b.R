@@ -32,13 +32,13 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(self$options$liks) == 0 || nrow(self$data) == 0)
                 return()
 
-            mainData <- self$data[c(self$options$liks, self$options$group)]
+            mainData <- jmvcore::select(self$data, c(self$options$liks, self$options$group))
 
             # Check if factors are ordered
             for (ques in self$options$liks) {
                 varClass <- class(mainData[[ques]])
                 if ( (("factor" %in% varClass)  && !("ordered" %in% varClass)) || varClass[1] == "numeric" ) {
-                    vijErrorMessage(self, .("Likert Plot requires ordinal (or continuous-integer) variables"))
+                    vijErrorMessage(self, .("Likert Plot requires ordinal (or continuous-integer) variables."))
                 }
             }
             # Check if variables are of the same type when "convert to integer" is not selected
@@ -100,12 +100,16 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
-            # Missing group cases
+            #### Missing group cases ####
+
             if (!is.null(self$options$group)) {
-                if (!self$options$ignoreNA) {
+                if (self$options$ignoreNA) {
+                    # dplyr::filter() (unlike `[.data.frame` row-subsetting) preserves each
+                    # column's custom "values" attribute, needed by jmvcore::toNumeric() below
+                    mainData <- dplyr::filter(mainData, !is.na(.data[[self$options$group]]))
+                } else if (anyNA(mainData[[self$options$group]])) {
                     # change NA to "NA"
-                    if (anyNA(mainData[[self$options$group]]))
-                        mainData[[self$options$group]] <- forcats::fct_na_value_to_level(mainData[[self$options$group]], level="NA")
+                    mainData[[self$options$group]] <- forcats::fct_na_value_to_level(mainData[[self$options$group]], level="NA")
                 }
             }
             # Cleaning the group variable name (it would crash gglikert)
@@ -201,192 +205,47 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             } # End Frenquency Table
 
-            # check if variables are numeric
-            if (!canbeNum && (self$options$showMannU || self$options$showKW || self$options$showPostHoc)) {
-                vijWarningMessage(self, .("Comparison tests require numeric variables"))
-                self$results$comp$setVisible(FALSE)
-            }
 
-            # p correction method
-            adjustMethod <- self$options$adjustMethod
-            adjustMethodStr <- paste0(toupper(substring(adjustMethod, 1, 1)), substring(adjustMethod, 2))
-            if (adjustMethod == "BH")
-                adjustMethodStr <- "Benjamini-Hochberg"
-            else if (adjustMethod == "BY")
-                adjustMethodStr <- "Benjamini-Yekutieli"
+            #### Comparison tests ####
 
-            #### Mann Whitney U ####
-            if ( ng > 1 && self$options$showMannU && canbeNum) {
-                if (ng != 2) {
-                    self$results$comp$uTestTable$setNote("p","Mann-Whitney tests require two groups")
-                    for (ques in questions) { # Empty table
-                        self$results$comp$uTestTable$setRow(rowKey = ques,
-                                                            values = list("ques" = private$.getVarName(ques), statistic = NULL, p.value = NULL, adjusted.p = NULL))
-                    }
+            if (self$options$showMannU || self$options$showKW || self$options$showPostHoc) {
+                # check if variables are numeric
+                if (!canbeNum) {
+                    vijWarningMessage(self, .("Comparison tests require numeric variables."))
+                    self$results$comp$setVisible(FALSE)
+                } else if (ng < 2) {
+                        vijWarningMessage(self, .("Comparison tests require at least two groups."))
+                        self$results$comp$setVisible(FALSE)
                 } else {
-                    p <- c()
-                    for (ques in questions) {
-                        mannU <- private$.mannU(ques, groupingVar, mainData)
-                        mannU[["ques"]] <- private$.getVarName(ques)
-                        self$results$comp$uTestTable$setRow(rowKey = ques, values = mannU)
-                        p <- c(p, mannU[["p.value"]])
-                    }
-                    if (self$options$pValue == "overall") {
-                        self$results$comp$uTestTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
-                        adjustedp <- stats::p.adjust(p, method = adjustMethod)
-                        for (i in 1:nq) {
-                            self$results$comp$uTestTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
-                        }
-                        self$results$comp$uTestTable$setNote("adj",
-                            jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
-                    }
+                    # p correction method
+                    adjustMethod <- self$options$adjustMethod
+                    adjustMethodStr <- paste0(toupper(substring(adjustMethod, 1, 1)), substring(adjustMethod, 2))
+                    if (adjustMethod == "BH")
+                        adjustMethodStr <- "Benjamini-Hochberg"
+                    else if (adjustMethod == "BY")
+                        adjustMethodStr <- "Benjamini-Yekutieli"
+                    # Fonction argument
+                    ctx <- list(
+                        mainData = mainData,
+                        groupingVar = groupingVar,
+                        questions = questions,
+                        nq = nq,
+                        groups = if (!is.null(groupingVar)) groups else NULL,
+                        ng = ng,
+                        adjustMethod = adjustMethod,
+                        adjustMethodStr = adjustMethodStr
+                    )
+                    if (self$options$showMannU)
+                        private$.mannWhitneyTest(ctx)
+                    if (self$options$showKW)
+                        private$.kruskalWallisTest(ctx)
+                    if (self$options$showPostHoc)
+                        private$.pairwiseTest(ctx)
                 }
-            }
-
-            #### Kruskal-Wallis tests ####
-            if (ng > 1 && self$options$showKW && canbeNum) {
-                p <- c()
-                for (ques in questions) {
-                    res <- private$.kruskalW(ques, groupingVar, mainData)
-                    res[["ques"]] <- private$.getVarName(ques)
-                    self$results$comp$kwTable$setRow(rowKey = ques, values = res)
-                    p <- c(p, res[["p.value"]])
-                }
-                if (self$options$pValue == "overall") {
-                    self$results$comp$kwTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
-                    adjustedp <- stats::p.adjust(p, method = adjustMethod)
-                    for (i in 1:nq) {
-                        self$results$comp$kwTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
-                    }
-                    self$results$comp$kwTable$setNote("adj",
-                        jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
-                }
-            }
-
-            #### Pairwise comparison table ####
-            if (ng > 1 && self$options$showPostHoc && canbeNum) {
-                # Set title and statistic column title
-                self$results$comp$pwTable$setTitle(switch(self$options$postHoc,
-                                                          "conover" = .("Conover's Pairwise Comparisons"),
-                                                          "dunn" = .("Dunn's Pairwise Comparisons"),
-                                                          "dscf" = .("Dwass-Steel-Critchlow-Fligner Pairwise Comparisons")
-                                                    )
-                )
-                statString <- switch(self$options$postHoc,
-                                     "conover" = "T",
-                                     "dunn" = "Z",
-                                     "dscf" = "W*"
-                )
-
-                # Compute tests
-                res.statistics <- list()
-                res.p.values <- list()
-                res.p.adjusted <- list()
-                for (ques in questions) {
-                    if (self$options$postHoc == "conover") {
-                        testRes <- private$.conoverTest(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
-                    } else if (self$options$postHoc == "dunn") {
-                        testRes <- private$.dunnTest(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
-                    } else if (self$options$postHoc == "dscf") {
-                        testRes <- private$.dscfAllPairsTest(mainData[[ques]], mainData[[groupingVar]])
-                    }
-                    res.p.values[[ques]] <- testRes$p.values
-                    res.statistics[[ques]] <- testRes$statistics
-                    # Compute groupwise adjusted p
-                    if (self$options$pValue == "group" && self$options$postHoc != "dscf" && length(res.p.values[[ques]]) > 0) {
-                        res.p.adjusted[[ques]] <- stats::p.adjust(res.p.values[[ques]], method = adjustMethod)
-                    } else {
-                        res.p.adjusted[[ques]] <- list()
-                    }
-                }
-
-                # Compute overall adjusted p
-                pvalues <- c()
-                if (self$options$pValue == "overall" && self$options$postHoc != "dscf") {
-                	# Gather the pValues question-wise
-                    for (ques in questions) {
-                        if (length(res.p.values[[ques]]) > 0) {
-                            pvalues <- c(pvalues, unlist(res.p.values[[ques]]))
-                        }
-                    }
-                    # Adjust the pValues then split them back by question
-                    if (length(pvalues) > 0) {
-                        pvalues_adj_flat <- stats::p.adjust(pvalues, method = adjustMethod)
-                        idx <- 0
-                        for (ques in questions) {
-                            k <- length(res.p.values[[ques]])
-                            if (k > 0) {
-                                res.p.adjusted[[ques]] <- pvalues_adj_flat[(idx + 1):(idx + k)]
-                                names(res.p.adjusted[[ques]]) <- names(res.p.values[[ques]])
-                                idx <- idx + k
-                            }
-                        }
-                    }
-                }
-
-                self$results$comp$pwTable$setStatus('running')
-
-                # Add table's columns
-                for (ques in questions) {
-                    superTitle <- private$.getVarName(ques)
-                    self$results$comp$pwTable$addColumn(name = paste(ques, "stat"), title = statString, superTitle = superTitle, type = 'number')
-                    self$results$comp$pwTable$addColumn(name = paste(ques, "p"), title = "p",
-                                                        superTitle = superTitle, type = 'number', format = 'zto,pvalue')
-                    if (self$options$pValue != "none" && self$options$postHoc != "dscf")
-                        self$results$comp$pwTable$addColumn(name = paste(ques, "p.adj"), title = .("Adj. p"), superTitle = superTitle, type = 'number', format = 'zto,pvalue')
-                }
-
-                # Populate table
-                for (i in 1:(ng-1)) {
-                    for (j in (i+1):ng) {
-                        values <- list("group1" = groups[i], "group2" = groups[j])
-                        compStr1 <- paste(groups[i], "-", groups[j])
-                        compStr2 <- paste(groups[j], "-", groups[i])
-                        for (ques in questions) {
-                            # let test both compStr1 and compStr2
-                            # because conover.test and dunn.test don't keep the factor order
-                            stats1 <- (res.statistics[[ques]])[[compStr1]]
-                            stats2 <- (res.statistics[[ques]])[[compStr2]]
-                            if (!is.null(stats1)) {
-                                values[paste(ques, "stat")] <- stats1
-                                values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr1]]
-                                if (self$options$pValue != "none") {
-                                    values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr1]
-                                }
-                            } else if (!is.null(stats2)) {
-                                values[paste(ques, "stat")] <- -stats2
-                                values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr2]]
-                                if (self$options$pValue != "none") {
-                                    values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr2]
-                                }
-                            } else {
-                                values[paste(ques, "stat")] <- NA
-                                values[paste(ques, "p")] <- NA
-                                if (self$options$pValue != "none") {
-                                    values[paste(ques, "p.adj")] <- NA
-                                }
-                            }
-                        }
-                        self$results$comp$pwTable$addRow(rowKey = paste0(i,"/",j), values = values)
-                    }
-                }
-
-                # Add Note
-                if (self$options$pValue == "overall" && self$options$postHoc != "dscf" && length(pvalues) > 0){
-                    self$results$comp$pwTable$setNote("adj",
-                        jmvcore::format(.("p-values are adjusted overall using {method} method."), method = adjustMethodStr))
-                }
-                if (self$options$pValue == "group" && self$options$postHoc != "dscf") {
-                    self$results$comp$pwTable$setNote("adj",
-                        jmvcore::format(.("p-values are adjusted groupwise using {method} method."), method = adjustMethodStr))
-                }
-                if (self$options$postHoc == "dscf") {
-                    self$results$comp$pwTable$setNote("adj",.("DSCF p-values are adjusted groupwise."))
-                }
-                self$results$comp$pwTable$setStatus('complete')
             }
 
             #### Set image data ####
+
             plotData <- list()
             plotData$mainData <- mainData
             plotData$variableLabels <- sapply(self$options$liks, FUN = private$.getVarName) #, USE.NAMES = FALSE)
@@ -412,11 +271,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 groupingVar <- jmvcore::toB64(self$options$group)
             } else {
                 groupingVar <- NULL
-            }
-
-            #### Missing groups ####
-            if (!is.null(groupingVar) && self$options$ignoreNA) {
-                mainData <- mainData[!is.na(mainData[[groupingVar]]),]
             }
 
             #### Group setup ####
@@ -530,6 +384,194 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             return(freq_wide)
         },
+        .mannWhitneyTest = function(ctx) {
+            ng <- ctx$ng
+            questions <- ctx$questions
+            nq <- ctx$nq
+            groupingVar <- ctx$groupingVar
+            mainData <- ctx$mainData
+            adjustMethod <- ctx$adjustMethod
+            adjustMethodStr <- ctx$adjustMethodStr
+
+            if (ng != 2) {
+                self$results$comp$uTestTable$setNote("p","Mann-Whitney tests require two groups")
+                for (ques in questions) { # Empty table
+                    self$results$comp$uTestTable$setRow(rowKey = ques,
+                                                        values = list("ques" = private$.getVarName(ques), statistic = NULL, p.value = NULL, adjusted.p = NULL))
+                }
+            } else {
+                p <- c()
+                for (ques in questions) {
+                    mannU <- private$.mannU(ques, groupingVar, mainData)
+                    mannU[["ques"]] <- private$.getVarName(ques)
+                    self$results$comp$uTestTable$setRow(rowKey = ques, values = mannU)
+                    p <- c(p, mannU[["p.value"]])
+                }
+                if (self$options$pValue == "overall") {
+                    self$results$comp$uTestTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
+                    adjustedp <- stats::p.adjust(p, method = adjustMethod)
+                    for (i in 1:nq) {
+                        self$results$comp$uTestTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
+                    }
+                    self$results$comp$uTestTable$setNote("adj",
+                                                         jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
+                }
+            }
+        },
+        .kruskalWallisTest = function(ctx) {
+            questions <- ctx$questions
+            nq <- ctx$nq
+            groupingVar <- ctx$groupingVar
+            mainData <- ctx$mainData
+            adjustMethod <- ctx$adjustMethod
+            adjustMethodStr <- ctx$adjustMethodStr
+
+            p <- c()
+            for (ques in questions) {
+                res <- private$.kruskalW(ques, groupingVar, mainData)
+                res[["ques"]] <- private$.getVarName(ques)
+                self$results$comp$kwTable$setRow(rowKey = ques, values = res)
+                p <- c(p, res[["p.value"]])
+            }
+            if (self$options$pValue == "overall") {
+                self$results$comp$kwTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
+                adjustedp <- stats::p.adjust(p, method = adjustMethod)
+                for (i in 1:nq) {
+                    self$results$comp$kwTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
+                }
+                self$results$comp$kwTable$setNote("adj",
+                                                  jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
+            }
+        },
+        .pairwiseTest = function(ctx) {
+            questions <- ctx$questions
+            groups <- ctx$groups
+            ng <- ctx$ng
+            groupingVar <- ctx$groupingVar
+            mainData <- ctx$mainData
+            adjustMethod <- ctx$adjustMethod
+            adjustMethodStr <- ctx$adjustMethodStr
+
+            # Set title and statistic column title
+            self$results$comp$pwTable$setTitle(switch(self$options$postHoc,
+                                                      "conover" = .("Conover's Pairwise Comparisons"),
+                                                      "dunn" = .("Dunn's Pairwise Comparisons"),
+                                                      "dscf" = .("Dwass-Steel-Critchlow-Fligner Pairwise Comparisons")
+            )
+            )
+            statString <- switch(self$options$postHoc,
+                                 "conover" = "T",
+                                 "dunn" = "Z",
+                                 "dscf" = "W*"
+            )
+
+            # Compute tests
+            res.statistics <- list()
+            res.p.values <- list()
+            res.p.adjusted <- list()
+            for (ques in questions) {
+                if (self$options$postHoc == "conover") {
+                    testRes <- private$.conover(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
+                } else if (self$options$postHoc == "dunn") {
+                    testRes <- private$.dunn(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
+                } else if (self$options$postHoc == "dscf") {
+                    testRes <- private$.dscfAllPairs(mainData[[ques]], mainData[[groupingVar]])
+                }
+                res.p.values[[ques]] <- testRes$p.values
+                res.statistics[[ques]] <- testRes$statistics
+                # Compute groupwise adjusted p
+                if (self$options$pValue == "group" && self$options$postHoc != "dscf" && length(res.p.values[[ques]]) > 0) {
+                    res.p.adjusted[[ques]] <- stats::p.adjust(res.p.values[[ques]], method = adjustMethod)
+                } else {
+                    res.p.adjusted[[ques]] <- list()
+                }
+            }
+
+            # Compute overall adjusted p
+            pvalues <- c()
+            if (self$options$pValue == "overall" && self$options$postHoc != "dscf") {
+                # Gather the pValues question-wise
+                for (ques in questions) {
+                    if (length(res.p.values[[ques]]) > 0) {
+                        pvalues <- c(pvalues, unlist(res.p.values[[ques]]))
+                    }
+                }
+                # Adjust the pValues then split them back by question
+                if (length(pvalues) > 0) {
+                    pvalues_adj_flat <- stats::p.adjust(pvalues, method = adjustMethod)
+                    idx <- 0
+                    for (ques in questions) {
+                        k <- length(res.p.values[[ques]])
+                        if (k > 0) {
+                            res.p.adjusted[[ques]] <- pvalues_adj_flat[(idx + 1):(idx + k)]
+                            names(res.p.adjusted[[ques]]) <- names(res.p.values[[ques]])
+                            idx <- idx + k
+                        }
+                    }
+                }
+            }
+
+            self$results$comp$pwTable$setStatus('running')
+
+            # Add table's columns
+            for (ques in questions) {
+                superTitle <- private$.getVarName(ques)
+                self$results$comp$pwTable$addColumn(name = paste(ques, "stat"), title = statString, superTitle = superTitle, type = 'number')
+                self$results$comp$pwTable$addColumn(name = paste(ques, "p"), title = "p",
+                                                    superTitle = superTitle, type = 'number', format = 'zto,pvalue')
+                if (self$options$pValue != "none" && self$options$postHoc != "dscf")
+                    self$results$comp$pwTable$addColumn(name = paste(ques, "p.adj"), title = .("Adj. p"), superTitle = superTitle, type = 'number', format = 'zto,pvalue')
+            }
+
+            # Populate table
+            for (i in 1:(ng-1)) {
+                for (j in (i+1):ng) {
+                    values <- list("group1" = groups[i], "group2" = groups[j])
+                    compStr1 <- paste(groups[i], "-", groups[j])
+                    compStr2 <- paste(groups[j], "-", groups[i])
+                    for (ques in questions) {
+                        # let test both compStr1 and compStr2
+                        # because conover.test and dunn.test don't keep the factor order
+                        stats1 <- (res.statistics[[ques]])[[compStr1]]
+                        stats2 <- (res.statistics[[ques]])[[compStr2]]
+                        if (!is.null(stats1)) {
+                            values[paste(ques, "stat")] <- stats1
+                            values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr1]]
+                            if (self$options$pValue != "none") {
+                                values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr1]
+                            }
+                        } else if (!is.null(stats2)) {
+                            values[paste(ques, "stat")] <- -stats2
+                            values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr2]]
+                            if (self$options$pValue != "none") {
+                                values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr2]
+                            }
+                        } else {
+                            values[paste(ques, "stat")] <- NA
+                            values[paste(ques, "p")] <- NA
+                            if (self$options$pValue != "none") {
+                                values[paste(ques, "p.adj")] <- NA
+                            }
+                        }
+                    }
+                    self$results$comp$pwTable$addRow(rowKey = paste0(i,"/",j), values = values)
+                }
+            }
+
+            # Add Note
+            if (self$options$pValue == "overall" && self$options$postHoc != "dscf" && length(pvalues) > 0){
+                self$results$comp$pwTable$setNote("adj",
+                                                  jmvcore::format(.("p-values are adjusted overall using {method} method."), method = adjustMethodStr))
+            }
+            if (self$options$pValue == "group" && self$options$postHoc != "dscf") {
+                self$results$comp$pwTable$setNote("adj",
+                                                  jmvcore::format(.("p-values are adjusted groupwise using {method} method."), method = adjustMethodStr))
+            }
+            if (self$options$postHoc == "dscf") {
+                self$results$comp$pwTable$setNote("adj",.("DSCF p-values are adjusted groupwise."))
+            }
+            self$results$comp$pwTable$setStatus('complete')
+        },
         .mannU = function(var, group, data, level1=1, level2=2) { # Two groups
             variable <- jmvcore::toNumeric(data[[var]])
             gLevels <- levels(data[[group]])
@@ -554,7 +596,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             )
         },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/dscfAllPairsTest.R
-        .dscfAllPairsTest = function(x, g){
+        .dscfAllPairs = function(x, g){
             OK <- stats::complete.cases(x, g)
             x <- x[OK]
             g <- g[OK]
@@ -612,7 +654,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(list(p.values = p.values, statistics = statistics))
         },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/kwAllPairsConoverTest.R
-        .conoverTest = function(x, g,  p.adjust.method = "none"){
+        .conover = function(x, g,  p.adjust.method = "none"){
             ## Kruskal-Wallis functions
             gettiesKruskal <- function(x) {
                 n <- length(x)
@@ -693,7 +735,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return( list(p.values = p.values, statistics = statistics) )
         },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/kwAllPairsDunnTest.R
-        .dunnTest = function(x, g,  p.adjust.method = "none"){
+        .dunn = function(x, g,  p.adjust.method = "none"){
             gettiesDunn <- function(x){
                 n <- length(x)
                 t <- table(x)

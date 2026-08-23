@@ -642,7 +642,17 @@ qqplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="var", 
                         `title`="", 
-                        `type`="text"))))}))
+                        `type`="text")),
+                clearWith=list(
+                    "dep",
+                    "group",
+                    "distrib",
+                    "transLog",
+                    "standardize",
+                    "paramMethod",
+                    "paramEstMethod",
+                    "param1",
+                    "param2")))}))
 
 qqplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "qqplotBase",

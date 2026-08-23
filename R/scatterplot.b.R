@@ -50,7 +50,7 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(xaxis) || is.null(yaxis))
                 return(FALSE)
 
-            plotData <- jmvcore::select(self$data, c(xaxis,yaxis,groupVar,labelVar,sizeVar, self$options$facet))
+            plotData <- jmvcore::select(self$data, c(xaxis, yaxis, groupVar, labelVar, sizeVar, self$options$facet))
             plotData[[xaxis]] <- jmvcore::toNumeric(plotData[[xaxis]])
             plotData[[yaxis]] <- jmvcore::toNumeric(plotData[[yaxis]])
             if(!is.null(sizeVar))

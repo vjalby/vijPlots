@@ -42,6 +42,8 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (nrow(data) == 0)
                 return(FALSE)
 
+            #### Data transformation ####
+
             if (self$options$transLog) {
                 if (min(data[[depVar]]) > 0) {
                     data[[depVar]] <- log(data[[depVar]])
@@ -57,14 +59,71 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$standardize) {
                 data[[depVar]] <- (data[[depVar]] - mean(data[[depVar]]))/stats::sd(data[[depVar]])
             }
+
+            #### Data/distribution compatibility ####
+
+            distrib <- self$options$distrib
+
+            if (self$options$standardize && distrib %in% c("lnorm", "chisq", "f", "gamma", "weibull", "exp", "beta"))
+                vijErrorMessage(self, jmvcore::format(.("Standardized data cannot fit {distrib} distribution."), distrib = private$.distTitleName(distrib)))
+
+            varMin <- min(data[[depVar]])
+            varMax <- max(data[[depVar]])
+            if (varMin <= 0 && distrib %in% c("lnorm", "chisq", "f", "gamma", "weibull"))
+                vijErrorMessage(self, jmvcore::format(.("{distrib} distribution requires positive (>0) data."), distrib = private$.distTitleName(distrib)))
+            if (varMin < 0 && distrib == "exp")
+                vijErrorMessage(self, .("Exponential distribution requires non-negative (≥0) data."))
+            if (distrib == "beta" && (varMin <=0 || varMax >= 1))
+                vijErrorMessage(self, .("Beta distribution requires data between 0 and 1."))
+
+            #### Parameter estimations ####
+
+            if (self$options$paramMethod == "paraEstimate") {
+                if (self$options$paramEstMethod == "mle") {
+                    params <- private$.mleParameters(distrib, data[[depVar]])
+                } else { # paramEstMethod == "mme"
+                    params <- private$.mmeParameters(distrib, data[[depVar]])
+                }
+                if (is.null(params)) {
+                    vijErrorMessage(self, jmvcore::format(.("Unable to estimate the distribution parameters using {method} method."), method = toupper(self$options$paramEstMethod)))
+                }
+            } else {
+                params <- private$.userParameters(distrib, self$options$param1, self$options$param2)
+                if (is.null(params)) {
+                    vijErrorMessage(self, .("Wrong parameter values."))
+                }
+            }
+
+            #### Populate the Parameters table ####
+
+            self$results$paramTable$getColumn('var')$setTitle(private$.distTitleName(distrib))
+            for(i in seq_along(params)) {
+                self$results$paramTable$addColumn(names(params[i]), type = 'number', format = 'zto')
+            }
+            self$results$paramTable$setRow(rowNo=1, params)
+            self$results$paramTable$setCell(rowNo=1, col = 1, ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep))
+            if (self$options$standardize)
+                self$results$paramTable$setNote("1", .("Standardized values"), init = TRUE)
+            if (self$options$paramMethod == "paraEstimate"){
+                if (self$options$paramEstMethod == "mle")
+                    self$results$paramTable$setTitle(.("Parameter Estimates (MLE)"))
+                else
+                    self$results$paramTable$setTitle(.("Parameter Estimates (MME)"))
+            } else {
+                self$results$paramTable$setTitle(.("Parameter Values"))
+            }
+
+            plotData <- list(data = data, params = params)
+
             image <- self$results$plot
-            image$setState(data)
+            image$setState(plotData)
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
 
-            plotData <- image$state
+            plotData <- image$state$data
+            params <- image$state$params
 
             depVar <- rlang::sym(self$options$dep)
             if (!is.null(self$options$group))
@@ -80,83 +139,6 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 detrend = FALSE
 
             identity = (self$options$refType == "identity")
-
-            # Check data compatibility with distribution
-            varMin <- min(plotData[[depVar]])
-            varMax <- max(plotData[[depVar]])
-            if (varMin <= 0 && distrib %in% c("lnorm", "chisq", "f", "gamma", "weibull"))
-                errorMessage <- jmvcore::format(.("{distrib} distribution requires positive (>0) data."), distrib = private$.distTitleName(distrib))
-            else if (varMin < 0 && distrib == "exp")
-                errorMessage <- .("Exponential distribution requires non-negative (≥0) data.")
-            else if (distrib == "beta" && (varMin <=0 || varMax >= 1))
-                errorMessage <- .("Beta distribution requires data between 0 and 1.")
-            else
-                errorMessage <- NULL
-
-            if (!is.null(errorMessage)) {
-                vijErrorMessage(self, errorMessage)
-            }
-
-            # Parameter estimations
-            paramErrorMessage <- NULL
-            if (self$options$paramMethod == "paraEstimate") {
-                if (self$options$paramEstMethod == "mle") {
-                    try(
-                        MASS::fitdistr(x = plotData[[depVar]], densfun = private$.corresp(distrib), start = private$.initVal(distrib))$estimate -> params,
-                        silent = TRUE
-                    ) -> tryResult
-                } else { # paramEstMethod == "mme"
-                    try(
-                        private$.distParameters(distrib, plotData[[depVar]]) -> params,
-                        silent = TRUE
-                    ) -> tryResult
-                }
-                if (inherits(tryResult, "try-error") || is.null(params)) {
-                    paramErrorMessage <- .("Unable to estimate the distribution parameters.")
-                }
-            } else {
-                params <- private$.userParams(distrib, as.numeric(self$options$param1), as.numeric(self$options$param2))
-                if (is.null(params)) {
-                    paramErrorMessage <- .("Wrong parameter values.")
-                }
-            }
-
-            if (!is.null(paramErrorMessage)) {
-                vijErrorMessage(self, paramErrorMessage)
-            }
-
-            # Everthing is OK
-            self$results$paramTable$setVisible(TRUE)
-            self$results$plot$setVisible(TRUE)
-
-            # Define the title of the plot (it will be set at the end)
-            if (detrend) {
-                plotTitle <- jmvcore::format(.("Detrended {distribStr} {typeStr} Plot of {varStr}"),
-                                             distribStr = private$.distTitleName(distrib),
-                                             typeStr = ifelse(self$options$type == "PP", .("P-P"), .("Q-Q")),
-                                             varStr = ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep)
-                                        )
-            } else {
-                plotTitle <- jmvcore::format(.("{distribStr} {typeStr} Plot of {varStr}"),
-                                             distribStr = private$.distTitleName(distrib),
-                                             typeStr = ifelse(self$options$type == "PP", .("P-P"), .("Q-Q")),
-                                             varStr = ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep)
-                )
-            }
-
-            # Populate the Parameters table
-            self$results$paramTable$getColumn('var')$setTitle(private$.distTitleName(distrib))
-            for(i in seq_along(params)) {
-                self$results$paramTable$addColumn(names(params[i]), type = 'number', format = 'zto')
-            }
-            self$results$paramTable$setRow(rowNo=1, params)
-            self$results$paramTable$setCell(rowNo=1, col = 1, ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep))
-            if (self$options$standardize)
-                self$results$paramTable$setNote("1", .("Standardized values"), init = TRUE)
-            if (self$options$paramMethod == "paraEstimate")
-                self$results$paramTable$setTitle(paste0(.("Parameter Estimates"),ifelse(self$options$paramEstMethod == "mle", " (MLE)", " (MME)")))
-            else
-                self$results$paramTable$setTitle("Parameter Values")
 
             # Do the plot
             if (is.null(groupVar))
@@ -244,6 +226,21 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
             }
 
+            # Define the title of the plot
+            if (detrend) {
+                plotTitle <- jmvcore::format(.("Detrended {distribStr} {typeStr} Plot of {varStr}"),
+                                             distribStr = private$.distTitleName(distrib),
+                                             typeStr = ifelse(self$options$type == "PP", .("P-P"), .("Q-Q")),
+                                             varStr = ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep)
+                )
+            } else {
+                plotTitle <- jmvcore::format(.("{distribStr} {typeStr} Plot of {varStr}"),
+                                             distribStr = private$.distTitleName(distrib),
+                                             typeStr = ifelse(self$options$type == "PP", .("P-P"), .("Q-Q")),
+                                             varStr = ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep)
+                )
+            }
+
             # Titles & Labels
             defaults <- list(title = plotTitle, x = xLab , y = yLab, legend = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options)
@@ -255,35 +252,6 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             return (plot)
         },
-
-        # Mod from https://github.com/aloy/qqplotr/blob/master/R/stat_pp_point.R
-        .corresp = function(distName) {
-            switch(
-                distName,
-                beta = "beta",
-                cauchy = "cauchy",
-                chisq = "chi-squared",
-                exp = "exponential",
-                f = "f",
-                gamma = "gamma",
-                lnorm = "log-normal",
-                logis = "logistic",
-                norm = "normal",
-                weibull = "weibull",
-                NULL
-            )
-        },
-
-        .initVal = function(distName) {
-            switch(
-                distName,
-                beta = list(shape1 = 1, shape2 = 1),
-                chisq = list(df = 1),
-                f = list(df1 = 1, df2 = 2),
-                NULL
-            )
-        },
-
         .distTitleName = function(distName) {
             switch(
                 distName,
@@ -302,8 +270,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 NULL
             )
         },
-
-        .userParams = function(distName, p1, p2) {
+        .userParameters = function(distName, p1, p2) {
             params <- NULL
             if (distName == "beta" && p1 > 0 && p2 > 0) {
                 params <- list(shape1 = p1, shape2 = p2)
@@ -332,7 +299,32 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             return(params)
         },
-        .distParameters = function(distName, aVar) {
+        .mleParameters = function(distName, aVar) {
+            # Mod from https://github.com/aloy/qqplotr/blob/master/R/stat_pp_point.R
+            distFun <- switch(distName,
+                        beta = "beta",
+                        cauchy = "cauchy",
+                        chisq = "chi-squared",
+                        exp = "exponential",
+                        f = "f",
+                        gamma = "gamma",
+                        lnorm = "log-normal",
+                        logis = "logistic",
+                        norm = "normal",
+                        weibull = "weibull",
+                        NULL)
+            initialValues <- switch(distName,
+                                    beta = list(shape1 = 1, shape2 = 1),
+                                    chisq = list(df = 1),
+                                    f = list(df1 = 1, df2 = 2),
+                                    NULL)
+            params <- tryCatch(
+                MASS::fitdistr(x = aVar, densfun = distFun, start = initialValues)$estimate,
+                error = function (e) NULL
+            )
+            return(params)
+        },
+        .mmeParameters = function(distName, aVar) {
             m <- mean(aVar)
             s <- stats::sd(aVar)
             if (distName == "beta") {
@@ -358,7 +350,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 params <- list(mean = m, sd = s)
             } else if (distName == "unif") {
                 params <- list(min = min(aVar), max = max(aVar))
-            } else if (distName %in% c("cauchy","chisq", "f", "weibull","t")) {
+            } else { # if (distName %in% c("cauchy","chisq", "f", "weibull","t")) {
                 params <- NULL
             }
             return(params)

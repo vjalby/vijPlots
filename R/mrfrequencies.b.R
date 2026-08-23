@@ -91,7 +91,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                                          casepercent = myresult$df[i,4]))
             }
 
-            table$setNote('noc', paste(.("Number of cases:"), myresult$nrOfCases) , init = FALSE)
+            table$setNote('noc', jmvcore::format(.("Number of cases: {n}"), n = myresult$nrOfCases) , init = FALSE)
 
             image <- self$results$plot
             image$setState(myresult$df[seq_len(nrow(myresult$df)-1),])
@@ -109,7 +109,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             # Percent format (scales)
             doPercent <- scales::label_percent(
                 accuracy = as.numeric(self$options$accuracy),
-                suffix = '\u2009%',
+                suffix = ' %',
                 decimal.mark = self$options[['decSymbol']])
 
             if (self$options$horizontal)
@@ -126,12 +126,12 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             #### Doing the plot ####
             if (self$options$yaxis == "responses") {
                 plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Responses, label = doPercent(Responses)))
-                labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
+                labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
                 yLab <- .("% of Responses")
                 yScaleFactor <- 100 # yScaleFactor is used for manual range computation (1 = count, 100 = percent)
             } else if (self$options$yaxis == "cases") {
                 plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Cases, label = doPercent(Cases)))
-                labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
+                labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
                 yLab <- .("% of Cases")
                 yScaleFactor <- 100
             } else {

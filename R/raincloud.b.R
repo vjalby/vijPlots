@@ -46,7 +46,7 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .run = function() {
             if (is.null(self$options$aVar))
                 return()
-            plotData <- self$data[c(self$options$aVar, self$options$groupOne, self$options$groupTwo)]
+            plotData <- jmvcore::select(self$data, c(self$options$aVar, self$options$groupOne, self$options$groupTwo))
             plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
             # Remove case with missing group
             if (!is.null(self$options$groupOne) && self$options$ignoreNA) {

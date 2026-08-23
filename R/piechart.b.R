@@ -58,7 +58,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             }
 
-            plotData <- self$data[c(self$options$aVar, self$options$facet)]
+            plotData <- jmvcore::select(self$data, c(self$options$aVar, self$options$facet))
 
             # Weight data
             countsName <- self$options$counts
@@ -112,7 +112,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             doPercent <- scales::label_percent(
                 accuracy = as.numeric(self$options$accuracy),
-                suffix = '\u2009%',
+                suffix = ' %',
                 decimal.mark = self$options[['decSymbol']])
 
             #### Build the plot ####

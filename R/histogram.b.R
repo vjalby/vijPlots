@@ -45,7 +45,8 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         	if (is.null(self$options$aVar) || nrow(self$data) == 0)
         		return(FALSE)
 
-            plotData <- self$data[c(self$options$aVar, self$options$group, self$options$facet)]
+            varNames <- c(self$options$aVar, self$options$group, self$options$facet)
+            plotData <- jmvcore::select(self$data, varNames)
             plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
 
             plotData <- jmvcore::naOmit(plotData)

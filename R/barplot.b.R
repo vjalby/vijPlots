@@ -56,7 +56,9 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .run = function() {
             if (is.null(self$options$rows))
                 return()
-            plotData <- self$data[c(self$options$rows, self$options$columns, self$options$facet)]
+
+            varNames <- c(self$options$rows, self$options$columns, self$options$facet)
+            plotData <- jmvcore::select(self$data, varNames)
 
             # Weight data
             countsName <- self$options$counts
@@ -135,7 +137,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Percent format (scales)
             doPercent <- scales::label_percent(
                             accuracy = as.numeric(self$options$accuracy),
-                            suffix = '\u2009%',
+                            suffix = ' %',
                             decimal.mark = self$options[['decSymbol']])
             if (self$options$horizontal)
                 doNumber <- function(x) formatC(x, width = 2, format = "d")
@@ -278,7 +280,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 yLab <- .("Percent")
                 yScaleFactor <- 100
-                labelFnct <- scales::label_percent(suffix = '\u2009%', decimal.mark = self$options[['decSymbol']])
+                labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
             }
 
             # Show unused levels (if checked in data/var setting)

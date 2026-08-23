@@ -7,6 +7,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "Language: c\n"
 
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid ""
+"\"Range\" option for the X-axis is only available for numeric and date "
+"variables."
+msgstr ""
+
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid "\"Tick Count\" option for the X-axis is only available for numeric variables."
+msgstr ""
+
 #: R/qqplot.b.R
 msgid "{distrib} distribution requires positive (>0) data."
 msgstr ""
@@ -80,6 +92,7 @@ msgstr ""
 msgid "% by row"
 msgstr ""
 
+#: R/corresp.b.R
 #: R/multcorresp.b.R
 #: multcorresp/results/categories.columns.title
 msgid "% Inertia"
@@ -124,7 +137,7 @@ msgid "% of Variance"
 msgstr ""
 
 #: R/mrcrosstabs.b.R
-msgid "% within"
+msgid "% within {category}"
 msgstr ""
 
 #: R/likertplot.b.R
@@ -461,6 +474,11 @@ msgstr ""
 #: areachart/options/dateBreak/6month.title
 #: linechart/options/dateBreak/6month.title
 msgid "6 months"
+msgstr ""
+
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid "A date variable must be in text format."
 msgstr ""
 
 #: package/datasets/vijPlots.description
@@ -1428,12 +1446,20 @@ msgid "Comparison Tests"
 msgstr ""
 
 #: R/likertplot.b.R
-msgid "Comparison tests require numeric variables"
+msgid "Comparison tests require at least two groups."
+msgstr ""
+
+#: R/likertplot.b.R
+msgid "Comparison tests require numeric variables."
 msgstr ""
 
 #: R/principal.b.R
 #: principal/results/summaryTable.columns.title
 msgid "Component"
+msgstr ""
+
+#: R/principal.b.R
+msgid "Component {n} ({perc} %)"
 msgstr ""
 
 #: R/principal.b.R
@@ -1492,6 +1518,7 @@ msgstr ""
 msgid "Continuous"
 msgstr ""
 
+#: R/corresp.b.R
 #: R/multcorresp.b.R
 msgid "Contributions"
 msgstr ""
@@ -1529,6 +1556,7 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
+#: barplot/options/showLabels.title
 #: mrcrosstabs/options/showLabels.title
 #: mrfrequencies/options/showLabels.title
 msgid "Count labels"
@@ -1537,6 +1565,11 @@ msgstr ""
 #: mrcrosstabs/options/endorsed.title
 #: mrfrequencies/options/endorsed.title
 msgid "Counted value"
+msgstr ""
+
+#: R/mrcrosstabs.b.R
+#: R/mrfrequencies.b.R
+msgid "Counted value string may not be empty."
 msgstr ""
 
 #: R/mrfrequencies.b.R
@@ -1575,6 +1608,7 @@ msgid "Counts may not be negative."
 msgstr ""
 
 #: R/barplot.b.R
+#: R/mosaic.b.R
 msgid "Counts may not contain missing values."
 msgstr ""
 
@@ -1771,9 +1805,17 @@ msgstr ""
 
 #: R/corresp.b.R
 #: R/multcorresp.b.R
+msgid "Dim {n}"
+msgstr ""
+
 #: corresp/results/eigenvalues.columns.title
 #: multcorresp/results/eigenvalues.columns.title
 msgid "Dimension"
+msgstr ""
+
+#: R/corresp.b.R
+#: R/multcorresp.b.R
+msgid "Dimension {n} ({perc} %)"
 msgstr ""
 
 #: R/multcorresp.b.R
@@ -1915,6 +1957,10 @@ msgstr ""
 
 #: R/qqplot.b.R
 msgid "Exponential distribution requires non-negative (≥0) data."
+msgstr ""
+
+#: R/principal.b.R
+msgid "Extraction"
 msgstr ""
 
 #: principal/results/summaryTable.columns.superTitle
@@ -2156,7 +2202,7 @@ msgid "Greenacre correction"
 msgstr ""
 
 #: R/multcorresp.b.R
-msgid "Greenacre's corrected inertia ="
+msgid "Greenacre's corrected inertia = {inertia}"
 msgstr ""
 
 #: areachart/options/colorPalette/Greens.title
@@ -2948,7 +2994,7 @@ msgid "Likert Plot"
 msgstr ""
 
 #: R/likertplot.b.R
-msgid "Likert Plot requires ordinal (or continuous-integer) variables"
+msgid "Likert Plot requires ordinal (or continuous-integer) variables."
 msgstr ""
 
 #: likertplot/options/liks.title
@@ -3129,6 +3175,7 @@ msgstr ""
 
 #: barchart/options/yaxis/mean.title
 #: barchart/ui[1][0][0][0]/yaxis_mean.label
+#: boxplot/options/showMean.title
 #: lollipop/options/yaxis/mean.title
 #: lollipop/ui[2][0][0][0]/yaxis_mean.label
 msgid "Mean"
@@ -3186,7 +3233,7 @@ msgid "Method of moments (MME)"
 msgstr ""
 
 #: R/multcorresp.b.R
-msgid "Method:"
+msgid "Method: {method}"
 msgstr ""
 
 #: barplot/options/labelPosition/middle.title
@@ -3309,6 +3356,11 @@ msgstr ""
 
 #: R/qqplot.b.R
 msgid "Natural Log Transform requires positive (>0) data."
+msgstr ""
+
+#: R/mrcrosstabs.b.R
+#: R/mrfrequencies.b.R
+msgid "No distinct values found in the selected variable."
 msgstr ""
 
 #: R/principal.b.R
@@ -3454,7 +3506,7 @@ msgid "Number of cases"
 msgstr ""
 
 #: R/mrfrequencies.b.R
-msgid "Number of cases:"
+msgid "Number of cases: {n}"
 msgstr ""
 
 #: corresp/options/dimNum.title
@@ -3469,6 +3521,11 @@ msgstr ""
 
 #: multcorresp/options/obsColor.title
 msgid "Obs color"
+msgstr ""
+
+#: R/principal.b.R
+#: principal/results/obsTable.columns.title
+msgid "Observation"
 msgstr ""
 
 #: multcorresp/results/obsCoordOV.title
@@ -3668,6 +3725,10 @@ msgstr ""
 msgid "Other Options"
 msgstr ""
 
+#: boxplot/options/showOutliers.title
+msgid "Outliers"
+msgstr ""
+
 #: R/mrcrosstabs.b.R
 #: likertplot/options/pValue/overall.title
 #: likertplot/ui[3][0][2][0]/pValue_overall.label
@@ -3759,9 +3820,16 @@ msgstr ""
 msgid "Parameter 2"
 msgstr ""
 
-#: R/qqplot.b.R
 #: qqplot/results/paramTable.title
 msgid "Parameter Estimates"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "Parameter Estimates (MLE)"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "Parameter Estimates (MME)"
 msgstr ""
 
 #: qqplot/options/paramMethod/paraValue.title
@@ -3769,6 +3837,7 @@ msgstr ""
 msgid "Parameter values"
 msgstr ""
 
+#: R/qqplot.b.R
 #: qqplot/ui[3].label
 msgid "Parameter Values"
 msgstr ""
@@ -4658,6 +4727,11 @@ msgstr ""
 msgid "Separator"
 msgstr ""
 
+#: R/mrcrosstabs.b.R
+#: R/mrfrequencies.b.R
+msgid "Separator string may not be empty."
+msgstr ""
+
 #: R/areachart.b.R
 #: R/linechart.b.R
 msgid "September"
@@ -4737,10 +4811,6 @@ msgstr ""
 msgid "Show category %"
 msgstr ""
 
-#: barplot/options/showLabels.title
-msgid "Show count labels"
-msgstr ""
-
 #: histogram/options/density.title
 msgid "Show density"
 msgstr ""
@@ -4758,16 +4828,8 @@ msgstr ""
 msgid "Show lines"
 msgstr ""
 
-#: boxplot/options/showMean.title
-msgid "Show mean"
-msgstr ""
-
 #: histogram/options/normalCurve.title
 msgid "Show normal curve"
-msgstr ""
-
-#: boxplot/options/showOutliers.title
-msgid "Show outliers"
 msgstr ""
 
 #: linechart/options/showPoint.title
@@ -4965,6 +5027,10 @@ msgstr ""
 
 #: principal/options/stdVariables.title
 msgid "Standardize variables"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "Standardized data cannot fit {distrib} distribution."
 msgstr ""
 
 #: R/qqplot.b.R
@@ -5177,6 +5243,12 @@ msgstr ""
 
 #: R/principal.b.R
 msgid "The number of dimensions cannot be greater than the number of variables."
+msgstr ""
+
+#: R/corresp.b.R
+msgid ""
+"The singular value for dimension {n} is close to zero. The plots may not be "
+"accurate."
 msgstr ""
 
 #: R/qqplot.b.R
@@ -5499,7 +5571,7 @@ msgid "Unable to compute the χ2 statistic."
 msgstr ""
 
 #: R/qqplot.b.R
-msgid "Unable to estimate the distribution parameters."
+msgid "Unable to estimate the distribution parameters using {method} method."
 msgstr ""
 
 #: R/principal.b.R
@@ -6037,4 +6109,8 @@ msgstr ""
 #: raincloud/options/colorPalette/YlOrRd.title
 #: scatterplot/options/colorPalette/YlOrRd.title
 msgid "Yellow to Red"
+msgstr ""
+
+#: R/corresp.b.R
+msgid "χ² = {chisq}, df = {df}, p-value = {pval}"
 msgstr ""

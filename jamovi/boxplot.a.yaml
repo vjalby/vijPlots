@@ -48,12 +48,12 @@ options:
         - factor
 
     - name: showOutliers
-      title: Show outliers
+      title: Outliers
       type: Bool
       default: true
 
     - name: showMean
-      title: Show mean
+      title: Mean
       type: Bool
       default: false
 

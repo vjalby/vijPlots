@@ -1,7 +1,8 @@
 # vijPlots 1.3.1 (2026-08-??)
 
 * Mosaic Plot
-* Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N).
+* Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
+* Improved error handling
 
 # vijPlots 1.3.0 (2026-08-17)
 

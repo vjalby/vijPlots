@@ -81,6 +81,29 @@ swallow it (see gotcha below).
 
 ### Non-obvious runtime gotchas
 
+- Keep validation and expensive/one-off computation (parameter estimation, model fitting, data
+  compatibility checks) in `.run()`, not `.plot()`. `.run()` executes once per actual analysis run
+  and its result is cached via `image$setState(...)`, but `.plot()` can be invoked multiple times
+  per run (resizing, re-render) — anything placed there re-executes on every call. `qqplot.b.R` was
+  refactored (2026-08-22) to move its distribution-compatibility checks and MLE/MME parameter
+  estimation from `.plot()` into `.run()`, storing the computed `params` alongside `data` in the
+  state list (`image$setState(list(data = data, params = params))`) so `.plot()` just reads them
+  back — the pattern to follow for any analysis that fits/estimates something before plotting.
+- Row-subsetting a data.frame with base `[` (`df <- df[keep, ]`, e.g. to drop `NA`-group rows)
+  silently drops each column's *custom* attributes — `levels`/`class` on a factor survive, but an
+  attribute like the `"values"` numeric-coding attribute jmvcore attaches to labelled factor
+  columns does not (confirmed this isn't data.frame-specific: plain vector subsetting, `f[keep]`,
+  drops it too). `jmvcore::toNumeric()` reads that `"values"` attribute to convert such a factor to
+  its underlying numeric codes, silently falling back to returning the (non-numeric) factor
+  unchanged when it's missing — which then surfaces downstream as a confusing
+  `stats::median()`/`wilcox.test()` error ("need numeric data" / "'x' must be numeric"), not an
+  error at the subsetting line itself. `dplyr::filter()` does not have this problem — it preserves
+  custom column attributes (and keeps a plain data.frame a data.frame, doesn't coerce to tibble) —
+  so prefer `dplyr::filter(df, !is.na(.data[[colName]]))` over `df[!is.na(df[[colName]]), ]`
+  whenever a surviving column may later go through `toNumeric()` or otherwise relies on a custom
+  attribute. Bit `likertplot.b.R`'s `ignoreNA` handling (2026-08-23) when its NA-row filter was
+  moved from `.plot()` into `.run()`, ahead of the Mann-Whitney/Kruskal-Wallis/pairwise tests that
+  call `toNumeric()` on the filtered columns — fixed by switching to `dplyr::filter()`.
 - The generated `<name>(...)` wrapper's `for (v in group) ...` / `for (v in facet) ...` lines are
   **not** guarded by `missing()`. Calling it with `data=` supplied directly (as tests do) and
   omitting `group`/`facet` throws `"argument is missing, with no default"`. Always pass them

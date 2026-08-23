@@ -7,6 +7,12 @@
                 "lang": "fr",
                 "plural_forms": "nplurals=2; plural=(n != 1)"
             },
+            "\"Range\" option for the X-axis is only available for numeric and date variables.": [
+                "L'options \"Étendue\" pour l'axe des abscisses n'est disponible que pour les variables numériques et de type date."
+            ],
+            "\"Tick Count\" option for the X-axis is only available for numeric variables.": [
+                "L'options \"Graduations\" pour l'axe des abscisses n'est disponible que pour les variables numériques."
+            ],
             "{distrib} distribution requires positive (>0) data.": [
                 "La loi {distrib} nécessite des données strictement positives."
             ],
@@ -73,8 +79,8 @@
             "% of Variance": [
                 "% de variance"
             ],
-            "% within": [
-                "% dans"
+            "% within {category}": [
+                "% dans {category}"
             ],
             "<h3>Data & Sorting</h3>\n<ul>\n<li>Likert variables must be of ordinal measure-type. (Continuous-Integer works as well.)</li>\n<li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>\n<li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>\n<li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>\n<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>\n</ul>\n<h3>Comparison Tests</h3>\n<p>When using a group variable, several tests are available:</p>\n<ul>\n<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>\n</ul>\n<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>\n<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>": [
                 "<h3>Données & Tri</h3>\n<ul>\n<li>Les variables de Likert doivent être de type de mesure ordinal. (Le type continu-entier fonctionne aussi.)</li>\n<li>Pour calculer les moyenne, médiane et écart-type ou pour utiliser les tests de comparaison, le type de données doit être entier.</li>\n<li><strong>Corriger les niveaux :</strong> cette option permet de corriger l'ordre des niveaux lorsque certains niveaux sont absents de certaines variables.</li>\n<li><strong>Convertir les variables en entiers :</strong> avec cette option, les étiquettes des niveaux sont ignorées et seules les valeurs numériques (entières) sont utilisées.</li>\n<li><strong>Trier les variables selon la médiane :</strong> ordonne la liste des variables de Likert selon la valeur de leur médiane.</li>\n</ul>\n<h3>Tests de comparaison</h3>\n<p>Lorsqu'une variable de groupe est utilisée, plusieurs tests sont disponibles :</p>\n<ul>\n<li><strong>Mann-Whitney U :</strong> comparaison de deux groupes</li>\n<li><strong>Kruskal-Wallis:</strong> comparaison de n groupes</li>\n<li><strong>Tests Post-hoc :</strong> tests de comparaison par paires de Dunn, Conover et Dwass-Steel-Critchlow-Fligner (DSCF).</li>\n</ul>\n<p>Les p-valeurs peuvent être corrigées <strong>par groupe</strong> (pour chaque variable) pour les tests post-hoc ou <strong>globalement</strong> (par groupe et par variable) pour les tests Mann-Withney U, Kruskal-Wallis et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; aucune autre correction n'est possible.</p>\n<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de données > vijPlots > Likert</p>"
@@ -165,6 +171,9 @@
             ],
             "6 months": [
                 "6 mois"
+            ],
+            "A date variable must be in text format.": [
+                "Une variable de date doit être de type texte."
             ],
             "A demonstration dataset for vijPlots module.": [
                 "Fichier de démonstration du module vijPlots."
@@ -463,11 +472,17 @@
             "Comparison Tests": [
                 "Tests de comparaison"
             ],
-            "Comparison tests require numeric variables": [
+            "Comparison tests require at least two groups.": [
+                "Les tests de comparaison nécessitent au moins deux groupes."
+            ],
+            "Comparison tests require numeric variables.": [
                 "Les tests de comparaison nécessitent des variables numériques."
             ],
             "Component": [
                 "Composante"
+            ],
+            "Component {n} ({perc} %)": [
+                "Composante {n} ({perc} %)"
             ],
             "Component Plot": [
                 "Graphique des composantes"
@@ -522,6 +537,9 @@
             ],
             "Counted value": [
                 "Valeur comptée"
+            ],
+            "Counted value string may not be empty.": [
+                "La valeur comptée ne peut pas être vide."
             ],
             "Counts": [
                 "Effectifs"
@@ -622,8 +640,14 @@
             "Dim": [
                 "Dim"
             ],
+            "Dim {n}": [
+                "Dim {n}"
+            ],
             "Dimension": [
                 "Dimension"
+            ],
+            "Dimension {n} ({perc} %)": [
+                "Dimension {n} ({perc} %)"
             ],
             "Discrimination": [
                 "Discrimination"
@@ -712,6 +736,9 @@
             "Exponential distribution requires non-negative (≥0) data.": [
                 "La loi Exponentielle nécessite des données positives."
             ],
+            "Extraction": [
+                "Extraction"
+            ],
             "Extraction Sums of Squared Loadings": [
                 "Sommes des carrés des composantes extraites"
             ],
@@ -787,8 +814,8 @@
             "Greenacre correction": [
                 "Correction de Greenacre"
             ],
-            "Greenacre's corrected inertia =": [
-                "Inertie corrigée (Greenacre) ="
+            "Greenacre's corrected inertia = {inertia}": [
+                "Inertie corrigée (Greenacre) = {inertia}"
             ],
             "Greens": [
                 "Verts"
@@ -1039,7 +1066,7 @@
             "Likert Plot": [
                 "Diagramme Likert"
             ],
-            "Likert Plot requires ordinal (or continuous-integer) variables": [
+            "Likert Plot requires ordinal (or continuous-integer) variables.": [
                 "Les diagrammes de Likert nécessitent des variables ordinales (ou continues-entières)."
             ],
             "Likert Variables": [
@@ -1141,8 +1168,8 @@
             "Method of moments (MME)": [
                 "Méthode des moments (MME)"
             ],
-            "Method:": [
-                "Méthode :"
+            "Method: {method}": [
+                "Méthode : {method}"
             ],
             "Middle": [
                 "Milieu"
@@ -1192,6 +1219,9 @@
             "Natural Log Transform requires positive (>0) data.": [
                 "La transformation logarithmique nécessite des données strictement positives."
             ],
+            "No distinct values found in the selected variable.": [
+                "Aucune valeur distincte trouvée dans la variable sélectionnée."
+            ],
             "No rotation used.": [
                 "Aucune rotation appliquée."
             ],
@@ -1231,8 +1261,8 @@
             "Number of cases": [
                 "Nombre d'observations"
             ],
-            "Number of cases:": [
-                "Nombre d'observations :"
+            "Number of cases: {n}": [
+                "Nombre d'observations : {n}"
             ],
             "Number of dimensions": [
                 "Nombre de dimensions"
@@ -1242,6 +1272,9 @@
             ],
             "Obs color": [
                 "Couleur obs."
+            ],
+            "Observation": [
+                "Observation"
             ],
             "Observation Coordinates": [
                 "Coordonnées des observations"
@@ -1327,6 +1360,9 @@
             "Other Options": [
                 "Autres options"
             ],
+            "Outliers": [
+                "Valeurs aberrantes"
+            ],
             "Overall": [
                 "Globalement"
             ],
@@ -1371,6 +1407,12 @@
             ],
             "Parameter Estimates": [
                 "Estimation des paramètres"
+            ],
+            "Parameter Estimates (MLE)": [
+                "Estimation des paramètres (MLE)"
+            ],
+            "Parameter Estimates (MME)": [
+                "Estimation des paramètres (MME)"
             ],
             "Parameter values": [
                 "Valeurs des paramètres"
@@ -1672,6 +1714,9 @@
             "Separator": [
                 "Séparateur"
             ],
+            "Separator string may not be empty.": [
+                "Le séparateur ne peut pas être une chaine vide."
+            ],
             "September": [
                 "septembre"
             ],
@@ -1699,9 +1744,6 @@
             "Show category %": [
                 "Afficher les %"
             ],
-            "Show count labels": [
-                "Afficher les effectifs"
-            ],
             "Show density": [
                 "Afficher la densité"
             ],
@@ -1714,14 +1756,8 @@
             "Show lines": [
                 "Afficher les lignes"
             ],
-            "Show mean": [
-                "Afficher la moyenne"
-            ],
             "Show normal curve": [
                 "Afficher la courbe normale"
-            ],
-            "Show outliers": [
-                "Afficher les extrêmes"
             ],
             "Show points": [
                 "Afficher les points"
@@ -1806,6 +1842,9 @@
             ],
             "Standardize variables": [
                 "Standardiser les variables"
+            ],
+            "Standardized data cannot fit {distrib} distribution.": [
+                "Les données standardisées ne peuvent pas s'ajuster à une distribution {distrib}."
             ],
             "Standardized Sample Quantiles": [
                 "Quantiles observés standardisés"
@@ -1930,6 +1969,9 @@
             "The number of dimensions cannot be greater than the number of variables.": [
                 "Le nombre de dimensions ne peut pas être supérieur au nombre de variables."
             ],
+            "The singular value for dimension {n} is close to zero. The plots may not be accurate.": [
+                "La valeur singulière pour la dimension {n} est proche de zéro. Les graphiques peuvent être approximatifs."
+            ],
             "The variance of the variable is equal to zero.": [
                 "La variance de la variable est égale à zéro."
             ],
@@ -2020,8 +2062,8 @@
             "Unable to compute the χ2 statistic.": [
                 "Impossible de calculer la statistique du χ2."
             ],
-            "Unable to estimate the distribution parameters.": [
-                "Impossible d'estimer les paramètres de la distribution."
+            "Unable to estimate the distribution parameters using {method} method.": [
+                "Impossible d'estimer les paramètres de la distribution avec la méthode {method}."
             ],
             "Unable to use {rotation} rotation.": [
                 "Impossible d'utiliser la rotation {rotation}."
@@ -2160,6 +2202,9 @@
             ],
             "Yellow to Red": [
                 "Jaune à rouge"
+            ],
+            "χ² = {chisq}, df = {df}, p-value = {pval}": [
+                "χ² = {chisq}, df = {df}, p-value = {pval}"
             ],
             "boundary\u0004Position": [
                 "Origine"

@@ -58,7 +58,7 @@ options:
       default: false
 
     - name: showLabels
-      title: Show count labels
+      title: Count labels
       type: Bool
       default: true
 

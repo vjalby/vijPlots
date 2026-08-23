@@ -149,19 +149,19 @@ children:
                     optionName: accuracy
                     optionPart: '1'
                     label: '1'
-                    enable: (labels_percent || labels_group+percent)
+                    enable: ({ return ['percent','group+percent'].includes(ui['labels'].value()); })
                   - type: RadioButton
                     name: accuracy_01
                     optionName: accuracy
                     optionPart: '0.1'
                     label: '0.1'
-                    enable: (labels_percent || labels_group+percent)
+                    enable: ({ return ['percent','group+percent'].includes(ui['labels'].value()); })
                   - type: RadioButton
                     name: accuracy_001
                     optionName: accuracy
                     optionPart: '0.01'
                     label: '0.01'
-                    enable: (labels_percent || labels_group+percent)
+                    enable: ({ return ['percent','group+percent'].includes(ui['labels'].value()); })
   - type: CollapseBox
     label: Colors
     collapsed: true

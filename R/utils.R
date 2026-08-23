@@ -269,7 +269,12 @@ vijDebugPlot = function(self, p) {
     withCallingHandlers({
         ggplot2::ggplot_build(p)
     }, warning = function(w) {
-        vijDebugMessage(self, conditionMessage(w))
+        # Benign macOS/R quirk: strptime() (used internally by scale_x_date's
+        # date_breaks for month/year/... steps) validates the *system* timezone
+        # against a tzdata copy that can diverge from the one R itself uses,
+        # even for well-known zone names. Doesn't affect the computed breaks.
+        if (!grepl("^unknown timezone", conditionMessage(w)))
+            vijDebugMessage(self, conditionMessage(w))
         invokeRestart("muffleWarning")
     }, message = function(m) {
         vijDebugMessage(self, conditionMessage(m))

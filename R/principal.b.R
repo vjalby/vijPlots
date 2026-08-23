@@ -49,7 +49,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 vijErrorMessage(self, .("The number of dimensions cannot be greater than the number of variables."))
 
             #### Prepare data ####
-            data <- self$data[,c(self$options$vars, self$options$labelVar, self$options$groupVar), drop = FALSE]
+            data <- jmvcore::select(self$data, c(self$options$vars, self$options$labelVar, self$options$groupVar))
             # Be sure data is numeric (for ordinal data)
             for (aVar in self$options$vars) {
                 data[[aVar]] <- jmvcore::toNumeric(data[[aVar]])
@@ -214,10 +214,10 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (self$options$showLoadings) {
                 for(i in 1:nDim) {
-                    self$results$loadingTable$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = "Component", type = "number") #, format = "zto")
+                    self$results$loadingTable$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = .("Component"), type = "number") #, format = "zto")
                 }
                 self$results$loadingTable$addColumn(name = "QLT",
-                                                    title = "Extraction", #ifelse(self$options$stdVariables, "Communalities", "Explained"),
+                                                    title = .("Extraction"),
                                                     type = "number")
                 for(aVar in rownames(res$loadings)) {
                     values = list()
@@ -241,15 +241,15 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (self$options$showObservations) {
                 if (is.null(self$options$labelVar))
-                    self$results$obsTable$addColumn("obs", title = "Observation", type = "integer")
+                    self$results$obsTable$addColumn("obs", title = .("Observation"), type = "integer")
                 else
                     self$results$obsTable$addColumn("obs", title = private$.getVarName(self$options$labelVar), type = "text")
                 if (!is.null(self$options$groupVar))
                     self$results$obsTable$addColumn("group", title = private$.getVarName(self$options$groupVar), type = "text")
                 for(i in 1:nDim) {
-                    self$results$obsTable$addColumn(as.character(i), title = as.character(i), superTitle = "Component", type = "number") #, format = "zto")
+                    self$results$obsTable$addColumn(as.character(i), title = as.character(i), superTitle = .("Component"), type = "number")
                 }
-                self$results$obsTable$addColumn("qlt", title = "Extraction", type = "number", format = "zto")
+                self$results$obsTable$addColumn("qlt", title = .("Extraction"), type = "number", format = "zto")
 
                 nrows <- nrow(res$scores)
                 if (nrows > 100) {
@@ -348,8 +348,8 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             propIn <- round(100*res$SSL/eigenSum,1)
             dim1 <- self$options$xaxis
             dim2 <- self$options$yaxis
-            dim1name <- paste0(.("Component"), " ", dim1, " (", propIn[dim1], '\u2009%)')
-            dim2name <- paste0(.("Component"), " ", dim2, " (", propIn[dim2], '\u2009%)')
+            dim1name <- jmvcore::format(.("Component {n} ({perc} %)"), n = dim1, perc = propIn[dim1])
+            dim2name <- jmvcore::format(.("Component {n} ({perc} %)"), n = dim2, perc = propIn[dim2])
 
             type <- self$options$biplotType
             if (plotType == "biplot" && type == "formPlot") {

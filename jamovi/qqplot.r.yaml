@@ -21,5 +21,14 @@ items:
         - name: var
           title: ''
           type: text
-
+      clearWith:
+        - dep
+        - group
+        - distrib
+        - transLog
+        - standardize
+        - paramMethod
+        - paramEstMethod
+        - param1
+        - param2
 ...

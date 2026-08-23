@@ -59,9 +59,9 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                 "Indicator" = .("Indicator matrix"),
                                 "Burt" = .("Burt matrix"))
 
-            nullOrValue = function(x) {
-                if(is.na(x)) NULL else x
-            }
+            nullOrValue = function(x) if(is.na(x)) NULL else x
+
+            dimN <- function(n) jmvcore::format(.("Dim {n}"), n = n)
 
             #### Compute MCA ####
 
@@ -138,15 +138,15 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$eigenvalues$addRow(rowKey = "Total", values = values)
                 self$results$eigenvalues$addFormat(rowKey = "Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
             }
-            self$results$eigenvalues$setNote("method", paste(.("Method:"), methodStr))
+            self$results$eigenvalues$setNote("method", jmvcore::format(.("Method: {method}"), method = methodStr))
             if (method == "Burt" && self$options$GreenacreAdj)
-                self$results$eigenvalues$setNote("adjusted", paste(.("Greenacre's corrected inertia ="), round(res$totalInrG,4)))
+                self$results$eigenvalues$setNote("adjusted", jmvcore::format(.("Greenacre's corrected inertia = {inertia}"), inertia = round(res$totalInrG,4)))
 
             #### Discrimination Table ####
 
             if (self$options$showDiscriminations) {
                 for (j in seq_len(nDim))
-                    self$results$discrim$addColumn(paste0("dim",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("Discrimination"))
+                    self$results$discrim$addColumn(paste0("dim",j), title = dimN(j), type = "number", format = "zto", superTitle = .("Discrimination"))
                 for (i in seq_len(nrow(res$allvar$eta2))) {
                     values = list()
                     values[["var"]] <- rownames(res$allvar$eta2)[i]
@@ -162,11 +162,11 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (self$options$showCategories) {
                 for (j in seq_len(nDim))
-                    self$results$categories$addColumn(paste0("coord",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
+                    self$results$categories$addColumn(paste0("coord",j), title = dimN(j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
                 for (j in seq_len(nDim))
-                    self$results$categories$addColumn(paste0("ctr",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("Contributions"))
+                    self$results$categories$addColumn(paste0("ctr",j), title = dimN(j), type = "number", format = "zto", superTitle = .("Contributions"))
                 for (j in seq_len(nDim))
-                    self$results$categories$addColumn(paste0("co2",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("COS2"))
+                    self$results$categories$addColumn(paste0("co2",j), title = dimN(j), type = "number", format = "zto", superTitle = .("COS2"))
                 previousfactor <- res$cat$factors[1]
                 for (i in seq_len(nrow(res$cat$coord))) {
                     values = list(
@@ -209,11 +209,11 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$observations$addColumn("inertia", title = .("% Inertia"), type = "number", format = "zto")
                 self$results$observations$addColumn("qlt", title = "QLT", type = "number", format = "zto")
                 for (j in seq_len(nDim))
-                    self$results$observations$addColumn(paste0("coord",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
+                    self$results$observations$addColumn(paste0("coord",j), title = dimN(j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
                 for (j in seq_len(nDim))
-                    self$results$observations$addColumn(paste0("ctr",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("Contributions"))
+                    self$results$observations$addColumn(paste0("ctr",j), title = dimN(j), type = "number", format = "zto", superTitle = .("Contributions"))
                 for (j in seq_len(nDim))
-                    self$results$observations$addColumn(paste0("co2",j), title = paste("Dim",j), type = "number", format = "zto", superTitle = .("COS2"))
+                    self$results$observations$addColumn(paste0("co2",j), title = dimN(j), type = "number", format = "zto", superTitle = .("COS2"))
                 for (i in seq_len(nrows)) {
                     values = list(
                         name = res$rowlabels[i],
@@ -293,7 +293,6 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 varNames <- varNames[-supcol]   # remove supplementary variables
             varFactors <- c()
             for (aVar in varNames) {
-                #varFactors <- c(varFactors, rep(aVar, nlevels(factor(data[[aVar]]))))
                 varFactors <- c(varFactors, rep(aVar, nlevels(data[[aVar]]))) # unused levels are now dropped from the begining
             }
             # Build the list of supplementary variable names for levels
@@ -407,8 +406,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             dim1 <- self$options$xaxis
             dim2 <- self$options$yaxis
-            dim1name <- paste0(.("Dimension"), " ", dim1, " (", round(res$eig[dim1,2]*100,1), '\u2009%)')
-            dim2name <- paste0(.("Dimension"), " ", dim2, " (", round(res$eig[dim2,2]*100,1), '\u2009%)')
+            dim1name <- jmvcore::format(.("Dimension {n} ({perc} %)"), n = dim1, perc = round(res$eig[dim1,2]*100,1))
+            dim2name <- jmvcore::format(.("Dimension {n} ({perc} %)"), n = dim2, perc = round(res$eig[dim2,2]*100,1))
 
             data <- res$allvar$eta2[,c(dim1, dim2)]
             colnames(data) <- c("x","y")
@@ -439,8 +438,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Define the dimensions ####
             dim1 <- self$options$xaxis
             dim2 <- self$options$yaxis
-            dim1name <- paste0(.("Dimension"), " ", dim1, " (", round(res$eig[dim1,2]*100,1), '\u2009%)')
-            dim2name <- paste0(.("Dimension"), " ", dim2, " (", round(res$eig[dim2,2]*100,1), '\u2009%)')
+            dim1name <- jmvcore::format(.("Dimension {n} ({perc} %)"), n = dim1, perc = round(res$eig[dim1,2]*100,1))
+            dim2name <- jmvcore::format(.("Dimension {n} ({perc} %)"), n = dim2, perc = round(res$eig[dim2,2]*100,1))
 
             #### Prepare data ####
             if (self$options$normalization == "principal") {

@@ -152,9 +152,11 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Date range/scale
             if (timeVarIsDate) {
                 if (self$options$xAxisRangeType == "manual") { # Date and manual
-                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak,
-                                                        limits = private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat),
-                                                        expand = c(0, 0))
+                    dateLim <- private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat)
+                    dateBreaks <- scales::breaks_width(self$options$dateBreak)(dateLim)
+                    dateBreaks <- dateBreaks[dateBreaks >= dateLim[1] & dateBreaks <= dateLim[2]]
+                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, breaks = dateBreaks,
+                                                        limits = dateLim)
                 } else {
                     plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
                 }

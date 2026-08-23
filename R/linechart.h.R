@@ -37,8 +37,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xAxisFontSize = "16",
             xAxisPosition = "0.5",
             xAxisRangeType = "auto",
-            xAxisRangeMin = 0,
-            xAxisRangeMax = 10,
+            xAxisRangeMin = "0",
+            xAxisRangeMax = "10",
             yAxisText = "",
             yAxisFontSize = "16",
             yAxisPosition = "0.5",
@@ -360,14 +360,14 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "auto",
                     "manual"),
                 default="auto")
-            private$..xAxisRangeMin <- jmvcore::OptionNumber$new(
+            private$..xAxisRangeMin <- jmvcore::OptionString$new(
                 "xAxisRangeMin",
                 xAxisRangeMin,
-                default=0)
-            private$..xAxisRangeMax <- jmvcore::OptionNumber$new(
+                default="0")
+            private$..xAxisRangeMax <- jmvcore::OptionString$new(
                 "xAxisRangeMax",
                 xAxisRangeMax,
-                default=10)
+                default="10")
             private$..yAxisText <- jmvcore::OptionString$new(
                 "yAxisText",
                 yAxisText,
@@ -708,8 +708,8 @@ linechart <- function(
     xAxisFontSize = "16",
     xAxisPosition = "0.5",
     xAxisRangeType = "auto",
-    xAxisRangeMin = 0,
-    xAxisRangeMax = 10,
+    xAxisRangeMin = "0",
+    xAxisRangeMax = "10",
     yAxisText = "",
     yAxisFontSize = "16",
     yAxisPosition = "0.5",

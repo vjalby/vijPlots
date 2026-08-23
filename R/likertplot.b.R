@@ -810,7 +810,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>
 </ul>
 <p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>
-<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>')
+<p>A sample file is included at Open > Data Library > vijPlots > vijPlots</p>')
             vijHelpMessage(self, helpMsg)
         }
     )

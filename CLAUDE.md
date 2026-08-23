@@ -178,10 +178,12 @@ swallow it (see gotcha below).
 Several `Imports:` in `DESCRIPTION` aren't called directly (`pkg::fun()`) anywhere in `R/` — they're
 required at runtime by another dependency and would break at render time if removed:
 `fitdistrplus` (used internally by `ggh4x::stat_theodensity`, called from `histogram.b.R`),
-`GPArotation` (used internally by `psych::fa(rotate=...)`, called via `getFromNamespace()` in
-`principal.b.R`), `labelled` (an optional dependency of `ggstats::gglikert_data()`, checked via
+`labelled` (an optional dependency of `ggstats::gglikert_data()`, checked via
 `rlang::check_installed("labelled")`, called from `likertplot.b.R`). Before removing an Import that
 looks unused by a plain grep, check whether the package that *is* called depends on it.
+(`GPArotation` used to be in this list — `principal.b.R` called it indirectly via
+`getFromNamespace()` — but as of 2026-08-23 it's called directly as `GPArotation::Varimax()` etc.
+in a `switch()`, so it's grep-visible like any normal import.)
 
 ### Translations (`jamovi/i18n/*.po`)
 

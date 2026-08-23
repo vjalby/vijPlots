@@ -529,17 +529,19 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             qlt <- ifelse(norm2 > 0, norm2pca / norm2, NA_real_)
             # Rotation
             if (rotation %in% c("Varimax", "quartimax", "equamax", "parsimax", "entropy", "bentlerT")) {
+                rotFun <- switch(rotation,
+                    Varimax   = GPArotation::Varimax,
+                    quartimax = GPArotation::quartimax,
+                    equamax   = GPArotation::equamax,
+                    parsimax  = GPArotation::parsimax,
+                    entropy   = GPArotation::entropy,
+                    bentlerT  = GPArotation::bentlerT
+                )
                 rotatedRes <- tryCatch({
                     if (self$options$stataRotation) {
-                        do.call(
-                            getFromNamespace(rotation, "GPArotation"),
-                            list(stdLoadings, normalize = self$options$kaiser)
-                        )
+                        rotFun(stdLoadings, normalize = self$options$kaiser)
                     } else {
-                        do.call(
-                            getFromNamespace(rotation, "GPArotation"),
-                            list(loadings, normalize = self$options$kaiser)
-                        )
+                        rotFun(loadings, normalize = self$options$kaiser)
                     }
                 }, error = function(e) NULL)
 

@@ -153,21 +153,12 @@ analyses:
 usesNative: true
 minApp: 2.7.1
 datasets:
-  - name: Credit Cards
-    path: creditcards.omv
-    description: A demonstration dataset for vijPlots/Multiple Response plots.
-  - name: Likert
-    path: likert.omv
-    description: A demonstration dataset for vijPlots/Likert plot.
   - name: vijPlots
     path: vijPlots.omv
     description: A demonstration dataset for vijPlots module.
-  - name: Time Series
-    path: TimeSeries.omv
-    description: A demonstration dataset for vijPlots/Time Series plots.
-  - name: Raincloud
-    path: raincloud.omv
-    description: A demonstration dataset for vijPlots/Raincloud plot.
+  - name: Credit Cards
+    path: creditcards.omv
+    description: A demonstration dataset for vijPlots/Multiple Response plots.
   - name: Iris
     path: iris.omv
     description: A demonstration dataset for vijPlots/Principal Component Analysis.

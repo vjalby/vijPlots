@@ -274,7 +274,7 @@ vijDebugPlot = function(self, p) {
         # against a tzdata copy that can diverge from the one R itself uses,
         # even for well-known zone names. Doesn't affect the computed breaks.
         if (!grepl("^unknown timezone", conditionMessage(w)))
-            vijDebugMessage(self, conditionMessage(w))
+            vijDebugMessage(self, conditionMessage(w), title = "Debug Plot")
         invokeRestart("muffleWarning")
     }, message = function(m) {
         vijDebugMessage(self, conditionMessage(m))

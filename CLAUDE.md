@@ -185,6 +185,15 @@ looks unused by a plain grep, check whether the package that *is* called depends
 `getFromNamespace()` — but as of 2026-08-23 it's called directly as `GPArotation::Varimax()` etc.
 in a `switch()`, so it's grep-visible like any normal import.)
 
+### Avoid `do.call()`
+
+Prefer a `switch()` (or direct `pkg::fun()` calls) over `do.call(getFromNamespace(x, "pkg"), args)`
+or any other pattern that resolves a function to call by name at runtime. A `switch()` on a small,
+explicit set of branches is just as flexible for dispatching on an option value, keeps every
+callable function spelled out literally (grep-visible, no need for a defensive whitelist check —
+see the "Dependency graph" note above for the `principal.b.R` rotation example this was fixed in),
+and avoids `do.call`'s NSE/argument-matching quirks entirely.
+
 ### Translations (`jamovi/i18n/*.po`)
 
 Regenerated via `jmvtools::i18nUpdate("<lang>")` (see `build.R`), which merges newly-extracted

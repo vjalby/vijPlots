@@ -82,8 +82,8 @@
             "% within {category}": [
                 "% dans {category}"
             ],
-            "<h3>Data & Sorting</h3>\n<ul>\n<li>Likert variables must be of ordinal measure-type. (Continuous-Integer works as well.)</li>\n<li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>\n<li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>\n<li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>\n<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>\n</ul>\n<h3>Comparison Tests</h3>\n<p>When using a group variable, several tests are available:</p>\n<ul>\n<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>\n</ul>\n<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>\n<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>": [
-                "<h3>Données & Tri</h3>\n<ul>\n<li>Les variables de Likert doivent être de type de mesure ordinal. (Le type continu-entier fonctionne aussi.)</li>\n<li>Pour calculer les moyenne, médiane et écart-type ou pour utiliser les tests de comparaison, le type de données doit être entier.</li>\n<li><strong>Corriger les niveaux :</strong> cette option permet de corriger l'ordre des niveaux lorsque certains niveaux sont absents de certaines variables.</li>\n<li><strong>Convertir les variables en entiers :</strong> avec cette option, les étiquettes des niveaux sont ignorées et seules les valeurs numériques (entières) sont utilisées.</li>\n<li><strong>Trier les variables selon la médiane :</strong> ordonne la liste des variables de Likert selon la valeur de leur médiane.</li>\n</ul>\n<h3>Tests de comparaison</h3>\n<p>Lorsqu'une variable de groupe est utilisée, plusieurs tests sont disponibles :</p>\n<ul>\n<li><strong>Mann-Whitney U :</strong> comparaison de deux groupes</li>\n<li><strong>Kruskal-Wallis:</strong> comparaison de n groupes</li>\n<li><strong>Tests Post-hoc :</strong> tests de comparaison par paires de Dunn, Conover et Dwass-Steel-Critchlow-Fligner (DSCF).</li>\n</ul>\n<p>Les p-valeurs peuvent être corrigées <strong>par groupe</strong> (pour chaque variable) pour les tests post-hoc ou <strong>globalement</strong> (par groupe et par variable) pour les tests Mann-Withney U, Kruskal-Wallis et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; aucune autre correction n'est possible.</p>\n<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de données > vijPlots > Likert</p>"
+            "<h3>Data & Sorting</h3>\n<ul>\n<li>Likert variables must be of ordinal measure-type. (Continuous-Integer works as well.)</li>\n<li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>\n<li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>\n<li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>\n<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>\n</ul>\n<h3>Comparison Tests</h3>\n<p>When using a group variable, several tests are available:</p>\n<ul>\n<li><strong>Mann-Whitney U:</strong> Two group comparison</li>\n<li><strong>Kruskal-Wallis:</strong> n group comparison</li>\n<li><strong>Post Hoc Tests:</strong> Dunn, Conover and Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>\n</ul>\n<p>The p-values can be adjusted <strong>groupwise</strong> (for each question) for post hoc tests or <strong>overall</strong> (groupwise and questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF p-values are already adjusted (groupwise); no other adjustment is possible.</p>\n<p>A sample file is included at Open > Data Library > vijPlots > vijPlots</p>": [
+                "<h3>Données & Tri</h3>\n<ul>\n<li>Les variables de Likert doivent être de type de mesure ordinal. (Le type continu-entier fonctionne aussi.)</li>\n<li>Pour calculer les moyenne, médiane et écart-type ou pour utiliser les tests de comparaison, le type de données doit être entier.</li>\n<li><strong>Corriger les niveaux :</strong> cette option permet de corriger l'ordre des niveaux lorsque certains niveaux sont absents de certaines variables.</li>\n<li><strong>Convertir les variables en entiers :</strong> avec cette option, les étiquettes des niveaux sont ignorées et seules les valeurs numériques (entières) sont utilisées.</li>\n<li><strong>Trier les variables selon la médiane :</strong> ordonne la liste des variables de Likert selon la valeur de leur médiane.</li>\n</ul>\n<h3>Tests de comparaison</h3>\n<p>Lorsqu'une variable de groupe est utilisée, plusieurs tests sont disponibles :</p>\n<ul>\n<li><strong>Mann-Whitney U :</strong> comparaison de deux groupes</li>\n<li><strong>Kruskal-Wallis:</strong> comparaison de n groupes</li>\n<li><strong>Tests Post-hoc :</strong> tests de comparaison par paires de Dunn, Conover et Dwass-Steel-Critchlow-Fligner (DSCF).</li>\n</ul>\n<p>Les p-valeurs peuvent être corrigées <strong>par groupe</strong> (pour chaque variable) pour les tests post-hoc ou <strong>globalement</strong> (par groupe et par variable) pour les tests Mann-Withney U, Kruskal-Wallis et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; aucune autre correction n'est possible.</p>\n<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de données > vijPlots > vijPlots</p>"
             ],
             "<p>Main statistical charts, all built with <b>ggplot2</b> and offering extensive customization options:</p> <ul> <li><strong>Continuous variables</strong>: Histogram, Box plot, Raincloud plot, Scatter plot, Error bar chart, Lollipop plot, QQ plot</li> <li><strong>Categorical variables</strong>: Bar plot, Pie chart, Mosaic plot, Likert plot</li> <li><strong>Time series</strong>: Line chart, Area chart</li> <li><strong>Multiple Response</strong>: Frequencies, Crosstab</li> </ul> <p><strong>Main classic multivariate data analyses</strong> are also available:</p> <ul> <li>Principal Component Analysis</li> <li>Correspondence Analysis</li> <li>Multiple Correspondence Analysis</li> </ul> <p>The module is available in the <strong>Plots</strong> tab.</p> <p>Project source (and changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.</p>": [
                 "<p>Principaux graphiques statistiques, tous construits avec <b>ggplot2</b> et offrant de nombreuses options de personnalisation :</p> <ul> <li><strong>Variables continues</strong> : Histogramme, Boite à moustaches, Diagramme Raincloud, Nuage de points, Graphique à barres d'erreur, Lollipop (Sucettes), Diagrammes Q-Q & P-P</li> <li><strong>Variables catégorielles</strong> : Diagramme en barres, Diagramme en secteurs, Diagramme en mosaïque, Diagramme Likert</li> <li><strong>Séries temporelles</strong> : Graphique en courbes, Diagramme en aires</li> <li><strong>Réponses multiples</strong> : Fréquences, Tableau croisé</li> </ul> <p><strong>Les principales analyses multivariées classiques</strong> sont également disponibles :</p> <ul> <li>Analyse en composantes principales</li> <li>Analyse des correspondances</li> <li>Analyse des correspondances multiples</li> </ul> <p>Le module est disponible dans l'onglet <strong>Graphiques</strong>.</p> <p>Le code source du projet (et le changelog) est disponible sur <a href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.</p>"
@@ -181,9 +181,6 @@
             "A demonstration dataset for vijPlots/Correspondence Analysis.": [
                 "Fichier de démonstration pour vijPlots/Analyse des correspondances."
             ],
-            "A demonstration dataset for vijPlots/Likert plot.": [
-                "Fichier de démonstration pour vijPlots/Likert."
-            ],
             "A demonstration dataset for vijPlots/Multiple Correspondence Analysis.": [
                 "Fichier de démonstration pour vijPlots/Analyse des correspondances multiples."
             ],
@@ -192,9 +189,6 @@
             ],
             "A demonstration dataset for vijPlots/Principal Component Analysis.": [
                 "Fichier de démonstration pour vijPlots/Analyse en composantes principales."
-            ],
-            "A demonstration dataset for vijPlots/Raincloud plot.": [
-                "Fichier de démonstration pour vijPlots/Diagramme Raincloud."
             ],
             "A demonstration dataset for vijPlots/Time Series plots.": [
                 "Fichier de démonstration pour vijPlots/Séries temporelles."
@@ -1060,9 +1054,6 @@
             "Light Yellow": [
                 "Jaune clair"
             ],
-            "Likert": [
-                "Likert"
-            ],
             "Likert Plot": [
                 "Diagramme Likert"
             ],
@@ -1566,9 +1557,6 @@
             ],
             "Questions": [
                 "Questions"
-            ],
-            "Raincloud": [
-                "Raincloud"
             ],
             "Raincloud Plot": [
                 "Diagramme Raincloud"

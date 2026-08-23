@@ -168,7 +168,7 @@ msgid ""
 "questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF "
 "p-values are already adjusted (groupwise); no other adjustment is "
 "possible.</p>\n"
-"<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>"
+"<p>A sample file is included at Open > Data Library > vijPlots > vijPlots</p>"
 msgstr ""
 
 #: package.description
@@ -503,10 +503,6 @@ msgstr ""
 
 #: package/datasets/Iris.description
 msgid "A demonstration dataset for vijPlots/Principal Component Analysis."
-msgstr ""
-
-#: package/datasets/Raincloud.description
-msgid "A demonstration dataset for vijPlots/Raincloud plot."
 msgstr ""
 
 #: package/datasets/TimeSeries.description
@@ -4280,10 +4276,6 @@ msgstr ""
 #: likertplot/results/comp/uTestTable.columns.title
 #: likertplot/results/comp/kwTable.columns.title
 msgid "Questions"
-msgstr ""
-
-#: package/datasets/Raincloud.name
-msgid "Raincloud"
 msgstr ""
 
 #: package/analyses/raincloud.title

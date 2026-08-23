@@ -173,7 +173,7 @@ msgid ""
 "questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF "
 "p-values are already adjusted (groupwise); no other adjustment is "
 "possible.</p>\n"
-"<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>"
+"<p>A sample file is included at Open > Data Library > vijPlots > vijPlots</p>"
 msgstr ""
 "<h3>Données & Tri</h3>\n"
 "<ul>\n"
@@ -205,7 +205,7 @@ msgstr ""
 "et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; "
 "aucune autre correction n'est possible.</p>\n"
 "<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de "
-"données > vijPlots > Likert</p>"
+"données > vijPlots > vijPlots</p>"
 
 #: package.description
 msgid ""
@@ -714,10 +714,6 @@ msgstr "Fichier de démonstration du module vijPlots."
 msgid "A demonstration dataset for vijPlots/Correspondence Analysis."
 msgstr "Fichier de démonstration pour vijPlots/Analyse des correspondances."
 
-#: package/datasets/Likert.description
-msgid "A demonstration dataset for vijPlots/Likert plot."
-msgstr "Fichier de démonstration pour vijPlots/Likert."
-
 #: package/datasets/Cars.description
 msgid "A demonstration dataset for vijPlots/Multiple Correspondence Analysis."
 msgstr "Fichier de démonstration pour vijPlots/Analyse des correspondances multiples."
@@ -729,10 +725,6 @@ msgstr "Fichier de démonstration pour vijPlots/Réponses multiples."
 #: package/datasets/Iris.description
 msgid "A demonstration dataset for vijPlots/Principal Component Analysis."
 msgstr "Fichier de démonstration pour vijPlots/Analyse en composantes principales."
-
-#: package/datasets/Raincloud.description
-msgid "A demonstration dataset for vijPlots/Raincloud plot."
-msgstr "Fichier de démonstration pour vijPlots/Diagramme Raincloud."
 
 #: package/datasets/TimeSeries.description
 msgid "A demonstration dataset for vijPlots/Time Series plots."
@@ -3206,10 +3198,6 @@ msgstr "Rouge clair"
 msgid "Light Yellow"
 msgstr "Jaune clair"
 
-#: package/datasets/Likert.name
-msgid "Likert"
-msgstr "Likert"
-
 #: package/analyses/likertplot.title
 #: package/analyses/likertplot.menuTitle
 #: likertplot/options.title
@@ -4514,10 +4502,6 @@ msgstr "Quartimax"
 #: likertplot/results/comp/kwTable.columns.title
 msgid "Questions"
 msgstr "Questions"
-
-#: package/datasets/Raincloud.name
-msgid "Raincloud"
-msgstr "Raincloud"
 
 #: package/analyses/raincloud.title
 #: package/analyses/raincloud.menuTitle

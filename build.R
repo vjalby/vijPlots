@@ -53,8 +53,6 @@ vijPlots::boxplotOptions
 jmvtools::i18nCreate('catalog')
 jmvtools::i18nCreate("fr")
 
-
-
 # Testthat files
 
 usethis::use_test("histogram")
@@ -62,16 +60,23 @@ usethis::use_test("barchart")
 
 devtools::test()
 
-## old i18n
-# Find the correct path
-node::node()
-#/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/node/node-darwin/bin/node
-jmvtools:::jmcPath()
-# /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/jmvtools/node_modules/jamovi-compiler/index.js
+## GIT / Merging mosaic with main :
 
-# Command (terminal) to generate i18n
-#/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/node/node-darwin/bin/node /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/jmvtools/node_modules/jamovi-compiler/index.js --i18n ./  --create en
-#/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/node/node-darwin/bin/node /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/jmvtools/node_modules/jamovi-compiler/index.js --i18n ./  --update en
+# 1. Basculer sur main et fusionner (fast-forward, sans conflit puisque main..mosaic est vide) :
+#     git checkout main
+#     git merge mosaic
+#
+# 2. Pousser vers le remote :
+#
+#     git push origin main
+#
+# 3. Supprimer la branche mosaic en local :
+#
+#     git branch -d mosaic
+#
+# 4. Supprimer la branche mosaic sur le remote :
+#
+#     git push origin --delete mosaic
 
-#/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/node/node-darwin/bin/node /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/jmvtools/node_modules/jamovi-compiler/index.js --i18n ./  --create fr
-#/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/node/node-darwin/bin/node /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/jmvtools/node_modules/jamovi-compiler/index.js --i18n ./  --update fr
+
+

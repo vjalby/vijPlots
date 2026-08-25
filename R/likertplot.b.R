@@ -248,7 +248,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- list()
             plotData$mainData <- mainData
-            plotData$variableLabels <- sapply(self$options$liks, FUN = private$.getVarName) #, USE.NAMES = FALSE)
+            plotData$variableLabels <- vapply(self$options$liks, FUN = private$.getVarName, FUN.VALUE = character(1))
             if (!is.null(self$options$group))
                 plotData$groupLabel <- private$.getVarName(self$options$group)
             image <- self$results$plot

@@ -278,8 +278,8 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Plots ####
 
-            rownames(res$loadings) <- sapply(rownames(res$loadings), FUN = private$.getVarName, USE.NAMES = FALSE)
-            rownames(res$stdLoadings) <- sapply(rownames(res$stdLoadings), FUN = private$.getVarName, USE.NAMES = FALSE)
+            rownames(res$loadings) <- vapply(rownames(res$loadings), FUN = private$.getVarName, FUN.VALUE = character(1), USE.NAMES = FALSE)
+            rownames(res$stdLoadings) <- vapply(rownames(res$stdLoadings), FUN = private$.getVarName, FUN.VALUE = character(1), USE.NAMES = FALSE)
             res$groupVarName <- private$.getVarName(self$options$groupVar)
 
             if (self$options$showScreePlot) {

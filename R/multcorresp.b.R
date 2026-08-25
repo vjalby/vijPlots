@@ -51,8 +51,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 rowLabels <- NULL
 
             # Set variable names
-            allVars <- sapply(allVars, FUN = private$.getVarName, USE.NAMES = FALSE)
-            names(data) <- sapply(names(data), FUN = private$.getVarName, USE.NAMES = FALSE)
+            allVars <- vapply(allVars, FUN = private$.getVarName, FUN.VALUE = character(1), USE.NAMES = FALSE)
+            names(data) <- vapply(names(data), FUN = private$.getVarName, FUN.VALUE = character(1), USE.NAMES = FALSE)
 
             method <- self$options$method
             methodStr <- switch(method,

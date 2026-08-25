@@ -69,6 +69,22 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(self$options$facet) && self$options$ignoreNA) {
                 data <- data[!is.na(data[[self$options$facet]]),]
             }
+
+            #### Compute the outliers ####
+            if (!is.null(self$options$label)) {
+                labelVar <- rlang::sym(self$options$label)
+                groupVar <- if (!is.null(self$options$group)) rlang::sym(self$options$group) else NULL
+                facetVar <- if (!is.null(self$options$facet)) rlang::sym(self$options$facet) else NULL
+                for (varName in self$options$vars) {
+                    outlierVar <- rlang::sym(paste0(".outliers_",varName))
+                    aVar <- rlang::sym(varName)
+                    data <- data |>
+                        dplyr::group_by(!!groupVar, !!facetVar) |>
+                        dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!aVar), as.character(!!labelVar), NA)) |>
+                        dplyr::ungroup()
+                }
+            }
+
             image <- self$results$plot
             image$setState(data)
         },
@@ -94,18 +110,6 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 facetVar <- rlang::sym(self$options$facet)
             } else {
                 facetVar <- NULL
-            }
-
-            #### Compute the outliers ####
-            if (!is.null(labelVar)) {
-                for (varName in depVarNames) {
-                    outlierVar <- rlang::sym(paste0(".outliers_",varName))
-                    aVar <- rlang::sym(varName)
-                    plotData <- plotData |>
-                        dplyr::group_by(!!groupVar, !!facetVar) |>
-                        dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!aVar), as.character(!!labelVar), NA)) |>
-                        dplyr::ungroup()
-                }
             }
 
             #### Set boxplot staples and notches ####
@@ -176,15 +180,15 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!is.null(fillMapping)) {
                     plot <- plot + ggplot2::geom_boxplot(
                         ggplot2::aes(y = !!yVar, x = !!xVar, fill = !!fillMapping),
-                        outliers = self$options$showOutliers, staplewidth = stapleWidth,
-                        notch = notches, notchwidth = notchWidth,
+                        outliers = self$options$showOutliers, na.rm = TRUE,
+                        staplewidth = stapleWidth, notch = notches, notchwidth = notchWidth,
                         show.legend = multiGroup, key_glyph = ggplot2::draw_key_rect
                     )
                 } else {
                     plot <- plot + ggplot2::geom_boxplot(
                         ggplot2::aes(y = !!yVar, x = !!xVar), fill = fillStatic,
-                        outliers = self$options$showOutliers, staplewidth = stapleWidth,
-                        notch = notches, notchwidth = notchWidth
+                        outliers = self$options$showOutliers, na.rm = TRUE,
+                        staplewidth = stapleWidth, notch = notches, notchwidth = notchWidth
                     )
                 }
 
@@ -212,13 +216,16 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     if (multiGroup) {
                         plot <- plot + ggplot2::stat_summary(
                             ggplot2::aes(y = !!yVar, x = !!xVar, group = !!groupVar),
-                            fun = mean, geom = "point", shape = 15, size = 3,
-                            position = ggplot2::position_dodge(.75), show.legend = FALSE
+                            fun = mean, na.rm = TRUE, geom = "point",
+                            shape = 15, size = 3,
+                            position = ggplot2::position_dodge(.75),
+                            show.legend = FALSE
                         )
                     } else {
                         plot <- plot + ggplot2::stat_summary(
                             ggplot2::aes(y = !!yVar, x = !!xVar),
-                            fun = mean, geom = "point", shape = 15, size = 3
+                            fun = mean, na.rm = TRUE, geom = "point",
+                            shape = 15, size = 3
                         )
                     }
                 }
@@ -234,7 +241,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$order == "none") {
                     plot <- plot + ggplot2::scale_x_discrete(limits = depVarNames)
                 } else {
-                    orderedVars <- order(sapply(plotData[,depVarNames], stats::median, na.rm = TRUE), decreasing = (self$options$order == "decreasing"))
+                    orderedVars <- order(vapply(plotData[,depVarNames], stats::median, FUN.VALUE = numeric(1), na.rm = TRUE), decreasing = (self$options$order == "decreasing"))
                     plot <- plot + ggplot2::scale_x_discrete(limits = depVarNames[orderedVars])
                 }
             } else if (!is.null(groupVar) && self$options$order != "none") {

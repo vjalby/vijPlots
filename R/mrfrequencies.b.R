@@ -263,7 +263,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             if (init)
                 return(uniqueValues)
             # No distinct value found: return an empty (0-column) table instead of
-            # letting sapply()/`+` below crash on a zero-length input
+            # letting vapply()/`+` below crash on a zero-length input
             if (length(uniqueValues) == 0)
                 return(as.data.frame(matrix(nrow = length(aCol), ncol = 0)))
             # Build the encoded table
@@ -273,18 +273,17 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                 strsplit(rawValues, split = separator, fixed = TRUE),
                 trimws
             )
-            # build the TRUE/FALSE matrix
-            encoded <- sapply(uniqueValues, function(opt) {
+            # build the TRUE/FALSE matrix (vapply guarantees a matrix even with a single uniqueValue)
+            encoded <- vapply(uniqueValues, function(opt) {
                 vapply(splitted, function(x) opt %in% x, logical(1))
-            })
-            # sapply returns a vector if there's only one uniqueValues. Convert it back to matrix
-            if (length(uniqueValues) == 1)
-                encoded <- matrix(encoded, ncol = 1, dimnames = list(NULL, uniqueValues))
+            }, FUN.VALUE = logical(length(splitted)))
             # + OL converts TRUE/FALSE to 1/0
             onehotDF <- as.data.frame(encoded + 0L)
-            # NA/empty rawvalues set to NA
+            # NA/empty rawvalues set to NA (a value containing only separators, e.g. ";",
+            # splits into all-empty pieces after trimws() and must count as missing too —
+            # trimws(rawValues) == "" alone misses that since it never removes separators)
             if (na) {
-                isMissing <- is.na(aCol) | trimws(rawValues) == ""
+                isMissing <- is.na(aCol) | vapply(splitted, function(x) all(x == ""), logical(1))
                 onehotDF[isMissing, ] <- NA
             }
             return(onehotDF)

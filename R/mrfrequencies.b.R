@@ -142,8 +142,8 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
 
             if (self$options$singleColor) {
-                selectedColorPalette <- vijPalette(self$options$colorPalette, "fill")
-                nbColors <- vijPaletteNlevels(selectedColorPalette)
+                selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
+                nbColors <- vijColorPaletteNlevels(selectedColorPalette)
                 colorNo <- self$options$colorNo
                 oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
                 plot <- plot + ggplot2::geom_col(fill = oneColorOfPalette, color = borderColor)
@@ -187,7 +187,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill")
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
             #### Axis Limits & flip ####
             if (self$options$horizontal) {

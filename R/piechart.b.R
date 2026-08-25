@@ -193,7 +193,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme & colors ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
 
             # Guide
             if (self$options$labels %in% c("group","group+count","group+percent"))

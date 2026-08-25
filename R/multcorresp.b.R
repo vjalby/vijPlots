@@ -520,7 +520,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggplot2::geom_hline(yintercept = 0, linetype = 2) + ggplot2::geom_vline(xintercept = 0, linetype = 2)
 
             #### Theme and colors ####
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color")
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme)
 
             # Shape
             varShapes <- c(rep(16, res$varActive[1]), rep(17, res$varActive[2]))

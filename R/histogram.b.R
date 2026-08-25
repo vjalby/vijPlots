@@ -275,8 +275,8 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE) +
-                                    vijScale(self$options$colorPalette, "color", drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
+                                    vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE)
 
             # Legend spacing
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)

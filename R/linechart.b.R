@@ -131,7 +131,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color")
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme)
 
             if (length(depVars) > 1 ){
                 plot <- plot + ggplot2::guides(color = ggplot2::guide_legend(order = 1), linetype = ggplot2::guide_legend(order = 2))

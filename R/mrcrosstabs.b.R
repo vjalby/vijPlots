@@ -236,7 +236,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill")
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
             # Y scale and lab
             if (self$options$computedValues == "responses") {

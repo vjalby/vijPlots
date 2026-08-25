@@ -157,7 +157,7 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Colors and axes ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color", drop = FALSE) + vijScale(self$options$colorPalette, "fill", drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
 
             # Shapes
             if (self$options$groupShapes && !is.null(groupVar)) {

@@ -110,8 +110,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Colors ####
-            selectedColorPalette <- vijPalette(self$options$colorPalette, "fill")
-            nbColors <- vijPaletteNlevels(selectedColorPalette)
+            selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
+            nbColors <- vijColorPaletteNlevels(selectedColorPalette)
             colorNo <- self$options$colorNo
             if (self$options$singleColor) {
                 oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
@@ -184,9 +184,9 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Colors and axes ####
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color", drop = FALSE) +
-                                    vijScale(self$options$colorPalette, "fill", drop = FALSE) +
-                                    vijScale(self$options$colorPalette, "slab_color", drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE) +
+                                    vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
+                                    vijColorScale(self$options$colorPalette, "slab_color", theme, drop = FALSE)
 
             # Ticks
             if (self$options$horizontal && self$options$xTicks > 0) {

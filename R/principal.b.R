@@ -432,7 +432,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "color")
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme)
 
             # Axe limits
             if (plotType == "var") {

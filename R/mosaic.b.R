@@ -290,7 +290,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme, Legend & Axes ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) # drop to include unused levels in color scales
 
             # Titles & Labels
             defaults <- list(y = self$options$group, x = self$options$category, legend = self$options$group)

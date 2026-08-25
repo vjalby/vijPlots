@@ -140,7 +140,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                       alpha = alpha)
 
             # Theme and colors
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill")
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
             if (self$options$position == "fill")
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])

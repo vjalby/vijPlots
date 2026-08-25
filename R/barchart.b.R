@@ -108,8 +108,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(groupVar))
                 singleColor <- FALSE
             if (singleColor) {
-                selectedColorPalette <- vijPalette(self$options$colorPalette, "fill")
-                nbColors <- vijPaletteNlevels(selectedColorPalette)
+                selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
+                nbColors <- vijColorPaletteNlevels(selectedColorPalette)
                 colorNo <- self$options$colorNo
                 oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
             }
@@ -275,7 +275,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Theme and colors ####
-            plot <- plot + ggtheme + vijScale(self$options$colorPalette, "fill", drop = FALSE) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) # drop to include unused levels in color scales
 
             #### Titles & Labels ####
             defaults <- list(y = ylabel, x = xVar, legend = groupVar)

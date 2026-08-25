@@ -89,6 +89,11 @@ swallow it (see gotcha below).
   estimation from `.plot()` into `.run()`, storing the computed `params` alongside `data` in the
   state list (`image$setState(list(data = data, params = params))`) so `.plot()` just reads them
   back — the pattern to follow for any analysis that fits/estimates something before plotting.
+  `boxplot.b.R` was similarly refactored (2026-08-25) to move its outlier detection (the
+  `private$.isOutlier()` loop building the `.outliers_<var>` columns, needed only when a `label`
+  variable is set) from `.plot()` into `.run()`, appending those columns to `data` before
+  `image$setState(data)` so `.plot()` just reads them back from `plotData` — same rationale as
+  `qqplot.b.R`, plus it means every `.plot()` re-render no longer redoes the outlier pass.
 - Row-subsetting a data.frame with base `[` (`df <- df[keep, ]`, e.g. to drop `NA`-group rows)
   silently drops each column's *custom* attributes — `levels`/`class` on a factor survive, but an
   attribute like the `"values"` numeric-coding attribute jmvcore attaches to labelled factor

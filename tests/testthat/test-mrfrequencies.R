@@ -77,22 +77,37 @@ test_that("mrfrequencies: order = increasing", {
     expect_equal(unname(freq$freq), c(5, 6, 10, 13, 34))
 })
 
-test_that("mrfrequencies: emptyAsNA = FALSE counts the all-missing row as a case", {
+test_that("mrfrequencies: emptyAsNA excludes NA and separator-only values, counts them when FALSE", {
+    # "; " (a value containing only the separator, possibly with spaces) must be treated
+    # as missing just like NA, since it carries no actual response.
+    df <- data.frame(resp = factor(c("VISA", "Mastercard;VISA", NA, ";", "VISA")))
+
     r <- vijPlots::mrfrequencies(
-        data = testData,
+        data = df,
         mode = "onevar",
-        repVar = "Credit Cards",
+        repVar = "resp",
+        resps = NULL,
+        separator = ";"
+    )
+    freq <- r$responses$asDF
+    expect_equal(unname(freq$var), c("VISA", "Mastercard", "Total"))
+    expect_equal(unname(freq$freq), c(3, 1, 4))
+    expect_equal(unname(freq$casepercent), c(1, 1/3, 4/3), tolerance = 1e-9)
+    expect_equal(r$responses$notes$noc$note, "Number of cases: 3")
+
+    r2 <- vijPlots::mrfrequencies(
+        data = df,
+        mode = "onevar",
+        repVar = "resp",
         resps = NULL,
         separator = ";",
         emptyAsNA = FALSE
     )
-    freq <- r$responses$asDF
-    expect_equal(unname(freq$var), c("VISA", "Mastercard", "Diners Club", "Amex", "Total"))
-    expect_equal(unname(freq$freq), c(13, 10, 6, 5, 34))
-    expect_equal(unname(freq$casepercent),
-                 c(0.722222222222222, 0.555555555555556, 0.333333333333333, 0.277777777777778, 1.88888888888889),
-                 tolerance = 1e-9)
-    expect_equal(r$responses$notes$noc$note, "Number of cases: 18")
+    freq2 <- r2$responses$asDF
+    expect_equal(unname(freq2$var), c("VISA", "Mastercard", "Total"))
+    expect_equal(unname(freq2$freq), c(3, 1, 4))
+    expect_equal(unname(freq2$casepercent), c(0.6, 0.2, 0.8), tolerance = 1e-9)
+    expect_equal(r2$responses$notes$noc$note, "Number of cases: 5")
 })
 
 test_that("mrfrequencies: dummy variables mode supports Y/N coding (not just 0/1)", {

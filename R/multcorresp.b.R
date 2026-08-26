@@ -59,10 +59,6 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                 "Indicator" = .("Indicator matrix"),
                                 "Burt" = .("Burt matrix"))
 
-            nullOrValue = function(x) if(is.na(x)) NULL else x
-
-            dimN <- function(n) jmvcore::format(.("Dim {n}"), n = n)
-
             #### Compute MCA ####
 
             nDim <- self$options$dimNum
@@ -85,157 +81,22 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Inertia Table ####
 
-            # Populate the inertia table
-            if (self$options$showSummary) {
-                if (method == "Burt" && self$options$BenzecriAdj) {
-                    self$results$eigenvalues$addColumn("adjB", title = .("Inertia"), type = "number", format = "zto", superTitle = .("Benzécri Correction"))
-                    self$results$eigenvalues$addColumn("%B", title = .("% of Inertia"), type = "number", format = "pc", superTitle = .("Benzécri Correction"))
-                    self$results$eigenvalues$addColumn("C%B", title = .("Cumulative %"), type = "number", format = "pc", superTitle = .("Benzécri Correction"))
-
-                }
-                if (method == "Burt" && self$options$GreenacreAdj) {
-                    self$results$eigenvalues$addColumn("adjG", title = .("Inertia"), type = "number", format = "zto", superTitle = .("Greenacre Correction"))
-                    self$results$eigenvalues$addColumn("%G", title = .("% of Inertia"), type = "number", format = "pc", superTitle = .("Greenacre Correction"))
-                    self$results$eigenvalues$addColumn("C%G", title = .("Cumulative %"), type = "number", format = "pc", superTitle = .("Greenacre Correction"))
-
-                }
-                for (i in seq_len(res$nd.max)) {
-                    values = list(
-                        dim = i,
-                        inertia = res$eig[i,1],
-                        proportion = res$eig[i,2],
-                        cumulative = res$eig[i,3]
-                    )
-                    if (method == "Burt" && self$options$BenzecriAdj) {
-                        values[["adjB"]] <- nullOrValue(res$adjEig[i,1])
-                        values[["%B"]] <- nullOrValue(res$adjEig[i,2])
-                        values[["C%B"]] <- nullOrValue(res$adjEig[i,3])
-                    }
-                    if (method == "Burt" && self$options$GreenacreAdj) {
-                        values[["adjG"]] <- nullOrValue(res$adjEig[i,1])
-                        values[["%G"]] <- nullOrValue(res$adjEig[i,4])
-                        values[["C%G"]] <- nullOrValue(res$adjEig[i,5])
-                    }
-                    self$results$eigenvalues$addRow(rowKey = as.character(i), values = values)
-                }
-                # Add total row
-                values = list(
-                    dim = .("Total"),
-                    inertia = sum(res$eig[,1]),
-                    proportion = sum(res$eig[,2]),
-                    cumulative = NA
-                )
-                if (method == "Burt" && self$options$BenzecriAdj) {
-                    values[["adjB"]] <- res$totalInrB
-                    values[["%B"]] <- 1
-                    values[["C%B"]] <- NULL
-                }
-                if (method == "Burt" && self$options$GreenacreAdj) {
-                    values[["adjG"]] <- res$totalInrB
-                    values[["%G"]] <- sum(res$adjEig[,4], na.rm=TRUE)
-                    values[["C%G"]] <- NULL
-                }
-                self$results$eigenvalues$addRow(rowKey = "Total", values = values)
-                self$results$eigenvalues$addFormat(rowKey = "Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
-            }
-            self$results$eigenvalues$setNote("method", jmvcore::format(.("Method: {method}"), method = methodStr))
-            if (method == "Burt" && self$options$GreenacreAdj)
-                self$results$eigenvalues$setNote("adjusted", jmvcore::format(.("Greenacre's corrected inertia = {inertia}"), inertia = round(res$totalInrG,4)))
+            private$.fillInertiaTable(self$results$eigenvalues, res, method, methodStr)
 
             #### Discrimination Table ####
 
-            if (self$options$showDiscriminations) {
-                for (j in seq_len(nDim))
-                    self$results$discrim$addColumn(paste0("dim",j), title = dimN(j), type = "number", format = "zto", superTitle = .("Discrimination"))
-                for (i in seq_len(nrow(res$allvar$eta2))) {
-                    values = list()
-                    values[["var"]] <- rownames(res$allvar$eta2)[i]
-                    for (j in seq_len(nDim))
-                        values[[paste0("dim",j)]] <- res$allvar$eta2[i,j]
-                    self$results$discrim$addRow(rowKey = as.character(i), values = values)
-                }
-            }
-            if (!is.null(supplIdx))
-                self$results$discrim$setNote("sup", paste("* :", .("Suppl. variables")))
+            if (self$options$showDiscriminations)
+                private$.fillDiscriminationTable(self$results$discrim, res, nDim, supplIdx)
 
             #### Category Table ####
 
-            if (self$options$showCategories) {
-                for (j in seq_len(nDim))
-                    self$results$categories$addColumn(paste0("coord",j), title = dimN(j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
-                for (j in seq_len(nDim))
-                    self$results$categories$addColumn(paste0("ctr",j), title = dimN(j), type = "number", format = "zto", superTitle = .("Contributions"))
-                for (j in seq_len(nDim))
-                    self$results$categories$addColumn(paste0("co2",j), title = dimN(j), type = "number", format = "zto", superTitle = .("COS2"))
-                previousfactor <- res$cat$factors[1]
-                for (i in seq_len(nrow(res$cat$coord))) {
-                    values = list(
-                        factor = res$cat$factors[i],
-                        level = rownames(res$cat$coord)[i],
-                        mass = nullOrValue(res$cat$mass[i]),
-                        qlt = res$cat$qlt[i],
-                        inertia = nullOrValue(res$cat$inertia[i])
-                    )
-                    for (j in seq_len(nDim)) {
-                        if (self$options$normalization %in% c("principal", "catprincipal"))
-                            values[[paste0("coord",j)]] <- res$cat$coord[i,j]
-                        else
-                            values[[paste0("coord",j)]] <- res$cat$stdcoord[i,j]
-                        values[[paste0("co2",j)]] <- res$cat$cos2[i,j]
-                        values[[paste0("ctr",j)]] <- nullOrValue(res$cat$contrib[i,j])
-                    }
-                    self$results$categories$addRow(rowKey = as.character(i), values = values)
-                    if( res$cat$factors[i] != previousfactor) {
-                        self$results$categories$addFormat(rowKey = as.character(i), 1, jmvcore::Cell.BEGIN_END_GROUP)
-                        previousfactor <- res$cat$factors[i]
-                    }
-                }
-                if (self$options$normalization %in% c("principal", "catprincipal"))
-                    self$results$categories$setNote("normalization",paste("† :",.("Principal coordinates")))
-                else
-                    self$results$categories$setNote("normalization",paste("† :",.("Standard coordinates")))
-                if (!is.null(supplIdx))
-                    self$results$categories$setNote("sup", paste("* :", .("Supplementary variables")))
-            }
+            if (self$options$showCategories)
+                private$.fillCategoryTable(self$results$categories, res, nDim, supplIdx)
 
             #### Observation Table ####
 
-            if (self$options$showObservations) {
-                nrows <- length(res$rowlabels)
-                if (nrows > 100) {
-                    self$results$observations$setNote("100", .("Limited to the first 100 observations"))
-                    nrows <- 100
-                }
-                self$results$observations$addColumn("inertia", title = .("% Inertia"), type = "number", format = "zto")
-                self$results$observations$addColumn("qlt", title = "QLT", type = "number", format = "zto")
-                for (j in seq_len(nDim))
-                    self$results$observations$addColumn(paste0("coord",j), title = dimN(j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
-                for (j in seq_len(nDim))
-                    self$results$observations$addColumn(paste0("ctr",j), title = dimN(j), type = "number", format = "zto", superTitle = .("Contributions"))
-                for (j in seq_len(nDim))
-                    self$results$observations$addColumn(paste0("co2",j), title = dimN(j), type = "number", format = "zto", superTitle = .("COS2"))
-                for (i in seq_len(nrows)) {
-                    values = list(
-                        name = res$rowlabels[i],
-                        mass = res$call$marge.row[i],
-                        qlt = res$ind$qlt[i],
-                        inertia = res$ind$inertia[i]
-                    )
-                    for (j in seq_len(nDim)) {
-                        if (self$options$normalization %in% c("principal", "obsprincipal"))
-                            values[[paste0("coord",j)]] <- res$ind$coord[i,j]
-                        else
-                            values[[paste0("coord",j)]] <- res$ind$stdcoord[i,j]
-                        values[[paste0("co2",j)]] <- res$ind$cos2[i,j]
-                        values[[paste0("ctr",j)]] <- res$ind$contrib[i,j]
-                    }
-                    self$results$observations$addRow(rowKey = as.character(i), values = values)
-                }
-                if (self$options$normalization %in% c("principal", "obsprincipal"))
-                    self$results$observations$setNote("normalization",paste("† :",.("Principal coordinates")))
-                else
-                    self$results$observations$setNote("normalization",paste("† :",.("Standard coordinates")))
-            }
+            if (self$options$showObservations)
+                private$.fillObservationTable(self$results$observations, res, nDim)
 
             #### Plots  ####
 
@@ -398,6 +259,151 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             res$call$Xtot <- NULL
             res$var <- NULL
             return(res)
+        },
+        .dimN = function(n) jmvcore::format(.("Dim {n}"), n = n),
+        .nullOrValue = function(x) if(is.na(x)) NULL else x,
+        .fillInertiaTable = function(table, res, method, methodStr) {
+            if (self$options$showSummary) {
+                if (method == "Burt" && self$options$BenzecriAdj) {
+                    table$addColumn("adjB", title = .("Inertia"), type = "number", format = "zto", superTitle = .("Benzécri Correction"))
+                    table$addColumn("%B", title = .("% of Inertia"), type = "number", format = "pc", superTitle = .("Benzécri Correction"))
+                    table$addColumn("C%B", title = .("Cumulative %"), type = "number", format = "pc", superTitle = .("Benzécri Correction"))
+
+                }
+                if (method == "Burt" && self$options$GreenacreAdj) {
+                    table$addColumn("adjG", title = .("Inertia"), type = "number", format = "zto", superTitle = .("Greenacre Correction"))
+                    table$addColumn("%G", title = .("% of Inertia"), type = "number", format = "pc", superTitle = .("Greenacre Correction"))
+                    table$addColumn("C%G", title = .("Cumulative %"), type = "number", format = "pc", superTitle = .("Greenacre Correction"))
+
+                }
+                for (i in seq_len(res$nd.max)) {
+                    values = list(
+                        dim = i,
+                        inertia = res$eig[i,1],
+                        proportion = res$eig[i,2],
+                        cumulative = res$eig[i,3]
+                    )
+                    if (method == "Burt" && self$options$BenzecriAdj) {
+                        values[["adjB"]] <- private$.nullOrValue(res$adjEig[i,1])
+                        values[["%B"]] <- private$.nullOrValue(res$adjEig[i,2])
+                        values[["C%B"]] <- private$.nullOrValue(res$adjEig[i,3])
+                    }
+                    if (method == "Burt" && self$options$GreenacreAdj) {
+                        values[["adjG"]] <- private$.nullOrValue(res$adjEig[i,1])
+                        values[["%G"]] <- private$.nullOrValue(res$adjEig[i,4])
+                        values[["C%G"]] <- private$.nullOrValue(res$adjEig[i,5])
+                    }
+                    table$addRow(rowKey = as.character(i), values = values)
+                }
+                # Add total row
+                values = list(
+                    dim = .("Total"),
+                    inertia = sum(res$eig[,1]),
+                    proportion = sum(res$eig[,2]),
+                    cumulative = NA
+                )
+                if (method == "Burt" && self$options$BenzecriAdj) {
+                    values[["adjB"]] <- res$totalInrB
+                    values[["%B"]] <- 1
+                    values[["C%B"]] <- NULL
+                }
+                if (method == "Burt" && self$options$GreenacreAdj) {
+                    values[["adjG"]] <- res$totalInrB
+                    values[["%G"]] <- sum(res$adjEig[,4], na.rm=TRUE)
+                    values[["C%G"]] <- NULL
+                }
+                table$addRow(rowKey = "Total", values = values)
+                table$addFormat(rowKey = "Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
+            }
+            table$setNote("method", jmvcore::format(.("Method: {method}"), method = methodStr))
+            if (method == "Burt" && self$options$GreenacreAdj)
+                table$setNote("adjusted", jmvcore::format(.("Greenacre's corrected inertia = {inertia}"), inertia = round(res$totalInrG,4)))
+        },
+        .fillDiscriminationTable = function(table, res, nDim, supplIdx) {
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("dim",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = .("Discrimination"))
+            for (i in seq_len(nrow(res$allvar$eta2))) {
+                values = list()
+                values[["var"]] <- rownames(res$allvar$eta2)[i]
+                for (j in seq_len(nDim))
+                    values[[paste0("dim",j)]] <- res$allvar$eta2[i,j]
+                table$addRow(rowKey = as.character(i), values = values)
+            }
+            if (!is.null(supplIdx))
+                table$setNote("sup", paste("* :", .("Suppl. variables")))
+        },
+        .fillCategoryTable = function(table, res, nDim, supplIdx) {
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("coord",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("ctr",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = .("Contributions"))
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("co2",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = .("COS2"))
+            previousfactor <- res$cat$factors[1]
+            for (i in seq_len(nrow(res$cat$coord))) {
+                values = list(
+                    factor = res$cat$factors[i],
+                    level = rownames(res$cat$coord)[i],
+                    mass = private$.nullOrValue(res$cat$mass[i]),
+                    qlt = res$cat$qlt[i],
+                    inertia = private$.nullOrValue(res$cat$inertia[i])
+                )
+                for (j in seq_len(nDim)) {
+                    if (self$options$normalization %in% c("principal", "catprincipal"))
+                        values[[paste0("coord",j)]] <- res$cat$coord[i,j]
+                    else
+                        values[[paste0("coord",j)]] <- res$cat$stdcoord[i,j]
+                    values[[paste0("co2",j)]] <- res$cat$cos2[i,j]
+                    values[[paste0("ctr",j)]] <- private$.nullOrValue(res$cat$contrib[i,j])
+                }
+                table$addRow(rowKey = as.character(i), values = values)
+                if( res$cat$factors[i] != previousfactor) {
+                    table$addFormat(rowKey = as.character(i), 1, jmvcore::Cell.BEGIN_END_GROUP)
+                    previousfactor <- res$cat$factors[i]
+                }
+            }
+            if (self$options$normalization %in% c("principal", "catprincipal"))
+                table$setNote("normalization",paste("† :",.("Principal coordinates")))
+            else
+                table$setNote("normalization",paste("† :",.("Standard coordinates")))
+            if (!is.null(supplIdx))
+                table$setNote("sup", paste("* :", .("Supplementary variables")))
+        },
+        .fillObservationTable = function(table, res, nDim) {
+            nrows <- length(res$rowlabels)
+            if (nrows > 100) {
+                table$setNote("100", .("Limited to the first 100 observations"))
+                nrows <- 100
+            }
+            table$addColumn("inertia", title = .("% Inertia"), type = "number", format = "zto")
+            table$addColumn("qlt", title = "QLT", type = "number", format = "zto")
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("coord",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = paste(.("Coordinates"),"†"))
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("ctr",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = .("Contributions"))
+            for (j in seq_len(nDim))
+                table$addColumn(paste0("co2",j), title = private$.dimN(j), type = "number", format = "zto", superTitle = .("COS2"))
+            for (i in seq_len(nrows)) {
+                values = list(
+                    name = res$rowlabels[i],
+                    mass = res$call$marge.row[i],
+                    qlt = res$ind$qlt[i],
+                    inertia = res$ind$inertia[i]
+                )
+                for (j in seq_len(nDim)) {
+                    if (self$options$normalization %in% c("principal", "obsprincipal"))
+                        values[[paste0("coord",j)]] <- res$ind$coord[i,j]
+                    else
+                        values[[paste0("coord",j)]] <- res$ind$stdcoord[i,j]
+                    values[[paste0("co2",j)]] <- res$ind$cos2[i,j]
+                    values[[paste0("ctr",j)]] <- res$ind$contrib[i,j]
+                }
+                table$addRow(rowKey = as.character(i), values = values)
+            }
+            if (self$options$normalization %in% c("principal", "obsprincipal"))
+                table$setNote("normalization",paste("† :",.("Principal coordinates")))
+            else
+                table$setNote("normalization",paste("† :",.("Standard coordinates")))
         },
         .discrimplot = function(image, ggtheme, theme, ...) {
             res <- image$state

@@ -109,6 +109,33 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (suppl)
                 profileTable$setNote("supp", paste("* :", .("Supplementary rows/columns")))
         },
+        .fillContingencyTable = function(table, contingencyTable, supplementaryRows, supplementaryCols,
+                                          rowVarNameString, colVarNameString) {
+            fullTable <- private$.getContingencyTable(contingencyTable, supplementaryRows, supplementaryCols)
+            rownames(fullTable)[nrow(fullTable)] <- .("Active Margin")
+            colnames(fullTable)[length(colnames(fullTable))] <- .("Active Margin")
+            table$addColumn("row", type="text", title = rowVarNameString)
+            for (col in colnames(fullTable)) {
+                if (col != .("Active Margin"))
+                    table$addColumn(col, type="integer", superTitle = colVarNameString)
+                else
+                    table$addColumn(col, type="integer")
+            }
+            for (i in seq(nrow(fullTable))) {
+                table$addRow(i, values = fullTable[i,])
+                table$setCell(rowNo = i, "row", rownames(fullTable)[i])
+            }
+            table$addFormat(rowNo = nrow(fullTable), 1, jmvcore::Cell.BEGIN_END_GROUP)
+            # Change NaN/NA to NULL. Is there another way to have empty cells ?
+            for (i in seq(nrow(fullTable))) {
+                for (j in seq(ncol(fullTable))) {
+                    if (is.na(fullTable[i,j]))
+                        table$setCell(rowNo = i, colnames(fullTable)[j], NULL)
+                }
+            }
+            if (!is.null(supplementaryRows) || !is.null(supplementaryCols))
+                table$setNote("supp", paste("* :", .("Supplementary rows/columns")))
+        },
         .fillSummaryTable = function(table, items, labelCol, labelTitle, coord, coordSup, marge,
                                       supplementary, suppText, nDim, normalizationString) {
             # table = table to fill
@@ -259,30 +286,8 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Contingency Table (with supplementary rows/columns ####
 
-            fullTable <- private$.getContingencyTable(contingencyTable, supplementaryRows, supplementaryCols)
-            rownames(fullTable)[nrow(fullTable)] <- .("Active Margin")
-            colnames(fullTable)[length(colnames(fullTable))] <- .("Active Margin")
-            self$results$contingency$addColumn("row", type="text", title = rowVarNameString)
-            for (col in colnames(fullTable)) {
-                if (col != .("Active Margin"))
-                    self$results$contingency$addColumn(col, type="integer", superTitle = colVarNameString)
-                else
-                    self$results$contingency$addColumn(col, type="integer")
-            }
-            for (i in seq(nrow(fullTable))) {
-                self$results$contingency$addRow(i, values = fullTable[i,])
-                self$results$contingency$setCell(rowNo = i, "row", rownames(fullTable)[i])
-            }
-            self$results$contingency$addFormat(rowNo = nrow(fullTable), 1, jmvcore::Cell.BEGIN_END_GROUP)
-            # Change NaN/NA to NULL. Is there another way to have empty cells ?
-            for (i in seq(nrow(fullTable))) {
-                for (j in seq(ncol(fullTable))) {
-                    if (is.na(fullTable[i,j]))
-                        self$results$contingency$setCell(rowNo = i, colnames(fullTable)[j], NULL)
-                }
-            }
-            if (!is.null(supplementaryRows) || !is.null(supplementaryCols))
-                self$results$contingency$setNote("supp",paste("* :", .("Supplementary rows/columns")))
+            private$.fillContingencyTable(self$results$contingency, contingencyTable, supplementaryRows, supplementaryCols,
+                                           rowVarNameString, colVarNameString)
 
             #### Row and Column Profile Tables ####
 

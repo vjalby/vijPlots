@@ -96,112 +96,17 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### KMO & Bartlett's test ####
 
-            if (self$options$showKMO) {
-                kmo <- tryCatch(
-                            psych::KMO(corrMat),
-                            error = function (e) list(MSA = NA)
-                        )
-                bartlett <- tryCatch(
-                                psych::cortest.bartlett(corrMat, n = nrow(data)),
-                                error = function (e) list(chisq = NA, df = NA, p.value = NA)
-                            )
-
-                self$results$kmoTable$setRow(rowNo = 1,
-                                             values = list(test = .("Bartlett's Test of Sphericity"),
-                                                           statistic = bartlett$chisq,
-                                                           df = bartlett$df, p = bartlett$p.value))
-                self$results$kmoTable$setRow(rowNo = 2,
-                                             values = list(test = .("Kaiser-Meyer-Olkin Measure of Sampling Adequacy (MSA)"),
-                                                            statistic = kmo$MSA,
-                                                            df = NULL, p = NULL))
-            }
+            if (self$options$showKMO)
+                private$.fillKmoTable(self$results$kmoTable, corrMat, data)
 
             #### PCA computation ####
 
-            res <- tryCatch(
-                        private$.pca(data[,self$options$vars], scaleData = self$options$stdVariables,
-                               nfact = nDim, rotation = self$options$rotation),
-                        error = function (e) NULL
-                    )
-            if (is.null(res)) {
-                vijErrorMessage(self, .("Unable to compute principal components for the selected variables."))
-            }
-
-            if (!is.null(self$options$labelVar)) {
-                rownames(res$scores) <- data[[self$options$labelVar]]
-                rownames(res$stdScores) <- data[[self$options$labelVar]]
-            } else {
-                rownames(res$scores) <- rownames(data)
-                rownames(res$stdScores) <- rownames(data)
-            }
-            if (!is.null(self$options$groupVar))
-                res$group <- data[[self$options$groupVar]]
-
-            rotationName <- switch(self$options$rotation,
-                                   none = "None",
-                                   Varimax = "Varimax",
-                                   quartimax = "Quartimax",
-                                   equamax = "Equamax",
-                                   parsimax = "Parsimax",
-                                   #varimin = "Varimin",
-                                   entropy = "Minimum entropy",
-                                   #tandemI = "Comrey's Tandem 1",
-                                   #tandemII = "Comrey's Tandem 2",
-                                   bentlerT = "Bentler T",
-                                   self$options$rotation
-                            )
-
-            if (res$rotation != self$options$rotation) {
-                rotationNote <- .("No rotation used.")
-                rotationMsg <- jmvcore::format(.("Unable to use {rotation} rotation."), rotation = rotationName)
-                vijWarningMessage(self, rotationMsg, '.rotation')
-            } else if (self$options$rotation != "none") {
-                if (self$options$kaiser) {
-                    rotationNote <- jmvcore::format(.("{rotation} rotation with Kaiser normalization was used."), rotation = rotationName)
-                    res$rotationStr <- jmvcore::format(.("{rotation} rotation with Kaiser normalization"), rotation = rotationName) # for plot
-                } else {
-                    rotationNote <- jmvcore::format(.("{rotation} rotation was used."), rotation = rotationName)
-                    res$rotationStr <- jmvcore::format(.("{rotation} rotation"), rotation = rotationName) # for plot
-                }
-            } else {
-                rotationNote <- NULL
-            }
+            res <- private$.doPCA(data, scaleData = self$options$stdVariables, nfact = nDim, rotation = self$options$rotation)
 
             #### Summary Table ####
 
-            if (self$options$showSummary) {
-                eigen <- res$eigenvalues
-                eigenSum <- sum(eigen)
-                eigenCum <- cumsum(eigen)
-                ssl <- res$SSL
-                sslCum <- cumsum(ssl)
-                for (i in 1:nDim) { # first dimensions
-                    self$results$summaryTable$addRow(rowKey = i,
-                                                     list(comp = i,
-                                                          eigenvalue = eigen[i],
-                                                          initVarProp = eigen[i]/eigenSum,
-                                                          initVarCum = eigenCum[i]/eigenSum,
-                                                          loadings = ssl[i],
-                                                          varProp = ssl[i]/eigenSum,
-                                                          varCum = sslCum[i]/eigenSum
-                                                     ))
-                }
-                if (length(eigen) > nDim) { # is there more dimensions ?
-                    for (i in (nDim+1):length(eigen)) {
-                        self$results$summaryTable$addRow(rowKey = i,
-                                                         list(comp = i,
-                                                              eigenvalue = eigen[i],
-                                                              initVarProp = eigen[i]/eigenSum,
-                                                              initVarCum = eigenCum[i]/eigenSum,
-                                                              loadings = NULL,
-                                                              varProp = NULL,
-                                                              varCum = NULL
-                                                         ))
-                    }
-                }
-                if (!is.null(rotationNote))
-                    self$results$summaryTable$setNote('rot', rotationNote)
-            }
+            if (self$options$showSummary)
+                private$.fillSummaryTable(self$results$summaryTable, res, nDim)
 
             # Check that axes < nDim here to allow summary table to display
             if (self$options$xaxis > nDim || self$options$yaxis > nDim)
@@ -212,69 +117,13 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Loading Table ####
 
-            if (self$options$showLoadings) {
-                for(i in 1:nDim) {
-                    self$results$loadingTable$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = .("Component"), type = "number") #, format = "zto")
-                }
-                self$results$loadingTable$addColumn(name = "QLT",
-                                                    title = .("Extraction"),
-                                                    type = "number")
-                for(aVar in rownames(res$loadings)) {
-                    values = list()
-                    values[["var"]] <- private$.getVarName(aVar)
-                    for(i in 1:nDim) {
-                        if (self$options$stdLoadings)
-                            values[[paste0("loading:",i)]] <- res$stdLoadings[aVar, i]
-                        else
-                            values[[paste0("loading:",i)]] <- res$loadings[aVar, i]
-                    }
-                    values[["QLT"]] <- res$communalities[aVar]
-                    self$results$loadingTable$setRow(rowKey = aVar, values = values)
-                }
-                if (!is.null(rotationNote))
-                    self$results$loadingTable$setNote('rot', rotationNote)
-                if (self$options$stdLoadings)
-                    self$results$loadingTable$setNote('norm', .("Standard coordinates"))
-            }
+            if (self$options$showLoadings)
+                private$.fillLoadingTable(self$results$loadingTable, res, nDim)
 
             #### Observation Table ####
 
-            if (self$options$showObservations) {
-                if (is.null(self$options$labelVar))
-                    self$results$obsTable$addColumn("obs", title = .("Observation"), type = "integer")
-                else
-                    self$results$obsTable$addColumn("obs", title = private$.getVarName(self$options$labelVar), type = "text")
-                if (!is.null(self$options$groupVar))
-                    self$results$obsTable$addColumn("group", title = private$.getVarName(self$options$groupVar), type = "text")
-                for(i in 1:nDim) {
-                    self$results$obsTable$addColumn(as.character(i), title = as.character(i), superTitle = .("Component"), type = "number")
-                }
-                self$results$obsTable$addColumn("qlt", title = .("Extraction"), type = "number", format = "zto")
-
-                nrows <- nrow(res$scores)
-                if (nrows > 100) {
-                    self$results$obsTable$setNote("100", .("Limited to the first 100 observations"))
-                    nrows <- 100
-                }
-                for (i in 1:nrows) {
-                    values = list()
-                    values["obs"] <- rownames(res$scores)[i]
-                    if (!is.null(self$options$groupVar))
-                        values["group"] <- as.character(res$group[i])
-                    values["qlt"] <- res$qlt[i]
-                    for(j in 1:nDim) {
-                        if (self$options$stdScores)
-                            values[as.character(j)] <- res$stdScores[i,j]
-                        else
-                            values[as.character(j)] <- res$scores[i,j]
-                    }
-                    self$results$obsTable$addRow(rowKey = i, values = values)
-                }
-                if (!is.null(rotationNote))
-                    self$results$obsTable$setNote('rot', rotationNote)
-                if (self$options$stdScores)
-                    self$results$obsTable$setNote('norm', .("Standard coordinates"))
-            }
+            if (self$options$showObservations)
+                private$.fillObservationTable(self$results$obsTable, res, nDim)
 
             #### Plots ####
 
@@ -506,6 +355,170 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             vijDebugPlot(self, plot)
 
             return(plot)
+        },
+        .fillKmoTable = function(table, corrMat, data) {
+            kmo <- tryCatch(
+                        psych::KMO(corrMat),
+                        error = function (e) list(MSA = NA)
+                    )
+            bartlett <- tryCatch(
+                            psych::cortest.bartlett(corrMat, n = nrow(data)),
+                            error = function (e) list(chisq = NA, df = NA, p.value = NA)
+                        )
+
+            table$setRow(rowNo = 1,
+                         values = list(test = .("Bartlett's Test of Sphericity"),
+                                       statistic = bartlett$chisq,
+                                       df = bartlett$df, p = bartlett$p.value))
+            table$setRow(rowNo = 2,
+                         values = list(test = .("Kaiser-Meyer-Olkin Measure of Sampling Adequacy (MSA)"),
+                                        statistic = kmo$MSA,
+                                        df = NULL, p = NULL))
+        },
+        .fillSummaryTable = function(table, res, nDim) {
+            eigen <- res$eigenvalues
+            eigenSum <- sum(eigen)
+            eigenCum <- cumsum(eigen)
+            ssl <- res$SSL
+            sslCum <- cumsum(ssl)
+            for (i in 1:nDim) { # first dimensions
+                table$addRow(rowKey = i,
+                             list(comp = i,
+                                  eigenvalue = eigen[i],
+                                  initVarProp = eigen[i]/eigenSum,
+                                  initVarCum = eigenCum[i]/eigenSum,
+                                  loadings = ssl[i],
+                                  varProp = ssl[i]/eigenSum,
+                                  varCum = sslCum[i]/eigenSum
+                             ))
+            }
+            if (length(eigen) > nDim) { # is there more dimensions ?
+                for (i in (nDim+1):length(eigen)) {
+                    table$addRow(rowKey = i,
+                                 list(comp = i,
+                                      eigenvalue = eigen[i],
+                                      initVarProp = eigen[i]/eigenSum,
+                                      initVarCum = eigenCum[i]/eigenSum,
+                                      loadings = NULL,
+                                      varProp = NULL,
+                                      varCum = NULL
+                                 ))
+                }
+            }
+            if (!is.null(res$rotationNote))
+                table$setNote('rot', res$rotationNote)
+        },
+        .fillLoadingTable = function(table, res, nDim) {
+            for(i in 1:nDim) {
+                table$addColumn(name = paste0("loading:",i), title = as.character(i), superTitle = .("Component"), type = "number") #, format = "zto")
+            }
+            table$addColumn(name = "QLT",
+                            title = .("Extraction"),
+                            type = "number")
+            for(aVar in rownames(res$loadings)) {
+                values = list()
+                values[["var"]] <- private$.getVarName(aVar)
+                for(i in 1:nDim) {
+                    if (self$options$stdLoadings)
+                        values[[paste0("loading:",i)]] <- res$stdLoadings[aVar, i]
+                    else
+                        values[[paste0("loading:",i)]] <- res$loadings[aVar, i]
+                }
+                values[["QLT"]] <- res$communalities[aVar]
+                table$setRow(rowKey = aVar, values = values)
+            }
+            if (!is.null(res$rotationNote))
+                table$setNote('rot', res$rotationNote)
+            if (self$options$stdLoadings)
+                table$setNote('norm', .("Standard coordinates"))
+        },
+        .fillObservationTable = function(table, res, nDim) {
+            if (is.null(self$options$labelVar))
+                table$addColumn("obs", title = .("Observation"), type = "integer")
+            else
+                table$addColumn("obs", title = private$.getVarName(self$options$labelVar), type = "text")
+            if (!is.null(self$options$groupVar))
+                table$addColumn("group", title = private$.getVarName(self$options$groupVar), type = "text")
+            for(i in 1:nDim) {
+                table$addColumn(as.character(i), title = as.character(i), superTitle = .("Component"), type = "number")
+            }
+            table$addColumn("qlt", title = .("Extraction"), type = "number", format = "zto")
+
+            nrows <- nrow(res$scores)
+            if (nrows > 100) {
+                table$setNote("100", .("Limited to the first 100 observations"))
+                nrows <- 100
+            }
+            for (i in 1:nrows) {
+                values = list()
+                values["obs"] <- rownames(res$scores)[i]
+                if (!is.null(self$options$groupVar))
+                    values["group"] <- as.character(res$group[i])
+                values["qlt"] <- res$qlt[i]
+                for(j in 1:nDim) {
+                    if (self$options$stdScores)
+                        values[as.character(j)] <- res$stdScores[i,j]
+                    else
+                        values[as.character(j)] <- res$scores[i,j]
+                }
+                table$addRow(rowKey = i, values = values)
+            }
+            if (!is.null(res$rotationNote))
+                table$setNote('rot', res$rotationNote)
+            if (self$options$stdScores)
+                table$setNote('norm', .("Standard coordinates"))
+        },
+        .doPCA = function(data, scaleData = TRUE, nfact = 2, rotation = "none") {
+            res <- tryCatch(
+                        private$.pca(data[,self$options$vars], scaleData = scaleData,
+                               nfact = nfact, rotation = rotation),
+                        error = function (e) NULL
+                    )
+            if (is.null(res)) {
+                vijErrorMessage(self, .("Unable to compute principal components for the selected variables."))
+            }
+
+            if (!is.null(self$options$labelVar)) {
+                rownames(res$scores) <- data[[self$options$labelVar]]
+                rownames(res$stdScores) <- data[[self$options$labelVar]]
+            } else {
+                rownames(res$scores) <- rownames(data)
+                rownames(res$stdScores) <- rownames(data)
+            }
+            if (!is.null(self$options$groupVar))
+                res$group <- data[[self$options$groupVar]]
+
+            rotationName <- switch(rotation,
+                                   none = "None",
+                                   Varimax = "Varimax",
+                                   quartimax = "Quartimax",
+                                   equamax = "Equamax",
+                                   parsimax = "Parsimax",
+                                   #varimin = "Varimin",
+                                   entropy = "Minimum entropy",
+                                   #tandemI = "Comrey's Tandem 1",
+                                   #tandemII = "Comrey's Tandem 2",
+                                   bentlerT = "Bentler T",
+                                   rotation
+                            )
+
+            if (res$rotation != rotation) {
+                res$rotationNote <- .("No rotation used.")
+                rotationMsg <- jmvcore::format(.("Unable to use {rotation} rotation."), rotation = rotationName)
+                vijWarningMessage(self, rotationMsg, '.rotation')
+            } else if (rotation != "none") {
+                if (self$options$kaiser) {
+                    res$rotationNote <- jmvcore::format(.("{rotation} rotation with Kaiser normalization was used."), rotation = rotationName)
+                    res$rotationStr <- jmvcore::format(.("{rotation} rotation with Kaiser normalization"), rotation = rotationName) # for plot
+                } else {
+                    res$rotationNote <- jmvcore::format(.("{rotation} rotation was used."), rotation = rotationName)
+                    res$rotationStr <- jmvcore::format(.("{rotation} rotation"), rotation = rotationName) # for plot
+                }
+            } else {
+                res$rotationNote <- NULL
+            }
+
+            return(res)
         },
         .pca = function(data, scaleData = TRUE, nfact = 2, rotation = "none") {
             data <- jmvcore::naOmit(data)

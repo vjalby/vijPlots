@@ -239,7 +239,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
-            #### Mean/Median Lines ####
+            #### Reference Lines ####
 
             if (self$options$meanLine)
                 plot <- plot + private$.summaryLine(plotData, xVar, groupVar, facetVar, mean, "dashed", "µ")
@@ -323,7 +323,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!self$options$summaryLineLabel)
                 return(vline)
 
-            lineData$.label <- sprintf("%s = %.2f", symbol, lineData$.value)
+            lineData$.label <- paste(symbol, "=", scales::label_number(accuracy = 0.01, decimal.mark = self$options[['decSymbol']])(lineData$.value))
 
             if (is.null(groupVar)) {
                 # when both mean and median lines are shown, offset the label away

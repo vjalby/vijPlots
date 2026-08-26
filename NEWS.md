@@ -1,7 +1,10 @@
-# vijPlots 1.3.1 (2026-08-??)
+# vijPlots 1.3.1 (2026-08-31)
 
 * Mosaic Plot
+* Histogram: option to show mean/median reference lines, with an optional value label
 * Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
+* Line/Area Chart: manual X-axis date range can now be entered as text, and fixed breaks falling outside the specified range
+* Multiple Response Frequencies/Crosstabs: fixed a value containing only the separator (e.g. ";") not being treated as missing
 * Improved error handling
 
 # vijPlots 1.3.0 (2026-08-17)

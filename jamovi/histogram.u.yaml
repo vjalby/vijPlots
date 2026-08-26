@@ -117,6 +117,16 @@ children:
                     name: lineLineSize
                     format: number
                     enable: (showLines)
+          - type: Label
+            label: Reference Lines
+            children:
+              - type: CheckBox
+                name: meanLine
+              - type: CheckBox
+                name: medianLine
+              - type: CheckBox
+                name: summaryLineLabel
+                enable: (meanLine || medianLine)
       - type: LayoutBox
         cell:
           column: 1

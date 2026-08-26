@@ -1,6 +1,19 @@
 # vijPlots
 
-[jamovi](https://www.jamovi.org) module as ggplot2 wrapper to generate basic stats plots (histogram, boxplot, barplot, piechart,...) with many options along with Likert and multiple response barplots, Principal component analysis and (Multiple) Correspondence analysis.
+A [jamovi](https://www.jamovi.org) module. Main statistical charts, all built with **ggplot2** and offering extensive customization options:
+
+- **Continuous variables**: Histogram, Box plot, Raincloud plot, Scatter plot, Error bar chart, Lollipop plot, QQ plot
+- **Categorical variables**: Bar plot, Pie chart, Mosaic plot, Likert plot
+- **Time series**: Line chart, Area chart
+- **Multiple Response**: Frequencies, Crosstab
+
+**Main classic multivariate data analyses** are also available:
+
+- Principal Component Analysis
+- Correspondence Analysis
+- Multiple Correspondence Analysis
+
+The module is available in the **Plots** tab.
 
 ## Histogram
 
@@ -70,19 +83,22 @@
 
 ![](img/mca.jpg)
 
-## Last changes
+## Last changes: vijPlots 1.3.1 (2026/08/31)
 
-- Mosaic Plot
-- Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
-- Improved error handling
-- Code optimization and fixes everywhere
-- MCA (Burt method): Fixed variable discrimination computation
-- Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
-- Histogram: Options to hide bins and to show lines
-- Scatter Plot: Option to use different shapes. Option to set label text size
-- Fixed stacking order in barplot/barchart/mrcrosstab
-- Support for weights in barplot/piechart
-- Improved ggplot2 4.0 support
+* Mosaic Plot
+* Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
+* Line/Area Chart: manual X-axis date range can now be entered as text, and fixed breaks falling outside the specified range
+* Multiple Response Frequencies/Crosstabs: fixed a value containing only the separator (e.g. ";") not being treated as missing
+* MCA (Burt method): Fixed variable discrimination computation
+* Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
+* Histogram: Options to hide bins and to show lines
+* Histogram: option to show mean/median reference lines, with an optional value label
+* Scatter Plot: Option to use different shapes. Option to set label text size
+* Fixed stacking order in barplot/barchart/mrcrosstab
+* Support for weights in barplot/piechart
+* Improved error handling
+* Improved ggplot2 4.0 support
+* Code optimization and fixes everywhere
 
 
 ## References

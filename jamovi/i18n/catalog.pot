@@ -489,10 +489,6 @@ msgstr ""
 msgid "A demonstration dataset for vijPlots/Correspondence Analysis."
 msgstr ""
 
-#: package/datasets/Likert.description
-msgid "A demonstration dataset for vijPlots/Likert plot."
-msgstr ""
-
 #: package/datasets/Cars.description
 msgid "A demonstration dataset for vijPlots/Multiple Correspondence Analysis."
 msgstr ""
@@ -503,10 +499,6 @@ msgstr ""
 
 #: package/datasets/Iris.description
 msgid "A demonstration dataset for vijPlots/Principal Component Analysis."
-msgstr ""
-
-#: package/datasets/TimeSeries.description
-msgid "A demonstration dataset for vijPlots/Time Series plots."
 msgstr ""
 
 #: areachart/options/colorPalette/Accent.title
@@ -2977,10 +2969,6 @@ msgstr ""
 msgid "Light Yellow"
 msgstr ""
 
-#: package/datasets/Likert.name
-msgid "Likert"
-msgstr ""
-
 #: package/analyses/likertplot.title
 #: package/analyses/likertplot.menuTitle
 #: likertplot/options.title
@@ -3181,6 +3169,10 @@ msgstr ""
 msgid "Mean & SD"
 msgstr ""
 
+#: histogram/options/meanLine.title
+msgid "Mean line"
+msgstr ""
+
 #: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Mean of {var}"
@@ -3197,6 +3189,10 @@ msgstr ""
 
 #: R/likertplot.b.R
 msgid "Median and mean require numeric variables"
+msgstr ""
+
+#: histogram/options/medianLine.title
+msgid "Median line"
 msgstr ""
 
 #: R/barchart.b.R
@@ -4449,6 +4445,7 @@ msgstr ""
 msgid "Reference line"
 msgstr ""
 
+#: histogram/ui[2][0][1].label
 #: scatterplot/ui[1][2][0].label
 msgid "Reference Lines"
 msgstr ""
@@ -4805,6 +4802,10 @@ msgstr ""
 
 #: histogram/options/density.title
 msgid "Show density"
+msgstr ""
+
+#: histogram/options/summaryLineLabel.title
+msgid "Show label"
 msgstr ""
 
 #: mosaic/options/showOpacityLegend.title
@@ -5442,7 +5443,6 @@ msgstr ""
 
 #: package/analyses/linechart.menuSubgroup
 #: package/analyses/areachart.menuSubgroup
-#: package/datasets/TimeSeries.name
 #: areachart/options.menuSubgroup
 #: linechart/options.menuSubgroup
 msgid "Time Series"

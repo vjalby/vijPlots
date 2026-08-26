@@ -73,6 +73,21 @@ options:
       type: Bool
       default: false
 
+    - name: meanLine
+      title: Mean line
+      type: Bool
+      default: false
+
+    - name: medianLine
+      title: Median line
+      type: Bool
+      default: false
+
+    - name: summaryLineLabel
+      title: Show label
+      type: Bool
+      default: false
+
     - name: binWidth
       type: Number
       title: Width

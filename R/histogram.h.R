@@ -15,6 +15,9 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             normalCurve = FALSE,
             density = FALSE,
             dashedDensity = FALSE,
+            meanLine = FALSE,
+            medianLine = FALSE,
+            summaryLineLabel = FALSE,
             binWidth = 0,
             binBoundary = 0,
             lineLineSize = 1,
@@ -119,6 +122,18 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..dashedDensity <- jmvcore::OptionBool$new(
                 "dashedDensity",
                 dashedDensity,
+                default=FALSE)
+            private$..meanLine <- jmvcore::OptionBool$new(
+                "meanLine",
+                meanLine,
+                default=FALSE)
+            private$..medianLine <- jmvcore::OptionBool$new(
+                "medianLine",
+                medianLine,
+                default=FALSE)
+            private$..summaryLineLabel <- jmvcore::OptionBool$new(
+                "summaryLineLabel",
+                summaryLineLabel,
                 default=FALSE)
             private$..binWidth <- jmvcore::OptionNumber$new(
                 "binWidth",
@@ -524,6 +539,9 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..normalCurve)
             self$.addOption(private$..density)
             self$.addOption(private$..dashedDensity)
+            self$.addOption(private$..meanLine)
+            self$.addOption(private$..medianLine)
+            self$.addOption(private$..summaryLineLabel)
             self$.addOption(private$..binWidth)
             self$.addOption(private$..binBoundary)
             self$.addOption(private$..lineLineSize)
@@ -582,6 +600,9 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         normalCurve = function() private$..normalCurve$value,
         density = function() private$..density$value,
         dashedDensity = function() private$..dashedDensity$value,
+        meanLine = function() private$..meanLine$value,
+        medianLine = function() private$..medianLine$value,
+        summaryLineLabel = function() private$..summaryLineLabel$value,
         binWidth = function() private$..binWidth$value,
         binBoundary = function() private$..binBoundary$value,
         lineLineSize = function() private$..lineLineSize$value,
@@ -639,6 +660,9 @@ histogramOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..normalCurve = NA,
         ..density = NA,
         ..dashedDensity = NA,
+        ..meanLine = NA,
+        ..medianLine = NA,
+        ..summaryLineLabel = NA,
         ..binWidth = NA,
         ..binBoundary = NA,
         ..lineLineSize = NA,
@@ -742,6 +766,9 @@ histogramBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param normalCurve .
 #' @param density .
 #' @param dashedDensity .
+#' @param meanLine .
+#' @param medianLine .
+#' @param summaryLineLabel .
 #' @param binWidth .
 #' @param binBoundary .
 #' @param lineLineSize .
@@ -806,6 +833,9 @@ histogram <- function(
     normalCurve = FALSE,
     density = FALSE,
     dashedDensity = FALSE,
+    meanLine = FALSE,
+    medianLine = FALSE,
+    summaryLineLabel = FALSE,
     binWidth = 0,
     binBoundary = 0,
     lineLineSize = 1,
@@ -880,6 +910,9 @@ histogram <- function(
         normalCurve = normalCurve,
         density = density,
         dashedDensity = dashedDensity,
+        meanLine = meanLine,
+        medianLine = medianLine,
+        summaryLineLabel = summaryLineLabel,
         binWidth = binWidth,
         binBoundary = binBoundary,
         lineLineSize = lineLineSize,

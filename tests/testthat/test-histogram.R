@@ -120,3 +120,79 @@ test_that("histogram: grouped, normal curve only (no bins) still shows a legend"
         showBins = FALSE, normalCurve = TRUE)$plot
     expect_plot_snapshot("histogram-grouped-normal-curve-only", testPlot)
 })
+
+# ---- mean/median reference lines -----------------------------------------------
+#
+# The line's x-position (geom_vline's xintercept) is computed in .summaryLine()
+# from the same data as results$plot$state, independently of mean()/median()
+# here, so checking it against a directly-computed mean()/median() is a real
+# correctness check, not just a "does it render" smoke test.
+
+vlineLayerData <- function(builtPlot) {
+    idx <- which(vapply(builtPlot$plot$layers, function(l) inherits(l$geom, "GeomVline"), logical(1)))
+    builtPlot$data[idx]
+}
+
+test_that("histogram: mean line matches mean(), no group", {
+    testPlot <- vijPlots::histogram(
+        data = testData, aVar = "Petal.Width", group = NULL, facet = NULL, meanLine = TRUE)$plot
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(testPlot)
+    vlines <- vlineLayerData(ggplot2::ggplot_build(ggplot2::last_plot()))
+    expect_length(vlines, 1)
+    expect_equal(vlines[[1]]$xintercept, mean(testData$Petal.Width, na.rm = TRUE))
+})
+
+test_that("histogram: median line matches median(), no group", {
+    testPlot <- vijPlots::histogram(
+        data = testData, aVar = "Petal.Width", group = NULL, facet = NULL, medianLine = TRUE)$plot
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(testPlot)
+    vlines <- vlineLayerData(ggplot2::ggplot_build(ggplot2::last_plot()))
+    expect_length(vlines, 1)
+    expect_equal(vlines[[1]]$xintercept, median(testData$Petal.Width, na.rm = TRUE))
+})
+
+test_that("histogram: mean and median lines both present, no group", {
+    testPlot <- vijPlots::histogram(
+        data = testData, aVar = "Petal.Width", group = NULL, facet = NULL,
+        meanLine = TRUE, medianLine = TRUE)$plot
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(testPlot)
+    vlines <- vlineLayerData(ggplot2::ggplot_build(ggplot2::last_plot()))
+    expect_length(vlines, 2)
+    xs <- sort(c(vlines[[1]]$xintercept, vlines[[2]]$xintercept))
+    expect_equal(xs, sort(c(
+        mean(testData$Petal.Width, na.rm = TRUE),
+        median(testData$Petal.Width, na.rm = TRUE)
+    )))
+})
+
+test_that("histogram: mean line matches per-group mean() when grouped", {
+    testPlot <- vijPlots::histogram(
+        data = testData, aVar = "Petal.Width", group = "Species", facet = NULL, meanLine = TRUE)$plot
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(testPlot)
+    vlines <- vlineLayerData(ggplot2::ggplot_build(ggplot2::last_plot()))
+    expect_length(vlines, 1)
+    expected <- sort(tapply(testData$Petal.Width, testData$Species, mean, na.rm = TRUE))
+    expect_equal(sort(vlines[[1]]$xintercept), as.numeric(expected))
+})
+
+test_that("histogram: mean line snapshot, no group, with label", {
+    testPlot <- vijPlots::histogram(
+        data = testData, aVar = "Petal.Width", group = NULL, facet = NULL,
+        meanLine = TRUE, medianLine = TRUE, summaryLineLabel = TRUE)$plot
+    expect_plot_snapshot("histogram-mean-median-label", testPlot)
+})
+
+test_that("histogram: mean line snapshot, grouped, with label", {
+    testPlot <- vijPlots::histogram(
+        data = testData, aVar = "Petal.Width", group = "Species", facet = NULL,
+        meanLine = TRUE, summaryLineLabel = TRUE)$plot
+    expect_plot_snapshot("histogram-mean-grouped-label", testPlot)
+})

@@ -726,10 +726,6 @@ msgstr "Fichier de démonstration pour vijPlots/Réponses multiples."
 msgid "A demonstration dataset for vijPlots/Principal Component Analysis."
 msgstr "Fichier de démonstration pour vijPlots/Analyse en composantes principales."
 
-#: package/datasets/TimeSeries.description
-msgid "A demonstration dataset for vijPlots/Time Series plots."
-msgstr "Fichier de démonstration pour vijPlots/Séries temporelles."
-
 #: areachart/options/colorPalette/Accent.title
 #: barchart/options/colorPalette/Accent.title
 #: barplot/options/colorPalette/Accent.title
@@ -3400,6 +3396,10 @@ msgstr "Moyenne"
 msgid "Mean & SD"
 msgstr "Moyenne et écart-type"
 
+#: histogram/options/meanLine.title
+msgid "Mean line"
+msgstr "Moyenne"
+
 #: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Mean of {var}"
@@ -3417,6 +3417,10 @@ msgstr "Médiane"
 #: R/likertplot.b.R
 msgid "Median and mean require numeric variables"
 msgstr "Médiane et moyenne nécessitent des variables numériques"
+
+#: histogram/options/medianLine.title
+msgid "Median line"
+msgstr "Médiane"
 
 #: R/barchart.b.R
 #: R/lollipop.b.R
@@ -4674,6 +4678,7 @@ msgstr "Rouges"
 msgid "Reference line"
 msgstr "Droite de référence"
 
+#: histogram/ui[2][0][1].label
 #: scatterplot/ui[1][2][0].label
 msgid "Reference Lines"
 msgstr "Lignes de référence"
@@ -5033,6 +5038,10 @@ msgstr "Afficher les %"
 #: histogram/options/density.title
 msgid "Show density"
 msgstr "Afficher la densité"
+
+#: histogram/options/summaryLineLabel.title
+msgid "Show label"
+msgstr "Afficher les étiquettes"
 
 #: mosaic/options/showOpacityLegend.title
 msgid "Show legend"
@@ -5681,7 +5690,6 @@ msgstr "Options des tuiles"
 
 #: package/analyses/linechart.menuSubgroup
 #: package/analyses/areachart.menuSubgroup
-#: package/datasets/TimeSeries.name
 #: areachart/options.menuSubgroup
 #: linechart/options.menuSubgroup
 msgid "Time Series"

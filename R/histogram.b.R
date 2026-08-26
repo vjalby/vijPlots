@@ -239,22 +239,15 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
 
+            #### Mean/Median Lines ####
+
+            if (self$options$meanLine)
+                plot <- plot + private$.summaryLine(plotData, xVar, groupVar, facetVar, mean, "dashed", "µ")
+            if (self$options$medianLine)
+                plot <- plot + private$.summaryLine(plotData, xVar, groupVar, facetVar, stats::median, "dotted", "Med")
+
             #### Axes ####
 
-            # Y-Axis label
-            if (self$options$histtype == "density") {
-                yLab <- .("Density")
-            } else {
-                yLab <- .("Count")
-
-            }
-            # Ticks
-            if (self$options$xTicks > 0) {
-                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
-            }
-            if (self$options$yTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
-            }
             # Axis Limits
             if (self$options$yAxisRangeType == "manual")
                 yLim <- c(self$options$yAxisRangeMin, self$options$yAxisRangeMax)
@@ -265,6 +258,23 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 xLim <- NULL
             plot <- plot + ggplot2::coord_cartesian(ylim = yLim, xlim = xLim)
+
+            if (self$options$summaryLineLabel && (self$options$meanLine || self$options$medianLine)) {
+                expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
+            } else {
+                expand_arg <- ggplot2::waiver()
+            }
+
+            # Ticks
+            if (self$options$xTicks > 0) {
+                plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
+            }
+            if (self$options$yTicks > 0) {
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1),
+                                                            expand = expand_arg)
+            } else {
+                plot <- plot + ggplot2::scale_y_continuous(expand = expand_arg)
+            }
 
             # Facet
             if (!is.null(facetVar)) {
@@ -278,17 +288,70 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
                                     vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE)
 
-            # Legend spacing
-            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
-
             # Titles & Labels
+            yLab <- ifelse(self$options$histtype == "density", .("Density"), .("Count"))
             defaults <- list(legend = groupVar, x = xVar, y = yLab)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) +
                             vijTitleAndLabelFormat(self$options)
 
+            # Legend position
+            plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
+
             vijDebugPlot(self, plot)
 
             return(plot)
+        },
+        .summaryLine = function(plotData, xVar, groupVar, facetVar, fun, linetype, symbol) {
+            lineData <- plotData |>
+                dplyr::group_by(!!groupVar, !!facetVar) |>
+                dplyr::summarise(.value = fun(!!xVar, na.rm = TRUE), .groups = "drop")
+
+            if (is.null(groupVar)) {
+                vline <- ggplot2::geom_vline(
+                    data = lineData,
+                    mapping = ggplot2::aes(xintercept = .value),
+                    color = "black", linetype = linetype, linewidth = 0.8
+                )
+            } else {
+                vline <- ggplot2::geom_vline(
+                    data = lineData,
+                    mapping = ggplot2::aes(xintercept = .value, color = !!groupVar),
+                    linetype = linetype, linewidth = 0.8, show.legend = FALSE
+                )
+            }
+
+            if (!self$options$summaryLineLabel)
+                return(vline)
+
+            lineData$.label <- sprintf("%s = %.2f", symbol, lineData$.value)
+
+            if (is.null(groupVar)) {
+                # when both mean and median lines are shown, offset the label away
+                # from the other value's line so the two don't collide when close
+                hjust <- -0.1
+                if (self$options$meanLine && self$options$medianLine) {
+                    meanValue <- mean(plotData[[xVar]], na.rm = TRUE)
+                    medianValue <- stats::median(plotData[[xVar]], na.rm = TRUE)
+                    if ((identical(fun, mean) && meanValue <= medianValue) ||
+                            (identical(fun,stats::median) && medianValue < meanValue )) {
+                        hjust <- 1.1
+                    }
+                }
+                label <- ggplot2::geom_text(
+                    data = lineData,
+                    mapping = ggplot2::aes(x = .value, y = Inf, label = .label),
+                    color = "black", vjust = 1.5, size = 4, hjust = hjust
+                )
+            } else {
+                label <- ggrepel::geom_text_repel(
+                    data = lineData,
+                    mapping = ggplot2::aes(x = .value, y = Inf, label = .label, color = !!groupVar),
+                    vjust = 1.5, size = 4, show.legend = FALSE,
+                    direction = "x", seed = 123, min.segment.length = 100, point.padding = 1
+                )
+            }
+
+            list(vline, label)
         }
     )
 )

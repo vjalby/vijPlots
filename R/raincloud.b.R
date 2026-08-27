@@ -110,13 +110,10 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Colors ####
-            selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
-            nbColors <- vijColorPaletteNlevels(selectedColorPalette)
-            colorNo <- self$options$colorNo
             if (self$options$singleColor) {
-                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
+                oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
             } else {
-                oneColorOfPalette <- selectedColorPalette(nbColors)[1]
+                oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, 1)
             }
 
             #### Main plot ####

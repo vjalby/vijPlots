@@ -63,6 +63,13 @@ vijColorPaletteNlevels = function(pal) {
     return(nl)
 }
 
+vijOneColorOfPalette = function(pal, type = "fill", theme, colorNo) {
+    selectedColorPalette <- vijColorPalette(pal, type, theme)
+    nbColors <- vijColorPaletteNlevels(selectedColorPalette)
+    oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
+    return(oneColorOfPalette)
+}
+
 vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = NULL) {
     horizontal <- options[["horizontal"]]  %||% FALSE
     # Title & Subtitle

@@ -150,12 +150,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 singleColor <- self$options$singleColor
 
-            if (singleColor) {
-                selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
-                nbColors <- vijColorPaletteNlevels(selectedColorPalette)
-                colorNo <- as.numeric(self$options$colorNo)
-                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
-            }
+            if (singleColor)
+                oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
 
             # Correct labelPosition option
             if (positionStack)
@@ -170,7 +166,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 textColor <- ggstats::hex_bw(oneColorOfPalette)
             else
                 textColor <- self$options$textColor
-
 
             #### AES ####
 

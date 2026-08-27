@@ -107,12 +107,9 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             singleColor <- self$options$singleColor
             if (!is.null(groupVar))
                 singleColor <- FALSE
-            if (singleColor) {
-                selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
-                nbColors <- vijColorPaletteNlevels(selectedColorPalette)
-                colorNo <- self$options$colorNo
-                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
-            }
+            if (singleColor)
+                oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
+
             #### Border color ####
             if (self$options$borderColor == "none")
                 borderColor <- NA

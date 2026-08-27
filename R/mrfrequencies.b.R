@@ -142,10 +142,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
 
             if (self$options$singleColor) {
-                selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
-                nbColors <- vijColorPaletteNlevels(selectedColorPalette)
-                colorNo <- self$options$colorNo
-                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
+                oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
                 plot <- plot + ggplot2::geom_col(fill = oneColorOfPalette, color = borderColor)
             } else {
                 plot <- plot + ggplot2::geom_col(ggplot2::aes(fill = Option), color = borderColor) + ggplot2::guides(fill = "none")

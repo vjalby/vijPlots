@@ -140,12 +140,8 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 nudgeX <- nudgeX * max(1,nlevels(plotData[[groupVar]]))
 
             # One color only
-            if (self$options$singleColor) {
-                selectedColorPalette <- vijColorPalette(self$options$colorPalette, "fill", theme)
-                nbColors <- vijColorPaletteNlevels(selectedColorPalette)
-                colorNo <- self$options$colorNo
-                oneColorOfPalette <- selectedColorPalette(nbColors)[min(colorNo,nbColors)]
-            }
+            if (self$options$singleColor)
+                oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
 
             #### Building the plot ####
 

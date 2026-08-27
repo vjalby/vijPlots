@@ -195,6 +195,63 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             supp
         },
+        .computeChiSquared = function(contingencyTable, supplementaryRows, supplementaryCols) {
+            activeContingencyTable <- contingencyTable
+            if (!is.null(supplementaryRows))
+                activeContingencyTable <- activeContingencyTable[-supplementaryRows,, drop = FALSE]
+            if (!is.null(supplementaryCols))
+                activeContingencyTable <- activeContingencyTable[,-supplementaryCols, drop = FALSE]
+
+            if (any(rowSums(activeContingencyTable) == 0) ||
+                any(colSums(activeContingencyTable) == 0)) {
+                vijErrorMessage(self, .("Some categories have zero counts and must be removed."))
+            }
+
+            chisqres <- tryCatch(
+                            suppressWarnings(stats::chisq.test(activeContingencyTable)),
+                            error = function (e) NULL
+                        )
+
+            if (is.null(chisqres) || !is.finite(chisqres$statistic) ) {
+                vijErrorMessage(self, .("Unable to compute the χ2 statistic."))
+            }
+            if (chisqres$statistic <= .Machine$double.eps) {
+                vijErrorMessage(self, .("The χ2 statistic is equal to zero."))
+            }
+
+            return(chisqres)
+        },
+        .fillInertiaTable = function(table, res, chisqres) {
+            # rows is set to 1 in yaml to force jamovi to refresh the table note after a reject().
+            # we need to delete this (empty) row before to populate the table.
+            table$deleteRows()
+            # Populate the inertia table
+            for (i in seq_along(res$sv)) {
+                table$addRow(i, values = list(
+                    dim = i,
+                    singular = res$sv[i],
+                    inertia = res$eig[i,1],
+                    proportion = res$eig [i,2],
+                    cumulative = res$eig [i,3]
+                ))
+            }
+            # Add total row
+            table$addRow(rowKey="Total", values = list(
+                dim = "Total",
+                singular = "",
+                inertia = sum(res$eig[,1]),
+                proportion = 1,
+                cumulative = 1
+            ))
+            table$addFormat(rowKey="Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
+            # Chi-squared test
+            chisqNote <- jmvcore::format(.("χ² = {chisq}, df = {df}, p-value = {pval}"),
+                                         chisq = round(chisqres$statistic,2),
+                                         df = chisqres$parameter,
+                                         pval = format.pval(chisqres$p.value, eps = 0.001)
+            )
+            table$setNote(key = "chisq", note = chisqNote, init = FALSE)
+        },
         .init = function() {
             #
             if ((self$options$mode == "obsTable" && (is.null(self$options$rows) || is.null(self$options$cols))) ||
@@ -303,28 +360,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Chi-Squared test ####
 
-            activeContingencyTable <- contingencyTable
-            if (!is.null(supplementaryRows))
-                activeContingencyTable <- activeContingencyTable[-supplementaryRows,, drop = FALSE]
-            if (!is.null(supplementaryCols))
-                activeContingencyTable <- activeContingencyTable[,-supplementaryCols, drop = FALSE]
-
-            if (any(rowSums(activeContingencyTable) == 0) ||
-                any(colSums(activeContingencyTable) == 0)) {
-                vijErrorMessage(self, .("Some categories have zero counts and must be removed."))
-            }
-
-            chisqres <- tryCatch(
-                            suppressWarnings(stats::chisq.test(activeContingencyTable)),
-                            error = function (e) NULL
-                        )
-
-            if (is.null(chisqres) || !is.finite(chisqres$statistic) ) {
-                vijErrorMessage(self, .("Unable to compute the χ2 statistic."))
-            }
-            if (chisqres$statistic <= .Machine$double.eps) {
-                vijErrorMessage(self, .("The χ2 statistic is equal to zero."))
-            }
+            chisqres <- private$.computeChiSquared(contingencyTable, supplementaryRows, supplementaryCols)
 
             # Check solution dimension
             maxDim = min(nrow(contingencyTable)-length(supplementaryRows), ncol(contingencyTable)-length(supplementaryCols)) - 1
@@ -338,18 +374,8 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Compute CA ####
-            if (is.null(supplementaryRows))
-                suprow <- NULL
-            else
-                suprow <- supplementaryRows
-
-            if (is.null(supplementaryCols))
-                supcol <- NULL
-            else
-                supcol <- supplementaryCols
-
             res <- tryCatch(
-                    private$.ca(contingencyTable, row.sup = suprow, col.sup = supcol, ncp = nDim, norm = self$options$normalization),
+                    private$.ca(contingencyTable, row.sup = supplementaryRows, col.sup = supplementaryCols, ncp = nDim, norm = self$options$normalization),
                     error = function (e) NULL
                 )
 
@@ -358,35 +384,8 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Inertia Table ####
-            # rows is set to 1 in yaml to force jamovi to refresh the table note after a reject().
-            # we need to delete this (empty) row before to populate the table.
-            self$results$eigenvalues$deleteRows()
-            # Populate the inertia table
-            for (i in seq_along(res$sv)) {
-                self$results$eigenvalues$addRow(i, values = list(
-                    dim = i,
-                    singular = res$sv[i],
-                    inertia = res$eig[i,1],
-                    proportion = res$eig [i,2],
-                    cumulative = res$eig [i,3]
-                ))
-            }
-            # Add total row
-            self$results$eigenvalues$addRow(rowKey="Total", values = list(
-                dim = "Total",
-                singular = "",
-                inertia = sum(res$eig[,1]),
-                proportion = 1,
-                cumulative = 1
-            ))
-            self$results$eigenvalues$addFormat(rowKey="Total", 1, jmvcore::Cell.BEGIN_END_GROUP)
-            # Chi-squared test
-            chisqNote <- jmvcore::format(.("χ² = {chisq}, df = {df}, p-value = {pval}"),
-                                         chisq = round(chisqres$statistic,2),
-                                         df = chisqres$parameter,
-                                         pval = format.pval(chisqres$p.value, eps = 0.001)
-            )
-            self$results$eigenvalues$setNote(key = "chisq", note = chisqNote, init = FALSE)
+
+            private$.fillInertiaTable(self$results$eigenvalues, res, chisqres)
 
             #### Summary Tables ####
 

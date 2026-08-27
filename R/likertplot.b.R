@@ -132,78 +132,13 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Compute frenquencies by question/group ####
+
             freq_wide <- private$.computeFrequencies(ggLikertData, groupingVar, ng)
 
             #### Frequency table ####
-            if (self$options$frequencyTable) {
-                if (self$options$frequencies == "counts") {
-                    fType <- 'integer'
-                    fmt <- ''
-                } else {
-                    fType <- 'number'
-                    fmt <- 'pc'
-                }
-                # Set columns
-                if (ng > 0) {
-                    self$results$frequencies$addColumn(self$options$group, type = "text", title = private$.getVarName(self$options$group))
-                }
-                self$results$frequencies$addColumn("Sum", type = "integer", title = "N")
-                answers_levels <- levels(ggLikertData[['.answer']])
-                for (col in answers_levels) {
-                    self$results$frequencies$addColumn(col, type = fType, format = fmt, title = col)
-                }
-                if (self$options$showMedian)
-                    self$results$frequencies$addColumn("Median", type = "number", title = .("Median"))
-                if (self$options$showMean) {
-                    self$results$frequencies$addColumn("Mean", type = "number")
-                    self$results$frequencies$addColumn("SD", type = "number", title = .("SD"))
-                }
 
-                # Populate the table
-                if (ng == 0) { # Freq table without grouping variable
-                    for (ques in questions) {
-                        row_data <- dplyr::filter(freq_wide, .question == ques)
-                        values <- as.list(row_data)
-                        values[".question"] <- private$.getVarName(ques)
-                        numericData <- jmvcore::toNumeric(mainData[[ques]])
-                        if (self$options$showMedian)
-                            values['Median'] <- as.numeric(stats::median(numericData, na.rm = TRUE))
-                        if (self$options$showMean) {
-                            values["Mean"] <- mean(numericData, na.rm = TRUE)
-                            values["SD"] <- stats::sd(numericData, na.rm = TRUE)
-                        }
-                        self$results$frequencies$addRow(rowKey = ques, values = values)
-                    }
-                } else { # Freq table by group
-                    group_sym <- rlang::sym(groupingVar)
-                    for (ques in questions) {
-                        firstGroup <- TRUE
-                        for (group in groups) {
-                            groupAndQues <- paste0(group, ques)
-                            row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
-                            values <- as.list(row_data)
-                            if (firstGroup)
-                                values[".question"] <- private$.getVarName(ques)
-                            else
-                                values[".question"] <- " "
-                            values[[self$options$group]] <- group
-                            numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
-
-                            if (self$options$showMedian)
-                                values["Median"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
-                            if (self$options$showMean) {
-                                values["Mean"] <- mean(numericData, na.rm = TRUE)
-                                values["SD"] <- stats::sd(numericData, na.rm = TRUE)
-                            }
-                            self$results$frequencies$addRow(rowKey = groupAndQues, values = values)
-                            if (firstGroup)
-                                self$results$frequencies$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.BEGIN_GROUP)
-                            firstGroup <- FALSE
-                        }
-                        self$results$frequencies$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.END_GROUP)
-                    }
-                }
-            } # End Frenquency Table
+            if (self$options$frequencyTable)
+                private$.fillFrequencyTable(self$results$frequencies, freq_wide, ggLikertData, mainData, groupingVar)
 
 
             #### Comparison tests ####
@@ -383,6 +318,82 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             return(freq_wide)
+        },
+        .fillFrequencyTable = function(table, freq_wide, ggLikertData, mainData, groupingVar) {
+            questions <- levels(ggLikertData[['.question']])
+            if (!is.null(groupingVar))
+                groups <- levels(ggLikertData[[groupingVar]])
+            else
+                groups <- NULL
+            ng <- length(groups)
+
+            if (self$options$frequencies == "counts") {
+                fType <- 'integer'
+                fmt <- ''
+            } else {
+                fType <- 'number'
+                fmt <- 'pc'
+            }
+            # Set columns
+            if (ng > 0) {
+                table$addColumn(self$options$group, type = "text", title = private$.getVarName(self$options$group))
+            }
+            table$addColumn("Sum", type = "integer", title = "N")
+            answers_levels <- levels(ggLikertData[['.answer']])
+            for (col in answers_levels) {
+                table$addColumn(col, type = fType, format = fmt, title = col)
+            }
+            if (self$options$showMedian)
+                table$addColumn("Median", type = "number", title = .("Median"))
+            if (self$options$showMean) {
+                table$addColumn("Mean", type = "number")
+                table$addColumn("SD", type = "number", title = .("SD"))
+            }
+
+            # Populate the table
+            if (ng == 0) { # Freq table without grouping variable
+                for (ques in questions) {
+                    row_data <- dplyr::filter(freq_wide, .question == ques)
+                    values <- as.list(row_data)
+                    values[".question"] <- private$.getVarName(ques)
+                    numericData <- jmvcore::toNumeric(mainData[[ques]])
+                    if (self$options$showMedian)
+                        values['Median'] <- as.numeric(stats::median(numericData, na.rm = TRUE))
+                    if (self$options$showMean) {
+                        values["Mean"] <- mean(numericData, na.rm = TRUE)
+                        values["SD"] <- stats::sd(numericData, na.rm = TRUE)
+                    }
+                    table$addRow(rowKey = ques, values = values)
+                }
+            } else { # Freq table by group
+                group_sym <- rlang::sym(groupingVar)
+                for (ques in questions) {
+                    firstGroup <- TRUE
+                    for (group in groups) {
+                        groupAndQues <- paste0(group, ques)
+                        row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
+                        values <- as.list(row_data)
+                        if (firstGroup)
+                            values[".question"] <- private$.getVarName(ques)
+                        else
+                            values[".question"] <- " "
+                        values[[self$options$group]] <- group
+                        numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
+
+                        if (self$options$showMedian)
+                            values["Median"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
+                        if (self$options$showMean) {
+                            values["Mean"] <- mean(numericData, na.rm = TRUE)
+                            values["SD"] <- stats::sd(numericData, na.rm = TRUE)
+                        }
+                        table$addRow(rowKey = groupAndQues, values = values)
+                        if (firstGroup)
+                            table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.BEGIN_GROUP)
+                        firstGroup <- FALSE
+                    }
+                    table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.END_GROUP)
+                }
+            }
         },
         .mannWhitneyTest = function(ctx) {
             ng <- ctx$ng

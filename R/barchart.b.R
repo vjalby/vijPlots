@@ -71,13 +71,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             yVar <- rlang::sym(self$options$yVar)
             xVar <- rlang::sym(self$options$xVar)
-            if (is.null(self$options$group)) {
-                groupVar <- NULL
-                fillVar <- xVar
-            } else {
-                groupVar <- rlang::sym(self$options$group)
-                fillVar <- groupVar
-            }
+            groupVar <- vijVar(self$options$group)
+            fillVar <- groupVar %||% xVar
 
             #### barType / Position ####
             position <- self$options$barType

@@ -84,10 +84,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             timeVar <- rlang::sym(self$options$timeVar)
             depVars <- self$options$vars
-            if (!is.null(self$options$group))
-                groupVar <- rlang::sym(self$options$group)
-            else
-                groupVar <- NULL
+            groupVar <- vijVar(self$options$group)
 
             # timeVar format
             timeVarIsNumeric <- is.numeric(plotData[[timeVar]])

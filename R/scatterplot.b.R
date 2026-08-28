@@ -75,26 +75,10 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             xaxis <- rlang::sym(self$options$xaxis)
             yaxis <- rlang::sym(self$options$yaxis)
-            if( !is.null(self$options$group) ) {
-                groupVar <- rlang::sym(self$options$group)
-            } else {
-                groupVar <- NULL
-            }
-            if( !is.null(self$options$labelVar) ) {
-                labelVar <- rlang::sym(self$options$labelVar)
-            } else {
-                labelVar <- NULL
-            }
-            if( !is.null(self$options$ptSize) ) {
-                sizeVar <- rlang::sym(self$options$ptSize)
-            } else {
-                sizeVar <- NULL
-            }
-            if (!is.null(self$options$facet)) {
-                facetVar <- rlang::sym(self$options$facet)
-            } else {
-                facetVar <- NULL
-            }
+            groupVar <- vijVar(self$options$group)
+            labelVar <- vijVar(self$options$labelVar)
+            sizeVar <- vijVar(self$options$ptSize)
+            facetVar <- vijVar(self$options$facet)
 
             if (self$options$groupShapes) {
                 shapeVar <- groupVar

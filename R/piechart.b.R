@@ -96,11 +96,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Set variables ####
             aVar <- rlang::sym(self$options$aVar)
-            if (!is.null(self$options$facet) ) {
-                facetVar <- rlang::sym(self$options$facet)
-            } else {
-                facetVar <- NULL
-            }
+            facetVar <- vijVar(self$options$facet)
 
             #### Plot options ####
 

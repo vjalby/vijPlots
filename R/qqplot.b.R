@@ -126,10 +126,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             params <- image$state$params
 
             depVar <- rlang::sym(self$options$dep)
-            if (!is.null(self$options$group))
-                groupVar <- rlang::sym(self$options$group)
-            else
-                groupVar <- NULL
+            groupVar <- vijVar(self$options$group)
 
             distrib <- self$options$distrib
 

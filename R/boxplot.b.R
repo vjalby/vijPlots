@@ -73,8 +73,8 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Compute the outliers ####
             if (!is.null(self$options$label)) {
                 labelVar <- rlang::sym(self$options$label)
-                groupVar <- if (!is.null(self$options$group)) rlang::sym(self$options$group) else NULL
-                facetVar <- if (!is.null(self$options$facet)) rlang::sym(self$options$facet) else NULL
+                groupVar <- vijVar(self$options$group)
+                facetVar <- vijVar(self$options$facet)
                 for (varName in self$options$vars) {
                     outlierVar <- rlang::sym(paste0(".outliers_",varName))
                     aVar <- rlang::sym(varName)
@@ -96,21 +96,9 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Set variables ####
             depVarNames <- self$options$vars
 
-            if (!is.null(self$options$label)) {
-                labelVar = rlang::sym(self$options$label)
-            } else {
-                labelVar <- NULL
-            }
-            if (!is.null(self$options$group)) {
-                groupVar = rlang::sym(self$options$group)
-            } else {
-                groupVar <- NULL
-            }
-            if (!is.null(self$options$facet)) {
-                facetVar <- rlang::sym(self$options$facet)
-            } else {
-                facetVar <- NULL
-            }
+            labelVar <- vijVar(self$options$label)
+            groupVar <- vijVar(self$options$group)
+            facetVar <- vijVar(self$options$facet)
 
             #### Set boxplot staples and notches ####
 

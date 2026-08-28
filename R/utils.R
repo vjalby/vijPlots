@@ -70,6 +70,8 @@ vijOneColorOfPalette = function(pal, type = "fill", theme, colorNo) {
     return(oneColorOfPalette)
 }
 
+vijVar = function(name) if (!is.null(name)) rlang::sym(name) else NULL
+
 vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = NULL) {
     horizontal <- options[["horizontal"]]  %||% FALSE
     # Title & Subtitle

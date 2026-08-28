@@ -335,7 +335,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .mosaicData = function(df, categoryName, groupName, facetName = NULL, order = "none", reverseStack = FALSE) {
             category <- rlang::sym(categoryName)
             group <- rlang::sym(groupName)
-            facet <- if (!is.null(facetName)) rlang::sym(facetName) else NULL
+            facet <- vijVar(facetName)
             joinBy <- if (is.null(facetName)) categoryName else c(categoryName, facetName)
             residualsJoinBy <- if (is.null(facetName)) c(categoryName, groupName) else c(categoryName, groupName, facetName)
 

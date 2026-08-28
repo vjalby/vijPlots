@@ -65,17 +65,8 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             xVar <- rlang::sym(self$options$aVar)
 
-            if (!is.null(self$options$group)) {
-                groupVar <- rlang::sym(self$options$group)
-            } else {
-                groupVar <- NULL
-            }
-
-            if (!is.null(self$options$facet)) {
-                facetVar <- rlang::sym(self$options$facet)
-            } else {
-                facetVar <- NULL
-            }
+            groupVar <- vijVar(self$options$group)
+            facetVar <- vijVar(self$options$facet)
 
 			#### Set options ####
 

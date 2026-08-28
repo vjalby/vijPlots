@@ -66,12 +66,7 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             aVar <- rlang::sym(self$options$aVar)
             groupVar <- rlang::sym(self$options$group)
-
-            if (!is.null(self$options$facet)) {
-                facetVar <- rlang::sym(self$options$facet)
-            } else {
-                facetVar <- NULL
-            }
+            facetVar <- vijVar(self$options$facet)
 
             orderFun <- self$options$yaxis
             if (orderFun == "minmax" || orderFun == "identity")

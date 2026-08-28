@@ -101,11 +101,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Variables ####
 
             categoryVar <- rlang::sym(self$options$rows)
-
-            if (!is.null(self$options$columns))
-                groupVar <- rlang::sym(self$options$columns)
-            else
-                groupVar <- NULL
+            groupVar <- vijVar(self$options$columns)
 
             if (self$options$borderColor == "none")
                 borderColor = NA

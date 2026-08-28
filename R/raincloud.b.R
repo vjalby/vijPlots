@@ -70,18 +70,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Set variables ####
 
             aVar <- rlang::sym(self$options$aVar)
-
-            if (!is.null(self$options$groupOne)) {
-                groupOne <- rlang::sym(self$options$groupOne)
-            } else {
-                groupOne <- NULL
-            }
-
-            if (!is.null(self$options$groupTwo)) {
-                groupTwo <- rlang::sym(self$options$groupTwo)
-            } else {
-                groupTwo <- NULL
-            }
+            groupOne <- vijVar(self$options$groupOne)
+            groupTwo <- vijVar(self$options$groupTwo)
 
             #### Plot options ####
             alphaC <- as.numeric(self$options$alphaC)

@@ -94,10 +94,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (oneVariable) {
                 timeVar <- rlang::sym(self$options$timeVar)
                 depVar <- rlang::sym(self$options$var)
-                if (!is.null(self$options$group))
-                    groupVar <- rlang::sym(self$options$group)
-                else
-                    groupVar <- NULL
+                groupVar <- vijVar(self$options$group)
             } else {
                 timeVar <- rlang::sym(self$options$timeVar1)
                 plotData <- plotData |>

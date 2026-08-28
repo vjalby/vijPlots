@@ -77,24 +77,6 @@ children:
                 enable: (!(!labelVar))
       - type: LayoutBox
         cell:
-          column: 0
-          row: 1
-        stretchFactor: 1
-        children:
-          - type: Label
-            label: Color Options
-            children:
-              - type: ComboBox
-                name: singleColor
-                enable: (!group)
-              - type: ComboBox
-                name: colorPalette
-                enable: (!(!group))
-              - type: CheckBox
-                name: groupShapes
-                enable: (!(!group))
-      - type: LayoutBox
-        cell:
           column: 1
           row: 0
         stretchFactor: 1
@@ -122,12 +104,6 @@ children:
                     label: ''
                     format: number
                     enable: (vline)
-      - type: LayoutBox
-        cell:
-          column: 1
-          row: 1
-        stretchFactor: 1
-        children:
           - type: Label
             label: Regression Line
             children:
@@ -141,7 +117,51 @@ children:
                     name: lineSE
                     enable: (regLine)
   - type: CollapseBox
-    label: Element Sizes & Facets
+    label: Colors & Element Sizes
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        cell:
+          column: 0
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Color Options
+            children:
+              - type: ComboBox
+                name: singleColor
+                enable: (!group)
+              - type: ComboBox
+                name: colorPalette
+                enable: (!(!group))
+              - type: CheckBox
+                name: groupShapes
+                enable: (!(!group))
+      - type: LayoutBox
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Element Sizes
+            children:
+              - type: TextBox
+                name: pointSize
+                format: number
+                enable: (!ptSize)
+              - type: TextBox
+                name: lineSize
+                format: number
+                enable: (hline || vline || regLine)
+              - type: TextBox
+                name: labelTextSize
+                format: number
+                enable: (!(!labelVar))
+  - type: CollapseBox
+    label: Facets
     collapsed: true
     stretchFactor: 1
     children:
@@ -152,27 +172,6 @@ children:
           - type: LayoutBox
             cell:
               column: 0
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Element Sizes
-                children:
-                  - type: TextBox
-                    name: pointSize
-                    format: number
-                    enable: (!ptSize)
-                  - type: TextBox
-                    name: lineSize
-                    format: number
-                    enable: (hline || vline || regLine)
-                  - type: TextBox
-                    name: labelTextSize
-                    format: number
-                    enable: (!(!labelVar))
-          - type: LayoutBox
-            cell:
-              column: 1
               row: 0
             stretchFactor: 1
             children:
@@ -198,6 +197,32 @@ children:
                     name: facetNumber
                     format: number
                     enable: (!(!facet))
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facet Labels
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: ComboBox
+                        name: facetFontFace
+                        enable: (!(!facet))
+                      - type: ComboBox
+                        name: facetFontSize
+                        enable: (!(!facet))
+                  - type: LayoutBox
+                    children:
+                      - type: ComboBox
+                        name: facetAlign
+                        enable: (!(!facet))
+                      - type: ComboBox
+                        name: facetStyle
+                        enable: (!(!facet))
   - type: CollapseBox
     label: Axes
     collapsed: true

@@ -298,6 +298,9 @@
             "Black": [
                 "Noir"
             ],
+            "Black border": [
+                "Bordure noire"
+            ],
             "Blue": [
                 "Bleu"
             ],
@@ -423,6 +426,9 @@
             ],
             "Colors": [
                 "Couleurs"
+            ],
+            "Colors & Element Sizes": [
+                "Couleurs et taille des éléments"
             ],
             "Colors & Options": [
                 "Couleurs & Options"
@@ -607,6 +613,9 @@
             "default": [
                 "par défaut"
             ],
+            "Default": [
+                "Par défaut"
+            ],
             "Density": [
                 "Densité"
             ],
@@ -697,9 +706,6 @@
             "Element Sizes": [
                 "Taille des éléments"
             ],
-            "Element Sizes & Facets": [
-                "Taille des éléments & facettes"
-            ],
             "Equal Local Levels": [
                 "Equal Local Levels"
             ],
@@ -735,6 +741,9 @@
             ],
             "Facet": [
                 "Facette"
+            ],
+            "Facet Labels": [
+                "Etiquettes des facettes"
             ],
             "Facets": [
                 "Facettes"
@@ -792,6 +801,9 @@
             ],
             "Gray": [
                 "Gris"
+            ],
+            "Gray background": [
+                "Fond gris"
             ],
             "Green": [
                 "Vert"
@@ -1861,6 +1873,9 @@
             "Student": [
                 "Student"
             ],
+            "Style": [
+                "Style"
+            ],
             "Subtitle": [
                 "Sous-titre"
             ],
@@ -1944,9 +1959,6 @@
             ],
             "Text Size & Colors": [
                 "Taille du texte & couleurs"
-            ],
-            "Text Size & Facets": [
-                "Taille du texte & facettes"
             ],
             "The correlation matrix is nearly singular. Computations may not be accurate.": [
                 "La matrice des corrélations est quasi-singulière. Les calculs peuvent être approximatifs."

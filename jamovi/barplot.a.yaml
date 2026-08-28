@@ -456,6 +456,64 @@ options:
           title: Right
       default: "1"
 
+    - name: facetFontFace
+      title: Font
+      type: List
+      options:
+        - name: plain
+          title: Normal
+        - name: bold
+          title: Bold
+        - name: italic
+          title: Italic
+        - name: bold.italic
+          title: Bold Italic
+      default: plain
+
+    - name: facetFontSize
+      title: Size
+      type: List
+      options:
+        - name: "8"
+          title: "8"
+        - name: "10"
+          title: "10"
+        - name: "12"
+          title: "12"
+        - name: "14"
+          title: "14"
+        - name: "16"
+          title: "16"
+        - name: "18"
+          title: "18"
+        - name: "20"
+          title: "20"
+      default: "12"
+
+    - name: facetAlign
+      title: Align
+      type: List
+      options:
+        - name: "0"
+          title: Left
+        - name: "0.5"
+          title: Center
+        - name: "1"
+          title: Right
+      default: "0.5"
+
+    - name: facetStyle
+      title: Style
+      type: List
+      options:
+        - name: default
+          title: Default
+        - name: border
+          title: Black border
+        - name: background
+          title: Gray background
+      default: default
+
     - name: legendText
       title: ""
       type: String

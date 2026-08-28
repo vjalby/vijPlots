@@ -179,6 +179,11 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     xAxisLabelRotation <- as.numeric(options[["xAxisLabelRotation"]] %||% 0)
     yAxisLabelFontSize <- as.numeric(options[["yAxisLabelFontSize"]] %||% 12)
     yAxisLabelRotation <- as.numeric(options[["yAxisLabelRotation"]] %||% 0)
+    # Facet style
+    facetStyle <- options[["facetStyle"]] %||% "default"
+    facetAlign <- as.numeric(options[["facetAlign"]] %||% 0.5)
+    facetFontSize <- as.numeric(options[["facetFontSize"]] %||% 12)
+    facetFontFace <- options[["facetFontFace"]] %||% "plain"
     return(ggplot2::theme(
         # Title, subtitle and caption
         plot.title = ggplot2::element_text(
@@ -202,11 +207,12 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
         legend.position = legendPosition,
         legend.box = "vertical", # for legend at bottom
         legend.margin = ggplot2::margin(b=0), # for multiple legends
-        # Facet Label ~ subtitle
+        # Facet Label
         strip.text = ggplot2::element_text(
-            size = subtitleFontSize,
-            face = options$subtitleFontFace,
-            hjust = as.numeric(options$subtitleAlign)),
+            size = facetFontSize,
+            face = facetFontFace,
+            hjust = facetAlign),
+        strip.background = switch(facetStyle, "background" = ggplot2::element_rect(fill="lightgray"), "border" = ggplot2::element_rect(color = "black", fill = "white"), ggplot2::element_rect()),
         # Axis Titles
         axis.title.x = ggplot2::element_text(
             size = xAxisFontSize,

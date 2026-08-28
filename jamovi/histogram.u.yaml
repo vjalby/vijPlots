@@ -246,6 +246,32 @@ children:
                     name: facetNumber
                     format: number
                     enable: (!(!facet))
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facet Labels
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: ComboBox
+                        name: facetFontFace
+                        enable: (!(!facet))
+                      - type: ComboBox
+                        name: facetFontSize
+                        enable: (!(!facet))
+                  - type: LayoutBox
+                    children:
+                      - type: ComboBox
+                        name: facetAlign
+                        enable: (!(!facet))
+                      - type: ComboBox
+                        name: facetStyle
+                        enable: (!(!facet))
   - type: CollapseBox
     label: Axes
     collapsed: true

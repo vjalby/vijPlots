@@ -175,19 +175,19 @@ children:
                     optionName: accuracy
                     optionPart: '1'
                     label: '1'
-                    enable: (!labelType:none && !labelType:count)
+                    enable: (labelType:percent || labelType:residuals || showCategoryPercent)
                   - type: RadioButton
                     name: accuracy_01
                     optionName: accuracy
                     optionPart: '0.1'
                     label: '0.1'
-                    enable: (!labelType:none && !labelType:count)
+                    enable: (labelType:percent || labelType:residuals || showCategoryPercent)
                   - type: RadioButton
                     name: accuracy_001
                     optionName: accuracy
                     optionPart: '0.01'
                     label: '0.01'
-                    enable: (!labelType:none && !labelType:count)
+                    enable: (labelType:percent || labelType:residuals || showCategoryPercent)
   - type: CollapseBox
     label: Tile Options
     collapsed: true
@@ -275,6 +275,32 @@ children:
                     name: facetNumber
                     format: number
                     enable: (!(!facet))
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facet Labels
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: ComboBox
+                        name: facetFontFace
+                        enable: (!(!facet))
+                      - type: ComboBox
+                        name: facetFontSize
+                        enable: (!(!facet))
+                  - type: LayoutBox
+                    children:
+                      - type: ComboBox
+                        name: facetAlign
+                        enable: (!(!facet))
+                      - type: ComboBox
+                        name: facetStyle
+                        enable: (!(!facet))
   - type: CollapseBox
     label: Axes
     collapsed: true

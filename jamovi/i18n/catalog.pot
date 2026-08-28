@@ -546,18 +546,22 @@ msgstr ""
 #: barchart/options/titleAlign.title
 #: barchart/options/subtitleAlign.title
 #: barchart/options/captionAlign.title
+#: barchart/options/facetAlign.title
 #: barplot/options/titleAlign.title
 #: barplot/options/subtitleAlign.title
 #: barplot/options/captionAlign.title
+#: barplot/options/facetAlign.title
 #: boxplot/options/titleAlign.title
 #: boxplot/options/subtitleAlign.title
 #: boxplot/options/captionAlign.title
+#: boxplot/options/facetAlign.title
 #: corresp/options/titleAlign.title
 #: corresp/options/subtitleAlign.title
 #: corresp/options/captionAlign.title
 #: histogram/options/titleAlign.title
 #: histogram/options/subtitleAlign.title
 #: histogram/options/captionAlign.title
+#: histogram/options/facetAlign.title
 #: likertplot/options/titleAlign.title
 #: likertplot/options/subtitleAlign.title
 #: likertplot/options/captionAlign.title
@@ -567,9 +571,11 @@ msgstr ""
 #: lollipop/options/titleAlign.title
 #: lollipop/options/subtitleAlign.title
 #: lollipop/options/captionAlign.title
+#: lollipop/options/facetAlign.title
 #: mosaic/options/titleAlign.title
 #: mosaic/options/subtitleAlign.title
 #: mosaic/options/captionAlign.title
+#: mosaic/options/facetAlign.title
 #: mrcrosstabs/options/titleAlign.title
 #: mrcrosstabs/options/subtitleAlign.title
 #: mrcrosstabs/options/captionAlign.title
@@ -582,6 +588,7 @@ msgstr ""
 #: piechart/options/titleAlign.title
 #: piechart/options/subtitleAlign.title
 #: piechart/options/captionAlign.title
+#: piechart/options/facetAlign.title
 #: principal/options/titleAlign.title
 #: principal/options/subtitleAlign.title
 #: principal/options/captionAlign.title
@@ -594,6 +601,7 @@ msgstr ""
 #: scatterplot/options/titleAlign.title
 #: scatterplot/options/subtitleAlign.title
 #: scatterplot/options/captionAlign.title
+#: scatterplot/options/facetAlign.title
 msgid "Align"
 msgstr ""
 
@@ -691,7 +699,7 @@ msgstr ""
 #: mrfrequencies/ui[4].label
 #: qqplot/ui[5].label
 #: raincloud/ui[2].label
-#: scatterplot/ui[3].label
+#: scatterplot/ui[4].label
 msgid "Axes"
 msgstr ""
 
@@ -815,6 +823,17 @@ msgstr ""
 msgid "Black"
 msgstr ""
 
+#: barchart/options/facetStyle/border.title
+#: barplot/options/facetStyle/border.title
+#: boxplot/options/facetStyle/border.title
+#: histogram/options/facetStyle/border.title
+#: lollipop/options/facetStyle/border.title
+#: mosaic/options/facetStyle/border.title
+#: piechart/options/facetStyle/border.title
+#: scatterplot/options/facetStyle/border.title
+msgid "Black border"
+msgstr ""
+
 #: corresp/options/rowColor/blue.title
 #: corresp/options/colColor/blue.title
 #: histogram/options/fillColor/#377EB8.title
@@ -887,18 +906,22 @@ msgstr ""
 #: barchart/options/titleFontFace/bold.title
 #: barchart/options/subtitleFontFace/bold.title
 #: barchart/options/captionFontFace/bold.title
+#: barchart/options/facetFontFace/bold.title
 #: barplot/options/titleFontFace/bold.title
 #: barplot/options/subtitleFontFace/bold.title
 #: barplot/options/captionFontFace/bold.title
+#: barplot/options/facetFontFace/bold.title
 #: boxplot/options/titleFontFace/bold.title
 #: boxplot/options/subtitleFontFace/bold.title
 #: boxplot/options/captionFontFace/bold.title
+#: boxplot/options/facetFontFace/bold.title
 #: corresp/options/titleFontFace/bold.title
 #: corresp/options/subtitleFontFace/bold.title
 #: corresp/options/captionFontFace/bold.title
 #: histogram/options/titleFontFace/bold.title
 #: histogram/options/subtitleFontFace/bold.title
 #: histogram/options/captionFontFace/bold.title
+#: histogram/options/facetFontFace/bold.title
 #: likertplot/options/titleFontFace/bold.title
 #: likertplot/options/subtitleFontFace/bold.title
 #: likertplot/options/captionFontFace/bold.title
@@ -908,9 +931,11 @@ msgstr ""
 #: lollipop/options/titleFontFace/bold.title
 #: lollipop/options/subtitleFontFace/bold.title
 #: lollipop/options/captionFontFace/bold.title
+#: lollipop/options/facetFontFace/bold.title
 #: mosaic/options/titleFontFace/bold.title
 #: mosaic/options/subtitleFontFace/bold.title
 #: mosaic/options/captionFontFace/bold.title
+#: mosaic/options/facetFontFace/bold.title
 #: mrcrosstabs/options/titleFontFace/bold.title
 #: mrcrosstabs/options/subtitleFontFace/bold.title
 #: mrcrosstabs/options/captionFontFace/bold.title
@@ -923,6 +948,7 @@ msgstr ""
 #: piechart/options/titleFontFace/bold.title
 #: piechart/options/subtitleFontFace/bold.title
 #: piechart/options/captionFontFace/bold.title
+#: piechart/options/facetFontFace/bold.title
 #: principal/options/titleFontFace/bold.title
 #: principal/options/subtitleFontFace/bold.title
 #: principal/options/captionFontFace/bold.title
@@ -935,6 +961,7 @@ msgstr ""
 #: scatterplot/options/titleFontFace/bold.title
 #: scatterplot/options/subtitleFontFace/bold.title
 #: scatterplot/options/captionFontFace/bold.title
+#: scatterplot/options/facetFontFace/bold.title
 msgid "Bold"
 msgstr ""
 
@@ -944,18 +971,22 @@ msgstr ""
 #: barchart/options/titleFontFace/bold.italic.title
 #: barchart/options/subtitleFontFace/bold.italic.title
 #: barchart/options/captionFontFace/bold.italic.title
+#: barchart/options/facetFontFace/bold.italic.title
 #: barplot/options/titleFontFace/bold.italic.title
 #: barplot/options/subtitleFontFace/bold.italic.title
 #: barplot/options/captionFontFace/bold.italic.title
+#: barplot/options/facetFontFace/bold.italic.title
 #: boxplot/options/titleFontFace/bold.italic.title
 #: boxplot/options/subtitleFontFace/bold.italic.title
 #: boxplot/options/captionFontFace/bold.italic.title
+#: boxplot/options/facetFontFace/bold.italic.title
 #: corresp/options/titleFontFace/bold.italic.title
 #: corresp/options/subtitleFontFace/bold.italic.title
 #: corresp/options/captionFontFace/bold.italic.title
 #: histogram/options/titleFontFace/bold.italic.title
 #: histogram/options/subtitleFontFace/bold.italic.title
 #: histogram/options/captionFontFace/bold.italic.title
+#: histogram/options/facetFontFace/bold.italic.title
 #: likertplot/options/titleFontFace/bold.italic.title
 #: likertplot/options/subtitleFontFace/bold.italic.title
 #: likertplot/options/captionFontFace/bold.italic.title
@@ -965,9 +996,11 @@ msgstr ""
 #: lollipop/options/titleFontFace/bold.italic.title
 #: lollipop/options/subtitleFontFace/bold.italic.title
 #: lollipop/options/captionFontFace/bold.italic.title
+#: lollipop/options/facetFontFace/bold.italic.title
 #: mosaic/options/titleFontFace/bold.italic.title
 #: mosaic/options/subtitleFontFace/bold.italic.title
 #: mosaic/options/captionFontFace/bold.italic.title
+#: mosaic/options/facetFontFace/bold.italic.title
 #: mrcrosstabs/options/titleFontFace/bold.italic.title
 #: mrcrosstabs/options/subtitleFontFace/bold.italic.title
 #: mrcrosstabs/options/captionFontFace/bold.italic.title
@@ -980,6 +1013,7 @@ msgstr ""
 #: piechart/options/titleFontFace/bold.italic.title
 #: piechart/options/subtitleFontFace/bold.italic.title
 #: piechart/options/captionFontFace/bold.italic.title
+#: piechart/options/facetFontFace/bold.italic.title
 #: principal/options/titleFontFace/bold.italic.title
 #: principal/options/subtitleFontFace/bold.italic.title
 #: principal/options/captionFontFace/bold.italic.title
@@ -992,6 +1026,7 @@ msgstr ""
 #: scatterplot/options/titleFontFace/bold.italic.title
 #: scatterplot/options/subtitleFontFace/bold.italic.title
 #: scatterplot/options/captionFontFace/bold.italic.title
+#: scatterplot/options/facetFontFace/bold.italic.title
 msgid "Bold Italic"
 msgstr ""
 
@@ -1135,7 +1170,7 @@ msgstr ""
 #: piechart/ui[6][2].label
 #: qqplot/ui[7][2].label
 #: raincloud/ui[4][2].label
-#: scatterplot/ui[5][2].label
+#: scatterplot/ui[6][2].label
 msgid "Caption"
 msgstr ""
 
@@ -1218,16 +1253,19 @@ msgstr ""
 #: barchart/options/titleAlign/0.5.title
 #: barchart/options/subtitleAlign/0.5.title
 #: barchart/options/captionAlign/0.5.title
+#: barchart/options/facetAlign/0.5.title
 #: barchart/options/xAxisPosition/0.5.title
 #: barchart/options/yAxisPosition/0.5.title
 #: barplot/options/titleAlign/0.5.title
 #: barplot/options/subtitleAlign/0.5.title
 #: barplot/options/captionAlign/0.5.title
+#: barplot/options/facetAlign/0.5.title
 #: barplot/options/xAxisPosition/0.5.title
 #: barplot/options/yAxisPosition/0.5.title
 #: boxplot/options/titleAlign/0.5.title
 #: boxplot/options/subtitleAlign/0.5.title
 #: boxplot/options/captionAlign/0.5.title
+#: boxplot/options/facetAlign/0.5.title
 #: boxplot/options/xAxisPosition/0.5.title
 #: boxplot/options/yAxisPosition/0.5.title
 #: corresp/options/titleAlign/0.5.title
@@ -1238,6 +1276,7 @@ msgstr ""
 #: histogram/options/titleAlign/0.5.title
 #: histogram/options/subtitleAlign/0.5.title
 #: histogram/options/captionAlign/0.5.title
+#: histogram/options/facetAlign/0.5.title
 #: histogram/options/xAxisPosition/0.5.title
 #: histogram/options/yAxisPosition/0.5.title
 #: likertplot/options/titleAlign/0.5.title
@@ -1251,11 +1290,13 @@ msgstr ""
 #: lollipop/options/titleAlign/0.5.title
 #: lollipop/options/subtitleAlign/0.5.title
 #: lollipop/options/captionAlign/0.5.title
+#: lollipop/options/facetAlign/0.5.title
 #: lollipop/options/xAxisPosition/0.5.title
 #: lollipop/options/yAxisPosition/0.5.title
 #: mosaic/options/titleAlign/0.5.title
 #: mosaic/options/subtitleAlign/0.5.title
 #: mosaic/options/captionAlign/0.5.title
+#: mosaic/options/facetAlign/0.5.title
 #: mosaic/options/xAxisPosition/0.5.title
 #: mosaic/options/yAxisPosition/0.5.title
 #: mrcrosstabs/options/titleAlign/0.5.title
@@ -1276,6 +1317,7 @@ msgstr ""
 #: piechart/options/titleAlign/0.5.title
 #: piechart/options/subtitleAlign/0.5.title
 #: piechart/options/captionAlign/0.5.title
+#: piechart/options/facetAlign/0.5.title
 #: principal/options/titleAlign/0.5.title
 #: principal/options/subtitleAlign/0.5.title
 #: principal/options/captionAlign/0.5.title
@@ -1294,6 +1336,7 @@ msgstr ""
 #: scatterplot/options/titleAlign/0.5.title
 #: scatterplot/options/subtitleAlign/0.5.title
 #: scatterplot/options/captionAlign/0.5.title
+#: scatterplot/options/facetAlign/0.5.title
 #: scatterplot/options/xAxisPosition/0.5.title
 #: scatterplot/options/yAxisPosition/0.5.title
 msgid "Center"
@@ -1327,7 +1370,7 @@ msgstr ""
 #: mrfrequencies/ui[3][0][1][0].label
 #: piechart/ui[3][0][1][0].label
 #: raincloud/ui[1][1][0].label
-#: scatterplot/ui[1][1][0].label
+#: scatterplot/ui[2][0][0].label
 msgid "Color Options"
 msgstr ""
 
@@ -1355,6 +1398,10 @@ msgstr ""
 msgid "Colors"
 msgstr ""
 
+#: scatterplot/ui[2].label
+msgid "Colors & Element Sizes"
+msgstr ""
+
 #: boxplot/ui[2].label
 #: qqplot/ui[4].label
 msgid "Colors & Options"
@@ -1363,9 +1410,9 @@ msgstr ""
 #: barchart/options/facetBy/column.title
 #: barchart/ui[5][0][0][0][0]/facetBy_column.label
 #: barplot/options/facetBy/column.title
-#: barplot/ui[4][0][1][0][0]/facetBy_column.label
+#: barplot/ui[4][0][0][0]/facetBy_column.label
 #: boxplot/options/facetBy/column.title
-#: boxplot/ui[3][0][1][0][0]/facetBy_column.label
+#: boxplot/ui[3][0][0][0]/facetBy_column.label
 #: corresp/options/colColor.title
 #: histogram/options/facetBy/column.title
 #: histogram/ui[4][0][0][0][0]/facetBy_column.label
@@ -1374,9 +1421,9 @@ msgstr ""
 #: mosaic/options/facetBy/column.title
 #: mosaic/ui[4][0][0][0][0]/facetBy_column.label
 #: piechart/options/facetBy/column.title
-#: piechart/ui[4][0][1][0][0]/facetBy_column.label
+#: piechart/ui[4][0][0][0]/facetBy_column.label
 #: scatterplot/options/facetBy/column.title
-#: scatterplot/ui[2][0][1][0][0]/facetBy_column.label
+#: scatterplot/ui[3][0][0][0][0]/facetBy_column.label
 msgid "Column"
 msgstr ""
 
@@ -1739,6 +1786,17 @@ msgstr ""
 msgid "default"
 msgstr ""
 
+#: barchart/options/facetStyle/default.title
+#: barplot/options/facetStyle/default.title
+#: boxplot/options/facetStyle/default.title
+#: histogram/options/facetStyle/default.title
+#: lollipop/options/facetStyle/default.title
+#: mosaic/options/facetStyle/default.title
+#: piechart/options/facetStyle/default.title
+#: scatterplot/options/facetStyle/default.title
+msgid "Default"
+msgstr ""
+
 #: R/histogram.b.R
 #: histogram/options/histtype/density.title
 #: histogram/ui[1][0][0]/histtype_density.label
@@ -1893,12 +1951,8 @@ msgid "Eigenvalues"
 msgstr ""
 
 #: principal/ui[4][0][0][1].label
-#: scatterplot/ui[2][0][0][0].label
+#: scatterplot/ui[2][1][0].label
 msgid "Element Sizes"
-msgstr ""
-
-#: scatterplot/ui[2].label
-msgid "Element Sizes & Facets"
 msgstr ""
 
 #: qqplot/options/methodQQ/ell.title
@@ -1978,11 +2032,24 @@ msgstr ""
 msgid "Facet"
 msgstr ""
 
+#: barchart/ui[5][0][1][0].label
+#: barplot/ui[4][1][0].label
+#: boxplot/ui[3][1][0].label
+#: histogram/ui[4][0][1][0].label
+#: lollipop/ui[4][0][1][0].label
+#: mosaic/ui[4][0][1][0].label
+#: piechart/ui[4][1][0].label
+#: scatterplot/ui[3][0][1][0].label
+msgid "Facet Labels"
+msgstr ""
+
 #: barchart/ui[5].label
 #: barchart/ui[5][0][0][0].label
-#: barplot/ui[4][0][1][0].label
+#: barplot/ui[4].label
+#: barplot/ui[4][0][0].label
 #: boxplot/options/facetBy.title
-#: boxplot/ui[3][0][1][0].label
+#: boxplot/ui[3].label
+#: boxplot/ui[3][0][0].label
 #: histogram/options/facetBy.title
 #: histogram/ui[4].label
 #: histogram/ui[4][0][0][0].label
@@ -1991,9 +2058,11 @@ msgstr ""
 #: mosaic/ui[4].label
 #: mosaic/ui[4][0][0][0].label
 #: piechart/options/facetBy.title
-#: piechart/ui[4][0][1][0].label
+#: piechart/ui[4].label
+#: piechart/ui[4][0][0].label
 #: scatterplot/options/facetBy.title
-#: scatterplot/ui[2][0][1][0].label
+#: scatterplot/ui[3].label
+#: scatterplot/ui[3][0][0][0].label
 msgid "Facets"
 msgstr ""
 
@@ -2021,15 +2090,19 @@ msgstr ""
 #: barchart/options/titleFontFace.title
 #: barchart/options/subtitleFontFace.title
 #: barchart/options/captionFontFace.title
+#: barchart/options/facetFontFace.title
 #: barplot/options/titleFontFace.title
 #: barplot/options/subtitleFontFace.title
 #: barplot/options/captionFontFace.title
+#: barplot/options/facetFontFace.title
 #: boxplot/options/titleFontFace.title
 #: boxplot/options/subtitleFontFace.title
 #: boxplot/options/captionFontFace.title
+#: boxplot/options/facetFontFace.title
 #: histogram/options/titleFontFace.title
 #: histogram/options/subtitleFontFace.title
 #: histogram/options/captionFontFace.title
+#: histogram/options/facetFontFace.title
 #: likertplot/options/titleFontFace.title
 #: likertplot/options/subtitleFontFace.title
 #: likertplot/options/captionFontFace.title
@@ -2039,9 +2112,11 @@ msgstr ""
 #: lollipop/options/titleFontFace.title
 #: lollipop/options/subtitleFontFace.title
 #: lollipop/options/captionFontFace.title
+#: lollipop/options/facetFontFace.title
 #: mosaic/options/titleFontFace.title
 #: mosaic/options/subtitleFontFace.title
 #: mosaic/options/captionFontFace.title
+#: mosaic/options/facetFontFace.title
 #: mrcrosstabs/options/titleFontFace.title
 #: mrcrosstabs/options/subtitleFontFace.title
 #: mrcrosstabs/options/captionFontFace.title
@@ -2051,6 +2126,7 @@ msgstr ""
 #: piechart/options/titleFontFace.title
 #: piechart/options/subtitleFontFace.title
 #: piechart/options/captionFontFace.title
+#: piechart/options/facetFontFace.title
 #: qqplot/options/titleFontFace.title
 #: qqplot/options/subtitleFontFace.title
 #: qqplot/options/captionFontFace.title
@@ -2060,6 +2136,7 @@ msgstr ""
 #: scatterplot/options/titleFontFace.title
 #: scatterplot/options/subtitleFontFace.title
 #: scatterplot/options/captionFontFace.title
+#: scatterplot/options/facetFontFace.title
 msgid "Font"
 msgstr ""
 
@@ -2150,6 +2227,17 @@ msgstr ""
 #: principal/options/obsColor/#999999.title
 #: scatterplot/options/singleColor/#999999.title
 msgid "Gray"
+msgstr ""
+
+#: barchart/options/facetStyle/background.title
+#: barplot/options/facetStyle/background.title
+#: boxplot/options/facetStyle/background.title
+#: histogram/options/facetStyle/background.title
+#: lollipop/options/facetStyle/background.title
+#: mosaic/options/facetStyle/background.title
+#: piechart/options/facetStyle/background.title
+#: scatterplot/options/facetStyle/background.title
+msgid "Gray background"
 msgstr ""
 
 #: corresp/options/rowColor/forestgreen.title
@@ -2447,18 +2535,22 @@ msgstr ""
 #: barchart/options/titleFontFace/italic.title
 #: barchart/options/subtitleFontFace/italic.title
 #: barchart/options/captionFontFace/italic.title
+#: barchart/options/facetFontFace/italic.title
 #: barplot/options/titleFontFace/italic.title
 #: barplot/options/subtitleFontFace/italic.title
 #: barplot/options/captionFontFace/italic.title
+#: barplot/options/facetFontFace/italic.title
 #: boxplot/options/titleFontFace/italic.title
 #: boxplot/options/subtitleFontFace/italic.title
 #: boxplot/options/captionFontFace/italic.title
+#: boxplot/options/facetFontFace/italic.title
 #: corresp/options/titleFontFace/italic.title
 #: corresp/options/subtitleFontFace/italic.title
 #: corresp/options/captionFontFace/italic.title
 #: histogram/options/titleFontFace/italic.title
 #: histogram/options/subtitleFontFace/italic.title
 #: histogram/options/captionFontFace/italic.title
+#: histogram/options/facetFontFace/italic.title
 #: likertplot/options/titleFontFace/italic.title
 #: likertplot/options/subtitleFontFace/italic.title
 #: likertplot/options/captionFontFace/italic.title
@@ -2468,9 +2560,11 @@ msgstr ""
 #: lollipop/options/titleFontFace/italic.title
 #: lollipop/options/subtitleFontFace/italic.title
 #: lollipop/options/captionFontFace/italic.title
+#: lollipop/options/facetFontFace/italic.title
 #: mosaic/options/titleFontFace/italic.title
 #: mosaic/options/subtitleFontFace/italic.title
 #: mosaic/options/captionFontFace/italic.title
+#: mosaic/options/facetFontFace/italic.title
 #: mrcrosstabs/options/titleFontFace/italic.title
 #: mrcrosstabs/options/subtitleFontFace/italic.title
 #: mrcrosstabs/options/captionFontFace/italic.title
@@ -2483,6 +2577,7 @@ msgstr ""
 #: piechart/options/titleFontFace/italic.title
 #: piechart/options/subtitleFontFace/italic.title
 #: piechart/options/captionFontFace/italic.title
+#: piechart/options/facetFontFace/italic.title
 #: principal/options/titleFontFace/italic.title
 #: principal/options/subtitleFontFace/italic.title
 #: principal/options/captionFontFace/italic.title
@@ -2495,6 +2590,7 @@ msgstr ""
 #: scatterplot/options/titleFontFace/italic.title
 #: scatterplot/options/subtitleFontFace/italic.title
 #: scatterplot/options/captionFontFace/italic.title
+#: scatterplot/options/facetFontFace/italic.title
 msgid "Italic"
 msgstr ""
 
@@ -2753,16 +2849,19 @@ msgstr ""
 #: barchart/options/titleAlign/0.title
 #: barchart/options/subtitleAlign/0.title
 #: barchart/options/captionAlign/0.title
+#: barchart/options/facetAlign/0.title
 #: barchart/options/legendPosition/left.title
 #: barchart/options/xAxisPosition/0.title
 #: barplot/options/titleAlign/0.title
 #: barplot/options/subtitleAlign/0.title
 #: barplot/options/captionAlign/0.title
+#: barplot/options/facetAlign/0.title
 #: barplot/options/legendPosition/left.title
 #: barplot/options/xAxisPosition/0.title
 #: boxplot/options/titleAlign/0.title
 #: boxplot/options/subtitleAlign/0.title
 #: boxplot/options/captionAlign/0.title
+#: boxplot/options/facetAlign/0.title
 #: boxplot/options/legendPosition/left.title
 #: boxplot/options/xAxisPosition/0.title
 #: corresp/options/titleAlign/0.title
@@ -2772,6 +2871,7 @@ msgstr ""
 #: histogram/options/titleAlign/0.title
 #: histogram/options/subtitleAlign/0.title
 #: histogram/options/captionAlign/0.title
+#: histogram/options/facetAlign/0.title
 #: histogram/options/legendPosition/left.title
 #: histogram/options/xAxisPosition/0.title
 #: likertplot/options/titleAlign/0.title
@@ -2786,10 +2886,12 @@ msgstr ""
 #: lollipop/options/titleAlign/0.title
 #: lollipop/options/subtitleAlign/0.title
 #: lollipop/options/captionAlign/0.title
+#: lollipop/options/facetAlign/0.title
 #: lollipop/options/xAxisPosition/0.title
 #: mosaic/options/titleAlign/0.title
 #: mosaic/options/subtitleAlign/0.title
 #: mosaic/options/captionAlign/0.title
+#: mosaic/options/facetAlign/0.title
 #: mosaic/options/legendPosition/left.title
 #: mosaic/options/xAxisPosition/0.title
 #: mrcrosstabs/options/titleAlign/0.title
@@ -2809,6 +2911,7 @@ msgstr ""
 #: piechart/options/titleAlign/0.title
 #: piechart/options/subtitleAlign/0.title
 #: piechart/options/captionAlign/0.title
+#: piechart/options/facetAlign/0.title
 #: piechart/options/legendPosition/left.title
 #: principal/options/titleAlign/0.title
 #: principal/options/subtitleAlign/0.title
@@ -2828,6 +2931,7 @@ msgstr ""
 #: scatterplot/options/titleAlign/0.title
 #: scatterplot/options/subtitleAlign/0.title
 #: scatterplot/options/captionAlign/0.title
+#: scatterplot/options/facetAlign/0.title
 #: scatterplot/options/legendPosition/left.title
 #: scatterplot/options/xAxisPosition/0.title
 msgid "Left"
@@ -2848,7 +2952,7 @@ msgstr ""
 #: principal/ui[5][0].label
 #: qqplot/ui[6][0].label
 #: raincloud/ui[3][0].label
-#: scatterplot/ui[4][0].label
+#: scatterplot/ui[5][0].label
 msgid "Legend"
 msgstr ""
 
@@ -2865,7 +2969,7 @@ msgstr ""
 #: principal/ui[5].label
 #: qqplot/ui[6].label
 #: raincloud/ui[3].label
-#: scatterplot/ui[4].label
+#: scatterplot/ui[5].label
 msgid "Legend & Axis Titles"
 msgstr ""
 
@@ -3399,18 +3503,22 @@ msgstr ""
 #: barchart/options/titleFontFace/plain.title
 #: barchart/options/subtitleFontFace/plain.title
 #: barchart/options/captionFontFace/plain.title
+#: barchart/options/facetFontFace/plain.title
 #: barplot/options/titleFontFace/plain.title
 #: barplot/options/subtitleFontFace/plain.title
 #: barplot/options/captionFontFace/plain.title
+#: barplot/options/facetFontFace/plain.title
 #: boxplot/options/titleFontFace/plain.title
 #: boxplot/options/subtitleFontFace/plain.title
 #: boxplot/options/captionFontFace/plain.title
+#: boxplot/options/facetFontFace/plain.title
 #: corresp/options/titleFontFace/plain.title
 #: corresp/options/subtitleFontFace/plain.title
 #: corresp/options/captionFontFace/plain.title
 #: histogram/options/titleFontFace/plain.title
 #: histogram/options/subtitleFontFace/plain.title
 #: histogram/options/captionFontFace/plain.title
+#: histogram/options/facetFontFace/plain.title
 #: likertplot/options/titleFontFace/plain.title
 #: likertplot/options/subtitleFontFace/plain.title
 #: likertplot/options/captionFontFace/plain.title
@@ -3420,9 +3528,11 @@ msgstr ""
 #: lollipop/options/titleFontFace/plain.title
 #: lollipop/options/subtitleFontFace/plain.title
 #: lollipop/options/captionFontFace/plain.title
+#: lollipop/options/facetFontFace/plain.title
 #: mosaic/options/titleFontFace/plain.title
 #: mosaic/options/subtitleFontFace/plain.title
 #: mosaic/options/captionFontFace/plain.title
+#: mosaic/options/facetFontFace/plain.title
 #: mrcrosstabs/options/titleFontFace/plain.title
 #: mrcrosstabs/options/subtitleFontFace/plain.title
 #: mrcrosstabs/options/captionFontFace/plain.title
@@ -3435,6 +3545,7 @@ msgstr ""
 #: piechart/options/titleFontFace/plain.title
 #: piechart/options/subtitleFontFace/plain.title
 #: piechart/options/captionFontFace/plain.title
+#: piechart/options/facetFontFace/plain.title
 #: principal/options/titleFontFace/plain.title
 #: principal/options/subtitleFontFace/plain.title
 #: principal/options/captionFontFace/plain.title
@@ -3447,6 +3558,7 @@ msgstr ""
 #: scatterplot/options/titleFontFace/plain.title
 #: scatterplot/options/subtitleFontFace/plain.title
 #: scatterplot/options/captionFontFace/plain.title
+#: scatterplot/options/facetFontFace/plain.title
 msgid "Normal"
 msgstr ""
 
@@ -3995,7 +4107,7 @@ msgstr ""
 #: piechart/ui[6].label
 #: qqplot/ui[7].label
 #: raincloud/ui[4].label
-#: scatterplot/ui[5].label
+#: scatterplot/ui[6].label
 msgid "Plot Titles"
 msgstr ""
 
@@ -4304,8 +4416,8 @@ msgstr ""
 #: qqplot/ui[5][0][1][1].label
 #: raincloud/ui[2][0][0][1].label
 #: raincloud/ui[2][0][1][1].label
-#: scatterplot/ui[3][0][0][1].label
-#: scatterplot/ui[3][0][1][1].label
+#: scatterplot/ui[4][0][0][1].label
+#: scatterplot/ui[4][0][1][1].label
 msgid "Range"
 msgstr ""
 
@@ -4446,11 +4558,11 @@ msgid "Reference line"
 msgstr ""
 
 #: histogram/ui[2][0][1].label
-#: scatterplot/ui[1][2][0].label
+#: scatterplot/ui[1][1][0].label
 msgid "Reference Lines"
 msgstr ""
 
-#: scatterplot/ui[1][3][0].label
+#: scatterplot/ui[1][1][1].label
 msgid "Regression Line"
 msgstr ""
 
@@ -4478,16 +4590,19 @@ msgstr ""
 #: barchart/options/titleAlign/1.title
 #: barchart/options/subtitleAlign/1.title
 #: barchart/options/captionAlign/1.title
+#: barchart/options/facetAlign/1.title
 #: barchart/options/legendPosition/right.title
 #: barchart/options/xAxisPosition/1.title
 #: barplot/options/titleAlign/1.title
 #: barplot/options/subtitleAlign/1.title
 #: barplot/options/captionAlign/1.title
+#: barplot/options/facetAlign/1.title
 #: barplot/options/legendPosition/right.title
 #: barplot/options/xAxisPosition/1.title
 #: boxplot/options/titleAlign/1.title
 #: boxplot/options/subtitleAlign/1.title
 #: boxplot/options/captionAlign/1.title
+#: boxplot/options/facetAlign/1.title
 #: boxplot/options/legendPosition/right.title
 #: boxplot/options/xAxisPosition/1.title
 #: corresp/options/titleAlign/1.title
@@ -4497,6 +4612,7 @@ msgstr ""
 #: histogram/options/titleAlign/1.title
 #: histogram/options/subtitleAlign/1.title
 #: histogram/options/captionAlign/1.title
+#: histogram/options/facetAlign/1.title
 #: histogram/options/legendPosition/right.title
 #: histogram/options/xAxisPosition/1.title
 #: likertplot/options/titleAlign/1.title
@@ -4511,10 +4627,12 @@ msgstr ""
 #: lollipop/options/titleAlign/1.title
 #: lollipop/options/subtitleAlign/1.title
 #: lollipop/options/captionAlign/1.title
+#: lollipop/options/facetAlign/1.title
 #: lollipop/options/xAxisPosition/1.title
 #: mosaic/options/titleAlign/1.title
 #: mosaic/options/subtitleAlign/1.title
 #: mosaic/options/captionAlign/1.title
+#: mosaic/options/facetAlign/1.title
 #: mosaic/options/legendPosition/right.title
 #: mosaic/options/xAxisPosition/1.title
 #: mrcrosstabs/options/titleAlign/1.title
@@ -4534,6 +4652,7 @@ msgstr ""
 #: piechart/options/titleAlign/1.title
 #: piechart/options/subtitleAlign/1.title
 #: piechart/options/captionAlign/1.title
+#: piechart/options/facetAlign/1.title
 #: piechart/options/legendPosition/right.title
 #: principal/options/titleAlign/1.title
 #: principal/options/subtitleAlign/1.title
@@ -4553,6 +4672,7 @@ msgstr ""
 #: scatterplot/options/titleAlign/1.title
 #: scatterplot/options/subtitleAlign/1.title
 #: scatterplot/options/captionAlign/1.title
+#: scatterplot/options/facetAlign/1.title
 #: scatterplot/options/legendPosition/right.title
 #: scatterplot/options/xAxisPosition/1.title
 msgid "Right"
@@ -4571,9 +4691,9 @@ msgstr ""
 #: barchart/options/facetBy/row.title
 #: barchart/ui[5][0][0][0][0]/facetBy_row.label
 #: barplot/options/facetBy/row.title
-#: barplot/ui[4][0][1][0][0]/facetBy_row.label
+#: barplot/ui[4][0][0][0]/facetBy_row.label
 #: boxplot/options/facetBy/row.title
-#: boxplot/ui[3][0][1][0][0]/facetBy_row.label
+#: boxplot/ui[3][0][0][0]/facetBy_row.label
 #: corresp/options/rowColor.title
 #: histogram/options/facetBy/row.title
 #: histogram/ui[4][0][0][0][0]/facetBy_row.label
@@ -4582,9 +4702,9 @@ msgstr ""
 #: mosaic/options/facetBy/row.title
 #: mosaic/ui[4][0][0][0][0]/facetBy_row.label
 #: piechart/options/facetBy/row.title
-#: piechart/ui[4][0][1][0][0]/facetBy_row.label
+#: piechart/ui[4][0][0][0]/facetBy_row.label
 #: scatterplot/options/facetBy/row.title
-#: scatterplot/ui[2][0][1][0][0]/facetBy_row.label
+#: scatterplot/ui[3][0][0][0][0]/facetBy_row.label
 msgid "Row"
 msgstr ""
 
@@ -4848,17 +4968,21 @@ msgstr ""
 #: areachart/options/legendFontSize.title
 #: areachart/options/xAxisFontSize.title
 #: areachart/options/yAxisFontSize.title
+#: barchart/options/facetFontSize.title
 #: barchart/options/legendFontSize.title
 #: barchart/options/xAxisFontSize.title
 #: barchart/options/yAxisFontSize.title
+#: barplot/options/facetFontSize.title
 #: barplot/options/legendFontSize.title
 #: barplot/options/xAxisFontSize.title
 #: barplot/options/yAxisFontSize.title
+#: boxplot/options/facetFontSize.title
 #: boxplot/options/legendFontSize.title
 #: boxplot/options/xAxisFontSize.title
 #: boxplot/options/yAxisFontSize.title
 #: corresp/options/xAxisFontSize.title
 #: corresp/options/yAxisFontSize.title
+#: histogram/options/facetFontSize.title
 #: histogram/options/legendFontSize.title
 #: histogram/options/xAxisFontSize.title
 #: histogram/options/yAxisFontSize.title
@@ -4866,9 +4990,11 @@ msgstr ""
 #: linechart/options/legendFontSize.title
 #: linechart/options/xAxisFontSize.title
 #: linechart/options/yAxisFontSize.title
+#: lollipop/options/facetFontSize.title
 #: lollipop/options/xAxisFontSize.title
 #: lollipop/options/yAxisFontSize.title
 #: mosaic/options/labelFontSize.title
+#: mosaic/options/facetFontSize.title
 #: mosaic/options/legendFontSize.title
 #: mosaic/options/xAxisFontSize.title
 #: mosaic/options/yAxisFontSize.title
@@ -4880,6 +5006,7 @@ msgstr ""
 #: multcorresp/options/legendFontSize.title
 #: multcorresp/options/xAxisFontSize.title
 #: multcorresp/options/yAxisFontSize.title
+#: piechart/options/facetFontSize.title
 #: piechart/options/legendFontSize.title
 #: principal/options/legendFontSize.title
 #: principal/options/xAxisFontSize.title
@@ -4890,6 +5017,7 @@ msgstr ""
 #: raincloud/options/legendFontSize.title
 #: raincloud/options/xAxisFontSize.title
 #: raincloud/options/yAxisFontSize.title
+#: scatterplot/options/facetFontSize.title
 #: scatterplot/options/legendFontSize.title
 #: scatterplot/options/xAxisFontSize.title
 #: scatterplot/options/yAxisFontSize.title
@@ -5056,6 +5184,17 @@ msgstr ""
 msgid "Student"
 msgstr ""
 
+#: barchart/options/facetStyle.title
+#: barplot/options/facetStyle.title
+#: boxplot/options/facetStyle.title
+#: histogram/options/facetStyle.title
+#: lollipop/options/facetStyle.title
+#: mosaic/options/facetStyle.title
+#: piechart/options/facetStyle.title
+#: scatterplot/options/facetStyle.title
+msgid "Style"
+msgstr ""
+
 #: areachart/ui[4][1].label
 #: barchart/ui[8][1].label
 #: barplot/ui[7][1].label
@@ -5070,7 +5209,7 @@ msgstr ""
 #: piechart/ui[6][1].label
 #: qqplot/ui[7][1].label
 #: raincloud/ui[4][1].label
-#: scatterplot/ui[5][1].label
+#: scatterplot/ui[6][1].label
 msgid "Subtitle"
 msgstr ""
 
@@ -5193,27 +5332,21 @@ msgstr ""
 msgid "Text size"
 msgstr ""
 
-#: barplot/ui[4][0][0][0].label
-#: boxplot/ui[3][0][0][0].label
+#: barplot/ui[2][0][1][1].label
+#: boxplot/ui[2][0][0][1].label
 #: corresp/ui[5][0][0][0].label
 #: likertplot/ui[5].label
 #: likertplot/ui[5][0][0][0].label
 #: mrcrosstabs/ui[2][0][2][1].label
 #: mrfrequencies/ui[2][0][0][1].label
 #: multcorresp/ui[6][0][0][1].label
-#: piechart/ui[4][0][0][0].label
+#: piechart/ui[2][0][1][1].label
 #: principal/ui[4][0][0][0].label
 msgid "Text Size"
 msgstr ""
 
 #: corresp/ui[5].label
 msgid "Text Size & Colors"
-msgstr ""
-
-#: barplot/ui[4].label
-#: boxplot/ui[3].label
-#: piechart/ui[4].label
-msgid "Text Size & Facets"
 msgstr ""
 
 #: R/principal.b.R
@@ -5462,7 +5595,7 @@ msgstr ""
 #: piechart/ui[6][0].label
 #: qqplot/ui[7][0].label
 #: raincloud/ui[4][0].label
-#: scatterplot/ui[5][0].label
+#: scatterplot/ui[6][0].label
 msgid "Title"
 msgstr ""
 
@@ -5919,8 +6052,8 @@ msgstr ""
 #: raincloud/ui[3][1].label
 #: scatterplot/options/xaxis.title
 #: scatterplot/ui[0][0].label
-#: scatterplot/ui[3][0][0][0].label
-#: scatterplot/ui[4][1].label
+#: scatterplot/ui[4][0][0][0].label
+#: scatterplot/ui[5][1].label
 msgid "X-Axis"
 msgstr ""
 
@@ -5999,8 +6132,8 @@ msgstr ""
 #: raincloud/ui[3][2].label
 #: scatterplot/options/yaxis.title
 #: scatterplot/ui[0][1].label
-#: scatterplot/ui[3][0][1][0].label
-#: scatterplot/ui[4][2].label
+#: scatterplot/ui[4][0][1][0].label
+#: scatterplot/ui[5][2].label
 msgid "Y-Axis"
 msgstr ""
 

@@ -95,6 +95,20 @@ test_that("lollipop: dot and line customization", {
     expect_plot_snapshot("lollipop-dotLineCustomization", testPlot)
 })
 
+test_that("lollipop: facet label customization", {
+    testPlot <- vijPlots::lollipop(
+        data = testData,
+        aVar = "Petal.Width",
+        group = "Species",
+        facet = "group2",
+        facetFontFace = "bold",
+        facetFontSize = "16",
+        facetAlign = "0",
+        facetStyle = "border"
+    )$plot
+    expect_plot_snapshot("lollipop-facet-labels", testPlot)
+})
+
 test_that("lollipop: titles, axis and legend text options", {
     testPlot <- vijPlots::lollipop(
         data = testData,

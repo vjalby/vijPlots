@@ -37,6 +37,10 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             captionFontFace = "italic",
             captionFontSize = "10",
             captionAlign = "1",
+            facetFontFace = "plain",
+            facetFontSize = "12",
+            facetAlign = "0.5",
+            facetStyle = "default",
             legendText = "",
             legendFontSize = "14",
             legendPosition = "right",
@@ -325,6 +329,43 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "0.5",
                     "1"),
                 default="1")
+            private$..facetFontFace <- jmvcore::OptionList$new(
+                "facetFontFace",
+                facetFontFace,
+                options=list(
+                    "plain",
+                    "bold",
+                    "italic",
+                    "bold.italic"),
+                default="plain")
+            private$..facetFontSize <- jmvcore::OptionList$new(
+                "facetFontSize",
+                facetFontSize,
+                options=list(
+                    "8",
+                    "10",
+                    "12",
+                    "14",
+                    "16",
+                    "18",
+                    "20"),
+                default="12")
+            private$..facetAlign <- jmvcore::OptionList$new(
+                "facetAlign",
+                facetAlign,
+                options=list(
+                    "0",
+                    "0.5",
+                    "1"),
+                default="0.5")
+            private$..facetStyle <- jmvcore::OptionList$new(
+                "facetStyle",
+                facetStyle,
+                options=list(
+                    "default",
+                    "border",
+                    "background"),
+                default="default")
             private$..legendText <- jmvcore::OptionString$new(
                 "legendText",
                 legendText,
@@ -489,6 +530,10 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..captionFontFace)
             self$.addOption(private$..captionFontSize)
             self$.addOption(private$..captionAlign)
+            self$.addOption(private$..facetFontFace)
+            self$.addOption(private$..facetFontSize)
+            self$.addOption(private$..facetAlign)
+            self$.addOption(private$..facetStyle)
             self$.addOption(private$..legendText)
             self$.addOption(private$..legendFontSize)
             self$.addOption(private$..legendPosition)
@@ -543,6 +588,10 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         captionFontFace = function() private$..captionFontFace$value,
         captionFontSize = function() private$..captionFontSize$value,
         captionAlign = function() private$..captionAlign$value,
+        facetFontFace = function() private$..facetFontFace$value,
+        facetFontSize = function() private$..facetFontSize$value,
+        facetAlign = function() private$..facetAlign$value,
+        facetStyle = function() private$..facetStyle$value,
         legendText = function() private$..legendText$value,
         legendFontSize = function() private$..legendFontSize$value,
         legendPosition = function() private$..legendPosition$value,
@@ -596,6 +645,10 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..captionFontFace = NA,
         ..captionFontSize = NA,
         ..captionAlign = NA,
+        ..facetFontFace = NA,
+        ..facetFontSize = NA,
+        ..facetAlign = NA,
+        ..facetStyle = NA,
         ..legendText = NA,
         ..legendFontSize = NA,
         ..legendPosition = NA,
@@ -695,6 +748,10 @@ boxplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param captionFontFace .
 #' @param captionFontSize .
 #' @param captionAlign .
+#' @param facetFontFace .
+#' @param facetFontSize .
+#' @param facetAlign .
+#' @param facetStyle .
 #' @param legendText .
 #' @param legendFontSize .
 #' @param legendPosition .
@@ -755,6 +812,10 @@ boxplot <- function(
     captionFontFace = "italic",
     captionFontSize = "10",
     captionAlign = "1",
+    facetFontFace = "plain",
+    facetFontSize = "12",
+    facetAlign = "0.5",
+    facetStyle = "default",
     legendText = "",
     legendFontSize = "14",
     legendPosition = "right",
@@ -827,6 +888,10 @@ boxplot <- function(
         captionFontFace = captionFontFace,
         captionFontSize = captionFontSize,
         captionAlign = captionAlign,
+        facetFontFace = facetFontFace,
+        facetFontSize = facetFontSize,
+        facetAlign = facetAlign,
+        facetStyle = facetStyle,
         legendText = legendText,
         legendFontSize = legendFontSize,
         legendPosition = legendPosition,

@@ -134,32 +134,23 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     if (self$options$usePalette == "forFilling") { # fixed border color
                         plot <- plot + ggplot2::geom_histogram(
                             mapping = histAes,
-                            binwidth = binWidth,
-                            boundary = binBoundary,
+                            binwidth = binWidth, boundary = binBoundary, alpha = histAlpha,
                             position = self$options$groupingN,
-                            alpha = histAlpha,
-                            color = borderColor,
-                            show.legend = TRUE
+                            color = borderColor, show.legend = TRUE
                         )
                     } else { # fixed fill color
                         plot <- plot + ggplot2::geom_histogram(
                             mapping = histAes,
-                            binwidth = binWidth,
-                            boundary = binBoundary,
+                            binwidth = binWidth, boundary = binBoundary, alpha = histAlpha,
                             position = self$options$groupingN,
-                            alpha = histAlpha,
-                            fill = fillColor,
-                            show.legend = TRUE
+                            fill = fillColor, show.legend = TRUE
                         )
                     }
                 } else { # no group / fixed colors
                     plot <- plot + ggplot2::geom_histogram(
                         mapping = histAes,
-                        binwidth = binWidth,
-                        boundary = binBoundary,
-                        fill = fillColor,
-                        color = borderColor,
-                        alpha = histAlpha
+                        binwidth = binWidth,boundary = binBoundary, alpha = histAlpha,
+                        fill = fillColor, color = borderColor,
                     )
                 }
             }
@@ -169,10 +160,8 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showLines) {
                 plot <- plot + ggplot2::geom_freqpoly(
                     mapping = histAes,
-                    binwidth = binWidth,
-                    boundary = binBoundary,
-                    position = self$options$groupingN,
-                    linewidth = self$options$lineLineSize,
+                    binwidth = binWidth, boundary = binBoundary,
+                    position = self$options$groupingN, linewidth = self$options$lineLineSize,
                     show.legend = !legendAsSquare
                 )
             }
@@ -191,20 +180,14 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 				if (is.null(groupVar)) {
                     plot <- plot + ggh4x::stat_theodensity(
-                        mapping = normalCurveAes,
-                        na.rm = TRUE,
-                        color = 'red',
-                        linewidth = lineSize,
-                        linetype = lineType
+                        mapping = normalCurveAes, na.rm = TRUE, color = 'red',
+                        linewidth = lineSize, linetype = lineType
                     )
                 } else {
                     plot <- plot + ggh4x::stat_theodensity(
-                        mapping = normalCurveAes,
-                        na.rm = TRUE,
-                        linewidth = lineSize,
-                        linetype = lineType,
-                        show.legend = !legendAsSquare,
-                        position = self$options$groupingN
+                        mapping = normalCurveAes, na.rm = TRUE,
+                        linewidth = lineSize, linetype = lineType,
+                        position = self$options$groupingN, show.legend = !legendAsSquare
                     )
                 }
              }
@@ -224,15 +207,12 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (is.null(groupVar)) {
                     plot <- plot + ggplot2::geom_density(
                         mapping = densityAes,
-                        fill = fillColor,
-                        alpha = densityAlpha,
-                        linewidth = densitySize
+                        fill = fillColor, alpha = densityAlpha, linewidth = densitySize
                     )
                 } else {
                     plot <- plot + ggplot2::geom_density(
                         mapping = densityAes,
-                        alpha = densityAlpha,
-                        linewidth = densitySize,
+                        alpha = densityAlpha, linewidth = densitySize,
                         position = self$options$groupingN,
                         show.legend = legendAsSquare
                     )

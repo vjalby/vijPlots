@@ -189,20 +189,18 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Bars ####
 
+            geomBar <- function(...) ggplot2::geom_bar(..., position = position, color = borderColor)
+
             if (yaxis == "count") {
                 if (singleColor)
-                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(count)), stat = "count", position = position,
-                                            color = borderColor, fill = oneColorOfPalette)
+                    plot <- plot + geomBar(ggplot2::aes(y = ggplot2::after_stat(count)), stat = "count", fill = oneColorOfPalette)
                 else
-                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(count)), stat = "count", position = position,
-                                            color = borderColor, show.legend = TRUE) # show.legend needed to display unused levels
+                    plot <- plot + geomBar(ggplot2::aes(y = ggplot2::after_stat(count)), stat = "count", show.legend = TRUE) # show.legend needed to display unused levels
             } else {
                 if (singleColor)
-                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, position = position,
-                                            color = borderColor, fill = oneColorOfPalette)
+                    plot <- plot + geomBar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, fill = oneColorOfPalette)
                 else
-                    plot <- plot + ggplot2::geom_bar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, position = position,
-                                            color = borderColor, show.legend = TRUE)
+                    plot <- plot + geomBar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, show.legend = TRUE)
             }
 
             #### Labels ####
@@ -235,28 +233,29 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                 }
 
-                # geom_text
+                # Count labels
+
+                geomText <- function(...) ggplot2::geom_text(...,
+                                                             position = labPosition, vjust = vjust2, hjust = hjust2,
+                                                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+
                 if (yaxis == "count") {
                     if (textColor == "auto") {
-                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count)),
-                                                                                        color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
-                                                 stat = "count", position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count)),
+                                                             color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                                                 stat = "count")
                     } else {
-                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count))),
-                                                 stat = "count", position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 color = textColor, fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count))),
+                                                 stat = "count", color = textColor)
                     }
                 } else { # Percent
                     if (textColor == "auto") {
-                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop)),
-                                                                                        color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
-                                                 stat = ggstats::StatProp, position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop)),
+                                                             color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                                                 stat = ggstats::StatProp)
                     } else {
-                        plot <- plot + ggplot2::geom_text(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop))),
-                                                 stat = ggstats::StatProp, position = labPosition, vjust = vjust2, hjust = hjust2,
-                                                 color = textColor, fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop))),
+                                                 stat = ggstats::StatProp, color = textColor)
                     }
                 }
             }

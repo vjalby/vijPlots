@@ -242,25 +242,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Axis Labels ####
-            if (self$options$yaxis == "mean") {
-                if (errorBars == "none")
-                    ylabel <- jmvcore::format(.('Mean of {var}'), var = yVar)
-                else if (errorBars == "sd")
-                    ylabel <- jmvcore::format(.('{var} (Mean ± SD)'), var = yVar)
-                else if (errorBars == "se")
-                    ylabel <- jmvcore::format(.('{var} (Mean ± SE)'), var = yVar)
-                else if (errorBars == "ci")
-                    ylabel <- jmvcore::format(.('{var} (Mean ± {level}% CI)'), var = yVar, level = self$options$ciLevel)
-            } else if (self$options$yaxis == "median")
-                ylabel <- jmvcore::format(.('Median of {var}'), var = yVar)
-            else if (self$options$yaxis == "min")
-                ylabel <- jmvcore::format(.('Minimum of {var}'), var = yVar)
-            else if (self$options$yaxis == "max")
-                ylabel <- jmvcore::format(.('Maximum of {var}'), var = yVar)
-            else if (self$options$yaxis == "sum")
-                ylabel <- jmvcore::format(.('Sum of {var}'), var = yVar)
-            else
-                ylabel <- yVar
+            ylabel <- private$.getYLabel(yVar, errorBars)
 
             #### facet ####
             if (!is.null(self$options$facet)) {
@@ -281,5 +263,26 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             vijDebugPlot(self, plot)
 
             return(plot)
+        },
+        .getYLabel = function(yVar, errorBars) {
+            if (self$options$yaxis == "mean") {
+                if (errorBars == "sd")
+                    jmvcore::format(.('{var} (Mean ± SD)'), var = yVar)
+                else if (errorBars == "se")
+                    jmvcore::format(.('{var} (Mean ± SE)'), var = yVar)
+                else if (errorBars == "ci")
+                    jmvcore::format(.('{var} (Mean ± {level}% CI)'), var = yVar, level = self$options$ciLevel)
+                else
+                    jmvcore::format(.('Mean of {var}'), var = yVar)
+            } else if (self$options$yaxis == "median")
+                jmvcore::format(.('Median of {var}'), var = yVar)
+            else if (self$options$yaxis == "min")
+                jmvcore::format(.('Minimum of {var}'), var = yVar)
+            else if (self$options$yaxis == "max")
+                jmvcore::format(.('Maximum of {var}'), var = yVar)
+            else if (self$options$yaxis == "sum")
+                jmvcore::format(.('Sum of {var}'), var = yVar)
+            else
+                yVar
         })
 )

@@ -208,10 +208,7 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
         legend.box = "vertical", # for legend at bottom
         legend.margin = ggplot2::margin(b=0), # for multiple legends
         # Facet Label
-        strip.text = ggplot2::element_text(
-            size = facetFontSize,
-            face = facetFontFace,
-            hjust = facetAlign),
+        strip.text = ggplot2::element_text(size = facetFontSize, face = facetFontFace, hjust = facetAlign),
         strip.background = switch(facetStyle, "background" = ggplot2::element_rect(fill="lightgray"), "border" = ggplot2::element_rect(color = "black", fill = "white"), ggplot2::element_rect()),
         # Axis Titles
         axis.title.x = ggplot2::element_text(

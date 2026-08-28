@@ -150,24 +150,37 @@ analyses:
     menuGroup: vijPlots
     menuTitle: Multiple Correspondence Analysis
     menuSubgroup: Multivariate
-usesNative: true
-minApp: 2.7.1
 datasets:
   - name: vijPlots
     path: vijPlots.omv
     description: A demonstration dataset for vijPlots module.
+  - name: Likert
+    path: likert.omv
+    description: A demonstration dataset for vijPlots/Likert plot.
+    tags:
+      - Likert
   - name: Credit Cards
     path: creditcards.omv
     description: A demonstration dataset for vijPlots/Multiple Response plots.
+    tags:
+      - Multiple Response
   - name: Iris
     path: iris.omv
     description: A demonstration dataset for vijPlots/Principal Component Analysis.
+    tags:
+      - PCA
   - name: Smoking
     path: smoking.omv
     description: A demonstration dataset for vijPlots/Correspondence Analysis.
+    tags:
+      - CA
   - name: Cars
     path: cars.omv
     description: A demonstration dataset for vijPlots/Multiple Correspondence Analysis.
+    tags:
+      - MCA
 build-time: '2026-03-25T04:27:47.366Z'
+usesNative: true
+minApp: 2.7.1
 
 ...

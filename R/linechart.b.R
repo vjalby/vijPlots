@@ -74,13 +74,22 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!timeVarIsNumeric && !timeVarIsDate && self$options$xAxisRangeType == "manual")
                 vijWarningMessage(self, .("\"Range\" option for the X-axis is only available for numeric and date variables."))
 
+            # Manual date range for the X-axis (validated once here; .plot() re-renders reuse it)
+            dateLim <- NULL
+            if (timeVarIsDate && self$options$xAxisRangeType == "manual") {
+                dateLim <- private$.convertToDate(c(self$options$xAxisRangeMin, self$options$xAxisRangeMax), self$options$dateFormat)
+                if (is.null(dateLim))
+                    vijWarningMessage(self, .("Manual X-axis range doesn't have a valid date format."))
+            }
+
             image <- self$results$plot
-            image$setState(plotData)
+            image$setState(list(data = plotData, dateLim = dateLim))
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
-            plotData <- image$state
+            plotData <- image$state$data
+            dateLim <- image$state$dateLim
 
             timeVar <- rlang::sym(self$options$timeVar)
             depVars <- self$options$vars
@@ -148,8 +157,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Date range/scale
             if (timeVarIsDate) {
-                if (self$options$xAxisRangeType == "manual") { # Date and manual
-                    dateLim <- private$.convertToDate(c(self$options$xAxisRangeMin,self$options$xAxisRangeMax), self$options$dateFormat)
+                if (self$options$xAxisRangeType == "manual" && !is.null(dateLim)) { # Date and manual
                     dateBreaks <- scales::breaks_width(self$options$dateBreak)(dateLim)
                     dateBreaks <- dateBreaks[dateBreaks >= dateLim[1] & dateBreaks <= dateLim[2]]
                     plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, breaks = dateBreaks,

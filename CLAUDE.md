@@ -5,10 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Overview
 
 **vijPlots** is an R package / jamovi module: a `ggplot2` wrapper providing point-and-click
-statistical plots inside [jamovi](https://www.jamovi.org). It ships 17 analyses, available in
+statistical plots inside [jamovi](https://www.jamovi.org). It ships 18 analyses, available in
 jamovi's **Plots** ribbon tab: `histogram`, `boxplot`, `raincloud`, `scatterplot`, `barplot`,
-`barchart`, `lollipop`, `qqplot`, `piechart`, `likertplot`, `mrfrequencies`, `mrcrosstabs`,
-`linechart`, `areachart`, `principal`, `corresp`, `multcorresp`.
+`barchart`, `lollipop`, `qqplot`, `piechart`, `mosaic`, `likertplot`, `mrfrequencies`,
+`mrcrosstabs`, `linechart`, `areachart`, `principal`, `corresp`, `multcorresp`.
 
 ### Target jamovi version
 
@@ -65,7 +65,7 @@ Each analysis `<name>` (e.g. `histogram`) is defined by:
 - `jamovi/<name>.r.yaml` — declares the result items (e.g. `plot`) that `self$results$<item>`
   refers to in the `.b.R`.
 
-All 17 analyses are additionally registered in `jamovi/0000.yaml` (title, menu placement, `ns:
+All 18 analyses are additionally registered in `jamovi/0000.yaml` (title, menu placement, `ns:
 vijPlots`). To scaffold a new analysis, see `build.R` for the `jmvtools::addAnalysis(name=...,
 title=...)` pattern used for the existing ones.
 

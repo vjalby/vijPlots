@@ -41,7 +41,8 @@ vijColorPalette = function(pal, type = "fill", theme) {
     } else if (palType == "custom") {
         customColors <- switch(palName,
             lemovice  = c("#16144e", "#00dc8c", "#5fcdcd", "#007387", "#efbe7c", "#8c87a4", "#ff6e5a", "#bc6479", "#8faadc", "#006d4d"),
-            tidyplots = c("#0072B2","#56B4E9","#009E73","#F5C710","#E69F00","#D55E00"), # unused
+            carbon_dark = c("#6929c4", "#1192e8", "#005d5d", "#9f1853", "#fa4d56", "#570408", "#198038", "#002d9c", "#ee538b", "#b28600", "#009d9a", "#012749", "#8a3800", "#a56eff"),
+            carbon_light = c("#8a3ffc", "#33b1ff", "#007d79", "#ff7eb6", "#fa4d56", "#fff1f1", "#6fdc8c", "#4589ff", "#d12771", "#d2a106", "#08bdba", "#bae6ff", "#ba4e00", "#d4bbff"),
             NULL
         )
         if (is.null(customColors))

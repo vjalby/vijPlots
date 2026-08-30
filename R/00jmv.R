@@ -5,21 +5,21 @@
     `ggplots`=list(
         `type`="software", 
         `author`="Larmarange, J.", 
-        `year`=2025, 
+        `year`=2026, 
         `title`="ggstats: Extension to 'ggplot2' for Plotting Stats", 
         `publisher`="[R package]. Retrieved from https://cran.r-project.org/package=ggstats", 
         `url`="https://cran.r-project.org/package=ggstats"), 
     `qqplotr`=list(
         `type`="software", 
         `author`="Almeida, A., Loy, A., Hofmann, H.", 
-        `year`=2023, 
+        `year`=2025, 
         `title`="qqplotr: Quantile-Quantile Plot Extensions for 'ggplot2'", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=qqplotr", 
         `url`="https://CRAN.R-project.org/package=qqplotr"), 
     `factominer`=list(
         `type`="software", 
         `author`="Husson, F., Josse, J., Le, S., Mazet, J.", 
-        `year`=2025, 
+        `year`=2026, 
         `title`="FactoMineR: Multivariate Exploratory Data Analysis and Data Mining", 
         `publisher`="[R package]. Retrieved from https://cran.r-project.org/package=FactoMineR", 
         `url`="https://cran.r-project.org/package=FactoMineR"), 
@@ -40,7 +40,7 @@
     `gpa`=list(
         `type`="software", 
         `author`="Bernaards, C., Gilbert, P., Jennrich, R.", 
-        `year`=2025, 
+        `year`=2026, 
         `title`="GPArotation: Gradient Projection Factor Rotation", 
         `publisher`="[R package]. Retrieved from https://cran.r-project.org/package=GPArotation", 
         `url`="https://cran.r-project.org/package=GPArotation"))

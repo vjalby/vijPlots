@@ -95,6 +95,7 @@ The module is available in the **Plots** tab.
 * Histogram: Options to hide bins and to show lines
 * Histogram: option to show mean/median reference lines, with an optional value label
 * Scatter Plot: Option to use different shapes. Option to set label text size
+* Two new color palettes based on the Carbon Design System (Carbon:Dark, Carbon:Light)
 * Fixed stacking order in barplot/barchart/mrcrosstab
 * Support for weights in barplot/piechart
 * Improved error handling
@@ -104,9 +105,11 @@ The module is available in the **Plots** tab.
 
 ## References
 
-- Larmarange J. (2025). ggstats: Extension to 'ggplot2' for Plotting Stats. R package version 0.8.0, <https://github.com/larmarange/ggstats>.
-- Almeida, A., Loy, A., Hofmann, H. (2023). qqplotr: Quantile-Quantile Plot Extensions for 'ggplot2'. R package version 0.0.6, <https://github.com/aloy/qqplotr>.
-- Bernaards, C., Gilbert, P., Jennrich, R. (2025), GPArotation: Gradient Projection Factor Rotation. R package version 2025.3.1, <https://cran.r-project.org/package=GPArotation>.
-- Greenacre, M. (2010), Biplots in Practice, Fundación BBVA. <https://www.fbbva.es/en/publicaciones/biplots-in-practice-7/>.
-- Husson, F., Josse, J., Le, S., Mazet, J. (2025). FactoMineR: Multivariate Exploratory Data Analysis and Data Mining. R package version 2.12, <https://cran.r-project.org/package=FactoMineR>
+- Larmarange J. (2026). ggstats: Extension to 'ggplot2' for Plotting Stats. R package version 0.13.0, <https://github.com/larmarange/ggstats>
+- Almeida, A., Loy, A., Hofmann, H. (2025). qqplotr: Quantile-Quantile Plot Extensions for 'ggplot2'. R package version 0.0.7, <https://github.com/aloy/qqplotr>
+- Bernaards, C., Gilbert, P., Jennrich, R. (2026), GPArotation: Gradient Projection Factor Rotation. R package version 2026.4.1, <https://cran.r-project.org/package=GPArotation>
+- Greenacre, M. (2010), Biplots in Practice, Fundación BBVA. <https://www.fbbva.es/en/publicaciones/biplots-in-practice-7/>
+- Husson, F., Josse, J., Le, S., Mazet, J. (2026). FactoMineR: Multivariate Exploratory Data Analysis and Data Mining. R package version 2.14, <https://cran.r-project.org/package=FactoMineR>
 - Engler, J.B. (2026). tidyplots: Tidy Plots for Scientific Papers, R package version 0.4.0, <https://CRAN.R-project.org/package=tidyplots>
+- IBM. Carbon Design System — Color palettes. <https://carbondesignsystem.com/data-visualization/color-palettes/>
+

@@ -186,6 +186,10 @@ options:
           name: tidy::rainbow
         - title: Tidy:Metro
           name: tidy::metro
+        - title: Carbon:Dark
+          name: custom::carbon_dark
+        - title: Carbon:Light
+          name: custom::carbon_light
         - title: Lémovice
           name: custom::lemovice
       default: jmv

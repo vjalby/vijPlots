@@ -173,7 +173,7 @@ msgid ""
 "questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF "
 "p-values are already adjusted (groupwise); no other adjustment is "
 "possible.</p>\n"
-"<p>A sample file is included at Open > Data Library > vijPlots > vijPlots</p>"
+"<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>"
 msgstr ""
 "<h3>Données & Tri</h3>\n"
 "<ul>\n"
@@ -205,7 +205,7 @@ msgstr ""
 "et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; "
 "aucune autre correction n'est possible.</p>\n"
 "<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de "
-"données > vijPlots > vijPlots</p>"
+"données > vijPlots > Likert</p>"
 
 #: package.description
 msgid ""
@@ -713,6 +713,10 @@ msgstr "Fichier de démonstration du module vijPlots."
 #: package/datasets/Smoking.description
 msgid "A demonstration dataset for vijPlots/Correspondence Analysis."
 msgstr "Fichier de démonstration pour vijPlots/Analyse des correspondances."
+
+#: package/datasets/Likert.description
+msgid "A demonstration dataset for vijPlots/Likert plot."
+msgstr "Fichier de démonstration pour vijPlots/Likert."
 
 #: package/datasets/Cars.description
 msgid "A demonstration dataset for vijPlots/Multiple Correspondence Analysis."
@@ -1410,6 +1414,42 @@ msgstr "Style des légendes"
 #: principal/ui[6][2][0][0].label
 msgid "Caption Text"
 msgstr "Texte des légendes"
+
+#: areachart/options/colorPalette/custom::carbon_dark.title
+#: barchart/options/colorPalette/custom::carbon_dark.title
+#: barplot/options/colorPalette/custom::carbon_dark.title
+#: boxplot/options/colorPalette/custom::carbon_dark.title
+#: histogram/options/colorPalette/custom::carbon_dark.title
+#: linechart/options/colorPalette/custom::carbon_dark.title
+#: mosaic/options/colorPalette/custom::carbon_dark.title
+#: mrcrosstabs/options/colorPalette/custom::carbon_dark.title
+#: mrfrequencies/options/colorPalette/custom::carbon_dark.title
+#: multcorresp/options/colorPalette/custom::carbon_dark.title
+#: piechart/options/colorPalette/custom::carbon_dark.title
+#: principal/options/colorPalette/custom::carbon_dark.title
+#: qqplot/options/colorPalette/custom::carbon_dark.title
+#: raincloud/options/colorPalette/custom::carbon_dark.title
+#: scatterplot/options/colorPalette/custom::carbon_dark.title
+msgid "Carbon:Dark"
+msgstr "Carbon:Foncé"
+
+#: areachart/options/colorPalette/custom::carbon_light.title
+#: barchart/options/colorPalette/custom::carbon_light.title
+#: barplot/options/colorPalette/custom::carbon_light.title
+#: boxplot/options/colorPalette/custom::carbon_light.title
+#: histogram/options/colorPalette/custom::carbon_light.title
+#: linechart/options/colorPalette/custom::carbon_light.title
+#: mosaic/options/colorPalette/custom::carbon_light.title
+#: mrcrosstabs/options/colorPalette/custom::carbon_light.title
+#: mrfrequencies/options/colorPalette/custom::carbon_light.title
+#: multcorresp/options/colorPalette/custom::carbon_light.title
+#: piechart/options/colorPalette/custom::carbon_light.title
+#: principal/options/colorPalette/custom::carbon_light.title
+#: qqplot/options/colorPalette/custom::carbon_light.title
+#: raincloud/options/colorPalette/custom::carbon_light.title
+#: scatterplot/options/colorPalette/custom::carbon_light.title
+msgid "Carbon:Light"
+msgstr "Carbon:Clair"
 
 #: package/datasets/Cars.name
 msgid "Cars"
@@ -3297,6 +3337,10 @@ msgstr "Rouge clair"
 #: principal/options/obsColor/#FFFFCC.title
 msgid "Light Yellow"
 msgstr "Jaune clair"
+
+#: package/datasets/Likert.name
+msgid "Likert"
+msgstr "Likert"
 
 #: package/analyses/likertplot.title
 #: package/analyses/likertplot.menuTitle

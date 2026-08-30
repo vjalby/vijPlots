@@ -6,6 +6,7 @@
 * Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
 * Line/Area Chart: manual X-axis date range can now be entered as text, and fixed breaks falling outside the specified range
 * Multiple Response Frequencies/Crosstabs: fixed a value containing only the separator (e.g. ";") not being treated as missing
+* Two new color palettes based on the Carbon Design System (Carbon:Dark, Carbon:Light)
 * Improved error handling
 
 # vijPlots 1.3.0 (2026-08-17)

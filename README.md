@@ -83,7 +83,7 @@ The module is available in the **Plots** tab.
 
 ![](img/mca.jpg)
 
-## Last changes: vijPlots 1.3.1 (2026/08/31)
+## Last changes: vijPlots 1.3.1 (2026-08-31)
 
 * Mosaic Plot
 * Facet label options (font, size, alignment, background style)
@@ -93,7 +93,7 @@ The module is available in the **Plots** tab.
 * MCA (Burt method): Fixed variable discrimination computation
 * Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
 * Histogram: Options to hide bins and to show lines
-* Histogram: option to show mean/median reference lines, with an optional value label
+* Histogram: Option to show mean/median reference lines, with an optional value label
 * Scatter Plot: Option to use different shapes. Option to set label text size
 * Two new color palettes based on the Carbon Design System (Carbon:Dark, Carbon:Light)
 * Fixed stacking order in barplot/barchart/mrcrosstab

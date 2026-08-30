@@ -6,7 +6,6 @@ jmvtools::check()
 
 getOption("jamovi_home")
 
-
 jmvtools::create('vijPlots') # Module Name
 
 # From vijMR

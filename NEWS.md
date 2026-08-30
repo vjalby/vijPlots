@@ -8,6 +8,7 @@
 * Multiple Response Frequencies/Crosstabs: fixed a value containing only the separator (e.g. ";") not being treated as missing
 * Two new color palettes based on the Carbon Design System (Carbon:Dark, Carbon:Light)
 * Improved error handling
+* Code optimization and fixes
 
 # vijPlots 1.3.0 (2026-08-17)
 

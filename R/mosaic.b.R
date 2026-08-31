@@ -348,11 +348,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             residuals <- df |>
                 dplyr::group_by(!!facet) |>
                 dplyr::group_modify(function(subDf, ...) {
-                    # rlang::expr()/!! build the formula from symbols directly, bypassing text
-                    # parsing entirely — unlike stats::reformulate(), which breaks on a variable
-                    # name containing a space or other non-syntactic character. xtabs() accepts
-                    # this (a "call", not a "formula") since it calls as.formula() on it internally.
-                    tab <- stats::xtabs(rlang::expr(freq ~ !!category + !!group), data = subDf)
+                    # jmvcore::composeFormula() backtick-quotes variable names as needed (same pattern already used in corresp.b.R).
+                    formula <- jmvcore::composeFormula("freq", c(categoryName, groupName))
+                    tab <- stats::xtabs(formula, data = subDf)
                     # a 2x2-or-larger table is required: below that, chisq.test() either errors
                     # (fully empty table) or silently returns a 1-D vector instead of a matrix
                     # of residuals (single category or single group), which would break the

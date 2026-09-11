@@ -229,9 +229,10 @@ msgstr ""
 "Diagramme en mosaïque, Diagramme Likert</li> <li><strong>Séries "
 "temporelles</strong> : Graphique en courbes, Diagramme en aires</li> "
 "<li><strong>Réponses multiples</strong> : Fréquences, Tableau croisé</li> "
-"</ul> <p>Le module est disponible dans l'onglet <strong>Graphiques</strong>."
-"</p> <p>Le code source du projet (et le changelog) est disponible sur <a "
-"href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.</p>"
+"</ul> <p>Le module est disponible dans l'onglet "
+"<strong>Graphiques</strong>.</p> <p>Le code source du projet (et le "
+"changelog) est disponible sur <a href=\"https://github.com/vjalby/vijPlots\" "
+"target=\"_blank\">Github</a>.</p>"
 
 #: R/corresp.b.R
 msgid ""
@@ -703,25 +704,13 @@ msgstr "Une variable de date doit être de type texte."
 msgid "A demonstration dataset for vijPlots module."
 msgstr "Fichier de démonstration du module vijPlots."
 
-#: package/datasets/Smoking.description
-msgid "A demonstration dataset for vijPlots/Correspondence Analysis."
-msgstr "Fichier de démonstration pour vijPlots/Analyse des correspondances."
-
 #: package/datasets/Likert.description
 msgid "A demonstration dataset for vijPlots/Likert plot."
 msgstr "Fichier de démonstration pour vijPlots/Likert."
 
-#: package/datasets/Cars.description
-msgid "A demonstration dataset for vijPlots/Multiple Correspondence Analysis."
-msgstr "Fichier de démonstration pour vijPlots/Analyse des correspondances multiples."
-
 #: package/datasets/CreditCards.description
 msgid "A demonstration dataset for vijPlots/Multiple Response plots."
 msgstr "Fichier de démonstration pour vijPlots/Réponses multiples."
-
-#: package/datasets/Iris.description
-msgid "A demonstration dataset for vijPlots/Principal Component Analysis."
-msgstr "Fichier de démonstration pour vijPlots/Analyse en composantes principales."
 
 #: areachart/options/colorPalette/Accent.title
 #: barchart/options/colorPalette/Accent.title
@@ -1443,10 +1432,6 @@ msgstr "Carbon:Foncé"
 #: scatterplot/options/colorPalette/custom::carbon_light.title
 msgid "Carbon:Light"
 msgstr "Carbon:Clair"
-
-#: package/datasets/Cars.name
-msgid "Cars"
-msgstr "Cars"
 
 #: package/analyses/barplot.menuSubgroup
 #: package/analyses/piechart.menuSubgroup
@@ -2786,10 +2771,6 @@ msgstr "Valeurs propres initiales"
 #: linechart/options/dateFormat.title
 msgid "Input format"
 msgstr "Entrée"
-
-#: package/datasets/Iris.name
-msgid "Iris"
-msgstr "Iris"
 
 #: areachart/options/dateFormat/iso.title
 #: linechart/options/dateFormat/iso.title
@@ -5323,10 +5304,6 @@ msgstr "Taille"
 msgid "Sizes & Colors"
 msgstr "Tailles & couleurs"
 
-#: package/datasets/Smoking.name
-msgid "Smoking"
-msgstr "Smoking"
-
 #: scatterplot/options/lineMethod/loess.title
 msgid "Smooth"
 msgstr "Lisse"
@@ -5706,12 +5683,15 @@ msgid ""
 "This analysis is deprecated and kept only for backward compatibility with "
 "existing documents. Please use vijMulti module instead."
 msgstr ""
+"Cette analyse est obsolète et conservée uniquement pour assurer la "
+"compatibilité ascendante avec les documents existants. Veuillez utiliser le "
+"module vijMulti à la place."
 
 #: corresp/ui[0][0].label
 #: multcorresp/ui[0][0].label
 #: principal/ui[0][0].label
 msgid "This analysis is deprecated. Please use vijMulti module instead."
-msgstr ""
+msgstr "Cette analyse est obsolète. Veuillez utiliser le module vijMulti à la place."
 
 #: areachart/options/xTicks.title
 #: areachart/options/yTicks.title

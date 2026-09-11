@@ -178,20 +178,11 @@
             "A demonstration dataset for vijPlots module.": [
                 "Fichier de démonstration du module vijPlots."
             ],
-            "A demonstration dataset for vijPlots/Correspondence Analysis.": [
-                "Fichier de démonstration pour vijPlots/Analyse des correspondances."
-            ],
             "A demonstration dataset for vijPlots/Likert plot.": [
                 "Fichier de démonstration pour vijPlots/Likert."
             ],
-            "A demonstration dataset for vijPlots/Multiple Correspondence Analysis.": [
-                "Fichier de démonstration pour vijPlots/Analyse des correspondances multiples."
-            ],
             "A demonstration dataset for vijPlots/Multiple Response plots.": [
                 "Fichier de démonstration pour vijPlots/Réponses multiples."
-            ],
-            "A demonstration dataset for vijPlots/Principal Component Analysis.": [
-                "Fichier de démonstration pour vijPlots/Analyse en composantes principales."
             ],
             "Accent": [
                 "Accentué"
@@ -378,9 +369,6 @@
             ],
             "Carbon:Light": [
                 "Carbon:Clair"
-            ],
-            "Cars": [
-                "Cars"
             ],
             "Categorical": [
                 "Variables qualitatives"
@@ -933,9 +921,6 @@
             ],
             "Input format": [
                 "Entrée"
-            ],
-            "Iris": [
-                "Iris"
             ],
             "ISO (Y-M-D)": [
                 "ISO (A-M-J)"
@@ -1810,9 +1795,6 @@
             "Sizes & Colors": [
                 "Tailles & couleurs"
             ],
-            "Smoking": [
-                "Smoking"
-            ],
             "Smooth": [
                 "Lisse"
             ],
@@ -2015,10 +1997,10 @@
                 "Quantiles théoriques"
             ],
             "This analysis is deprecated and kept only for backward compatibility with existing documents. Please use vijMulti module instead.": [
-                ""
+                "Cette analyse est obsolète et conservée uniquement pour assurer la compatibilité ascendante avec les documents existants. Veuillez utiliser le module vijMulti à la place."
             ],
             "This analysis is deprecated. Please use vijMulti module instead.": [
-                ""
+                "Cette analyse est obsolète. Veuillez utiliser le module vijMulti à la place."
             ],
             "Tick count": [
                 "Nombre de graduations"

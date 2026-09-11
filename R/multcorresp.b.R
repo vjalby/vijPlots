@@ -1,3 +1,6 @@
+### This analysis is deprecated and kept only for backward compatibility with existing documents.
+### Mutiple Correspondence Analysis is now available in vijMulti module
+
 multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "multcorrespClass",
     inherit = multcorrespBase,
@@ -14,6 +17,8 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .init = function() {
+            vijWarningMessage(self, .("This analysis is deprecated and kept only for backward compatibility with existing documents. Please use vijMulti module instead."), name = ".deprecated")
+
             if (is.null(self$options$vars)) {
                 private$.showHelpMessage()
             }
@@ -591,14 +596,17 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 keys <- seq_len(nDim)
                 measureTypes <- rep("continuous", nDim)
 
-                titles <- paste(.("Dim"), keys)
+                titles <- vapply(keys, function(k) jmvcore::format(.("Dim {n}"), n = k), character(1))
+
+                methodStr <- switch(self$options$method,
+                                    "Indicator" = .("Indicator matrix"),
+                                    "Burt" = .("Burt matrix"))
 
                 if (type == "principal")
-                    descriptionString <- .("MCA Principal Coordinates")
+                    descriptionString <- jmvcore::format(.("MCA Principal Coordinates ({method})"), method = methodStr)
                 else
-                    descriptionString <- .("MCA Standard Coordinates")
+                    descriptionString <- jmvcore::format(.("MCA Standard Coordinates ({method})"), method = methodStr)
 
-                descriptionString <- paste0(descriptionString, " (", self$options$method, ")")
 
                 descriptions <- character(length(keys))
                 for (i in keys) {

@@ -1,5 +1,6 @@
-# vijPlots 1.3.1 (2026-08-31)
+# vijPlots 1.3.2 (2026-09-13)
 
+* **Multivariate analyses (PCA/CA/MCA) have been removed and transferred to vijMulti module**
 * Mosaic Plot
 * Facet label options (font, size, alignment, background style)
 * Histogram: option to show mean/median reference lines, with an optional value label

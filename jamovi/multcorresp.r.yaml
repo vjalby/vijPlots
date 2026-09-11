@@ -4,6 +4,7 @@ title: Multiple Correspondence Analysis
 jrs:   '1.1'
 refs:
     - factominer
+    - greenacre
 items:
     - name:  eigenvalues
       title: Summary

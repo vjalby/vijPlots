@@ -7,8 +7,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 private$.showHelpMessage()
                 return()
             } else {
-                if (is.null(self$options$group))
+                if (is.null(self$options$group)) {
+                    # workaround to visible: (group) which doesn't seem to work
                     self$results$comp$setVisible(FALSE)
+                }
             }
             # Stretchable dimensions
             if (!is.null(self$options$group))
@@ -147,10 +149,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # check if variables are numeric
                 if (!canbeNum) {
                     vijWarningMessage(self, .("Comparison tests require numeric variables."))
-                    self$results$comp$setVisible(FALSE)
                 } else if (ng < 2) {
                         vijWarningMessage(self, .("Comparison tests require at least two groups."))
-                        self$results$comp$setVisible(FALSE)
                 } else {
                     # p correction method
                     adjustMethod <- self$options$adjustMethod

@@ -108,7 +108,7 @@ children:
             stretchFactor: 3
             children:
               - type: RadioButton
-                name: paramMethod_paraEstimat
+                name: paramMethod_paraEstimate
                 optionName: paramMethod
                 optionPart: paraEstimate
                 label: Estimate parameters from data

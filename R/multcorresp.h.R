@@ -647,7 +647,8 @@ multcorrespResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 name="",
                 title="Multiple Correspondence Analysis",
                 refs=list(
-                    "factominer"))
+                    "factominer",
+                    "greenacre"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="eigenvalues",

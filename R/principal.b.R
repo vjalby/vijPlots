@@ -1,3 +1,6 @@
+### This analysis is deprecated and kept only for backward compatibility with existing documents.
+### Principal Component Analysis is now available in vijMulti module
+
 principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "principalClass",
     inherit = principalBase,
@@ -14,6 +17,8 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .init = function() {
+            vijWarningMessage(self, .("This analysis is deprecated and kept only for backward compatibility with existing documents. Please use vijMulti module instead."), name = ".deprecated")
+
             if (is.null(self$options$vars)) {
                 private$.showHelpMessage()
             }
@@ -151,9 +156,9 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Saving coordinates  ####
 
             if (self$options$stdScores)
-                private$.saveCoordinates(res$stdScores, norm = "standard")
+                private$.saveCoordinates(res$stdScores, norm = "standard", rotation = res$rotation, rotationStr = res$rotationStr)
             else
-                private$.saveCoordinates(res$scores, norm = "principal")
+                private$.saveCoordinates(res$scores, norm = "principal", rotation = res$rotation, rotationStr = res$rotationStr)
 
         },
         .screeplot = function(image, ggtheme, theme, ...) {
@@ -494,10 +499,7 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                    quartimax = "Quartimax",
                                    equamax = "Equamax",
                                    parsimax = "Parsimax",
-                                   #varimin = "Varimin",
                                    entropy = "Minimum entropy",
-                                   #tandemI = "Comrey's Tandem 1",
-                                   #tandemII = "Comrey's Tandem 2",
                                    bentlerT = "Bentler T",
                                    rotation
                             )
@@ -618,25 +620,26 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 rotation = rotation
             ))
         },
-        .saveCoordinates = function(coord, norm) {
+        .saveCoordinates = function(coord, norm, rotation, rotationStr) {
             if (self$options$obsCoordOV && self$results$obsCoordOV$isNotFilled()) {
                 nDim <- self$options$dimNum
                 keys <- 1:nDim
                 measureTypes <- rep("continuous", nDim)
 
-                titles <- paste(.("Dim"), keys)
+                #titles <- paste(.("Dim"), keys)
+                titles <- vapply(keys, function(k) jmvcore::format(.("Dim {n}"), n = k), character(1))
                 descriptions <- character(length(keys))
 
                 if (norm == "principal") {
-                    if (self$options$rotation == "none")
+                    if (rotation == "none")
                         descriptionString <- .("PCA Principal Coordinates")
                     else
-                        descriptionString <- paste0(.("PCA Principal Coordinates"), " (", self$options$rotation, ")")
+                        descriptionString <- jmvcore::format(.("PCA Principal Coordinates ({rot})"), rot = rotationStr)
                 } else {
-                    if (self$options$rotation == "none")
+                    if (rotation == "none")
                         descriptionString <- .("PCA Standard Coordinates")
                     else
-                        descriptionString <- paste0(.("PCA Standard Coordinates"), " (", self$options$rotation, ")")
+                        descriptionString <-jmvcore::format(.("PCA Standard Coordinates ({rot})"), rot = rotationStr)
                 }
 
                 for (i in keys) {

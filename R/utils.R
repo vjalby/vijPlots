@@ -77,9 +77,9 @@ vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = 
     horizontal <- options[["horizontal"]]  %||% FALSE
     # Title & Subtitle
     if (plotType == '') {
-        title <- options$titleText %||% ''
-        subtitle <- options$subtitleText %||% ''
-        caption <- options$captionText %||% ''
+        title <- options[["titleText"]] %||% ''
+        subtitle <- options[["subtitleText"]] %||% ''
+        caption <- options[["captionText"]] %||% ''
     } else {
         title <- options[[paste0(plotType,"TitleText")]] %||% ''
         subtitle <- options[[paste0(plotType,"SubtitleText")]] %||% ''
@@ -163,17 +163,17 @@ vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = 
 vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     horizontal <- options[["horizontal"]]  %||% FALSE
     if (showLegend) {
-        legendPosition  <- options$legendPosition
-        legendFontSize <- as.numeric(options$legendFontSize)
+        legendPosition  <- options[["legendPosition"]] %||% "right"
+        legendFontSize <- as.numeric(options[["legendFontSize"]] %||% 14)
     } else {
         legendPosition <- "none"
         legendFontSize <- 14
     }
     # Font sizes and alignments come from List options, i.e. as strings; since
     # ggplot2 4.0.0 the theme elements validate their types and reject those.
-    titleFontSize <- as.numeric(options$titleFontSize)
-    subtitleFontSize <- as.numeric(options$subtitleFontSize)
-    captionFontSize <- as.numeric(options$captionFontSize)
+    titleFontSize <- as.numeric(options[["titleFontSize"]] %||% 14)
+    subtitleFontSize <- as.numeric(options[["subtitleFontSize"]] %||% 12)
+    captionFontSize <- as.numeric(options[["captionFontSize"]] %||% 10)
     xAxisFontSize <- as.numeric(options[["xAxisFontSize"]] %||% 14)
     yAxisFontSize <- as.numeric(options[["yAxisFontSize"]] %||% 14)
     xAxisLabelFontSize <- as.numeric(options[["xAxisLabelFontSize"]] %||% 12)

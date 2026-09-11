@@ -4,6 +4,11 @@ jus: '3.0'
 stage: 0
 compilerMode: tame
 children:
+  - type: LayoutBox
+    margin: large
+    children:
+      - type: Label
+        label: This analysis is deprecated. Please use vijMulti module instead.
   - type: ModeSelector
     name: mode
     stretchFactor: 1

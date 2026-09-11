@@ -1,3 +1,6 @@
+### This analysis is deprecated and kept only for backward compatibility with existing documents.
+### Correspondence Analysis is now available in vijMulti module
+
 correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "correspClass",
     inherit = correspBase,
@@ -253,6 +256,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             table$setNote(key = "chisq", note = chisqNote, init = FALSE)
         },
         .init = function() {
+            vijWarningMessage(self, .("This analysis is deprecated and kept only for backward compatibility with existing documents. Please use vijMulti module instead."), name = ".deprecated")
             #
             if ((self$options$mode == "obsTable" && (is.null(self$options$rows) || is.null(self$options$cols))) ||
                 (self$options$mode == "contTable" && (is.null(self$options$rowLabels) || length(self$options$columns) < 3)) ) {

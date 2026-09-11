@@ -216,12 +216,9 @@ msgid ""
 "variables</strong>: Bar plot, Pie chart, Mosaic plot, Likert plot</li> "
 "<li><strong>Time series</strong>: Line chart, Area chart</li> "
 "<li><strong>Multiple Response</strong>: Frequencies, Crosstab</li> </ul> "
-"<p><strong>Main classic multivariate data analyses</strong> are also "
-"available:</p> <ul> <li>Principal Component Analysis</li> <li>Correspondence "
-"Analysis</li> <li>Multiple Correspondence Analysis</li> </ul> <p>The module "
-"is available in the <strong>Plots</strong> tab.</p> <p>Project source (and "
-"changelog) is available at <a href=\"https://github.com/vjalby/vijPlots\" "
-"target=\"_blank\">Github</a>.</p>"
+"<p>The module is available in the <strong>Plots</strong> tab.</p> <p>Project "
+"source (and changelog) is available at <a "
+"href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.</p>"
 msgstr ""
 "<p>Principaux graphiques statistiques, tous construits avec <b>ggplot2</b> "
 "et offrant de nombreuses options de personnalisation :</p> <ul> "
@@ -232,13 +229,9 @@ msgstr ""
 "Diagramme en mosaïque, Diagramme Likert</li> <li><strong>Séries "
 "temporelles</strong> : Graphique en courbes, Diagramme en aires</li> "
 "<li><strong>Réponses multiples</strong> : Fréquences, Tableau croisé</li> "
-"</ul> <p><strong>Les principales analyses multivariées classiques</strong> "
-"sont également disponibles :</p> <ul> <li>Analyse en composantes "
-"principales</li> <li>Analyse des correspondances</li> <li>Analyse des "
-"correspondances multiples</li> </ul> <p>Le module est disponible dans "
-"l'onglet <strong>Graphiques</strong>.</p> <p>Le code source du projet (et le "
-"changelog) est disponible sur <a href=\"https://github.com/vjalby/vijPlots\" "
-"target=\"_blank\">Github</a>.</p>"
+"</ul> <p>Le module est disponible dans l'onglet <strong>Graphiques</strong>."
+"</p> <p>Le code source du projet (et le changelog) est disponible sur <a "
+"href=\"https://github.com/vjalby/vijPlots\" target=\"_blank\">Github</a>.</p>"
 
 #: R/corresp.b.R
 msgid ""
@@ -765,7 +758,7 @@ msgstr "Ajouter la ligne médiane"
 msgid "Adj. p"
 msgstr "p corr."
 
-#: principal/ui[7].label
+#: principal/ui[8].label
 msgid "Advanced Options"
 msgstr "Options avancées"
 
@@ -940,7 +933,7 @@ msgstr "Les axes ne peuvent pas être identiques."
 msgid "Axis numbers must be less than or equal to the number of dimensions ({nDim})."
 msgstr "Les axes doivent être inférieurs ou égaux au nombre de dimensions ({nDim})."
 
-#: corresp/ui[6].label
+#: corresp/ui[7].label
 #: mrfrequencies/ui[5].label
 msgid "Axis Titles"
 msgstr "Titre des axes"
@@ -1018,7 +1011,7 @@ msgstr "Taille des bâtons"
 #: principal/options/biplotTitleText.title
 #: principal/options/biplotSubtitleText.title
 #: principal/options/biplotCaptionText.title
-#: principal/ui[3][2][0].label
+#: principal/ui[4][2][0].label
 #: principal/results/biPlot.title
 msgid "Biplot"
 msgstr "Graphique double"
@@ -1359,7 +1352,7 @@ msgstr "Marron à vert"
 
 #: R/multcorresp.b.R
 #: multcorresp/options/method/Burt.title
-#: multcorresp/ui[3][0][0]/method_burt.label
+#: multcorresp/ui[4][0][0]/method_burt.label
 msgid "Burt matrix"
 msgstr "Tableau de Burt"
 
@@ -1403,15 +1396,15 @@ msgstr "Impossible de corriger les niveaux d'une variable de type texte."
 msgid "Caption"
 msgstr "Légende"
 
-#: corresp/ui[7][2][1][0].label
-#: multcorresp/ui[8][2][1][0].label
-#: principal/ui[6][2][1][0].label
+#: corresp/ui[8][2][1][0].label
+#: multcorresp/ui[9][2][1][0].label
+#: principal/ui[7][2][1][0].label
 msgid "Caption Style"
 msgstr "Style des légendes"
 
-#: corresp/ui[7][2][0][0].label
-#: multcorresp/ui[8][2][0][0].label
-#: principal/ui[6][2][0][0].label
+#: corresp/ui[8][2][0][0].label
+#: multcorresp/ui[9][2][0][0].label
+#: principal/ui[7][2][0][0].label
 msgid "Caption Text"
 msgstr "Texte des légendes"
 
@@ -1489,7 +1482,7 @@ msgstr "Graphique des catégories"
 msgid "Category plot"
 msgstr "Catégories"
 
-#: multcorresp/ui[6][0][1][0].label
+#: multcorresp/ui[7][0][1][0].label
 msgid "Category Plot Options"
 msgstr "Graphique des catégories"
 
@@ -1654,7 +1647,7 @@ msgstr "Palette de couleurs"
 
 #: barchart/ui[4].label
 #: barplot/ui[3].label
-#: corresp/ui[5][0][1][0].label
+#: corresp/ui[6][0][1][0].label
 #: histogram/ui[3].label
 #: lollipop/ui[3][0][0][0].label
 #: mrcrosstabs/ui[3].label
@@ -1912,7 +1905,7 @@ msgstr "Les effectifs ne peuvent pas être négatifs."
 msgid "Counts may not contain missing values."
 msgstr "Les effectifs ne peuvent pas contenir de valeurs manquantes."
 
-#: principal/ui[3][2][0]/biplotType_covPlot.label
+#: principal/ui[4][2][0]/biplotType_covPlot.label
 msgid "Cov (Loading principal)"
 msgstr "Cov (Var. principales)"
 
@@ -2109,13 +2102,13 @@ msgstr "ddl"
 msgid "Dichromat:Categorical"
 msgstr "Dichromat:Categorical"
 
-#: R/multcorresp.b.R
 #: R/principal.b.R
 msgid "Dim"
 msgstr "Dim"
 
 #: R/corresp.b.R
 #: R/multcorresp.b.R
+#: R/principal.b.R
 msgid "Dim {n}"
 msgstr "Dim {n}"
 
@@ -2215,7 +2208,7 @@ msgstr "Valeur propre"
 msgid "Eigenvalues"
 msgstr "Valeurs propres"
 
-#: principal/ui[4][0][0][1].label
+#: principal/ui[5][0][0][1].label
 #: scatterplot/ui[2][1][0].label
 msgid "Element Sizes"
 msgstr "Taille des éléments"
@@ -2248,7 +2241,7 @@ msgid "Error Bars"
 msgstr "Barres d'erreur"
 
 #: qqplot/options/paramMethod/paraEstimate.title
-#: qqplot/ui[3][0][0]/paramMethod_paraEstimat.label
+#: qqplot/ui[3][0][0]/paramMethod_paraEstimate.label
 msgid "Estimate parameters from data"
 msgstr "Estimer les paramètres à partir des données"
 
@@ -2430,7 +2423,7 @@ msgid "Font size"
 msgstr "Taille de police"
 
 #: histogram/options/usePalette/forBorder.title
-#: histogram/ui[3][1][0][1]/usePalette_forBoder.label
+#: histogram/ui[3][1][0][1]/usePalette_forBorder.label
 msgid "For border"
 msgstr "Pour bordures"
 
@@ -2440,7 +2433,7 @@ msgid "For filling"
 msgstr "Pour remplissage"
 
 #: principal/options/biplotType/formPlot.title
-#: principal/ui[3][2][0]/biplotType_formPlot.label
+#: principal/ui[4][2][0]/biplotType_formPlot.label
 msgid "Form (Score principal)"
 msgstr "Form (Obs. principales)"
 
@@ -2606,7 +2599,7 @@ msgstr "Gris"
 #: mosaic/ui[0][1].label
 #: piechart/options/labels/group.title
 #: principal/options/groupVar.title
-#: principal/ui[0][2].label
+#: principal/ui[1][2].label
 #: scatterplot/options/group.title
 #: scatterplot/ui[0][2].label
 msgid "Group"
@@ -2670,6 +2663,15 @@ msgstr "Grouper par"
 #: likertplot/ui[3][0][2][0]/pValue_group.label
 msgid "Groupwise"
 msgstr "Par groupe"
+
+#: package/analyses/principal.menuGroup
+#: package/analyses/corresp.menuGroup
+#: package/analyses/multcorresp.menuGroup
+#: corresp/options.menuGroup
+#: multcorresp/options.menuGroup
+#: principal/options.menuGroup
+msgid "hidden"
+msgstr ""
 
 #: likertplot/options/hideLabelsBelow.title
 msgid "Hide % labels below 5%"
@@ -2762,7 +2764,7 @@ msgstr "Croissant"
 
 #: R/multcorresp.b.R
 #: multcorresp/options/method/Indicator.title
-#: multcorresp/ui[3][0][0]/method_indicator.label
+#: multcorresp/ui[4][0][0]/method_indicator.label
 msgid "Indicator matrix"
 msgstr "Tableau disjonctif"
 
@@ -2993,13 +2995,13 @@ msgstr "Tests de Kruskal-Wallis"
 #: mrfrequencies/options/textColor.title
 #: multcorresp/options/labelVar.title
 #: multcorresp/options/labelSize.title
-#: multcorresp/ui[0][2].label
+#: multcorresp/ui[1][2].label
 #: piechart/options/labType/label.title
 #: piechart/options/labSize.title
 #: piechart/options/textColor.title
 #: piechart/ui[2][0][0][0]/labType_label.label
 #: principal/options/labelVar.title
-#: principal/ui[0][1].label
+#: principal/ui[1][1].label
 #: scatterplot/options/labelVar.title
 #: scatterplot/options/labelTextSize.title
 #: scatterplot/ui[0][3].label
@@ -3211,10 +3213,10 @@ msgstr "Gauche"
 #: linechart/ui[3][0].label
 #: mosaic/ui[6][0].label
 #: mrcrosstabs/ui[5][0].label
-#: multcorresp/ui[7][0].label
+#: multcorresp/ui[8][0].label
 #: piechart/ui[5].label
 #: piechart/ui[5][0].label
-#: principal/ui[5][0].label
+#: principal/ui[6][0].label
 #: qqplot/ui[6][0].label
 #: raincloud/ui[3][0].label
 #: scatterplot/ui[5][0].label
@@ -3230,8 +3232,8 @@ msgstr "Légende"
 #: lollipop/ui[6].label
 #: mosaic/ui[6].label
 #: mrcrosstabs/ui[5].label
-#: multcorresp/ui[7].label
-#: principal/ui[5].label
+#: multcorresp/ui[8].label
+#: principal/ui[6].label
 #: qqplot/ui[6].label
 #: raincloud/ui[3].label
 #: scatterplot/ui[5].label
@@ -3520,7 +3522,7 @@ msgid "Maximum of {var}"
 msgstr "Maximum de {var}"
 
 #: qqplot/options/paramEstMethod/mle.title
-#: qqplot/ui[3][0][0]/paramMethod_paraEstimat/paramEstMethod_mle.label
+#: qqplot/ui[3][0][0]/paramMethod_paraEstimate/paramEstMethod_mle.label
 msgid "Maximum-likelihood (MLE)"
 msgstr "Maximum de vraisemblance (MLE)"
 
@@ -3530,12 +3532,12 @@ msgid "May"
 msgstr "mai"
 
 #: R/multcorresp.b.R
-msgid "MCA Principal Coordinates"
-msgstr "Coordonnées principales ACM"
+msgid "MCA Principal Coordinates ({method})"
+msgstr "Coordonnées principales ACM ({method})"
 
 #: R/multcorresp.b.R
-msgid "MCA Standard Coordinates"
-msgstr "Coordonnées standardisées ACM"
+msgid "MCA Standard Coordinates ({method})"
+msgstr "Coordonnées standardisées ACM ({method})"
 
 #: barchart/options/yaxis/mean.title
 #: barchart/ui[1][0][0][0]/yaxis_mean.label
@@ -3594,13 +3596,13 @@ msgstr "Octobre"
 
 #: likertplot/options/adjustMethod.title
 #: multcorresp/options/method.title
-#: multcorresp/ui[3][0].label
+#: multcorresp/ui[4][0].label
 #: scatterplot/options/lineMethod.title
 msgid "Method"
 msgstr "Méthode"
 
 #: qqplot/options/paramEstMethod/mme.title
-#: qqplot/ui[3][0][0]/paramMethod_paraEstimat/paramEstMethod_mme.label
+#: qqplot/ui[3][0][0]/paramMethod_paraEstimate/paramEstMethod_mme.label
 msgid "Method of moments (MME)"
 msgstr "Méthode des moments (MME)"
 
@@ -3843,10 +3845,10 @@ msgid "Normal Curve"
 msgstr "Courbe normale"
 
 #: corresp/options/normalization.title
-#: corresp/ui[3][0].label
+#: corresp/ui[4][0].label
 #: multcorresp/options/normalization.title
-#: multcorresp/ui[4][0].label
-#: principal/ui[7][0][0][0].label
+#: multcorresp/ui[5][0].label
+#: principal/ui[8][0][0][0].label
 msgid "Normalization"
 msgstr "Normalisation"
 
@@ -3929,7 +3931,7 @@ msgstr "Graphique des observations"
 msgid "Observation plot"
 msgstr "Observations"
 
-#: multcorresp/ui[6][0][1][1].label
+#: multcorresp/ui[7][0][1][1].label
 msgid "Observation Plot Options"
 msgstr "Graphique des observations"
 
@@ -4271,8 +4273,16 @@ msgid "PCA Principal Coordinates"
 msgstr "Coordonnées principales ACP"
 
 #: R/principal.b.R
+msgid "PCA Principal Coordinates ({rot})"
+msgstr "Coordonnées principales ACP ({rot})"
+
+#: R/principal.b.R
 msgid "PCA Standard Coordinates"
 msgstr "Coordonnées standardisées ACP"
+
+#: R/principal.b.R
+msgid "PCA Standard Coordinates ({rot})"
+msgstr "Coordonnées standardisées ACP ({rot})"
 
 #: mosaic/options/labelType/residuals.title
 msgid "Pearson residuals"
@@ -4343,11 +4353,11 @@ msgid "Plot"
 msgstr "Graphique"
 
 #: likertplot/ui[4][2][1][0].label
-#: multcorresp/ui[6][0][0][0].label
+#: multcorresp/ui[7][0][0][0].label
 msgid "Plot Color"
 msgstr "Couleurs du graphique"
 
-#: principal/ui[4][0][1][0].label
+#: principal/ui[5][0][1][0].label
 msgid "Plot Colors"
 msgstr "Couleurs du graphique"
 
@@ -4367,7 +4377,7 @@ msgstr "Cadre du graphique"
 #: mrcrosstabs/ui[2][0][0][0].label
 #: mrfrequencies/ui[2].label
 #: mrfrequencies/ui[2][0][0][0].label
-#: multcorresp/ui[6].label
+#: multcorresp/ui[7].label
 #: piechart/ui[1][0][0].label
 #: qqplot/ui[2][1][0].label
 #: raincloud/ui[1][0][0].label
@@ -4393,9 +4403,9 @@ msgstr "Options du graphique"
 msgid "Plot Titles"
 msgstr "Titres du graphique"
 
-#: corresp/ui[7].label
-#: multcorresp/ui[8].label
-#: principal/ui[6].label
+#: corresp/ui[8].label
+#: multcorresp/ui[9].label
+#: principal/ui[7].label
 msgid "Plot Titles & Subtitles"
 msgstr "Titres et sous-titres des graphiques"
 
@@ -4405,10 +4415,10 @@ msgstr "Titres et sous-titres des graphiques"
 msgid "Plot Type"
 msgstr "Type de graphique"
 
-#: corresp/ui[4][1][0].label
+#: corresp/ui[5][1][0].label
 #: mrcrosstabs/results/plot.title
-#: multcorresp/ui[5][1][0].label
-#: principal/ui[3][1][0].label
+#: multcorresp/ui[6][1][0].label
+#: principal/ui[4][1][0].label
 msgid "Plots"
 msgstr "Graphiques"
 
@@ -4965,8 +4975,8 @@ msgid "Rotate eigenvectors"
 msgstr "Rotation des vecteurs propres"
 
 #: principal/options/rotation.title
-#: principal/ui[2][1][0].label
-#: principal/ui[7][0][1][0].label
+#: principal/ui[3][1][0].label
+#: principal/ui[8][0][1][0].label
 msgid "Rotation"
 msgstr "Rotation"
 
@@ -5068,8 +5078,8 @@ msgstr "Quantiles observés"
 msgid "Sample Quantiles Deviation"
 msgstr "Écarts des quantiles observés"
 
-#: multcorresp/ui[9].label
-#: principal/ui[8].label
+#: multcorresp/ui[10].label
+#: principal/ui[9].label
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -5309,7 +5319,7 @@ msgid "Size"
 msgstr "Taille"
 
 #: linechart/ui[1][0][1].label
-#: principal/ui[4].label
+#: principal/ui[5].label
 msgid "Sizes & Colors"
 msgstr "Tailles & couleurs"
 
@@ -5321,9 +5331,9 @@ msgstr "Smoking"
 msgid "Smooth"
 msgstr "Lisse"
 
-#: corresp/ui[1][0].label
-#: multcorresp/ui[2][0].label
-#: principal/ui[2][0][0].label
+#: corresp/ui[2][0].label
+#: multcorresp/ui[3][0].label
+#: principal/ui[3][0][0].label
 msgid "Solution"
 msgstr "Solution"
 
@@ -5499,15 +5509,15 @@ msgstr "Style"
 msgid "Subtitle"
 msgstr "Sous-titre"
 
-#: corresp/ui[7][1][1][0].label
-#: multcorresp/ui[8][1][1][0].label
-#: principal/ui[6][1][1][0].label
+#: corresp/ui[8][1][1][0].label
+#: multcorresp/ui[9][1][1][0].label
+#: principal/ui[7][1][1][0].label
 msgid "Subtitle Style"
 msgstr "Style des sous-titres"
 
-#: corresp/ui[7][1][0][0].label
-#: multcorresp/ui[8][1][0][0].label
-#: principal/ui[6][1][0][0].label
+#: corresp/ui[8][1][0][0].label
+#: multcorresp/ui[9][1][0][0].label
+#: principal/ui[7][1][0][0].label
 msgid "Subtitle Text"
 msgstr "Texte des sous-titres"
 
@@ -5551,7 +5561,7 @@ msgstr ""
 msgid "Supplementary columns"
 msgstr "Colonnes supplémentaires"
 
-#: corresp/ui[2][0].label
+#: corresp/ui[3][0].label
 msgid "Supplementary Points"
 msgstr "Points supplémentaires"
 
@@ -5579,7 +5589,7 @@ msgid "Supplementary variables"
 msgstr "Variables supplémentaires"
 
 #: multcorresp/options/supplVars.title
-#: multcorresp/ui[0][1].label
+#: multcorresp/ui[1][1].label
 msgid "Supplementary Variables"
 msgstr "Variables supplémentaires"
 
@@ -5598,9 +5608,9 @@ msgstr "Normalisation symétrique"
 msgid "Table"
 msgstr "Table"
 
-#: corresp/ui[4][0][0].label
-#: multcorresp/ui[5][0][0].label
-#: principal/ui[3][0][0].label
+#: corresp/ui[5][0][0].label
+#: multcorresp/ui[6][0][0].label
+#: principal/ui[4][0][0].label
 msgid "Tables"
 msgstr "Tables"
 
@@ -5620,14 +5630,14 @@ msgstr "Texte"
 
 #: barplot/ui[2][0][1][1].label
 #: boxplot/ui[2][0][0][1].label
-#: corresp/ui[5][0][0][0].label
+#: corresp/ui[6][0][0][0].label
 #: likertplot/ui[5].label
 #: likertplot/ui[5][0][0][0].label
 #: mrcrosstabs/ui[2][0][2][1].label
 #: mrfrequencies/ui[2][0][0][1].label
-#: multcorresp/ui[6][0][0][1].label
+#: multcorresp/ui[7][0][0][1].label
 #: piechart/ui[2][0][1][1].label
-#: principal/ui[4][0][0][0].label
+#: principal/ui[5][0][0][0].label
 msgid "Text Size"
 msgstr "Taille du texte"
 
@@ -5635,7 +5645,7 @@ msgstr "Taille du texte"
 msgid "Text size"
 msgstr "Taille du texte"
 
-#: corresp/ui[5].label
+#: corresp/ui[6].label
 msgid "Text Size & Colors"
 msgstr "Taille du texte & couleurs"
 
@@ -5688,6 +5698,20 @@ msgstr "Probabilités théoriques"
 #: R/qqplot.b.R
 msgid "Theoretical Quantiles"
 msgstr "Quantiles théoriques"
+
+#: R/corresp.b.R
+#: R/multcorresp.b.R
+#: R/principal.b.R
+msgid ""
+"This analysis is deprecated and kept only for backward compatibility with "
+"existing documents. Please use vijMulti module instead."
+msgstr ""
+
+#: corresp/ui[0][0].label
+#: multcorresp/ui[0][0].label
+#: principal/ui[0][0].label
+msgid "This analysis is deprecated. Please use vijMulti module instead."
+msgstr ""
 
 #: areachart/options/xTicks.title
 #: areachart/options/yTicks.title
@@ -5895,15 +5919,15 @@ msgstr "Séries temporelles"
 msgid "Title"
 msgstr "Titre"
 
-#: corresp/ui[7][0][1][0].label
-#: multcorresp/ui[8][0][1][0].label
-#: principal/ui[6][0][1][0].label
+#: corresp/ui[8][0][1][0].label
+#: multcorresp/ui[9][0][1][0].label
+#: principal/ui[7][0][1][0].label
 msgid "Title Style"
 msgstr "Style du titre"
 
-#: corresp/ui[7][0][0][0].label
-#: multcorresp/ui[8][0][0][0].label
-#: principal/ui[6][0][0][0].label
+#: corresp/ui[8][0][0][0].label
+#: multcorresp/ui[9][0][0][0].label
+#: principal/ui[7][0][0][0].label
 msgid "Title Text"
 msgstr "Texte du titre"
 
@@ -6041,7 +6065,6 @@ msgid "Use the same color for variables"
 msgstr "Utiliser une couleur unique"
 
 #: corresp/options/descAsVarName.title
-#: likertplot/options/descAsVarName.title
 #: multcorresp/options/descAsVarName.title
 #: principal/options/descAsVarName.title
 msgid "Use variable's description as name"
@@ -6078,6 +6101,10 @@ msgstr "Valeurs"
 msgid "Variable"
 msgstr "Variable"
 
+#: likertplot/options/descAsVarName.title
+msgid "Variable descriptions as names"
+msgstr "Descriptions des variables comme noms"
+
 #: multcorresp/options/showDiscriminations.title
 #: multcorresp/options/showDiscriminationPlot.title
 msgid "Variable discriminations"
@@ -6106,12 +6133,12 @@ msgstr "Variables"
 #: linechart/options/vars.title
 #: linechart/ui[0][1].label
 #: multcorresp/options/vars.title
-#: multcorresp/ui[0][0].label
+#: multcorresp/ui[1][0].label
 #: principal/options/vars.title
 #: principal/options/showLoadings.title
 #: principal/options/showVarPlot.title
 #: principal/options/varLabelSize.title
-#: principal/ui[0][0].label
+#: principal/ui[1][0].label
 #: principal/results/loadingTable.title
 msgid "Variables"
 msgstr "Variables"
@@ -6143,15 +6170,11 @@ msgstr "Ligne verticale à"
 #: package/analyses/linechart.menuGroup
 #: package/analyses/areachart.menuGroup
 #: package/analyses/qqplot.menuGroup
-#: package/analyses/principal.menuGroup
-#: package/analyses/corresp.menuGroup
-#: package/analyses/multcorresp.menuGroup
 #: package/datasets/vijPlots.name
 #: areachart/options.menuGroup
 #: barchart/options.menuGroup
 #: barplot/options.menuGroup
 #: boxplot/options.menuGroup
-#: corresp/options.menuGroup
 #: histogram/options.menuGroup
 #: likertplot/options.menuGroup
 #: linechart/options.menuGroup
@@ -6159,9 +6182,7 @@ msgstr "Ligne verticale à"
 #: mosaic/options.menuGroup
 #: mrcrosstabs/options.menuGroup
 #: mrfrequencies/options.menuGroup
-#: multcorresp/options.menuGroup
 #: piechart/options.menuGroup
-#: principal/options.menuGroup
 #: qqplot/options.menuGroup
 #: raincloud/options.menuGroup
 #: scatterplot/options.menuGroup
@@ -6324,7 +6345,7 @@ msgstr "Paramètres de la distribution incorrects."
 #: boxplot/ui[4][0][0][0].label
 #: boxplot/ui[5][1].label
 #: corresp/options/xaxis.title
-#: corresp/ui[6][0].label
+#: corresp/ui[7][0].label
 #: histogram/ui[5][0][0][0].label
 #: histogram/ui[6][1].label
 #: likertplot/ui[6][0][0][0].label
@@ -6345,9 +6366,9 @@ msgstr "Paramètres de la distribution incorrects."
 #: mrfrequencies/ui[4][0][0][0].label
 #: mrfrequencies/ui[5][0].label
 #: multcorresp/options/xaxis.title
-#: multcorresp/ui[7][1].label
+#: multcorresp/ui[8][1].label
 #: principal/options/xaxis.title
-#: principal/ui[5][1].label
+#: principal/ui[6][1].label
 #: qqplot/ui[5][0][0][0].label
 #: qqplot/ui[6][1].label
 #: raincloud/ui[2][0][0][0].label
@@ -6404,7 +6425,7 @@ msgstr "Étendue axe X"
 #: boxplot/ui[4][0][1][0].label
 #: boxplot/ui[5][2].label
 #: corresp/options/yaxis.title
-#: corresp/ui[6][1].label
+#: corresp/ui[7][1].label
 #: histogram/ui[1][0][0].label
 #: histogram/ui[5][0][1][0].label
 #: histogram/ui[6][2].label
@@ -6425,9 +6446,9 @@ msgstr "Étendue axe X"
 #: mrfrequencies/ui[4][0][1][0].label
 #: mrfrequencies/ui[5][1].label
 #: multcorresp/options/yaxis.title
-#: multcorresp/ui[7][2].label
+#: multcorresp/ui[8][2].label
 #: principal/options/yaxis.title
-#: principal/ui[5][2].label
+#: principal/ui[6][2].label
 #: qqplot/ui[5][0][1][0].label
 #: qqplot/ui[6][2].label
 #: raincloud/ui[2][0][1][0].label

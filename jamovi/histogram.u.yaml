@@ -203,7 +203,7 @@ children:
                     label: For filling
                     enable: (!(!group))
                   - type: RadioButton
-                    name: usePalette_forBoder
+                    name: usePalette_forBorder
                     optionName: usePalette
                     optionPart: forBorder
                     label: For border

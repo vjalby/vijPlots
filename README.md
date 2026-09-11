@@ -7,12 +7,6 @@ A [jamovi](https://www.jamovi.org) module. Main statistical charts, all built wi
 - **Time series**: Line chart, Area chart
 - **Multiple Response**: Frequencies, Crosstab
 
-**Main classic multivariate data analyses** are also available:
-
-- Principal Component Analysis
-- Correspondence Analysis
-- Multiple Correspondence Analysis
-
 The module is available in the **Plots** tab.
 
 ## Histogram
@@ -71,26 +65,13 @@ The module is available in the **Plots** tab.
 
 ![](img/areachart.jpg)
 
-## Principal Component Analysis
-
-![](img/principal.jpg)
-
-## Correspondence Analysis
-
-![](img/correspondence.jpg)
-
-## Multiple Correspondence Analysis
-
-![](img/mca.jpg)
-
-## Last changes: vijPlots 1.3.1 (2026-08-31)
+## Last changes: vijPlots 1.3.2 (2026-09-13)
 
 * Mosaic Plot
 * Facet label options (font, size, alignment, background style)
 * Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
 * Line/Area Chart: manual X-axis date range can now be entered as text, and fixed breaks falling outside the specified range
 * Multiple Response Frequencies/Crosstabs: fixed a value containing only the separator (e.g. ";") not being treated as missing
-* MCA (Burt method): Fixed variable discrimination computation
 * Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
 * Histogram: Options to hide bins and to show lines
 * Histogram: Option to show mean/median reference lines, with an optional value label

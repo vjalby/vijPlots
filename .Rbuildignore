@@ -2,5 +2,5 @@
 ^\.Rproj\.user$
 ^\.positai$
 ^\.claude$
-^\build\.R$
-^\CLAUDE\.md$
+^build\.R$
+^CLAUDE\.md$

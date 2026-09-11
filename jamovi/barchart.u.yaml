@@ -90,12 +90,12 @@ children:
             label: Bar Type
             children:
               - type: RadioButton
-                name: barType_dodge
+                name: barType_dodge2
                 optionName: barType
                 optionPart: dodge2
                 enable: (!(!group))
               - type: RadioButton
-                name: barType_dodge2
+                name: barType_dodge
                 optionName: barType
                 optionPart: dodge
                 enable: (!(!group))

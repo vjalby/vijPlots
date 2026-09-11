@@ -1884,13 +1884,13 @@ msgstr ""
 msgid "Dichromat:Categorical"
 msgstr ""
 
-#: R/multcorresp.b.R
 #: R/principal.b.R
 msgid "Dim"
 msgstr ""
 
 #: R/corresp.b.R
 #: R/multcorresp.b.R
+#: R/principal.b.R
 msgid "Dim {n}"
 msgstr ""
 
@@ -2023,7 +2023,7 @@ msgid "Error Bars"
 msgstr ""
 
 #: qqplot/options/paramMethod/paraEstimate.title
-#: qqplot/ui[3][0][0]/paramMethod_paraEstimat.label
+#: qqplot/ui[3][0][0]/paramMethod_paraEstimate.label
 msgid "Estimate parameters from data"
 msgstr ""
 
@@ -2205,7 +2205,7 @@ msgid "Font size"
 msgstr ""
 
 #: histogram/options/usePalette/forBorder.title
-#: histogram/ui[3][1][0][1]/usePalette_forBoder.label
+#: histogram/ui[3][1][0][1]/usePalette_forBorder.label
 msgid "For border"
 msgstr ""
 
@@ -3293,7 +3293,7 @@ msgid "Maximum of {var}"
 msgstr ""
 
 #: qqplot/options/paramEstMethod/mle.title
-#: qqplot/ui[3][0][0]/paramMethod_paraEstimat/paramEstMethod_mle.label
+#: qqplot/ui[3][0][0]/paramMethod_paraEstimate/paramEstMethod_mle.label
 msgid "Maximum-likelihood (MLE)"
 msgstr ""
 
@@ -3303,11 +3303,11 @@ msgid "May"
 msgstr ""
 
 #: R/multcorresp.b.R
-msgid "MCA Principal Coordinates"
+msgid "MCA Principal Coordinates ({method})"
 msgstr ""
 
 #: R/multcorresp.b.R
-msgid "MCA Standard Coordinates"
+msgid "MCA Standard Coordinates ({method})"
 msgstr ""
 
 #: barchart/options/yaxis/mean.title
@@ -3373,7 +3373,7 @@ msgid "Method"
 msgstr ""
 
 #: qqplot/options/paramEstMethod/mme.title
-#: qqplot/ui[3][0][0]/paramMethod_paraEstimat/paramEstMethod_mme.label
+#: qqplot/ui[3][0][0]/paramMethod_paraEstimate/paramEstMethod_mme.label
 msgid "Method of moments (MME)"
 msgstr ""
 
@@ -4040,7 +4040,15 @@ msgid "PCA Principal Coordinates"
 msgstr ""
 
 #: R/principal.b.R
+msgid "PCA Principal Coordinates ({rot})"
+msgstr ""
+
+#: R/principal.b.R
 msgid "PCA Standard Coordinates"
+msgstr ""
+
+#: R/principal.b.R
+msgid "PCA Standard Coordinates ({rot})"
 msgstr ""
 
 #: mosaic/options/labelType/residuals.title
@@ -5788,7 +5796,6 @@ msgid "Use the same color for variables"
 msgstr ""
 
 #: corresp/options/descAsVarName.title
-#: likertplot/options/descAsVarName.title
 #: multcorresp/options/descAsVarName.title
 #: principal/options/descAsVarName.title
 msgid "Use variable's description as name"
@@ -5823,6 +5830,10 @@ msgstr ""
 #: raincloud/options/aVar.title
 #: raincloud/ui[0][0].label
 msgid "Variable"
+msgstr ""
+
+#: likertplot/options/descAsVarName.title
+msgid "Variable descriptions as names"
 msgstr ""
 
 #: multcorresp/results/discrim.title

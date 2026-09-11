@@ -1,12 +1,12 @@
 ---
 title: 'vijPlots: Yet Another jamovi Plotting Module'
 name: vijPlots
-version: 1.3.1
+version: 1.3.2
 jms: '1.0'
 authors:
   - Vincent Jalby
 maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
-date: '2026-08-31'
+date: '2026-09-13'
 category: plots
 type: R
 description: >-
@@ -17,12 +17,9 @@ description: >-
   variables</strong>: Bar plot, Pie chart, Mosaic plot, Likert plot</li>
   <li><strong>Time series</strong>: Line chart, Area chart</li>
   <li><strong>Multiple Response</strong>: Frequencies, Crosstab</li> </ul>
-  <p><strong>Main classic multivariate data analyses</strong> are also
-  available:</p> <ul> <li>Principal Component Analysis</li> <li>Correspondence
-  Analysis</li> <li>Multiple Correspondence Analysis</li> </ul> <p>The module is
-  available in the <strong>Plots</strong> tab.</p> <p>Project source (and
-  changelog) is available at <a href="https://github.com/vjalby/vijPlots"
-  target="_blank">Github</a>.</p>
+  <p>The module is available in the <strong>Plots</strong> tab.</p> <p>Project
+  source (and changelog) is available at <a
+  href="https://github.com/vjalby/vijPlots" target="_blank">Github</a>.</p>
 analyses:
   - title: Histogram
     name: histogram
@@ -132,24 +129,27 @@ analyses:
   - title: Principal Component Analysis
     name: principal
     ns: vijPlots
-    menuGroup: vijPlots
+    menuGroup: hidden
     menuTitle: Principal Component Analysis
     menuSubgroup: Multivariate
     category: plots
+    hidden: true
   - title: Correspondence Analysis
     name: corresp
     ns: vijPlots
-    menuGroup: vijPlots
+    menuGroup: hidden
     menuSubgroup: Multivariate
     menuTitle: Correspondence Analysis
     category: plots
+    hidden: true
   - title: Multiple Correspondence Analysis
     name: multcorresp
     ns: vijPlots
     category: plots
-    menuGroup: vijPlots
+    menuGroup: hidden
     menuTitle: Multiple Correspondence Analysis
     menuSubgroup: Multivariate
+    hidden: true
 datasets:
   - name: vijPlots
     path: vijPlots.omv
@@ -164,21 +164,6 @@ datasets:
     description: A demonstration dataset for vijPlots/Multiple Response plots.
     tags:
       - Multiple Response
-  - name: Iris
-    path: iris.omv
-    description: A demonstration dataset for vijPlots/Principal Component Analysis.
-    tags:
-      - PCA
-  - name: Smoking
-    path: smoking.omv
-    description: A demonstration dataset for vijPlots/Correspondence Analysis.
-    tags:
-      - CA
-  - name: Cars
-    path: cars.omv
-    description: A demonstration dataset for vijPlots/Multiple Correspondence Analysis.
-    tags:
-      - MCA
 build-time: '2026-03-25T04:27:47.366Z'
 usesNative: true
 minApp: 2.7.1

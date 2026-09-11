@@ -31,6 +31,7 @@ items:
     - name: comp
       title: Comparison Tests
       type: Group
+      visible: (group)
       items:
         - name: uTestTable
           title: Mann-Whitney U Tests

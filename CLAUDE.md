@@ -172,11 +172,29 @@ swallow it (see gotcha below).
   `loadingTable`/`obsTable`'s `'rot'`, `loadingTable`/`obsTable`'s `'norm'`, `obsTable`'s `"100"`) are
   left unfixed for now on that basis — the overlap needed to actually trigger it is narrow, and
   fixing it would need the same `rows: N` + `deleteRows()` treatment as `chisq`, which isn't
-  worthwhile pre-emptively without a concrete repro. `multcorresp.b.R` has the same unfixed pattern,
-  on `eigenvalues`'s `'method'`/`'adjusted'` notes, `discrim`'s `'sup'` note, `categories`'s
-  `'normalization'`/`'sup'` notes, and `observations`'s `"100"`/`'normalization'` notes — all set
-  after `.run()`'s early reject points (no data, MCA failed, `dimNum > res$nd.max`), all on `rows: 0`
-  tables. Same call: not worth fixing pre-emptively.
+  worthwhile pre-emptively without a concrete repro. More fundamentally, `rows: N` + `deleteRows()`
+  is a per-table workaround for what is really a jmvcore/jamovi-side bug (`setNote(key, NULL)` not
+  reliably clearing a `rows: 0` table's note) — it was applied to `corresp` because that one had a
+  concrete repro, not adopted as the standard pattern to sprinkle across every `rows: 0` table with
+  an unguarded note. The proper fix belongs upstream in jmvcore/jamovi, not module-by-module here.
+  `multcorresp.b.R` has the same unfixed pattern, on `eigenvalues`'s `'method'`/`'adjusted'` notes,
+  `discrim`'s `'sup'` note, `categories`'s `'normalization'`/`'sup'` notes, and `observations`'s
+  `"100"`/`'normalization'` notes — all set after `.run()`'s early reject points (no data, MCA
+  failed, `dimNum > res$nd.max`), all on `rows: 0` tables. Same call: not worth fixing pre-emptively.
+- Never build a formula by pasting/`reformulate()`-ing a raw jamovi variable name into text: any
+  name containing a space or other non-syntactic character (`!`, `+`, `?`, `%`, `-`, and even a
+  literal backtick) breaks `stats::reformulate()`/`as.formula()` at parse time, since neither
+  backtick-quotes automatically. This crashed `mosaic.b.R`'s `.mosaicData()` (fixed 2026-08-31):
+  `stats::xtabs(stats::reformulate(c(categoryName, groupName), response = "freq"), data = subDf)`
+  raised a raw, uncaught `str2lang()` parse error whenever the category/group variable name had a
+  space. Fixed by building the formula with `jmvcore::composeFormula(lhs, rhs)` instead (it
+  backtick-escapes each component correctly, including a literal backtick in the name) — the same
+  pattern already used in `corresp.b.R` (`jmvcore::composeFormula('.COUNTS', c(rowVarName,
+  colVarName))`) — so prefer that over ad hoc `rlang::expr(lhs ~ !!sym1 + !!sym2)`-style
+  workarounds when a formula needs to be built from raw jamovi variable names. Swept all 18
+  analyses afterward with a battery of ad hoc (non-testthat) scripts using variable names with
+  spaces/`!+?%-`/backticks and with non-ASCII characters (accented Latin, Chinese, Japanese) — all
+  passed, so this was an isolated case, not a systemic issue.
 
 ### Dependency graph has soft/transitive requirements
 
@@ -184,8 +202,10 @@ Several `Imports:` in `DESCRIPTION` aren't called directly (`pkg::fun()`) anywhe
 required at runtime by another dependency and would break at render time if removed:
 `fitdistrplus` (used internally by `ggh4x::stat_theodensity`, called from `histogram.b.R`),
 `labelled` (an optional dependency of `ggstats::gglikert_data()`, checked via
-`rlang::check_installed("labelled")`, called from `likertplot.b.R`). Before removing an Import that
-looks unused by a plain grep, check whether the package that *is* called depends on it.
+`rlang::check_installed("labelled")`, called from `likertplot.b.R`), and `Hmisc` (required
+internally by `ggplot2::mean_cl_boot()`/`mean_cl_normal()`, which call `Hmisc::smean.cl.boot()`
+etc. under the hood, used as `stat_summary(fun.data = ...)` in `barchart.b.R`). Before removing an
+Import that looks unused by a plain grep, check whether the package that *is* called depends on it.
 (`GPArotation` used to be in this list — `principal.b.R` called it indirectly via
 `getFromNamespace()` — but as of 2026-08-23 it's called directly as `GPArotation::Varimax()` etc.
 in a `switch()`, so it's grep-visible like any normal import.)

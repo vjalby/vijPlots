@@ -5684,8 +5684,8 @@ msgid ""
 "existing documents. Please use vijMulti module instead."
 msgstr ""
 "Cette analyse est obsolète et conservée uniquement pour assurer la "
-"compatibilité ascendante avec les documents existants. Veuillez utiliser le "
-"module vijMulti à la place."
+"compatibilité avec les documents existants. Veuillez utiliser le module "
+"vijMulti à la place."
 
 #: corresp/ui[0][0].label
 #: multcorresp/ui[0][0].label

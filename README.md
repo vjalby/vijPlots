@@ -67,6 +67,7 @@ The module is available in the **Plots** tab.
 
 ## Last changes: vijPlots 1.3.2 (2026-09-13)
 
+* **Multivariate analyses (PCA/CA/MCA) have been removed and transferred to vijMulti module**
 * Mosaic Plot
 * Facet label options (font, size, alignment, background style)
 * Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)

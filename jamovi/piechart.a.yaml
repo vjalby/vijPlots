@@ -42,6 +42,11 @@ options:
       type: Bool
       default: false
 
+    - name: clockwise
+      title: Clockwise
+      type: Bool
+      default: false
+
     - name: labels
       title: Labels
       type: List

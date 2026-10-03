@@ -1373,6 +1373,10 @@ msgstr ""
 msgid "Chi-squared"
 msgstr ""
 
+#: piechart/options/clockwise.title
+msgid "Clockwise"
+msgstr ""
+
 #: mosaic/options/labelColor.title
 msgid "Color"
 msgstr ""

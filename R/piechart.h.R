@@ -10,6 +10,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             facet = NULL,
             counts = NULL,
             donut = FALSE,
+            clockwise = FALSE,
             labels = "none",
             labType = "text",
             overlap = FALSE,
@@ -72,6 +73,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..donut <- jmvcore::OptionBool$new(
                 "donut",
                 donut,
+                default=FALSE)
+            private$..clockwise <- jmvcore::OptionBool$new(
+                "clockwise",
+                clockwise,
                 default=FALSE)
             private$..labels <- jmvcore::OptionList$new(
                 "labels",
@@ -368,6 +373,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..facet)
             self$.addOption(private$..counts)
             self$.addOption(private$..donut)
+            self$.addOption(private$..clockwise)
             self$.addOption(private$..labels)
             self$.addOption(private$..labType)
             self$.addOption(private$..overlap)
@@ -404,6 +410,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         facet = function() private$..facet$value,
         counts = function() private$..counts$value,
         donut = function() private$..donut$value,
+        clockwise = function() private$..clockwise$value,
         labels = function() private$..labels$value,
         labType = function() private$..labType$value,
         overlap = function() private$..overlap$value,
@@ -439,6 +446,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..facet = NA,
         ..counts = NA,
         ..donut = NA,
+        ..clockwise = NA,
         ..labels = NA,
         ..labType = NA,
         ..overlap = NA,
@@ -520,6 +528,7 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param facet .
 #' @param counts .
 #' @param donut .
+#' @param clockwise .
 #' @param labels .
 #' @param labType .
 #' @param overlap .
@@ -562,6 +571,7 @@ piechart <- function(
     facet,
     counts,
     donut = FALSE,
+    clockwise = FALSE,
     labels = "none",
     labType = "text",
     overlap = FALSE,
@@ -614,6 +624,7 @@ piechart <- function(
         facet = facet,
         counts = counts,
         donut = donut,
+        clockwise = clockwise,
         labels = labels,
         labType = labType,
         overlap = overlap,

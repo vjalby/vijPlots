@@ -121,7 +121,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xOffset <- 1
             }
 
-            plot <- plot + ggplot2::geom_bar(position = "fill", color = borderColor, show.legend = TRUE) + ggplot2::coord_polar("y")
+            plot <- plot + ggplot2::geom_bar(position = "fill", color = borderColor, show.legend = TRUE) + ggplot2::coord_polar("y", direction = if (self$options$clockwise) -1 else 1)
 
             #### Labels ####
 

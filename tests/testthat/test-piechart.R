@@ -23,6 +23,25 @@ test_that("piechart: donut chart", {
     expect_plot_snapshot("piechart-donut", testPlot)
 })
 
+test_that("piechart: clockwise", {
+    testPlot <- vijPlots::piechart(
+        data = testData,
+        aVar = "species",
+        facet = NULL,
+        counts = NULL,
+        labType = "text",
+        labels = "group",
+        clockwise = TRUE
+    )$plot
+
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(testPlot)
+    expect_equal(ggplot2::last_plot()$coordinates$direction, -1)
+
+    expect_plot_snapshot("piechart-clockwise", testPlot)
+})
+
 test_that("piechart: count labels", {
     testPlot <- vijPlots::piechart(
         data = testData,

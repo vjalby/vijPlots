@@ -47,6 +47,8 @@ children:
                 children:
                   - type: CheckBox
                     name: donut
+                  - type: CheckBox
+                    name: clockwise
       - type: LayoutBox
         cell:
           column: 1

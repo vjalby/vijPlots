@@ -1595,6 +1595,10 @@ msgstr "Centré"
 msgid "Chi-squared"
 msgstr "Khi-deux"
 
+#: piechart/options/clockwise.title
+msgid "Clockwise"
+msgstr "Modalités dans le sens horaire"
+
 #: mosaic/options/labelColor.title
 msgid "Color"
 msgstr "Couleur"

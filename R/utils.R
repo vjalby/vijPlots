@@ -96,17 +96,17 @@ vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = 
                  "இயல்பு", "ഡിഫോൾട്ട്",
                  "기본값", "初期値", "默认", "預設")
     # Title
-    if (title == "")
+    if (trimws(title) == "")
         title <- NULL
     else if (title %in% default)
         title <- defaults$title
     # Subtitle
-    if (subtitle == "")
+    if (trimws(subtitle) == "")
         subtitle <- NULL
     else if (subtitle %in% default)
         subtitle <- defaults$subtitle
     # Caption
-    if (caption == "")
+    if (trimws(caption) == "")
         caption <- NULL
     else if (caption %in% default)
         caption <- defaults$caption
@@ -275,7 +275,7 @@ vijDebugMessage = function(self, debugMessage, name = NULL, title = "Debug") {
 # No-op on a release version (a plain x.y.z DESCRIPTION Version); only active on a
 # development version (x.y.z.w), so it never surfaces to end users of a published module.
 vijDebugPlot = function(self, p) {
-    if (length(unclass(utils::packageVersion("vijPlots"))[[1]]) < 4)
+    if (length(unclass(utils::packageVersion(utils::packageName()))[[1]]) < 4)
         return(invisible(NULL))
     withCallingHandlers({
         ggplot2::ggplot_build(p)

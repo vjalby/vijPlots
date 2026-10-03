@@ -11,6 +11,9 @@ vijColorPalette = function(pal, type = "fill", theme) {
         palName <- palType
         palType <- "brewer"
     }
+    if (palType == "dichromat") { # dichromat::Categorical.12 palette is now hardcoded in "custom" instead of using dichromat package
+        palType <- "custom"
+    }
     if (palName == "jmv") {
         jmvPalette <- function(n) jmvcore::colorPalette(n, pal = theme$palette, type = type)
         attr(jmvPalette,"nlevels") <- 5
@@ -19,8 +22,6 @@ vijColorPalette = function(pal, type = "fill", theme) {
         return(scales::pal_brewer(palette = palName))
     } else if (palType == "viridis") {
         return(scales::pal_viridis(option = palName))
-    } else if (palType == "dichromat") {
-        return(scales::pal_dichromat(palName))
     } else if (palType == "tidy") {
         tidyColors <- switch(palName,
             friendly = c("#0072B2","#56B4E9","#009E73","#F5C710","#E69F00","#D55E00"),
@@ -43,6 +44,7 @@ vijColorPalette = function(pal, type = "fill", theme) {
             lemovice  = c("#16144e", "#00dc8c", "#5fcdcd", "#007387", "#efbe7c", "#8c87a4", "#ff6e5a", "#bc6479", "#8faadc", "#006d4d"),
             carbon_dark = c("#6929c4", "#1192e8", "#005d5d", "#9f1853", "#fa4d56", "#570408", "#198038", "#002d9c", "#ee538b", "#b28600", "#009d9a", "#012749", "#8a3800", "#a56eff"),
             carbon_light = c("#8a3ffc", "#33b1ff", "#007d79", "#ff7eb6", "#fa4d56", "#fff1f1", "#6fdc8c", "#4589ff", "#d12771", "#d2a106", "#08bdba", "#bae6ff", "#ba4e00", "#d4bbff"),
+            Categorical.12 = c("#FFBF80", "#FF8000", "#FFFF99", "#FFFF33", "#B2FF8C", "#33FF00", "#A6EDFF", "#1AB2FF", "#CCBFFF", "#664CFF", "#FF99BF", "#E61A33"),
             NULL
         )
         if (is.null(customColors))

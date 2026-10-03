@@ -15,7 +15,7 @@ LazyData: true
 ### labelled, fitdistrplus, Hmisc: not called directly, but required at runtime by ggstats/ggh4x/ggplot2 respectively
 Imports: jmvcore (>= 0.8.5), R6, utils, stats, grDevices, psych, MASS, tidyr, dplyr,
          tibble, tidyselect,  forcats, grid, rlang, ggplot2, scales, ggstats,
-         ggh4x, ggdist, ggpp, ggrepel, ggforce, dichromat, colorspace,
+         ggh4x, ggdist, ggpp, ggrepel, ggforce, colorspace,
          qqplotr, GPArotation, FactoMineR,
          labelled, fitdistrplus, Hmisc
 Suggests:

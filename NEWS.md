@@ -1,3 +1,7 @@
+# vijPlots 1.3.3 (2026-10-04)
+
+* Clockwise option added to piechart
+
 # vijPlots 1.3.2 (2026-09-13)
 
 * **Multivariate analyses (PCA/CA/MCA) have been removed and transferred to vijMulti module**

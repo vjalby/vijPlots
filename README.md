@@ -65,25 +65,9 @@ The module is available in the **Plots** tab.
 
 ![](img/areachart.jpg)
 
-## Last changes: vijPlots 1.3.2 (2026-09-13)
+## Last changes: vijPlots 1.3.3 (2026-10-04)
 
-* **Multivariate analyses (PCA/CA/MCA) have been removed and transferred to vijMulti module**
-* Mosaic Plot
-* Facet label options (font, size, alignment, background style)
-* Multiple Response Plots: the "Counted value" option now accepts any text (e.g. Y/N)
-* Line/Area Chart: manual X-axis date range can now be entered as text, and fixed breaks falling outside the specified range
-* Multiple Response Frequencies/Crosstabs: fixed a value containing only the separator (e.g. ";") not being treated as missing
-* Histogram: Stacking group densities and normal curves when Grouping:stacked option is selected
-* Histogram: Options to hide bins and to show lines
-* Histogram: Option to show mean/median reference lines, with an optional value label
-* Scatter Plot: Option to use different shapes. Option to set label text size
-* Two new color palettes based on the Carbon Design System (Carbon:Dark, Carbon:Light)
-* Fixed stacking order in barplot/barchart/mrcrosstab
-* Support for weights in barplot/piechart
-* Improved error handling
-* Improved ggplot2 4.0 support
-* Code optimization and fixes everywhere
-
+* Clockwise option added to piechart
 
 ## References
 

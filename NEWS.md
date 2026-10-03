@@ -1,6 +1,7 @@
 # vijPlots 1.3.3 (2026-10-04)
 
 * Clockwise option added to piechart
+* Some ggsci color palettes added
 
 # vijPlots 1.3.2 (2026-09-13)
 

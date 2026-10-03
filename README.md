@@ -68,11 +68,13 @@ The module is available in the **Plots** tab.
 ## Last changes: vijPlots 1.3.3 (2026-10-04)
 
 * Clockwise option added to piechart
+* Some ggsci color palettes added
 
 ## References
 
 - Larmarange J. (2026). ggstats: Extension to 'ggplot2' for Plotting Stats. R package version 0.13.0, <https://github.com/larmarange/ggstats>
 - Almeida, A., Loy, A., Hofmann, H. (2025). qqplotr: Quantile-Quantile Plot Extensions for 'ggplot2'. R package version 0.0.7, <https://github.com/aloy/qqplotr>
-- Engler, J.B. (2026). tidyplots: Tidy Plots for Scientific Papers, R package version 0.4.0, <https://CRAN.R-project.org/package=tidyplots>
+- Engler, J.B. (2026). tidyplots: Tidy Plots for Scientific Papers, <https://tidyplots.org>
+- Nan Xiao (2026). ggsci: Scientific Journal and Sci-Fi Themed Color Palettes, <https://nanx.me/ggsci/>
 - IBM. Carbon Design System — Color palettes. <https://carbondesignsystem.com/data-visualization/color-palettes/>
 

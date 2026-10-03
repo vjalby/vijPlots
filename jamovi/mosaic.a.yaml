@@ -254,6 +254,20 @@ options:
           name: custom::carbon_dark
         - title: Carbon:Light
           name: custom::carbon_light
+        - title: Ggsci:NPG
+          name: ggsci::npg
+        - title: Ggsci:AAAS
+          name: ggsci::aaas
+        - title: Ggsci:NEJM
+          name: ggsci::nejm
+        - title: Ggsci:Lancet
+          name: ggsci::lancet
+        - title: Ggsci:JAMA
+          name: ggsci::jama
+        - title: Ggsci:BMJ
+          name: ggsci::bmj
+        - title: Ggsci:JCO
+          name: ggsci::jco
         - title: Lémovice
           name: custom::lemovice
       default: jmv

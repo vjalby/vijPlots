@@ -276,6 +276,13 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                     "tidy::metro",
                     "custom::carbon_dark",
                     "custom::carbon_light",
+                    "ggsci::npg",
+                    "ggsci::aaas",
+                    "ggsci::nejm",
+                    "ggsci::lancet",
+                    "ggsci::jama",
+                    "ggsci::bmj",
+                    "ggsci::jco",
                     "custom::lemovice"),
                 default="jmv")
             private$..titleText <- jmvcore::OptionString$new(

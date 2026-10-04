@@ -184,16 +184,16 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 errorBars <- "none"
 
             if (errorBars == "sd") {
-                funData <- ggplot2::mean_sdl
-                funArgs <- list(mult = 1)
+                funData <- private$.meanSd
+                funArgs <- list()
             } else if (errorBars == "se") {
-                funData <- ggplot2::mean_cl_normal
+                funData <- ggplot2::mean_se
                 funArgs <- list(mult = 1)
             } else if (errorBars == "ci" && self$options$bootstrap) {
-                funData <- ggplot2::mean_cl_boot
+                funData <- private$.meanClBoot
                 funArgs <- list(conf.int = self$options$ciLevel/100)
             } else if (errorBars == "ci" && !self$options$bootstrap) {
-                funData <- ggplot2::mean_cl_normal
+                funData <- private$.meanClNormal
                 funArgs <- list(conf.int = self$options$ciLevel/100)
             }
             if (errorBars != "none")
@@ -279,5 +279,32 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 jmvcore::format(.('Sum of {var}'), var = yVar)
             else
                 yVar
+        },
+        # Error bar summaries for stat_summary(fun.data = ...), replacing ggplot2's
+        # mean_sdl/mean_cl_normal/mean_cl_boot, which require Hmisc
+        .meanSd = function(x) {
+            x <- x[!is.na(x)]
+            m <- mean(x)
+            s <- stats::sd(x)
+            data.frame(y = m, ymin = m - s, ymax = m + s)
+        },
+        .meanClNormal = function(x, conf.int = 0.95) {
+            x <- x[!is.na(x)]
+            n <- length(x)
+            m <- mean(x)
+            if (n < 2)
+                return(data.frame(y = m, ymin = NA_real_, ymax = NA_real_))
+            h <- stats::qt((1 + conf.int) / 2, n - 1) * stats::sd(x) / sqrt(n)
+            data.frame(y = m, ymin = m - h, ymax = m + h)
+        },
+        .meanClBoot = function(x, conf.int = 0.95, B = 1000) {
+            x <- x[!is.na(x)]
+            n <- length(x)
+            m <- mean(x)
+            if (n < 2)
+                return(data.frame(y = m, ymin = NA_real_, ymax = NA_real_))
+            means <- vapply(seq_len(B), function(i) mean(x[sample.int(n, n, replace = TRUE)]), numeric(1))
+            q <- stats::quantile(means, c((1 - conf.int) / 2, (1 + conf.int) / 2), names = FALSE)
+            data.frame(y = m, ymin = q[1], ymax = q[2])
         })
 )

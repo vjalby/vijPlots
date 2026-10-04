@@ -82,8 +82,8 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             summaryFun <- self$options$yaxis
             if (summaryFun == "minmax") {
                 mainColor <- self$options$dotColor
-                lightColor <- colorspace::lighten(mainColor, 0.4)
-                darkColor <- colorspace::darken(mainColor, 0.2)
+                lightColor <- scales::col_mix(mainColor, "white", 0.4, space = "lab")
+                darkColor <- scales::col_mix(mainColor, "black", 0.2, space = "lab")
                 plot <- plot +
                     ggplot2::stat_summary(geom = "linerange", fun.min = "min", fun.max = "max", linewidth = self$options$lineWidth, color = self$options$lineColor) +
                     ggplot2::stat_summary(geom = "point", fun = "min", size = self$options$dotSize, color = lightColor) +

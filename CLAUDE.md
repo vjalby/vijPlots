@@ -207,15 +207,22 @@ swallow it (see gotcha below).
 
 Several `Imports:` in `DESCRIPTION` aren't called directly (`pkg::fun()`) anywhere in `R/` — they're
 required at runtime by another dependency and would break at render time if removed:
-`fitdistrplus` (used internally by `ggh4x::stat_theodensity`, called from `histogram.b.R`),
+`fitdistrplus` (used internally by `ggh4x::stat_theodensity`, called from `histogram.b.R`) and
 `labelled` (an optional dependency of `ggstats::gglikert_data()`, checked via
-`rlang::check_installed("labelled")`, called from `likertplot.b.R`), and `Hmisc` (required
-internally by `ggplot2::mean_cl_boot()`/`mean_cl_normal()`, which call `Hmisc::smean.cl.boot()`
-etc. under the hood, used as `stat_summary(fun.data = ...)` in `barchart.b.R`). Before removing an
+`rlang::check_installed("labelled")`, called from `likertplot.b.R`). Before removing an
 Import that looks unused by a plain grep, check whether the package that *is* called depends on it.
 (`GPArotation` used to be in this list — `principal.b.R` called it indirectly via
 `getFromNamespace()` — but as of 2026-08-23 it's called directly as `GPArotation::Varimax()` etc.
 in a `switch()`, so it's grep-visible like any normal import.)
+
+`Hmisc` was dropped (2026-10-04): `ggplot2::mean_sdl()`/`mean_cl_normal()`/`mean_cl_boot()` all
+call `Hmisc::smean.*()` under the hood, so `barchart.b.R`'s error bars now use its own
+`private$.meanSd`/`.meanClNormal`/`.meanClBoot` (checked identical to the Hmisc versions) plus
+`ggplot2::mean_se()` (Hmisc-free). Don't reintroduce `ggplot2::mean_cl_*`/`mean_sdl`/`median_hilow`
+as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports`. Likewise
+`colorspace` was dropped (2026-10-04) in favour of `scales::col_mix()` (needs `scales >= 1.4.0`)
+in `lollipop.b.R` — note it's still installed transitively via `FactoMineR` (→ car → pbkrtest →
+doBy → forecast) for as long as `FactoMineR` stays an Import.
 
 ### Avoid `do.call()`
 

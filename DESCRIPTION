@@ -12,11 +12,11 @@ Description: Main statistical charts for continuous variables (Histogram, Box pl
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-### labelled, fitdistrplus, Hmisc: not called directly, but required at runtime by ggstats/ggh4x/ggplot2 respectively
+### labelled, fitdistrplus: not called directly, but required at runtime by ggstats/ggh4x respectively
 Imports: jmvcore (>= 0.8.5), R6, utils, stats, grDevices, psych, MASS, tidyr, 
-         dplyr, tibble, tidyselect,  forcats, grid, rlang, ggplot2, scales, 
-         ggstats, ggh4x, ggdist, ggpp, ggrepel, ggforce, colorspace, qqplotr, 
-         GPArotation, FactoMineR, labelled, fitdistrplus, Hmisc
+         dplyr, tibble, tidyselect,  forcats, grid, rlang, ggplot2, scales (>= 1.4.0),
+         ggstats, ggh4x, ggdist, ggpp, ggrepel, ggforce, qqplotr,
+         GPArotation, FactoMineR, labelled, fitdistrplus
 Suggests:
     testthat (>= 3.0.0),
     vdiffr

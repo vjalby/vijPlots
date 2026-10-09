@@ -89,6 +89,8 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             image$setState(data)
         },
         .plot = function(image, ggtheme, theme, ...) {
+            # Long by design (reviewed 2026-10-09): a linear `plot <- plot + ...` build; splitting
+            # it would scatter the plot's construction without simplifying it.
             if (is.null(image$state))
                 return(FALSE)
             plotData <- image$state

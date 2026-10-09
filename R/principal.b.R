@@ -193,6 +193,8 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(private$.pcaplot("biplot", image, ggtheme, theme))
         },
         .pcaplot = function(plotType, image, ggtheme, theme, ...) {
+            # Long by design (reviewed 2026-10-09): a linear `plot <- plot + ...` build; splitting
+            # it would scatter the plot's construction without simplifying it.
             res <- image$state
             if (is.null(res))
                 return(FALSE)

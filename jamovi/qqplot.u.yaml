@@ -118,13 +118,13 @@ children:
                     optionName: paramEstMethod
                     optionPart: mle
                     label: Maximum-likelihood (MLE)
-                    enable: (paramMethod_paraEstimat)
+                    enable: (paramMethod_paraEstimate)
                   - type: RadioButton
                     name: paramEstMethod_mme
                     optionName: paramEstMethod
                     optionPart: mme
                     label: Method of moments (MME)
-                    enable: (paramMethod_paraEstimat)
+                    enable: (paramMethod_paraEstimate)
           - type: LayoutBox
             cell:
               column: 1

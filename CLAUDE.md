@@ -15,7 +15,9 @@ Three more analyses — `principal` (PCA), `corresp` (Correspondence Analysis), 
 (`hidden: true` in `jamovi/0000.yaml`, see that file's "analyses" section): they were transferred
 to a separate **vijMulti** module and are kept here only so documents created before the transfer
 keep working. Don't add them to menus/README/docs as active features; do keep their `.b.R`/
-`.a.yaml`/`.u.yaml`/`.r.yaml` and tests working, since old `.omv` files still call them.
+`.a.yaml`/`.u.yaml`/`.r.yaml` and tests working, since old `.omv` files still call them. They're
+slated for eventual removal, so don't spend effort on refactoring/polish/syncing them with vijMulti
+(e.g. audit "by design" comments, style cleanups) — fix only what breaks old documents.
 
 ### Target jamovi version
 
@@ -232,6 +234,13 @@ explicit set of branches is just as flexible for dispatching on an option value,
 callable function spelled out literally (grep-visible, no need for a defensive whitelist check —
 see the "Dependency graph" note above for the `principal.b.R` rotation example this was fixed in),
 and avoids `do.call`'s NSE/argument-matching quirks entirely.
+
+### Checkbox labels
+
+`histogram`'s "Show bins"/"Show lines"/"Show density" deliberately keep the leading verb (despite
+jamovi's "name the thing, not the action" convention, applied in `boxplot`/`barplot`) to match
+jmvPlots' histogram, which uses the same labels — don't "fix" them in response to an audit. See
+the comment in `jamovi/histogram.a.yaml`.
 
 ### Translations (`jamovi/i18n/*.po`)
 

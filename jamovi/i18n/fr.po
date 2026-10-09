@@ -1449,6 +1449,10 @@ msgstr "Variables qualitatives"
 msgid "Categories"
 msgstr "Catégories"
 
+#: mosaic/options/showCategoryPercent.title
+msgid "Category %"
+msgstr "% des catégories"
+
 #: barplot/options/rows.title
 #: barplot/ui[0][0].label
 #: mosaic/options/category.title
@@ -3322,6 +3326,7 @@ msgstr "Gauche"
 #: histogram/ui[6][0].label
 #: likertplot/ui[7][0].label
 #: linechart/ui[3][0].label
+#: mosaic/options/showOpacityLegend.title
 #: mosaic/ui[6][0].label
 #: mrcrosstabs/ui[5][0].label
 #: multcorresp/ui[8][0].label
@@ -5321,10 +5326,6 @@ msgstr "Afficher les %"
 msgid "Show bins"
 msgstr "Afficher les bâtons"
 
-#: mosaic/options/showCategoryPercent.title
-msgid "Show category %"
-msgstr "Afficher les %"
-
 #: histogram/options/density.title
 msgid "Show density"
 msgstr "Afficher la densité"
@@ -5332,10 +5333,6 @@ msgstr "Afficher la densité"
 #: histogram/options/summaryLineLabel.title
 msgid "Show label"
 msgstr "Afficher les étiquettes"
-
-#: mosaic/options/showOpacityLegend.title
-msgid "Show legend"
-msgstr "Afficher la légende"
 
 #: scatterplot/options/regLine.title
 msgid "Show line"

@@ -94,7 +94,7 @@ options:
       default: false
 
     - name: showCategoryPercent
-      title: Show category %
+      title: Category %
       type: Bool
       default: false
 
@@ -104,7 +104,7 @@ options:
       default: false
 
     - name: showOpacityLegend
-      title: Show legend
+      title: Legend
       type: Bool
       default: false
 

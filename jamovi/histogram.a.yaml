@@ -48,6 +48,9 @@ options:
           name:  density
       default: count
 
+    # "Show bins" / "Show lines" / "Show density"... deliberately keep the leading "Show":
+    # same labels as jmvPlots' histogram, kept in sync on purpose (don't drop the verb).
+
     - name: showBins
       title: Show bins
       type: Bool

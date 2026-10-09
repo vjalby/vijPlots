@@ -1227,6 +1227,10 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+#: mosaic/options/showCategoryPercent.title
+msgid "Category %"
+msgstr ""
+
 #: barplot/options/rows.title
 #: barplot/ui[0][0].label
 #: mosaic/options/category.title
@@ -3100,6 +3104,7 @@ msgstr ""
 #: histogram/ui[6][0].label
 #: likertplot/ui[7][0].label
 #: linechart/ui[3][0].label
+#: mosaic/options/showOpacityLegend.title
 #: mosaic/ui[6][0].label
 #: mrcrosstabs/ui[5][0].label
 #: multcorresp/ui[8][0].label
@@ -5089,20 +5094,12 @@ msgstr ""
 msgid "Show bins"
 msgstr ""
 
-#: mosaic/options/showCategoryPercent.title
-msgid "Show category %"
-msgstr ""
-
 #: histogram/options/density.title
 msgid "Show density"
 msgstr ""
 
 #: histogram/options/summaryLineLabel.title
 msgid "Show label"
-msgstr ""
-
-#: mosaic/options/showOpacityLegend.title
-msgid "Show legend"
 msgstr ""
 
 #: scatterplot/options/regLine.title

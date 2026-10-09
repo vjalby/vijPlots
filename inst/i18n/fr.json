@@ -376,6 +376,9 @@
             "Categories": [
                 "Catégories"
             ],
+            "Category %": [
+                "% des catégories"
+            ],
             "Category Axis": [
                 "Axe des catégories"
             ],
@@ -1777,17 +1780,11 @@
             "Show bins": [
                 "Afficher les bâtons"
             ],
-            "Show category %": [
-                "Afficher les %"
-            ],
             "Show density": [
                 "Afficher la densité"
             ],
             "Show label": [
                 "Afficher les étiquettes"
-            ],
-            "Show legend": [
-                "Afficher la légende"
             ],
             "Show line": [
                 "Afficher la courbe"

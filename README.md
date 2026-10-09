@@ -65,7 +65,7 @@ The module is available in the **Plots** tab.
 
 ![](img/areachart.jpg)
 
-## Last changes: vijPlots 1.3.3 (2026-10-04)
+## Last changes: vijPlots 1.3.3 (2026-10-11)
 
 * Clockwise option added to piechart
 * Some ggsci color palettes added

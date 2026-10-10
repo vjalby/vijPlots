@@ -41,6 +41,10 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(depVars) == 0 || is.null(timeVar))
                 return()
 
+            # ".variable" and ".value" are the column names used by .plot() when pivoting the data
+            if (!oneVariable && timeVar %in% c(".variable", ".value"))
+                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = timeVar))
+
             plotData <- jmvcore::select(self$data, varNames)
 
             # Be sure dep var are numeric
@@ -71,7 +75,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!is.null(timeVarAsDate)) {
                     plotData[[timeVar]] <- timeVarAsDate
                 } else {
-                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = self$options$timeVar)
+                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = timeVar)
                     vijWarningMessage(self, errorMessage)
                     timeVarIsDate <- FALSE
                 }
@@ -107,11 +111,11 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 timeVar <- rlang::sym(self$options$timeVar1)
                 plotData <- plotData |>
-                    tidyr::pivot_longer(cols = -!!timeVar, names_to = "Variables", values_to = "Values")
-                # Transform "Variables" as factor to keep the variable order.
-                plotData$Variables <- factor(plotData$Variables, levels = self$options$vars)
-                depVar <- rlang::sym("Values")
-                groupVar <- rlang::sym("Variables")
+                    tidyr::pivot_longer(cols = tidyselect::all_of(self$options$vars), names_to = ".variable", values_to = ".value")
+                # Transform ".variable" as factor to keep the variable order.
+                plotData$.variable <- factor(plotData$.variable, levels = self$options$vars)
+                depVar <- rlang::sym(".value")
+                groupVar <- rlang::sym(".variable")
             }
 
             # timeVar format
@@ -152,16 +156,17 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 labelFnct <- ggplot2::waiver()
 
             if (oneVariable) {
-                showLegend = TRUE
-                yLab <- self$options$var #depVar
+                yLab <- self$options$var
+                gLab <- self$options$group
+                showLegend <- TRUE
+            } else if (length(self$options$vars) > 1) {
+                yLab <- .("Values")
+                gLab <- .("Variables")
+                showLegend <- TRUE
             } else {
-                if(length(self$options$vars) > 1) {
-                    showLegend = TRUE
-                    yLab <- .("Values")
-                } else {
-                    showLegend = FALSE
-                    yLab <- self$options$vars
-                }
+                yLab <- self$options$vars
+                gLab <- .("Variables")
+                showLegend <- FALSE
             }
 
             # Date range/scale
@@ -198,7 +203,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::coord_cartesian(xlim = xLim, ylim = yLim)
 
             # Titles & Labels
-            defaults <- list(y = yLab, x = timeVar, legend = groupVar)
+            defaults <- list(y = yLab, x = timeVar, legend = gLab)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = showLegend)
             plot <- plot + ggplot2::theme(legend.key.spacing.y = grid::unit(1, "mm"), legend.byrow = TRUE)
 

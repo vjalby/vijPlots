@@ -32,6 +32,11 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(depVars) == 0 || is.null(timeVar))
                 return()
 
+            # ".variable" and ".value" are the column names used by .plot() when pivoting the data
+            reservedVar <- intersect(c(timeVar, groupVar), c(".variable", ".value"))
+            if (length(depVars) > 1 && length(reservedVar) > 0)
+                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+
             plotData <- jmvcore::select(self$data, varNames)
 
             # Be sure dep var are numeric
@@ -62,7 +67,7 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!is.null(timeVarAsDate)) {
                     plotData[[timeVar]] <- timeVarAsDate
                 } else {
-                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = self$options$timeVar)
+                    errorMessage <- jmvcore::format(.("{var} doesn't have a valid date format."), var = timeVar)
                     vijWarningMessage(self, errorMessage)
                     timeVarIsDate <- FALSE
                 }
@@ -103,38 +108,31 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             lineWidth <- self$options$lineWidth
 
             if (length(depVars) > 1) {
-                plotDataLong <- tidyr::pivot_longer(
+                plotData <- tidyr::pivot_longer(
                     plotData,
                     cols = tidyselect::all_of(depVars),
                     names_to = ".variable",
                     values_to = ".value"
                 )
+                # Transform ".variable" as factor to keep the variable order.
+                plotData$.variable <- factor(plotData$.variable, levels = depVars)
                 if (is.null(groupVar)) {
-                    plot <- ggplot2::ggplot(plotDataLong, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, group = .variable))
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, group = .variable))
                 } else {
-                    plot <- ggplot2::ggplot(plotDataLong, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, linetype = !!groupVar, group = interaction(.variable, !!groupVar)))
-                }
-                plot <- plot + ggplot2::geom_line(linewidth = lineWidth)
-                if (self$options$showPoint) {
-                    plot <- plot + ggplot2::geom_point(size = dotSize)
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, linetype = !!groupVar, group = interaction(.variable, !!groupVar)))
                 }
             } else {
                 # A single variable
                 aVar <- rlang::sym(depVars[1])
                 if (is.null(groupVar)) {
-                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = !!aVar, group = 1, color = "aVar")) +
-                                ggplot2::geom_line(linewidth = lineWidth)
-                    if (self$options$showPoint) {
-                        plot <- plot + ggplot2::geom_point(size = dotSize)
-                    }
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = !!aVar, group = 1, color = "aVar"))
                 } else {
-                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = !!aVar, color = !!groupVar, group = !!groupVar)) +
-                                ggplot2::geom_line(linewidth = lineWidth)
-                    if (self$options$showPoint) {
-                        plot <- plot + ggplot2::geom_point(size = dotSize)
-                    }
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = !!aVar, color = !!groupVar, group = !!groupVar))
                 }
             }
+            plot <- plot + ggplot2::geom_line(linewidth = lineWidth)
+            if (self$options$showPoint)
+                plot <- plot + ggplot2::geom_point(size = dotSize)
 
             # Theme and colors
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme)

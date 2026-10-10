@@ -99,7 +99,7 @@ options:
       default: false
 
     - name: residualsAsOpacity
-      title: Map to residuals
+      title: Map to Pearson residuals
       type: Bool
       default: false
 

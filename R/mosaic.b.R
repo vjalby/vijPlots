@@ -133,7 +133,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = x_center, y = y_center, width = xwidth, height = percentage, fill = !!group, alpha = abs(residuals)),
                                                   color = "white", linewidth = self$options$borderWidth, show.legend = TRUE) # show.legend needed to display unused levels
                 # Alpha scale
-                plot <- plot + ggplot2::scale_alpha_continuous(name = .("Residuals"), range = c(0.1, 1))
+                plot <- plot + ggplot2::scale_alpha_continuous(name = .("Pearson residuals"), range = c(0.1, 1))
             } else {
                 plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = x_center, y = y_center, width = xwidth, height = percentage, fill = !!group),
                                                   color = "white", linewidth = self$options$borderWidth, show.legend = TRUE) # show.legend needed to display unused levels

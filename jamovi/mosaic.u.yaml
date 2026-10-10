@@ -221,7 +221,7 @@ children:
                 children:
                   - type: CheckBox
                     name: residualsAsOpacity
-                    label: "Map to residuals"
+                    label: "Map to Pearson residuals"
                   - type: CheckBox
                     name: showOpacityLegend
                     enable: (residualsAsOpacity)

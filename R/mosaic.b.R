@@ -94,7 +94,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (nrow(plotData) == 0)
                 return(FALSE)
 
-            # Validate .COUNTS (NA / non negative / not infinite)
+            # Validate .COUNTS (NA / non negative / not infinite / not all zero)
             if (any(is.na(plotData$.COUNTS)))  {
                 vijErrorMessage(self, .('Counts may not contain missing values.'))
             }
@@ -103,6 +103,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             if (any(is.infinite(plotData$.COUNTS))) {
                 vijErrorMessage(self, .('Counts may not be infinite.'))
+            }
+            if (sum(plotData$.COUNTS) == 0) {
+                vijErrorMessage(self, .('Counts may not all be zero.'))
             }
 
             mdf <- private$.mosaicData(plotData, categoryName, groupName, facetName, self$options$order, self$options$reverseStack)

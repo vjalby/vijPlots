@@ -589,8 +589,8 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "liks",
                     "group",
-                    "type",
                     "sorting",
+                    "ignoreNA",
                     "frequencies",
                     "showMean",
                     "showMedian",
@@ -635,6 +635,7 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             clearWith=list(
                                 "liks",
                                 "group",
+                                "ignoreNA",
                                 "adjustMethod",
                                 "pValue",
                                 "descAsVarName")))
@@ -666,6 +667,7 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             clearWith=list(
                                 "liks",
                                 "group",
+                                "ignoreNA",
                                 "adjustMethod",
                                 "pValue",
                                 "descAsVarName")))
@@ -687,8 +689,10 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             clearWith=list(
                                 "liks",
                                 "group",
+                                "ignoreNA",
                                 "adjustMethod",
                                 "postHoc",
+                                "sorting",
                                 "pValue",
                                 "descAsVarName")))}))$new(options=options))
             self$add(jmvcore::Image$new(

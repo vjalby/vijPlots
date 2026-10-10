@@ -676,7 +676,9 @@ mrfrequenciesResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
                     "separator",
                     "emptyAsNA",
                     "endorsed",
-                    "order")))
+                    "order",
+                    "showTotal",
+                    "optionname")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",

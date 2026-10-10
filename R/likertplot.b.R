@@ -346,7 +346,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showMedian)
                 table$addColumn("Median", type = "number", title = .("Median"))
             if (self$options$showMean) {
-                table$addColumn("Mean", type = "number")
+                table$addColumn("Mean", type = "number", title = .("Mean"))
                 table$addColumn("SD", type = "number", title = .("SD"))
             }
 
@@ -405,7 +405,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             adjustMethodStr <- ctx$adjustMethodStr
 
             if (ng != 2) {
-                self$results$comp$uTestTable$setNote("p","Mann-Whitney tests require two groups")
+                self$results$comp$uTestTable$setNote("p",.("Mann-Whitney tests require two groups"))
                 for (ques in questions) { # Empty table
                     self$results$comp$uTestTable$setRow(rowKey = ques,
                                                         values = list("ques" = private$.getVarName(ques), statistic = NULL, p.value = NULL, adjusted.p = NULL))

@@ -217,7 +217,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$meanLine)
                 plot <- plot + private$.summaryLine(plotData, xVar, groupVar, facetVar, mean, "dashed", "µ")
             if (self$options$medianLine)
-                plot <- plot + private$.summaryLine(plotData, xVar, groupVar, facetVar, stats::median, "dotted", "Med")
+                plot <- plot + private$.summaryLine(plotData, xVar, groupVar, facetVar, stats::median, "dotted", .("Med"))
 
             #### Axes ####
 

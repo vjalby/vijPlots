@@ -1889,6 +1889,12 @@ msgid "Counts (optional)"
 msgstr "Effectifs (optionnel)"
 
 #: R/barplot.b.R
+#: R/mosaic.b.R
+#: R/piechart.b.R
+msgid "Counts may not all be zero."
+msgstr "Les effectifs ne peuvent pas être tous nuls."
+
+#: R/barplot.b.R
 #: R/corresp.b.R
 #: R/mosaic.b.R
 #: R/piechart.b.R

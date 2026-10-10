@@ -1663,6 +1663,12 @@ msgid "Counts (optional)"
 msgstr ""
 
 #: R/barplot.b.R
+#: R/mosaic.b.R
+#: R/piechart.b.R
+msgid "Counts may not all be zero."
+msgstr ""
+
+#: R/barplot.b.R
 #: R/corresp.b.R
 #: R/mosaic.b.R
 #: R/piechart.b.R

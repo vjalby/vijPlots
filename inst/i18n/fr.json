@@ -550,6 +550,9 @@
             "Counts (optional)": [
                 "Effectifs (optionnel)"
             ],
+            "Counts may not all be zero.": [
+                "Les effectifs ne peuvent pas être tous nuls."
+            ],
             "Counts may not be infinite.": [
                 "Les effectifs ne peuvent pas être infinis."
             ],

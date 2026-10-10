@@ -78,6 +78,21 @@ test_that("linechart: date (ISO format)", {
     expect_plot_snapshot("linechart-date-iso", testPlot)
 })
 
+test_that("linechart: manual date range (the line reaches both edges)", {
+    testPlot <- vijPlots::linechart(
+        data = testData,
+        timeVar = "dateStd",
+        vars = "Var3",
+        group = NULL,
+        isDate = TRUE,
+        dateFormat = "iso",
+        xAxisRangeType = "manual",
+        xAxisRangeMin = "2023-02-10",
+        xAxisRangeMax = "2023-08-01"
+    )$plot
+    expect_plot_snapshot("linechart-date-manualXRange", testPlot)
+})
+
 test_that("linechart: date (EU format)", {
     testPlot <- vijPlots::linechart(
         data = testData,

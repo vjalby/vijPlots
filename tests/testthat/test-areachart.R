@@ -42,6 +42,24 @@ test_that("areachart: several variables stacked, with date", {
     expect_plot_snapshot("areachart-severalVars-date-stack", testPlot)
 })
 
+test_that("areachart: manual date range (the areas reach both edges)", {
+    testPlot <- vijPlots::areachart(
+        mode = "severalVariables",
+        data = testData,
+        timeVar = NULL,
+        timeVar1 = "dateUS1",
+        vars = c("Var3", "Var4"),
+        var = NULL,
+        group = NULL,
+        isDate = TRUE,
+        position = "stack",
+        xAxisRangeType = "manual",
+        xAxisRangeMin = "02/10/2023",
+        xAxisRangeMax = "08/01/2023"
+    )$plot
+    expect_plot_snapshot("areachart-severalVars-date-manualXRange", testPlot)
+})
+
 test_that("areachart: one variable, 2 groups, 100% stacked (fill)", {
     testPlot <- vijPlots::areachart(
         mode = "oneVariable",

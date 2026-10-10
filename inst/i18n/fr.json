@@ -1150,6 +1150,9 @@
             "Manual X-axis range doesn't have a valid date format.": [
                 "L'intervalle manuel de l'axe X n'a pas un format de date valide."
             ],
+            "Manual X-axis range is invalid.": [
+                "L'intervalle manuel de l'axe X n'est pas valide."
+            ],
             "Map to residuals": [
                 "Liée aux résidus"
             ],

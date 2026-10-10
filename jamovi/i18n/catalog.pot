@@ -3365,6 +3365,11 @@ msgstr ""
 msgid "Manual X-axis range doesn't have a valid date format."
 msgstr ""
 
+#: R/areachart.b.R
+#: R/linechart.b.R
+msgid "Manual X-axis range is invalid."
+msgstr ""
+
 #: mosaic/options/residualsAsOpacity.title
 #: mosaic/ui[3][0][1][0]/residualsAsOpacity.label
 msgid "Map to residuals"

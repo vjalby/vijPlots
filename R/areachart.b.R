@@ -91,8 +91,12 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             dateLim <- NULL
             if (timeVarIsDate && self$options$xAxisRangeType == "manual") {
                 dateLim <- private$.convertToDate(c(self$options$xAxisRangeMin, self$options$xAxisRangeMax), self$options$dateFormat)
-                if (is.null(dateLim))
+                if (is.null(dateLim)) {
                     vijWarningMessage(self, .("Manual X-axis range doesn't have a valid date format."))
+                } else if (dateLim[1] >= dateLim[2]) {
+                    dateLim <- NULL
+                    vijWarningMessage(self, .("Manual X-axis range is invalid."))
+                }
             }
 
             image <- self$results$plot
@@ -130,9 +134,9 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Plot options (position)
             if (self$options$position == "identity")
-                alpha = 0.5
+                alpha <- 0.5
             else
-                alpha = 1
+                alpha <- 1
 
             if (is.null(groupVar))
                 plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, group = 1)) +
@@ -174,7 +178,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$xAxisRangeType == "manual" && !is.null(dateLim)) { # Date and manual
                     dateBreaks <- scales::breaks_width(self$options$dateBreak)(dateLim)
                     dateBreaks <- dateBreaks[dateBreaks >= dateLim[1] & dateBreaks <= dateLim[2]]
-                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, breaks = dateBreaks, limits = dateLim)
+                    plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, breaks = dateBreaks)
                 } else {
                     plot <- plot + ggplot2::scale_x_date(labels = private$.myDateLabel, date_breaks = self$options$dateBreak)
                 }
@@ -193,6 +197,8 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Axis ranges
             if (timeVarIsNumeric && self$options$xAxisRangeType == "manual")
                 xLim <- c(as.double(self$options$xAxisRangeMin), as.double(self$options$xAxisRangeMax))
+            else if (timeVarIsDate && self$options$xAxisRangeType == "manual" && !is.null(dateLim))
+                xLim <- dateLim
             else
                 xLim <- NULL
             if (self$options$yAxisRangeType == "manual")

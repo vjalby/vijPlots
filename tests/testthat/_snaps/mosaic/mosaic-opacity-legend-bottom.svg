@@ -61,13 +61,13 @@
 <rect x='419.37' y='511.26' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #F0CD8C;' />
 <text x='368.67' y='524.01' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='42.03px' lengthAdjust='spacingAndGlyphs'>female</text>
 <text x='443.92' y='524.01' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.35px' lengthAdjust='spacingAndGlyphs'>male</text>
-<rect x='269.54' y='543.78' width='247.29' height='17.28' style='stroke-width: 1.55; stroke: none;' />
-<text x='269.54' y='557.58' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='65.88px' lengthAdjust='spacingAndGlyphs'>Residuals</text>
-<rect x='344.09' y='544.48' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #333333; fill-opacity: 0.32;' />
-<rect x='404.56' y='544.48' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #333333; fill-opacity: 0.56;' />
-<rect x='465.03' y='544.48' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #333333; fill-opacity: 0.81;' />
-<text x='368.64' y='557.23' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='27.25px' lengthAdjust='spacingAndGlyphs'>0.07</text>
-<text x='429.11' y='557.23' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='27.25px' lengthAdjust='spacingAndGlyphs'>0.09</text>
-<text x='489.58' y='557.23' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='27.25px' lengthAdjust='spacingAndGlyphs'>0.11</text>
+<rect x='242.43' y='543.78' width='301.50' height='17.28' style='stroke-width: 1.55; stroke: none;' />
+<text x='242.43' y='557.58' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='120.09px' lengthAdjust='spacingAndGlyphs'>Pearson residuals</text>
+<rect x='371.20' y='544.48' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #333333; fill-opacity: 0.32;' />
+<rect x='431.67' y='544.48' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #333333; fill-opacity: 0.56;' />
+<rect x='492.14' y='544.48' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #333333; fill-opacity: 0.81;' />
+<text x='395.74' y='557.23' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='27.25px' lengthAdjust='spacingAndGlyphs'>0.07</text>
+<text x='456.21' y='557.23' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='27.25px' lengthAdjust='spacingAndGlyphs'>0.09</text>
+<text x='516.68' y='557.23' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='27.25px' lengthAdjust='spacingAndGlyphs'>0.11</text>
 </g>
 </svg>

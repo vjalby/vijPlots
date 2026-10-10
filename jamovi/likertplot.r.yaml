@@ -18,8 +18,8 @@ items:
       clearWith:
         - liks
         - group
-        - type
         - sorting
+        - ignoreNA
         - frequencies
         - showMean
         - showMedian
@@ -53,6 +53,7 @@ items:
           clearWith:
             - liks
             - group
+            - ignoreNA
             - adjustMethod
             - pValue
             - descAsVarName
@@ -80,6 +81,7 @@ items:
           clearWith:
             - liks
             - group
+            - ignoreNA
             - adjustMethod
             - pValue
             - descAsVarName
@@ -99,8 +101,10 @@ items:
           clearWith:
             - liks
             - group
+            - ignoreNA
             - adjustMethod
             - postHoc
+            - sorting
             - pValue
             - descAsVarName
 

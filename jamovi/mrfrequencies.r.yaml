@@ -36,6 +36,8 @@ items:
         - emptyAsNA
         - endorsed
         - order
+        - showTotal
+        - optionname
 
     - name: plot
       title: Frequency Plot

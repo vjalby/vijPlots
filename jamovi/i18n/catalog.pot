@@ -9,6 +9,11 @@ msgstr ""
 
 #: R/areachart.b.R
 #: R/linechart.b.R
+msgid "\"{var}\" is a reserved name. Please rename this variable."
+msgstr ""
+
+#: R/areachart.b.R
+#: R/linechart.b.R
 msgid ""
 "\"Range\" option for the X-axis is only available for numeric and date "
 "variables."
@@ -3316,6 +3321,10 @@ msgstr ""
 msgid "Lollipop Size & Colors"
 msgstr ""
 
+#: R/likertplot.b.R
+msgid "Mann-Whitney tests require two groups"
+msgstr ""
+
 #: likertplot/options/showMannU.title
 msgid "Mann-Whitney U"
 msgstr ""
@@ -3431,6 +3440,7 @@ msgstr ""
 msgid "MCA Standard Coordinates ({method})"
 msgstr ""
 
+#: R/likertplot.b.R
 #: barchart/options/yaxis/mean.title
 #: barchart/ui[1][0][0][0]/yaxis_mean.label
 #: boxplot/options/showMean.title
@@ -3450,6 +3460,10 @@ msgstr ""
 #: R/barchart.b.R
 #: R/lollipop.b.R
 msgid "Mean of {var}"
+msgstr ""
+
+#: R/histogram.b.R
+msgid "Med"
 msgstr ""
 
 #: R/likertplot.b.R
@@ -5978,6 +5992,7 @@ msgstr ""
 msgid "Variable Plot"
 msgstr ""
 
+#: R/areachart.b.R
 #: R/linechart.b.R
 #: R/multcorresp.b.R
 #: areachart/options/vars.title

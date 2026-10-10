@@ -10,6 +10,11 @@ msgstr ""
 
 #: R/areachart.b.R
 #: R/linechart.b.R
+msgid "\"{var}\" is a reserved name. Please rename this variable."
+msgstr "« {var} » est un nom réservé. Veuillez renommer cette variable."
+
+#: R/areachart.b.R
+#: R/linechart.b.R
 msgid ""
 "\"Range\" option for the X-axis is only available for numeric and date "
 "variables."
@@ -201,7 +206,7 @@ msgstr ""
 "</ul>\n"
 "<p>Les p-valeurs peuvent être corrigées <strong>par groupe</strong> (pour "
 "chaque variable) pour les tests post-hoc ou <strong>globalement</strong> "
-"(par groupe et par variable) pour les tests Mann-Withney U, Kruskal-Wallis "
+"(par groupe et par variable) pour les tests Mann-Whitney U, Kruskal-Wallis "
 "et post-hoc. Les p-valeurs du test DSCF sont toujours corrigées par groupe ; "
 "aucune autre correction n'est possible.</p>\n"
 "<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de "
@@ -446,10 +451,12 @@ msgstr ""
 "(CATA).</p>\n"
 "<p>Les questions peuvent être codées comme suit :</p>\n"
 "<ul>\n"
-"<li>plusieurs variables dichotomiques (ou variables indicatrices) utilisant "
-"0/1, 1/2 ou O/N pour chaque réponse possible ;</li>\n"
-"<li>une seule variable à valeurs multiples contenant les réponses cochées, "
-"séparées par un symbole (généralement « , » ou « ; »).</li>\n"
+"<li>plusieurs <strong>variables dichotomiques (ou variables "
+"indicatrices)</strong> utilisant 0/1, 1/2 ou O/N pour chaque réponse "
+"possible ;</li>\n"
+"<li>une seule <strong>variable à valeurs multiples</strong> contenant les "
+"réponses cochées, séparées par un symbole (généralement « , » ou « ; "
+"»).</li>\n"
 "</ul>\n"
 "<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de "
 "données > vijPlots > Credit Cards</p>"
@@ -473,10 +480,12 @@ msgstr ""
 "s'appliquent » (CATA).</p>\n"
 "<p>Les questions peuvent être codées comme suit :</p>\n"
 "<ul>\n"
-"<li>plusieurs variables dichotomiques (ou variables indicatrices) utilisant "
-"0/1, 1/2 ou O/N pour chaque réponse possible ;</li>\n"
-"<li>une seule variable à valeurs multiples contenant les réponses cochées, "
-"séparées par un symbole (généralement « , » ou « ; »).</li>\n"
+"<li>plusieurs <strong>variables dichotomiques (ou variables "
+"indicatrices)</strong> utilisant 0/1, 1/2 ou O/N pour chaque réponse "
+"possible ;</li>\n"
+"<li>une seule <strong>variable à valeurs multiples</strong> contenant les "
+"réponses cochées, séparées par un symbole (généralement « , » ou « ; "
+"»).</li>\n"
 "</ul>\n"
 "<p>Un fichier de démonstration est disponible dans Ouvrir > Bibliothèque de "
 "données > vijPlots > Credit Cards</p>"
@@ -3540,6 +3549,10 @@ msgstr "Taille des sucettes"
 msgid "Lollipop Size & Colors"
 msgstr "Taille et couleurs des sucettes"
 
+#: R/likertplot.b.R
+msgid "Mann-Whitney tests require two groups"
+msgstr "Les test de Mann-Whitney nécessitent deux groupes."
+
 #: likertplot/options/showMannU.title
 msgid "Mann-Whitney U"
 msgstr "Mann-Whitney U"
@@ -3655,6 +3668,7 @@ msgstr "Coordonnées principales ACM ({method})"
 msgid "MCA Standard Coordinates ({method})"
 msgstr "Coordonnées standardisées ACM ({method})"
 
+#: R/likertplot.b.R
 #: barchart/options/yaxis/mean.title
 #: barchart/ui[1][0][0][0]/yaxis_mean.label
 #: boxplot/options/showMean.title
@@ -3675,6 +3689,10 @@ msgstr "Moyenne"
 #: R/lollipop.b.R
 msgid "Mean of {var}"
 msgstr "Moyenne de {var}"
+
+#: R/histogram.b.R
+msgid "Med"
+msgstr "Méd"
 
 #: R/likertplot.b.R
 #: barchart/options/yaxis/median.title
@@ -6231,6 +6249,7 @@ msgstr "Graphique des variables"
 msgid "Variable plot"
 msgstr "Variables"
 
+#: R/areachart.b.R
 #: R/linechart.b.R
 #: R/multcorresp.b.R
 #: areachart/options/vars.title

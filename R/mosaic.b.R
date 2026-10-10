@@ -181,7 +181,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             expFactMult <- ifelse(self$options$hideAxes, 0.0, 0.04)
 
             if (is.null(self$options$facet)) {
-                xAxisData <- unique(plotData[c("x_center", as.character(category), "xwidth")])
+                xAxisData <- unique(plotData[c("x_center", rlang::as_string(category), "xwidth")])
                 if (self$options$showCategoryPercent) {
                     xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$xwidth), ")")
                 } else {
@@ -254,7 +254,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # Column widths are computed per facet, so each panel needs its own x breaks/labels
                 xScales <- lapply(facetLevels, function(lv) {
                     subData <- plotData[plotData[[self$options$facet]] == lv, ]
-                    xAxisData <- unique(subData[c("x_center", as.character(category), "xwidth")])
+                    xAxisData <- unique(subData[c("x_center", rlang::as_string(category), "xwidth")])
                     if (self$options$showCategoryPercent) {
                         xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$xwidth), ")")
                     } else {

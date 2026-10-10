@@ -72,22 +72,16 @@
 <polyline points='447.58,545.33 447.58,541.34 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
 <text x='186.96' y='559.81' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='61.36px' lengthAdjust='spacingAndGlyphs'>Petal.Width</text>
 <text x='447.58' y='559.81' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='67.39px' lengthAdjust='spacingAndGlyphs'>Petal.Length</text>
-<rect x='619.89' y='236.85' width='85.17' height='82.58' style='stroke-width: 1.55; stroke: none;' />
-<text x='619.89' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='10.01px' lengthAdjust='spacingAndGlyphs'>S</text>
-<text x='629.90' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>p</text>
-<text x='638.24' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>e</text>
-<text x='646.58' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>c</text>
-<text x='654.09' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='3.33px' lengthAdjust='spacingAndGlyphs'>i</text>
-<text x='657.42' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>e</text>
-<text x='665.76' y='249.28' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>s</text>
-<rect x='619.89' y='261.92' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #A6C4F1;' />
-<rect x='619.89' y='261.92' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #A6C4F1;' />
-<rect x='619.89' y='282.04' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #C5C5C5;' />
-<rect x='619.89' y='282.04' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #C5C5C5;' />
-<rect x='619.89' y='302.15' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #F0CD8C;' />
-<rect x='619.89' y='302.15' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #F0CD8C;' />
-<text x='645.14' y='275.38' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='41.26px' lengthAdjust='spacingAndGlyphs'>setosa</text>
-<text x='645.14' y='295.49' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='59.92px' lengthAdjust='spacingAndGlyphs'>versicolor</text>
-<text x='645.14' y='315.61' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='51.36px' lengthAdjust='spacingAndGlyphs'>virginica</text>
+<rect x='619.89' y='238.68' width='85.17' height='78.92' style='stroke-width: 1.55; stroke: none;' />
+<text x='619.89' y='250.56' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='53.38px' lengthAdjust='spacingAndGlyphs'>Species</text>
+<rect x='619.89' y='260.09' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #A6C4F1;' />
+<rect x='619.89' y='260.09' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #A6C4F1;' />
+<rect x='619.89' y='280.21' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #C5C5C5;' />
+<rect x='619.89' y='280.21' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #C5C5C5;' />
+<rect x='619.89' y='300.32' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #F0CD8C;' />
+<rect x='619.89' y='300.32' width='17.28' height='17.28' style='stroke-width: 0.75; stroke: none; fill: #F0CD8C;' />
+<text x='645.14' y='273.55' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='41.26px' lengthAdjust='spacingAndGlyphs'>setosa</text>
+<text x='645.14' y='293.66' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='59.92px' lengthAdjust='spacingAndGlyphs'>versicolor</text>
+<text x='645.14' y='313.78' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='51.36px' lengthAdjust='spacingAndGlyphs'>virginica</text>
 </g>
 </svg>

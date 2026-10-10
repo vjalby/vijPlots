@@ -103,13 +103,11 @@
 <text x='329.64' y='30.82' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='33.36px' lengthAdjust='spacingAndGlyphs'>Adelie</text>
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<rect x='418.44' y='260.15' width='67.28' height='56.70' style='stroke-width: 1.55; stroke: none;' />
-<text x='418.44' y='269.78' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>s</text>
-<text x='425.95' y='269.78' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>e</text>
-<text x='434.29' y='269.78' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>x</text>
-<rect x='419.48' y='280.48' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<rect x='419.48' y='300.60' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #F0CD8C;' />
-<text x='443.69' y='292.91' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='42.03px' lengthAdjust='spacingAndGlyphs'>female</text>
-<text x='443.69' y='313.02' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.35px' lengthAdjust='spacingAndGlyphs'>male</text>
+<rect x='418.44' y='259.10' width='67.28' height='58.80' style='stroke-width: 1.55; stroke: none;' />
+<text x='418.44' y='270.98' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>sex</text>
+<rect x='419.48' y='281.54' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='419.48' y='301.65' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #F0CD8C;' />
+<text x='443.69' y='293.96' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='42.03px' lengthAdjust='spacingAndGlyphs'>female</text>
+<text x='443.69' y='314.08' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='30.35px' lengthAdjust='spacingAndGlyphs'>male</text>
 </g>
 </svg>

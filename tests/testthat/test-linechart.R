@@ -33,6 +33,16 @@ test_that("linechart: 2 variables, no group", {
     expect_plot_snapshot("linechart-twoVars-noGroup", testPlot)
 })
 
+test_that("linechart: variable order is kept in the legend", {
+    testPlot <- vijPlots::linechart(
+        data = testData,
+        timeVar = "Month",
+        vars = c("Var2", "Var1"),
+        group = NULL
+    )$plot
+    expect_plot_snapshot("linechart-twoVars-reversedOrder", testPlot)
+})
+
 test_that("linechart: 2 variables, 2 groups", {
     testPlot <- vijPlots::linechart(
         data = testData,

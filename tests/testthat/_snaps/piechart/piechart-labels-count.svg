@@ -44,19 +44,13 @@
 <text x='415.51' y='236.43' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>124</text>
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<rect x='598.44' y='235.46' width='85.18' height='82.58' style='stroke-width: 1.55; stroke: none;' />
-<text x='598.44' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>s</text>
-<text x='605.94' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>p</text>
-<text x='614.29' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>e</text>
-<text x='622.63' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>c</text>
-<text x='630.14' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='3.33px' lengthAdjust='spacingAndGlyphs'>i</text>
-<text x='633.47' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='8.34px' lengthAdjust='spacingAndGlyphs'>e</text>
-<text x='641.81' y='247.89' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='7.51px' lengthAdjust='spacingAndGlyphs'>s</text>
-<rect x='599.47' y='261.56' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<rect x='599.47' y='281.67' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #C5C5C5;' />
-<rect x='599.47' y='301.79' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #F0CD8C;' />
-<text x='623.69' y='273.99' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='38.92px' lengthAdjust='spacingAndGlyphs'>Adelie</text>
-<text x='623.69' y='294.10' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='59.93px' lengthAdjust='spacingAndGlyphs'>Chinstrap</text>
-<text x='623.69' y='314.22' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='45.93px' lengthAdjust='spacingAndGlyphs'>Gentoo</text>
+<rect x='598.44' y='237.29' width='85.18' height='78.92' style='stroke-width: 1.55; stroke: none;' />
+<text x='598.44' y='249.17' style='font-size: 15.00px; fill: #333333; font-family: sans;' textLength='50.88px' lengthAdjust='spacingAndGlyphs'>species</text>
+<rect x='599.47' y='259.73' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='599.47' y='279.84' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #C5C5C5;' />
+<rect x='599.47' y='299.96' width='15.22' height='15.22' style='stroke-width: 1.55; stroke-linecap: butt; stroke-linejoin: miter; fill: #F0CD8C;' />
+<text x='623.69' y='272.15' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='38.92px' lengthAdjust='spacingAndGlyphs'>Adelie</text>
+<text x='623.69' y='292.27' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='59.93px' lengthAdjust='spacingAndGlyphs'>Chinstrap</text>
+<text x='623.69' y='312.38' style='font-size: 14.00px; fill: #333333; font-family: sans;' textLength='45.93px' lengthAdjust='spacingAndGlyphs'>Gentoo</text>
 </g>
 </svg>

@@ -91,6 +91,10 @@ vijOneColorOfPalette = function(pal, type = "fill", theme, colorNo) {
 vijVar = function(name) if (!is.null(name)) rlang::sym(name) else NULL
 
 vijTitlesAndLabels = function(options, defaults = list(), plotType = '', plot = NULL) {
+    # Default titles are often the symbols used in aes(): convert them to strings, since
+    # ggplot2 renders a symbol label as a plotmath expression (a variable named "alpha" would
+    # be displayed as the Greek letter, and the title would not have the height of a plain text).
+    defaults <- lapply(defaults, function(d) if (is.symbol(d)) rlang::as_string(d) else d)
     horizontal <- options[["horizontal"]]  %||% FALSE
     # Title & Subtitle
     if (plotType == '') {

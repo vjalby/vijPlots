@@ -1156,8 +1156,8 @@
             "Manual X-axis range is invalid.": [
                 "L'intervalle manuel de l'axe X n'est pas valide."
             ],
-            "Map to residuals": [
-                "Liée aux résidus"
+            "Map to Pearson residuals": [
+                "Liée aux résidus de Pearson"
             ],
             "Mar": [
                 "mars"
@@ -1665,9 +1665,6 @@
             ],
             "Regression Line": [
                 "Courbe de régression"
-            ],
-            "Residuals": [
-                "Résidus"
             ],
             "Reverse disposition": [
                 "Renverser la disposition"

@@ -3378,7 +3378,7 @@ msgstr ""
 
 #: mosaic/options/residualsAsOpacity.title
 #: mosaic/ui[3][0][1][0]/residualsAsOpacity.label
-msgid "Map to residuals"
+msgid "Map to Pearson residuals"
 msgstr ""
 
 #: R/areachart.b.R
@@ -4197,6 +4197,7 @@ msgstr ""
 msgid "PCA Standard Coordinates ({rot})"
 msgstr ""
 
+#: R/mosaic.b.R
 #: mosaic/options/labelType/residuals.title
 msgid "Pearson residuals"
 msgstr ""
@@ -4767,10 +4768,6 @@ msgstr ""
 
 #: scatterplot/ui[1][1][1].label
 msgid "Regression Line"
-msgstr ""
-
-#: R/mosaic.b.R
-msgid "Residuals"
 msgstr ""
 
 #: raincloud/options/reverse.title

@@ -3606,8 +3606,8 @@ msgstr "L'intervalle manuel de l'axe X n'est pas valide."
 
 #: mosaic/options/residualsAsOpacity.title
 #: mosaic/ui[3][0][1][0]/residualsAsOpacity.label
-msgid "Map to residuals"
-msgstr "Liée aux résidus"
+msgid "Map to Pearson residuals"
+msgstr "Liée aux résidus de Pearson"
 
 #: R/areachart.b.R
 #: R/linechart.b.R
@@ -4429,6 +4429,7 @@ msgstr "Coordonnées standardisées ACP"
 msgid "PCA Standard Coordinates ({rot})"
 msgstr "Coordonnées standardisées ACP ({rot})"
 
+#: R/mosaic.b.R
 #: mosaic/options/labelType/residuals.title
 msgid "Pearson residuals"
 msgstr "Résidus de Pearson"
@@ -5002,10 +5003,6 @@ msgstr "Lignes de référence"
 #: scatterplot/ui[1][1][1].label
 msgid "Regression Line"
 msgstr "Courbe de régression"
-
-#: R/mosaic.b.R
-msgid "Residuals"
-msgstr "Résidus"
 
 #: raincloud/options/reverse.title
 msgid "Reverse disposition"

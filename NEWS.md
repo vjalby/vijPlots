@@ -2,6 +2,8 @@
 
 * Clockwise option added to piechart
 * Some ggsci color palettes added
+* Line Chart: fixed the legend order of the variables (now the selected order instead of alphabetical order)
+* Line/Area Chart: improved manual date range support
 
 # vijPlots 1.3.2 (2026-09-13)
 

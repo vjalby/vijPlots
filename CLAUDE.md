@@ -158,6 +158,30 @@ swallow it (see gotcha below).
   plot. Skipping this (or passing no `plot`) risks ggplot2's "Ignoring unknown labels" diagnostic.
   Don't use `ggplot2::get_labs()` for this check — it calls a full `ggplot2::ggplot_build()`
   internally (~300x slower in informal benchmarking), doubling the real render cost on every plot.
+- Default titles given to `vijTitlesAndLabels()` may be symbols: most `.plot()` functions build
+  `defaults <- list(x = ..., y = ..., legend = ...)` from the same `rlang::sym()`/`vijVar()` objects
+  they use in `aes()`. `vijTitlesAndLabels()` converts any symbol default to a string on entry
+  (fixed 2026-10-10) — keep that conversion, and never pass a symbol straight to `ggplot2::labs()`
+  elsewhere: ggplot2 renders a symbol label as a plotmath expression, not as plain text. Two
+  consequences were confirmed before the fix: a variable named after a plotmath keyword was
+  displayed as the Greek letter (`alpha`, `beta`, `Delta` -> α, β, Δ in axis/legend titles), and
+  an expression title is taller than the same text (legend title "Group": 18.35 pt vs 15.86 pt),
+  which is why the fix moved 94 visual snapshots by about a pixel (same text, same elements, same
+  colours — only positions, and svglite writing one `<text>` per title instead of one per
+  character).
+- **To do after the 1.3.3 release (decided 2026-10-10, cosmetic only): stop indexing with a symbol.**
+  Several `.plot()` functions read (or assign) a column with `plotData[[sym]]`, where `sym` comes
+  from `rlang::sym()`/`vijVar()`. This is *not* a bug: `[[` and `[[<-` accept a symbol on a
+  data.frame, a tibble and a list (checked on R 4.6.1, including non-ASCII names; a missing column
+  returns `NULL` as with a string) — only single-bracket `df[sym]`/`df[, sym]` errors, and there is
+  none in the code. But the idiom is little known and reviewers keep flagging it as an error, so
+  the plan is to keep the column name as a string next to its symbol (`timeVarName` / `timeVar`)
+  and index with the string. 17 occurrences in 7 analyses: `areachart` (2), `linechart` (2),
+  `barplot` (2, one is an assignment), `boxplot` (2), `histogram` (1), `mosaic` (6), `scatterplot`
+  (2). `qqplot` is not concerned (its `[[depVar]]` are in `.run()`, where `depVar` is a string).
+  When doing it: no visual snapshot may change (any change means a mistake), and check that every
+  edited line is actually executed by a test — some sit in option-dependent branches (`boxplot`
+  ordering, `mosaic` facets, `scatterplot` range) — rendering by hand those that are not.
 - When forcing legend order via `guides(aes = guide_legend(order = N))` on a plot with multiple
   legends, set an explicit `order` on *every* merged aesthetic (e.g. `color`/`fill`/`shape` all
   mapped to the same grouping variable), not just the one you care about positioning — an

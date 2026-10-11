@@ -69,6 +69,8 @@ The module is available in the **Plots** tab.
 
 * Clockwise option added to piechart
 * Some ggsci color palettes added
+* Line Chart: fixed the legend order of the variables (now the selected order instead of alphabetical order)
+* Line/Area Chart: improved manual date range support
 
 ## References
 

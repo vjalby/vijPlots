@@ -653,8 +653,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             PVAL <- stats::ptukey(abs(PSTAT), nmeans = k, df = Inf, lower.tail = FALSE)
             # vijPlots : change the format of result returned
             # pairwise.table() = (k-1)×(k-1) triangular matrix
-            p.values = list()
-            statistics = list()
+            p.values <- list()
+            statistics <- list()
             for(i in 1:(k-1)) {
                 for(j in i:(k-1)) {
                     gname <- paste(colnames(PSTAT)[i],"-",rownames(PSTAT)[j])
@@ -733,8 +733,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             PVAL <- stats::pairwise.table(compare.levels, levels(g), p.adjust.method = p.adjust.method )
 
             # vijPlots : change the format of result returned
-            p.values = list()
-            statistics = list()
+            p.values <- list()
+            statistics <- list()
             for(i in 1:(k-1)) {
                 for(j in i:(k-1)) {
                     gname <- paste(colnames(PSTAT)[i],"-",rownames(PSTAT)[j])
@@ -792,8 +792,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             PVAL <- stats::pairwise.table(compare.levels,levels(g), p.adjust.method = p.adjust.method)
 
             # vijPlots: change the format of result returned
-            p.values = list()
-            statistics = list()
+            p.values <- list()
+            statistics <- list()
             for(i in 1:(k-1)) {
                 for(j in i:(k-1)) {
                     gname <- paste(colnames(PSTAT)[i],"-",rownames(PSTAT)[j])

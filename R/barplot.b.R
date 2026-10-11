@@ -109,9 +109,9 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             groupVar <- vijVar(self$options$columns)
 
             if (self$options$borderColor == "none")
-                borderColor = NA
+                borderColor <- NA
             else
-                borderColor = self$options$borderColor
+                borderColor <- self$options$borderColor
 
             positionStack <- (self$options$barType == "stack")
             if (self$options$barType == "dodge2")

@@ -115,9 +115,9 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Plot options ####
 
             if (self$options$horizontal)
-                labAngle = 60
+                labAngle <- 60
             else
-                labAngle = 0
+                labAngle <- 0
 
             if (self$options$horizontal)
                  nudgeX <- 0.02
@@ -278,7 +278,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 defaults$y <- depVarNames
                 showLegend <- FALSE
             } else {
-                defaults$x = NULL
+                defaults$x <- NULL
                 showLegend <- TRUE
             }
             if (length(depVarNames) > 1) {

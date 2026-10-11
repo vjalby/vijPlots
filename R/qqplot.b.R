@@ -131,11 +131,11 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             distrib <- self$options$distrib
 
             if (self$options$detrend)
-                detrend = TRUE
+                detrend <- TRUE
             else
-                detrend = FALSE
+                detrend <- FALSE
 
-            identity = (self$options$refType == "identity")
+            identity <- (self$options$refType == "identity")
 
             # Do the plot
             if (is.null(groupVar))
@@ -325,15 +325,15 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             m <- mean(aVar)
             s <- stats::sd(aVar)
             if (distName == "beta") {
-                shape1 = m*(m*(1-m)/s**2 - 1)
-                shape2 = (1-m)*(m*(1-m)/s**2 - 1)
+                shape1 <- m*(m*(1-m)/s**2 - 1)
+                shape2 <- (1-m)*(m*(1-m)/s**2 - 1)
                 params <- list(shape1 = shape1, shape2 = shape2)
             } else if (distName == "exp") {
                 rate <- 1/m
                 params <- list(rate = rate)
             } else if (distName == "gamma") {
-                shape = m**2/s**2
-                rate = m/s**2
+                shape <- m**2/s**2
+                rate <- m/s**2
                 params <- list(shape = shape, rate = rate)
             } else if (distName == "lnorm") {
                 meanlog <- mean(log(aVar))

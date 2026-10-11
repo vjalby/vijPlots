@@ -117,15 +117,15 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Axis Labels
             if (self$options$yaxis == "mean")
-                ylabel = jmvcore::format(.("Mean of {var}"), var = aVar)
+                ylabel <- jmvcore::format(.("Mean of {var}"), var = aVar)
             else if (self$options$yaxis == "median")
-                ylabel = jmvcore::format(.("Median of {var}"), var = aVar)
+                ylabel <- jmvcore::format(.("Median of {var}"), var = aVar)
             else if (self$options$yaxis == "min")
-                ylabel = jmvcore::format(.("Minimum of {var}"), var = aVar)
+                ylabel <- jmvcore::format(.("Minimum of {var}"), var = aVar)
             else if (self$options$yaxis == "max")
-                ylabel = jmvcore::format(.("Maximum of {var}"), var = aVar)
+                ylabel <- jmvcore::format(.("Maximum of {var}"), var = aVar)
             else
-                ylabel = aVar
+                ylabel <- aVar
 
             # facet
             if (!is.null(facetVar)) {

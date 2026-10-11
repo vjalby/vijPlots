@@ -149,7 +149,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (stacked)
                     fontFace <- "bold"
                 else
-                    fontFace = "plain"
+                    fontFace <- "plain"
                 if (textColor == "auto")
                     plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "text",
                                                 ggplot2::aes(label = round(ggplot2::after_stat(y), self$options$decimalPrecision),

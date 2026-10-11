@@ -44,11 +44,11 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table$getColumn('var')$setTitle(self$options$repVar)
             # Cell Type
             if ( self$options$computedValues == "count" ) {
-                cellType = "integer"
-                cellFormat = ""
+                cellType <- "integer"
+                cellFormat <- ""
             } else {
-                cellType = "number"
-                cellFormat = "pc"
+                cellType <- "number"
+                cellFormat <- "pc"
             }
             # Columns
             if (morevar)
@@ -298,8 +298,8 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
 
         .crossTab = function (data, items = NULL, group = NULL, endorsedOption = 1, order='none', values='count') {
-            options = data[, items]
-            groups = list(data[,group])
+            options <- data[, items]
+            groups <- list(data[,group])
             # CrossTab
             crossTab <- aggregate(options == endorsedOption, groups, sum, na.rm = TRUE)
             # Save group names

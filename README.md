@@ -21,9 +21,9 @@ The module is available in the **Plots** tab.
 
 ![](img/scatter.jpg)
 
-## Bar Chart (for quantitative variables)
+## Error Bar Chart (for quantitative variables)
 
-![](img/barchart.jpg)
+![](img/errorbarchart.jpg)
 
 ## Lollipop Plot
 

@@ -187,7 +187,9 @@ test_that("piechart: weighted by counts variable", {
         counts = "w",
         labType = "text"
     )
-    expect_equal(r$plot$state$.COUNTS, weightedData$w)
+    # state is aggregated: one row per cat, not one per case
+    expect_equal(nrow(r$plot$state), 3)
+    expect_equal(r$plot$state$.COUNTS, c(15, 25, 7))
 
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off())
@@ -213,7 +215,9 @@ test_that("piechart: weighted via jamovi's built-in weights (jmv-weights attribu
         counts = NULL,
         labType = "text"
     )
-    expect_equal(r$plot$state$.COUNTS, weightedData$w)
+    # state is aggregated: one row per cat, not one per case
+    expect_equal(nrow(r$plot$state), 3)
+    expect_equal(r$plot$state$.COUNTS, c(15, 25, 7))
 
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off())

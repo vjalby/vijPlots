@@ -186,7 +186,9 @@ test_that("barplot: weighted by counts variable", {
         facet = NULL,
         counts = "w"
     )
-    expect_equal(r$plot$state$.COUNTS, weightedData$w)
+    # state is aggregated: one row per cat+grp, not one per case
+    expect_equal(nrow(r$plot$state), 5)
+    expect_equal(r$plot$state$.COUNTS, c(15, 20, 30, 15, 3))
 
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off())
@@ -212,7 +214,9 @@ test_that("barplot: weighted via jamovi's built-in weights (jmv-weights attribut
         facet = NULL,
         counts = NULL
     )
-    expect_equal(r$plot$state$.COUNTS, weightedData$w)
+    # state is aggregated: one row per cat+grp, not one per case
+    expect_equal(nrow(r$plot$state), 5)
+    expect_equal(r$plot$state$.COUNTS, c(15, 20, 30, 15, 3))
 
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off())

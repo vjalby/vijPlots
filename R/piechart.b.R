@@ -58,7 +58,8 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             }
 
-            plotData <- jmvcore::select(self$data, c(self$options$aVar, self$options$facet))
+            varNames <- c(self$options$aVar, self$options$facet)
+            plotData <- jmvcore::select(self$data, varNames)
 
             # Weight data
             countsName <- self$options$counts
@@ -87,6 +88,10 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (sum(plotData$.COUNTS) == 0) {
                 vijErrorMessage(self, .('Counts may not all be zero.'))
             }
+
+            # Sum the counts per combination of variables: the state is saved into the .omv,
+            # so store one row per bar/slice rather than one row per case
+            plotData <- dplyr::count(plotData, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
 
             image <- self$results$plot
             image$setState(plotData)

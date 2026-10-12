@@ -28,6 +28,26 @@ testthat::test_that("barchart: with errorbar", {
     expect_plot_snapshot("barchart-errorbar", testPlot)
 })
 
+testthat::test_that("barchart: bootstrap CI is the same at every render", {
+    testPlot <- vijPlots::barchart(
+        data = testData,
+        xVar="Species" ,
+        yVar="Petal.Width",
+        group = NULL,
+        facet = NULL,
+        errorBars = "ci",
+        bootstrap = TRUE
+        )$plot
+    errorBarLimits <- function() {
+        plot <- suppressMessages(testPlot$plot$fun())
+        built <- ggplot2::ggplot_build(plot)
+        errorBarLayer <- which(vapply(plot$layers, function(l) inherits(l$geom, "GeomErrorbar"), logical(1)))
+        built$data[[errorBarLayer]][, c("ymin", "ymax")]
+    }
+    testthat::expect_equal(errorBarLimits(), errorBarLimits())
+    expect_plot_snapshot("barchart-errorbar-bootstrap", testPlot)
+})
+
 testthat::test_that("barchart: with grouping variable", {
     testPlot <- vijPlots::barchart(
         data = testData,

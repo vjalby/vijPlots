@@ -200,7 +200,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             if (errorBars != "none")
                 plot <- plot +  ggplot2::stat_summary(fun.data = funData, fun.args = funArgs, geom = "errorbar",
-                                             width = self$options$errorBarWidth, size = self$options$errorBarLineSize,
+                                             width = self$options$errorBarWidth, linewidth = self$options$errorBarLineSize,
                                              color = "black",
                                              position = ggplot2::position_dodge(width = 0.9))
 
@@ -305,6 +305,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             m <- mean(x)
             if (n < 2)
                 return(data.frame(y = m, ymin = NA_real_, ymax = NA_real_))
+            # Fixed seed: this runs at every render (resize, export), which must redraw the same limits
+            set.seed(42)
             means <- vapply(seq_len(B), function(i) mean(x[sample.int(n, n, replace = TRUE)]), numeric(1))
             q <- stats::quantile(means, c((1 - conf.int) / 2, (1 + conf.int) / 2), names = FALSE)
             data.frame(y = m, ymin = q[1], ymax = q[2])

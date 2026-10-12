@@ -172,8 +172,8 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..ciLevel <- jmvcore::OptionNumber$new(
                 "ciLevel",
                 ciLevel,
-                min=0,
-                max=100,
+                min=50,
+                max=99.9,
                 default=95)
             private$..bootstrap <- jmvcore::OptionBool$new(
                 "bootstrap",

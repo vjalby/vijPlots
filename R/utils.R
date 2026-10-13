@@ -19,7 +19,7 @@ vijColorPalette = function(pal, type = "fill", theme) {
         attr(jmvPalette,"nlevels") <- 5
         return(jmvPalette)
     } else if (palType == "brewer") {
-        return(scales::pal_brewer(palette = palName))
+        return(vijExtendPalette(scales::pal_brewer(palette = palName)))
     } else if (palType == "viridis") {
         return(scales::pal_viridis(option = palName))
     } else if (palType == "tidy") {
@@ -52,8 +52,7 @@ vijColorPalette = function(pal, type = "fill", theme) {
         )
         if (is.null(ggsciColors))
             return(NULL)
-        return(scales::pal_manual(values = ggsciColors, type = "colour"))
-
+        return(vijExtendPalette(scales::pal_manual(values = ggsciColors, type = "colour")))
     } else if (palType == "custom") {
         customColors <- switch(palName,
             lemovice  = c("#16144e", "#00dc8c", "#5fcdcd", "#007387", "#efbe7c", "#8c87a4", "#ff6e5a", "#bc6479", "#8faadc", "#006d4d"),
@@ -64,10 +63,23 @@ vijColorPalette = function(pal, type = "fill", theme) {
         )
         if (is.null(customColors))
             return(NULL)
-        return(scales::pal_manual(values = customColors, type = "colour"))
+        return(vijExtendPalette(scales::pal_manual(values = customColors, type = "colour")))
     } else {
         return(NULL)
     }
+}
+
+# Interpolate colors for fixed-length palettes (brewer, ggsci, custom)
+vijExtendPalette = function(pal) {
+    nl <- vijColorPaletteNlevels(pal)
+    extendedPalette <- function(n) {
+        if (n <= nl)
+            pal(n)
+        else
+            grDevices::colorRampPalette(pal(nl))(n)
+    }
+    attr(extendedPalette, "nlevels") <- nl
+    return(extendedPalette)
 }
 
 vijColorPaletteNlevels = function(pal) {

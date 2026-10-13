@@ -12,6 +12,7 @@ msgstr ""
 #: R/barchart.b.R
 #: R/barplot.b.R
 #: R/linechart.b.R
+#: R/lollipop.b.R
 #: R/mosaic.b.R
 #: R/piechart.b.R
 msgid "\"{var}\" is a reserved name. Please rename this variable."

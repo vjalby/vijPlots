@@ -353,7 +353,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(params)
         },
         .showHelpMessage = function() {
-            helpMsg <- .('<p>This module uses <a href = "https://CRAN.R-project.org/package=qqplotr" target="_blank">qqplotr R package<a/> by Alexandre Almeida, Adam Loy and Heike Hofmann. In-depth information can be found in the package documentation on CRAN site.</p>
+            helpMsg <- .('<p>This module uses <a href = "https://CRAN.R-project.org/package=qqplotr" target="_blank">qqplotr R package</a> by Alexandre Almeida, Adam Loy and Heike Hofmann. In-depth information can be found in the package documentation on CRAN site.</p>
 <p><strong>Reference line:</strong> Draws either the <em>identity line</em> (y = x) or the commonly-used <em>Q-Q line</em> that intercepts two data quantiles (Q<sub>0.25</sub> and Q<sub>0.75</sub>). P-P plot only supports identity line.</p>
 <p><strong>Confidence band:</strong> Draws a confidence band around the reference line. qqplotr package provides several methods to compute the confidence band:</p>
 <ul>
@@ -374,8 +374,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <ul>
 <li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 (F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>
 <li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 (Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma, Weibull) and max (Uniform).</li>
-</ul>
-</p>')
+</ul>')
             vijHelpMessage(self, helpMsg)
         }
     )

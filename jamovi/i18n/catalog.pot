@@ -320,7 +320,7 @@ msgstr ""
 #: R/qqplot.b.R
 msgid ""
 "<p>This module uses <a href = \"https://CRAN.R-project.org/package=qqplotr\" "
-"target=\"_blank\">qqplotr R package<a/> by Alexandre Almeida, Adam Loy and "
+"target=\"_blank\">qqplotr R package</a> by Alexandre Almeida, Adam Loy and "
 "Heike Hofmann. In-depth information can be found in the package "
 "documentation on CRAN site.</p>\n"
 "<p><strong>Reference line:</strong> Draws either the <em>identity line</em> "
@@ -364,8 +364,7 @@ msgid ""
 "<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 "
 "(Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma, Weibull) and max "
 "(Uniform).</li>\n"
-"</ul>\n"
-"</p>"
+"</ul>"
 msgstr ""
 
 #: areachart/options/dateBreak/1day.title

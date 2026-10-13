@@ -49,12 +49,46 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(self$options$aVar) || is.null(self$options$group) || nrow(self$data) == 0)
                 return(FALSE)
 
-            plotData <- jmvcore::select(self$data, c(self$options$aVar, self$options$group, self$options$facet))
-            plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
+            aName <- self$options$aVar
+            groupName <- self$options$group
+            facetName <- self$options$facet
+
+            # .X, .Y, .YMIN and .YMAX are the columns computed below
+            reservedVar <- intersect(c(aName, groupName, facetName), c(".X", ".Y", ".YMIN", ".YMAX"))
+            if (length(reservedVar) > 0)
+                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+
+            plotData <- jmvcore::select(self$data, c(aName, groupName, facetName))
+            plotData[[aName]] <- jmvcore::toNumeric(plotData[[aName]])
 
             plotData <- jmvcore::naOmit(plotData)
             if (nrow(plotData) == 0)
                 return(FALSE)
+
+            yaxis <- self$options$yaxis
+
+            # Position of the lollipops on the axis (.X): sorted on the raw data, before it is summarised.
+            if (self$options$order != "none") {
+                orderFun <- switch(yaxis, mean = mean, median = stats::median, min = min, max)
+                plotData[[".X"]] <- forcats::fct_reorder(plotData[[groupName]], plotData[[aName]], .fun = orderFun,
+                                                         .desc = (self$options$order == "decreasing"))
+            } else {
+                plotData[[".X"]] <- plotData[[groupName]]
+            }
+
+            # Summarize per group/facet: the state is saved into the .omv, so store one row per
+            # lollipop rather than one row per case ("identity" draws the values themselves).
+            cellFun <- switch(yaxis,
+                mean = function(x) data.frame(.Y = mean(x)),
+                median = function(x) data.frame(.Y = stats::median(x)),
+                min = function(x) data.frame(.Y = min(x)),
+                max = function(x) data.frame(.Y = max(x)),
+                minmax = function(x) data.frame(.YMIN = min(x), .YMAX = max(x)),
+                identity = function(x) data.frame(.Y = x))
+            plotData <- plotData |>
+                dplyr::group_by(dplyr::pick(dplyr::all_of(c(".X", facetName)))) |>
+                dplyr::reframe(cellFun(.data[[aName]])) |>
+                as.data.frame()
 
             image <- self$results$plot
             image$setState(plotData)
@@ -64,34 +98,24 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             plotData <- image$state
 
-            aVar <- rlang::sym(self$options$aVar)
-            groupVar <- rlang::sym(self$options$group)
+            aVar <- self$options$aVar
+            groupVar <- self$options$group
             facetVar <- vijVar(self$options$facet)
 
-            orderFun <- self$options$yaxis
-            if (orderFun == "minmax" || orderFun == "identity")
-                orderFun <- max
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = .data[[".X"]]))
 
-            if (self$options$order == "decreasing")
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = forcats::fct_reorder(!!groupVar,!!aVar, .fun = orderFun, .desc = TRUE) , y = !!aVar))
-            else if (self$options$order == "increasing")
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = forcats::fct_reorder(!!groupVar,!!aVar, .fun = orderFun, .desc = FALSE) , y = !!aVar))
-            else
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupVar, y = !!aVar))
-
-            summaryFun <- self$options$yaxis
-            if (summaryFun == "minmax") {
+            if (self$options$yaxis == "minmax") {
                 mainColor <- self$options$dotColor
                 lightColor <- scales::col_mix(mainColor, "white", 0.4, space = "lab")
                 darkColor <- scales::col_mix(mainColor, "black", 0.2, space = "lab")
                 plot <- plot +
-                    ggplot2::stat_summary(geom = "linerange", fun.min = "min", fun.max = "max", linewidth = self$options$lineWidth, color = self$options$lineColor) +
-                    ggplot2::stat_summary(geom = "point", fun = "min", size = self$options$dotSize, color = lightColor) +
-                    ggplot2::stat_summary(geom = "point", fun = "max", size = self$options$dotSize, color = darkColor)
+                    ggplot2::geom_linerange(ggplot2::aes(ymin = .data[[".YMIN"]], ymax = .data[[".YMAX"]]), linewidth = self$options$lineWidth, color = self$options$lineColor) +
+                    ggplot2::geom_point(ggplot2::aes(y = .data[[".YMIN"]]), size = self$options$dotSize, color = lightColor) +
+                    ggplot2::geom_point(ggplot2::aes(y = .data[[".YMAX"]]), size = self$options$dotSize, color = darkColor)
             } else {
                 plot <- plot +
-                    ggplot2::stat_summary(geom = "segment", fun = summaryFun, ggplot2::aes(yend = 0), linewidth = self$options$lineWidth, color = self$options$lineColor)+
-                    ggplot2::stat_summary(geom = "point", fun = summaryFun, size = self$options$dotSize, color = self$options$dotColor)
+                    ggplot2::geom_segment(ggplot2::aes(y = .data[[".Y"]], yend = 0), linewidth = self$options$lineWidth, color = self$options$lineColor) +
+                    ggplot2::geom_point(ggplot2::aes(y = .data[[".Y"]]), size = self$options$dotSize, color = self$options$dotColor)
             }
 
             # Axis Limits & flip

@@ -45,5 +45,54 @@ items:
       width:  400
       height: 300
       renderFun: .plot
+      clearWith:
+        - mode
+        - repVar
+        - separator
+        - emptyAsNA
+        - resps
+        - endorsed
+        - order
+        - labelPosition
+        - yaxis
+        - horizontal
+        - showLabels
+        - accuracy
+        - labelFontSize
+        - colorPalette
+        - singleColor
+        - colorNo
+        - borderColor
+        - textColor
+        - titleText
+        - titleFontFace
+        - titleFontSize
+        - titleAlign
+        - subtitleText
+        - subtitleFontFace
+        - subtitleFontSize
+        - subtitleAlign
+        - captionText
+        - captionFontFace
+        - captionFontSize
+        - captionAlign
+        - xAxisText
+        - xAxisFontSize
+        - xAxisPosition
+        - yAxisText
+        - yAxisFontSize
+        - yAxisPosition
+        - yAxisLabelFontSize
+        - yAxisLabelRotation
+        - yAxisRangeType
+        - yAxisRangeMin
+        - yAxisRangeMax
+        - xAxisLabelFontSize
+        - xAxisLabelRotation
+        - xAxisRangeType
+        - xAxisRangeMin
+        - xAxisRangeMax
+        - xTicks
+        - yTicks
 
 ...

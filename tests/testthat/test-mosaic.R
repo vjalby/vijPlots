@@ -296,15 +296,15 @@ test_that("mosaic: proportions and residuals are computed correctly", {
     state <- as.data.frame(r$plot$state)
     state <- state[order(state$cat, state$grp), ]
 
-    expect_equal(state$freq, c(30, 10, 20, 40))
-    expect_equal(state$percentage, c(0.75, 0.25, 1/3, 2/3), tolerance = 1e-6)
+    expect_equal(state$.FREQ, c(30, 10, 20, 40))
+    expect_equal(state$.PERCENTAGE, c(0.75, 0.25, 1/3, 2/3), tolerance = 1e-6)
 
     # cross-check against a direct chi-squared test on the same contingency table
     tab <- stats::xtabs(w ~ cat + grp, data = weightedData)
     expectedResiduals <- as.data.frame(suppressWarnings(stats::chisq.test(tab))$residuals)
     names(expectedResiduals) <- c("cat", "grp", "residuals")
     expectedResiduals <- expectedResiduals[order(expectedResiduals$cat, expectedResiduals$grp), ]
-    expect_equal(state$residuals, expectedResiduals$residuals, tolerance = 1e-6)
+    expect_equal(state$.RESIDUALS, expectedResiduals$residuals, tolerance = 1e-6)
 })
 
 test_that("mosaic: weighted by counts variable", {
@@ -335,7 +335,7 @@ test_that("mosaic: weighted via jamovi's built-in weights (jmv-weights attribute
     )
     state <- as.data.frame(r$plot$state)
     state <- state[order(state$cat, state$grp), ]
-    expect_equal(state$freq, c(30, 10, 20, 40))
+    expect_equal(state$.FREQ, c(30, 10, 20, 40))
 })
 
 test_that("mosaic: ordered factor as category does not break the residuals join", {
@@ -374,5 +374,13 @@ test_that("mosaic: negative counts are rejected", {
             facet = NULL
         ),
         "Counts may not be negative."
+    )
+})
+
+test_that("mosaic: a variable named like the internal counts column is rejected", {
+    reservedData <- data.frame(.COUNTS = factor(c("a", "a", "b", "b")), grp = factor(c("u", "v", "u", "v")))
+    expect_error(
+        vijPlots::mosaic(data = reservedData, category = ".COUNTS", group = "grp", facet = NULL, counts = NULL),
+        "reserved name"
     )
 })

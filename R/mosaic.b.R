@@ -66,6 +66,13 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             categoryName <- self$options$category
             groupName <- self$options$group
             facetName <- self$options$facet
+
+            # Column names used for the weights (".COUNTS") and for the values computed by .mosaicData()
+            reservedVar <- intersect(c(categoryName, groupName, facetName),
+                                     c(".COUNTS", ".FREQ", ".RESIDUALS", ".GLOBAL_TOTAL", ".X_TOTAL", ".XWIDTH", ".X_CENTER", ".PERCENTAGE", ".Y_CENTER", ".LABEL_TEXT"))
+            if (length(reservedVar) > 0)
+                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+
             plotData <- jmvcore::select(self$data, c(categoryName, groupName, facetName))
 
             # Drop ordered-ness (level order is preserved): nothing downstream relies on
@@ -130,12 +137,12 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Tiles ####
 
             if (self$options$residualsAsOpacity){
-                plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = x_center, y = y_center, width = xwidth, height = percentage, fill = !!group, alpha = abs(residuals)),
+                plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = .X_CENTER, y = .Y_CENTER, width = .XWIDTH, height = .PERCENTAGE, fill = !!group, alpha = abs(.RESIDUALS)),
                                                   color = "white", linewidth = self$options$borderWidth, show.legend = TRUE) # show.legend needed to display unused levels
                 # Alpha scale
                 plot <- plot + ggplot2::scale_alpha_continuous(name = .("Pearson residuals"), range = c(0.1, 1))
             } else {
-                plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = x_center, y = y_center, width = xwidth, height = percentage, fill = !!group),
+                plot <- plot + ggplot2::geom_tile(ggplot2::aes(x = .X_CENTER, y = .Y_CENTER, width = .XWIDTH, height = .PERCENTAGE, fill = !!group),
                                                   color = "white", linewidth = self$options$borderWidth, show.legend = TRUE) # show.legend needed to display unused levels
             }
 
@@ -152,18 +159,18 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$labelType != "none") {
                 plotData <- plotData |>
                     dplyr::mutate(
-                        label_text = switch(self$options$labelType,
-                                            "count"     = as.character(freq),
-                                            "percent"   = doPercent(percentage),
-                                            "residuals" = doNumber(residuals)
+                        .LABEL_TEXT = switch(self$options$labelType,
+                                             "count"     = as.character(.FREQ),
+                                             "percent"   = doPercent(.PERCENTAGE),
+                                             "residuals" = doNumber(.RESIDUALS)
                         )
                     )
 
                 if (self$options$labelColor == "auto") {
                     plot <- plot + ggplot2::geom_text(
-                        data = dplyr::filter(plotData, percentage > 0.05 & xwidth > 0.05),
+                        data = dplyr::filter(plotData, .PERCENTAGE > 0.05 & .XWIDTH > 0.05),
                         mapping = ggplot2::aes(
-                                    x = x_center, y = y_center, label = label_text, fill = !!group,
+                                    x = .X_CENTER, y = .Y_CENTER, label = .LABEL_TEXT, fill = !!group,
                                     color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))
                                     ),
                         size = self$options$labelFontSize / ggplot2::.pt,
@@ -171,8 +178,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     )
                 } else {
                     plot <- plot + ggplot2::geom_text(
-                        data = dplyr::filter(plotData, percentage > 0.05 & xwidth > 0.05),
-                        mapping = ggplot2::aes(x = x_center, y = y_center, label = label_text),
+                        data = dplyr::filter(plotData, .PERCENTAGE > 0.05 & .XWIDTH > 0.05),
+                        mapping = ggplot2::aes(x = .X_CENTER, y = .Y_CENTER, label = .LABEL_TEXT),
                         size = self$options$labelFontSize / ggplot2::.pt,
                         fontface = "bold",
                         color = self$options$labelColor
@@ -184,13 +191,13 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             expFactMult <- ifelse(self$options$hideAxes, 0.0, 0.04)
 
             if (is.null(self$options$facet)) {
-                xAxisData <- unique(plotData[c("x_center", rlang::as_string(category), "xwidth")])
+                xAxisData <- unique(plotData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
                 if (self$options$showCategoryPercent) {
-                    xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$xwidth), ")")
+                    xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$.XWIDTH), ")")
                 } else {
                     xAxisLabels <- xAxisData[[category]]
                 }
-                plot <- plot + ggplot2::scale_x_continuous(breaks = xAxisData$x_center,
+                plot <- plot + ggplot2::scale_x_continuous(breaks = xAxisData$.X_CENTER,
                                                            labels = xAxisLabels,
                                                            expand = ggplot2::expansion(mult = expFactMult))
             }
@@ -207,8 +214,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (is.null(self$options$facet)) {
                     # KNOWN LIMITATION: see matching comment in the facet block below — a group with
                     # zero count in the first column is silently missing from the y-axis labels.
-                    firstColBreaks <- dplyr::filter(plotData, x_center == min(x_center))
-                    plot <- plot + ggplot2::scale_y_continuous(breaks = firstColBreaks$y_center,
+                    firstColBreaks <- dplyr::filter(plotData, .X_CENTER == min(.X_CENTER))
+                    plot <- plot + ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
                                                                 labels = firstColBreaks[[group]],
                                                                 expand = ggplot2::expansion(mult = expFactMult))
                 }
@@ -257,13 +264,13 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # Column widths are computed per facet, so each panel needs its own x breaks/labels
                 xScales <- lapply(facetLevels, function(lv) {
                     subData <- plotData[plotData[[self$options$facet]] == lv, ]
-                    xAxisData <- unique(subData[c("x_center", rlang::as_string(category), "xwidth")])
+                    xAxisData <- unique(subData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
                     if (self$options$showCategoryPercent) {
-                        xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$xwidth), ")")
+                        xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$.XWIDTH), ")")
                     } else {
                         xAxisLabels <- xAxisData[[category]]
                     }
-                    ggplot2::scale_x_continuous(breaks = xAxisData$x_center,
+                    ggplot2::scale_x_continuous(breaks = xAxisData$.X_CENTER,
                                                 labels = xAxisLabels,
                                                 expand = ggplot2::expansion(mult = expFactMult)
                                                 )
@@ -276,8 +283,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # in other columns.
                     yScales <- lapply(facetLevels, function(lv) {
                         subData <- plotData[plotData[[self$options$facet]] == lv, ]
-                        firstColBreaks <- dplyr::filter(subData, x_center == min(x_center))
-                        ggplot2::scale_y_continuous(breaks = firstColBreaks$y_center,
+                        firstColBreaks <- dplyr::filter(subData, .X_CENTER == min(.X_CENTER))
+                        ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
                                                     labels = firstColBreaks[[group]],
                                                     expand = ggplot2::expansion(mult = expFactMult))
                     })
@@ -346,7 +353,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             df <- df |>
                 dplyr::group_by(!!category, !!group, !!facet) |>
-                dplyr::summarise(freq = sum(.data[[".COUNTS"]]), .groups = 'drop')
+                dplyr::summarise(.FREQ = sum(.data[[".COUNTS"]]), .groups = 'drop')
 
             # Pearson residuals (stats::chisq.test()$residuals) from a chi-squared test of
             # category x group independence, computed separately per facet
@@ -354,7 +361,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 dplyr::group_by(!!facet) |>
                 dplyr::group_modify(function(subDf, ...) {
                     # jmvcore::composeFormula() backtick-quotes variable names as needed (same pattern already used in corresp.b.R).
-                    formula <- jmvcore::composeFormula("freq", c(categoryName, groupName))
+                    formula <- jmvcore::composeFormula(".FREQ", c(categoryName, groupName))
                     tab <- stats::xtabs(formula, data = subDf)
                     # a 2x2-or-larger table is required: below that, chisq.test() either errors
                     # (fully empty table) or silently returns a 1-D vector instead of a matrix
@@ -369,11 +376,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         # keep the same column structure as the success case, just NA,
                         # so group_modify() doesn't choke combining facets across groups
                         residDf <- unique(subDf[c(categoryName, groupName)])
-                        residDf$residuals <- NA_real_
+                        residDf$.RESIDUALS <- NA_real_
                         return(residDf)
                     }
                     residDf <- as.data.frame(chisqres$residuals)
-                    names(residDf) <- c(categoryName, groupName, "residuals")
+                    names(residDf) <- c(categoryName, groupName, ".RESIDUALS")
                     residDf
                 }) |>
                 dplyr::ungroup()
@@ -381,31 +388,31 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Global category total (summed across facets), used to order categories
             globalOrder <- df |>
                 dplyr::group_by(!!category) |>
-                dplyr::summarise(global_total = sum(freq), .groups = 'drop')
+                dplyr::summarise(.GLOBAL_TOTAL = sum(.FREQ), .groups = 'drop')
 
             widths <- df |>
                 dplyr::group_by(!!category, !!facet) |>
-                dplyr::summarise(x_total = sum(freq), .groups = 'drop') |>
+                dplyr::summarise(.X_TOTAL = sum(.FREQ), .groups = 'drop') |>
                 dplyr::left_join(globalOrder, by = categoryName) |>
                 dplyr::group_by(!!facet)
 
             widths <- switch(order,
-                             "increasing" = dplyr::arrange(widths, global_total, .by_group = TRUE),
-                             "decreasing" = dplyr::arrange(widths, dplyr::desc(global_total), .by_group = TRUE),
+                             "increasing" = dplyr::arrange(widths, .GLOBAL_TOTAL, .by_group = TRUE),
+                             "decreasing" = dplyr::arrange(widths, dplyr::desc(.GLOBAL_TOTAL), .by_group = TRUE),
                              dplyr::arrange(widths, !!category, .by_group = TRUE)
             )
 
             widths <- widths |>
                 dplyr::mutate(
-                    xwidth = x_total / sum(x_total),
-                    x_center = (cumsum(x_total) - x_total / 2) / sum(x_total)
+                    .XWIDTH = .X_TOTAL / sum(.X_TOTAL),
+                    .X_CENTER = (cumsum(.X_TOTAL) - .X_TOTAL / 2) / sum(.X_TOTAL)
                 ) |>
                 dplyr::ungroup() |>
-                dplyr::select(!!category, !!facet, x_center, xwidth)
+                dplyr::select(!!category, !!facet, .X_CENTER, .XWIDTH)
 
             mosaic_data <- df |>
                 dplyr::group_by(!!category, !!facet) |>
-                dplyr::mutate(x_total = sum(freq)) |>
+                dplyr::mutate(.X_TOTAL = sum(.FREQ)) |>
                 dplyr::ungroup() |>
                 dplyr::group_by(!!category, !!facet)
 
@@ -417,8 +424,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             mosaic_data <- mosaic_data |>
                 dplyr::mutate(
-                    percentage = freq / x_total,
-                    y_center = (cumsum(freq) - freq / 2) / x_total
+                    .PERCENTAGE = .FREQ / .X_TOTAL,
+                    .Y_CENTER = (cumsum(.FREQ) - .FREQ / 2) / .X_TOTAL
                 ) |>
                 dplyr::ungroup() |>
                 dplyr::left_join(widths, by = joinBy) |>

@@ -65,12 +65,10 @@ The module is available in the **Plots** tab.
 
 ![](img/areachart.jpg)
 
-## Last changes: vijPlots 1.3.3 (2026-10-11)
+## Last changes: vijPlots 1.3.4
 
-* Clockwise option added to piechart
-* Some ggsci color palettes added
-* Line Chart: fixed the legend order of the variables (now the selected order instead of alphabetical order)
-* Line/Area Chart: improved manual date range support
+* The fixed-length color palettes are now extended by interpolation
+* Code optimization
 
 ## References
 

@@ -1,3 +1,8 @@
+# vijPlots 1.3.4
+
+* The fixed-length color palettes are now extended by interpolation
+* Code optimization
+
 # vijPlots 1.3.3 (2026-10-11)
 
 * Clockwise option added to piechart

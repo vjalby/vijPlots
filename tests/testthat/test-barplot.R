@@ -239,3 +239,11 @@ test_that("barplot: negative counts are rejected", {
         "Counts may not be negative."
     )
 })
+
+test_that("barplot: a variable named like the internal counts column is rejected", {
+    reservedData <- data.frame(.COUNTS = weightedData$cat, grp = weightedData$grp)
+    expect_error(
+        vijPlots::barplot(data = reservedData, rows = ".COUNTS", columns = "grp", facet = NULL, counts = NULL),
+        "reserved name"
+    )
+})

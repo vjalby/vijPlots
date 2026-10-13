@@ -240,3 +240,11 @@ test_that("piechart: negative counts are rejected", {
         "Counts may not be negative."
     )
 })
+
+test_that("piechart: a variable named like the internal counts column is rejected", {
+    reservedData <- data.frame(.COUNTS = weightedData$cat)
+    expect_error(
+        vijPlots::piechart(data = reservedData, aVar = ".COUNTS", facet = NULL, counts = NULL),
+        "reserved name"
+    )
+})

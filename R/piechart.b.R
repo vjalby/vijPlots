@@ -59,6 +59,12 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             varNames <- c(self$options$aVar, self$options$facet)
+
+            # ".COUNTS" is the column name used for the weights
+            reservedVar <- intersect(varNames, ".COUNTS")
+            if (length(reservedVar) > 0)
+                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+
             plotData <- jmvcore::select(self$data, varNames)
 
             # Weight data

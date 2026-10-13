@@ -103,6 +103,16 @@ swallow it (see gotcha below).
   variable is set) from `.plot()` into `.run()`, appending those columns to `data` before
   `image$setState(data)` so `.plot()` just reads them back from `plotData` — same rationale as
   `qqplot.b.R`, plus it means every `.plot()` re-render no longer redoes the outlier pass.
+- What goes into `image$setState()` is saved into the user's `.omv`, once per analysis. The
+  summary-shaped plots (`barchart`, `barplot`, `piechart`, `lollipop`) therefore aggregate in
+  `.run()` and store one row per bar/slice/lollipop, not one row per case (`lollipop`'s "Values"
+  mode excepted: it draws each value). The plots that genuinely need the raw rows (`histogram`,
+  `scatterplot`, `boxplot`, `raincloud`, `qqplot`) deliberately keep the selected columns in the
+  state: this is the same approach as jamovi's own jmvPlots module (its `jmvhist.b.R`, `scat.b.R`
+  and `jmvbox.b.R` all `image$setState(df)` the selected rows in `.run()`, with no `requiresData`
+  on the Image — checked 2026-10-13). An audit suggesting to switch them to `requiresData: true`
+  + reading `self$data` in `.plot()` is a file-size vs redraw-time trade-off already decided, not
+  a defect — don't "fix" it.
 - Row-subsetting a data.frame with base `[` (`df <- df[keep, ]`, e.g. to drop `NA`-group rows)
   silently drops each column's *custom* attributes — `levels`/`class` on a factor survive, but an
   attribute like the `"values"` numeric-coding attribute jmvcore attaches to labelled factor
@@ -151,6 +161,15 @@ swallow it (see gotcha below).
   use a 3-part version before publishing. `jamovi/0000.yaml`'s own `version:` field is a separate
   number and must always stay strict 3-part (jamovi module registry requirement) — never give it a
   4th component.
+- `self$options[['decSymbol']]` (read by 7 analyses for `scales::label_percent(decimal.mark = ...)`)
+  is **not** a module option and must not be added to any `.a.yaml`: it is an active binding of
+  `jmvcore::Options`, like `theme`/`palette`/`ppi`, fed by jamovi's global decimal-symbol
+  preference. It defaults to `"."` and is never `NULL` (checked on jmvcore 2.7.38) — reviewers
+  keep flagging it as an undefined option, it is not. Its one real limitation is jmvcore-side:
+  `Options$compProtoBuf()` only tracks `theme`, `palette` and declared options, so a change of
+  decimal symbol is never reported as an option change — an already-rendered plot is not redrawn
+  until another option changes, and listing `decSymbol` in a `clearWith:` has no effect (tried on
+  `mrfrequencies`/`mrcrosstabs`, 2026-10-13).
 - `vijTitlesAndLabels()` takes an optional `plot` argument: when supplied, it inspects
   `plot$mapping`/`layer$mapping` (minus each layer's `aes_params`, which shadow an inherited
   mapping — e.g. `geom_histogram(fill = fixedColor)`) to decide which of `fill`/`colour`/`shape`

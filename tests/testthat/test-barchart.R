@@ -103,3 +103,56 @@ testthat::test_that("barchart: with axis options", {
     )$plot
     expect_plot_snapshot("barchart-with-options", testPlot)
 })
+
+testthat::test_that("barchart: state holds one summarised row per bar", {
+    r <- vijPlots::barchart(
+        data = testData,
+        xVar = "Species",
+        yVar = "Petal.Width",
+        group = NULL,
+        facet = NULL,
+        errorBars = "se"
+    )
+    state <- r$plot$state
+    cleanData <- testData[!is.na(testData$Species) & !is.na(testData$Petal.Width), ]
+    expectedMean <- tapply(cleanData$Petal.Width, cleanData$Species, mean)
+    expectedSe <- tapply(cleanData$Petal.Width, cleanData$Species, function(x) stats::sd(x) / sqrt(length(x)))
+
+    testthat::expect_equal(nrow(state), nlevels(testData$Species))
+    testthat::expect_equal(state$.Y, as.numeric(expectedMean))
+    testthat::expect_equal(state$.YMIN, as.numeric(expectedMean - expectedSe))
+    testthat::expect_equal(state$.YMAX, as.numeric(expectedMean + expectedSe))
+})
+
+testthat::test_that("barchart: variables named like the summary columns (y, ymin, ymax)", {
+    # regression test: the summary computed in .run() must not clash with user variables
+    namedData <- data.frame(ymax = testData$Petal.Width, ymin = testData$Species, y = testData$group2)
+    r <- vijPlots::barchart(
+        data = namedData,
+        xVar = "ymin",
+        yVar = "ymax",
+        group = "y",
+        facet = NULL,
+        errorBars = "se"
+    )
+    reference <- vijPlots::barchart(
+        data = testData,
+        xVar = "Species",
+        yVar = "Petal.Width",
+        group = "group2",
+        facet = NULL,
+        errorBars = "se"
+    )
+    testthat::expect_equal(r$plot$state$.Y, reference$plot$state$.Y)
+    testthat::expect_equal(r$plot$state$.YMIN, reference$plot$state$.YMIN)
+    testthat::expect_equal(levels(r$plot$state$y), levels(testData$group2))
+    testthat::expect_no_error(ggplot2::ggplot_build(suppressMessages(r$plot$plot$fun())))
+})
+
+testthat::test_that("barchart: a variable named like an internal column is rejected", {
+    reservedData <- data.frame(.YMIN = testData$Species, value = testData$Petal.Width)
+    testthat::expect_error(
+        vijPlots::barchart(data = reservedData, xVar = ".YMIN", yVar = "value", group = NULL, facet = NULL),
+        "reserved name"
+    )
+})

@@ -43,12 +43,19 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(self$options$yVar) || is.null(self$options$xVar))
                 return()
 
-            varNames <- c(self$options$yVar, self$options$xVar, self$options$group, self$options$facet)
-            plotData <- jmvcore::select(self$data, varNames)
+            yName <- self$options$yVar
+            xName <- self$options$xVar
 
-            plotData[[self$options$yVar]] <- jmvcore::toNumeric(plotData[[self$options$yVar]])
-            # missing data
-            plotData <- plotData[!is.na(plotData[[self$options$yVar]]),]
+            # ".X", ".Y", ".YMIN" and ".YMAX" are the column names of the summary computed below
+            reservedVar <- intersect(c(yName, xName, self$options$group, self$options$facet), c(".X", ".Y", ".YMIN", ".YMAX"))
+            if (length(reservedVar) > 0)
+                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+
+            plotData <- jmvcore::select(self$data, c(yName, xName, self$options$group, self$options$facet))
+
+            plotData[[yName]] <- jmvcore::toNumeric(plotData[[yName]])
+            # missing data (and infinite values, as stat_summary() used to drop them)
+            plotData <- plotData[is.finite(plotData[[yName]]),]
             # Remove case with missing group
             if (!is.null(self$options$xVar) && self$options$ignoreNA) {
                 plotData <- plotData[!is.na(plotData[[self$options$xVar]]),]
@@ -61,6 +68,35 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             if (nrow(plotData) == 0)
                 return()
+
+            barFun <- switch(self$options$yaxis,
+                mean = mean, median = stats::median, min = min, max = max, sum = sum)
+
+            # Position of the bars on the axis (.X): sorted on the raw data, before it is summarised.
+            # The x variable itself keeps its level order, which the fill colours follow.
+            if (self$options$order != "none")
+                plotData[[".X"]] <- forcats::fct_reorder(plotData[[xName]], plotData[[yName]], .fun = barFun,
+                                                         .desc = (self$options$order == "decreasing"))
+            else
+                plotData[[".X"]] <- plotData[[xName]]
+
+            ciLevel <- self$options$ciLevel / 100
+            cellFun <- switch(private$.errorBars(),
+                sd = private$.meanSd,
+                se = private$.meanSe,
+                ci = if (self$options$bootstrap)
+                         function(x) private$.meanClBoot(x, conf.int = ciLevel)
+                     else
+                         function(x) private$.meanClNormal(x, conf.int = ciLevel),
+                none = function(x) data.frame(.Y = barFun(x), .YMIN = NA_real_, .YMAX = NA_real_))
+
+            # Summarize per x-value/group/facet, with its value (.Y) and its error bar limits (.YMIN, .YMAX).
+            # xName is kept for the color order
+            plotData <- plotData |>
+                dplyr::group_by(dplyr::pick(dplyr::all_of(c(self$options$group, ".X", xName, self$options$facet)))) |>
+                dplyr::summarise(cellFun(.data[[yName]]), .groups = "drop") |>
+                as.data.frame()
+
             image <- self$results$plot
             image$setState(plotData)
         },
@@ -71,7 +107,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             plotData <- image$state
 
-            yVar <- rlang::sym(self$options$yVar)
+            yVar <- rlang::sym(".Y")
             xVar <- rlang::sym(self$options$xVar)
             groupVar <- vijVar(self$options$group)
             fillVar <- groupVar %||% xVar
@@ -113,93 +149,54 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 borderColor <- self$options$borderColor
 
-            #### Order ####
-            orderFun <- self$options$yaxis
-            if (self$options$order == "decreasing")
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = forcats::fct_reorder(!!xVar,!!yVar, .fun = orderFun, .desc = TRUE), y = !!yVar, group = !!groupVar, fill = !!fillVar))
-            else if (self$options$order == "increasing")
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = forcats::fct_reorder(!!xVar,!!yVar, .fun = orderFun, .desc = FALSE), y = !!yVar, group = !!groupVar, fill = !!fillVar))
-            else
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xVar, y = !!yVar, group = !!groupVar, fill = !!fillVar))
+            #### Bars ####
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = .data[[".X"]], y = !!yVar, group = !!groupVar, fill = !!fillVar))
 
             summaryFun <- self$options$yaxis
 
             if(singleColor)
-                plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "bar", position = position,
-                                            color = borderColor, fill = oneColorOfPalette)
+                plot <- plot + ggplot2::geom_col(position = position, color = borderColor, fill = oneColorOfPalette)
             else
-                plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "bar", position = position,
-                                            color = borderColor)
+                plot <- plot + ggplot2::geom_col(position = position, color = borderColor)
 
             #### Value labels ####
             if (self$options$showLabels) {
-                if (stacked) {
-                    vjust <- 0.5
-                    hjust <- 0.5
-                } else if (self$options$horizontal) {
-                    vjust <- 0.5
-                    hjust <- -0.5
-                } else {
-                    vjust <- -0.5
-                    hjust <- 0.5
-                }
+                labelSize <- self$options$labelTextSize / ggplot2::.pt
+                digits <- self$options$decimalPrecision
+                # Justification of a label drawn outside its bar (at its end)
+                if (self$options$horizontal)
+                    outside <- list(vjust = 0.5, hjust = -0.5)
+                else
+                    outside <- list(vjust = -0.5, hjust = 0.5)
+                # Labels of stacked bars are centred inside each bar
+                just <- if (stacked) list(vjust = 0.5, hjust = 0.5) else outside
+
                 textColor <- self$options$textColor
                 if (!stacked && textColor == "auto")
                     textColor <- "black"
-                if (stacked)
-                    fontFace <- "bold"
-                else
-                    fontFace <- "plain"
-                if (textColor == "auto")
-                    plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "text",
-                                                ggplot2::aes(label = round(ggplot2::after_stat(y), self$options$decimalPrecision),
-                                                             color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
-                                                size = self$options$labelTextSize /ggplot2::.pt, fontface = fontFace,
-                                                position = labPosition, vjust = vjust, hjust = hjust)
-                else
-                    plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "text",
-                                                ggplot2::aes(label = round(ggplot2::after_stat(y), self$options$decimalPrecision)),
-                                                size = self$options$labelTextSize /ggplot2::.pt, fontface = fontFace,
-                                                position = labPosition, vjust = vjust, hjust = hjust,
-                                                color = textColor)
-                # Label for stacked sum
-                if (stacked && self$options$yaxis == "sum") {
-                    if (self$options$horizontal) {
-                        vjust2 <- 0.5
-                        hjust2 <- -0.5
-                    } else {
-                        vjust2 <- -0.5
-                        hjust2 <- 0.5
-                    }
-                    textColor2 <- ifelse(textColor %in% c("auto","white"), "black", textColor)
 
+                geomText <- function(...) ggplot2::geom_text(..., size = labelSize, fontface = if (stacked) "bold" else "plain",
+                                                             position = labPosition, vjust = just$vjust, hjust = just$hjust)
+                if (textColor == "auto")
+                    plot <- plot + geomText(ggplot2::aes(label = round(!!yVar, digits),
+                                                         color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))))
+                else
+                    plot <- plot + geomText(ggplot2::aes(label = round(!!yVar, digits)), color = textColor)
+
+                # Label for stacked sum (sum, per x, of the sums already computed per bar)
+                if (stacked && self$options$yaxis == "sum") {
+                    textColor2 <- ifelse(textColor %in% c("auto", "white"), "black", textColor)
                     plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "text",
-                                                ggplot2::aes(y = !!yVar, label = round(ggplot2::after_stat(y), self$options$decimalPrecision), group = NULL, fill = NULL),
-                                                size = self$options$labelTextSize /ggplot2::.pt, vjust = vjust2, hjust = hjust2,
+                                                ggplot2::aes(y = !!yVar, label = round(ggplot2::after_stat(y), digits), group = NULL, fill = NULL),
+                                                size = labelSize, vjust = outside$vjust, hjust = outside$hjust,
                                                 color = textColor2)
                 }
             }
 
             #### ErrorBars ####
-            errorBars <- self$options$errorBars
-            if (stacked || orderFun != "mean")
-                errorBars <- "none"
-
-            if (errorBars == "sd") {
-                funData <- private$.meanSd
-                funArgs <- list()
-            } else if (errorBars == "se") {
-                funData <- ggplot2::mean_se
-                funArgs <- list(mult = 1)
-            } else if (errorBars == "ci" && self$options$bootstrap) {
-                funData <- private$.meanClBoot
-                funArgs <- list(conf.int = self$options$ciLevel/100)
-            } else if (errorBars == "ci" && !self$options$bootstrap) {
-                funData <- private$.meanClNormal
-                funArgs <- list(conf.int = self$options$ciLevel/100)
-            }
+            errorBars <- private$.errorBars()
             if (errorBars != "none")
-                plot <- plot +  ggplot2::stat_summary(fun.data = funData, fun.args = funArgs, geom = "errorbar",
+                plot <- plot +  ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[".YMIN"]], ymax = .data[[".YMAX"]]),
                                              width = self$options$errorBarWidth, linewidth = self$options$errorBarLineSize,
                                              color = "black",
                                              position = ggplot2::position_dodge(width = 0.9))
@@ -239,7 +236,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Axis Labels ####
-            ylabel <- private$.getYLabel(yVar, errorBars)
+            ylabel <- private$.getYLabel(self$options$yVar, errorBars)
 
             #### facet ####
             if (!is.null(self$options$facet)) {
@@ -260,6 +257,14 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             vijDebugPlot(self, plot)
 
             return(plot)
+        },
+        # Error bars actually drawn: none on stacked bars, nor around anything but a mean
+        .errorBars = function() {
+            stacked <- (self$options$barType == "stack" && !is.null(self$options$group))
+            if (stacked || self$options$yaxis != "mean")
+                "none"
+            else
+                self$options$errorBars
         },
         .getYLabel = function(yVar, errorBars) {
             if (self$options$yaxis == "mean") {
@@ -282,33 +287,39 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 yVar
         },
-        # Error bar summaries for stat_summary(fun.data = ...), replacing ggplot2's
+        # Error bar summaries (mean and limits of one bar), replacing ggplot2's
         # mean_sdl/mean_cl_normal/mean_cl_boot, which require Hmisc
         .meanSd = function(x) {
             x <- x[!is.na(x)]
             m <- mean(x)
             s <- stats::sd(x)
-            data.frame(y = m, ymin = m - s, ymax = m + s)
+            data.frame(.Y = m, .YMIN = m - s, .YMAX = m + s)
+        },
+        .meanSe = function(x) {
+            x <- x[!is.na(x)]
+            m <- mean(x)
+            se <- stats::sd(x) / sqrt(length(x))
+            data.frame(.Y = m, .YMIN = m - se, .YMAX = m + se)
         },
         .meanClNormal = function(x, conf.int = 0.95) {
             x <- x[!is.na(x)]
             n <- length(x)
             m <- mean(x)
             if (n < 2)
-                return(data.frame(y = m, ymin = NA_real_, ymax = NA_real_))
+                return(data.frame(.Y = m, .YMIN = NA_real_, .YMAX = NA_real_))
             h <- stats::qt((1 + conf.int) / 2, n - 1) * stats::sd(x) / sqrt(n)
-            data.frame(y = m, ymin = m - h, ymax = m + h)
+            data.frame(.Y = m, .YMIN = m - h, .YMAX = m + h)
         },
         .meanClBoot = function(x, conf.int = 0.95, B = 1000) {
             x <- x[!is.na(x)]
             n <- length(x)
             m <- mean(x)
             if (n < 2)
-                return(data.frame(y = m, ymin = NA_real_, ymax = NA_real_))
-            # Fixed seed: this runs at every render (resize, export), which must redraw the same limits
+                return(data.frame(.Y = m, .YMIN = NA_real_, .YMAX = NA_real_))
+            # Fixed seed: the same data must give the same limits at every run
             set.seed(42)
             means <- vapply(seq_len(B), function(i) mean(x[sample.int(n, n, replace = TRUE)]), numeric(1))
             q <- stats::quantile(means, c((1 - conf.int) / 2, (1 + conf.int) / 2), names = FALSE)
-            data.frame(y = m, ymin = q[1], ymax = q[2])
+            data.frame(.Y = m, .YMIN = q[1], .YMAX = q[2])
         })
 )

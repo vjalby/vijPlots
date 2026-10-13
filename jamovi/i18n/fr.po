@@ -9,7 +9,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: R/areachart.b.R
+#: R/barchart.b.R
+#: R/barplot.b.R
 #: R/linechart.b.R
+#: R/mosaic.b.R
+#: R/piechart.b.R
 msgid "\"{var}\" is a reserved name. Please rename this variable."
 msgstr "« {var} » est un nom réservé. Veuillez renommer cette variable."
 
@@ -6102,6 +6106,8 @@ msgstr "Texte du titre"
 msgid "Top"
 msgstr "Haut"
 
+#: R/mrcrosstabs.b.R
+#: R/mrfrequencies.b.R
 #: R/multcorresp.b.R
 #: mrfrequencies/options/showTotal.title
 msgid "Total"

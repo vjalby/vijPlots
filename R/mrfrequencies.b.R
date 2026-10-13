@@ -27,7 +27,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
             # Add the "total" row
             if (self$options$showTotal) {
-                table$addRow(rowKey = '.total', values = list(var="Total"))
+                table$addRow(rowKey = '.total', values = list(var=.("Total")))
                 table$addFormat(rowKey = ".total", col = 1, jmvcore::Cell.BEGIN_GROUP)
             }
             # Set the image dimensions
@@ -85,7 +85,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             if ( self$options$showTotal ) {
                 i <- nrow(myresult$df)
                 table$setRow(rowKey = ".total",
-                             values = list(var = "Total",
+                             values = list(var = .("Total"),
                                          freq = myresult$df[i,2],
                                          responsepercent = myresult$df[i,3],
                                          casepercent = myresult$df[i,4]))

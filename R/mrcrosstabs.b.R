@@ -30,7 +30,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             # Add the "total" row here (to prevent flickering)
             if ( self$options$totalRow ) {
-                table$addRow(rowKey='.total', values=list(var="Total"))
+                table$addRow(rowKey='.total', values=list(var=.("Total")))
                 table$addFormat(rowKey=".total", col=1, jmvcore::Cell.BEGIN_GROUP)
             }
             if ( self$options$showNbOfCases && ( self$options$computedValues == "count" || self$options$computedValues == "options") ) {
@@ -128,7 +128,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                              values = c(var = rownames(crosstab)[i], crosstab[i,]))
             }
             if ( self$options$totalRow ) {
-                table$setRow(rowKey = '.total', values = c(var="Total", crosstab[n-1,]))
+                table$setRow(rowKey = '.total', values = c(var=.("Total"), crosstab[n-1,]))
             }
             if ( self$options$showNbOfCases && (self$options$computedValues == "count" || self$options$computedValues == "options") ) {
                 table$setRow(rowKey = '.nbofcases', values = append(list(var=.("Number of cases")), crosstab[n,]))

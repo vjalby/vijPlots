@@ -8,7 +8,11 @@ msgstr ""
 "Language: c\n"
 
 #: R/areachart.b.R
+#: R/barchart.b.R
+#: R/barplot.b.R
 #: R/linechart.b.R
+#: R/mosaic.b.R
+#: R/piechart.b.R
 msgid "\"{var}\" is a reserved name. Please rename this variable."
 msgstr ""
 
@@ -5852,6 +5856,8 @@ msgstr ""
 msgid "Top"
 msgstr ""
 
+#: R/mrcrosstabs.b.R
+#: R/mrfrequencies.b.R
 #: R/multcorresp.b.R
 #: mrfrequencies/options/showTotal.title
 msgid "Total"

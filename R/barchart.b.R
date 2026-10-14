@@ -316,8 +316,9 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             m <- mean(x)
             if (n < 2)
                 return(data.frame(.Y = m, .YMIN = NA_real_, .YMAX = NA_real_))
-            # Fixed seed: the same data must give the same limits at every run
-            set.seed(42)
+            # Seed derived from the data: the same values always give the same limits,
+            # and each bar gets its own resampling sequence
+            set.seed(strtoi(substr(rlang::hash(x), 1, 7), 16L))
             means <- vapply(seq_len(B), function(i) mean(x[sample.int(n, n, replace = TRUE)]), numeric(1))
             q <- stats::quantile(means, c((1 - conf.int) / 2, (1 + conf.int) / 2), names = FALSE)
             data.frame(.Y = m, .YMIN = q[1], .YMAX = q[2])

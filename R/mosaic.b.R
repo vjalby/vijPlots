@@ -260,10 +260,15 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = freeScale)
 
                 # xScales
-                facetLevels <- levels(droplevels(plotData[[self$options$facet]]))
-                # Column widths are computed per facet, so each panel needs its own x breaks/labels
-                xScales <- lapply(facetLevels, function(lv) {
-                    subData <- plotData[plotData[[self$options$facet]] == lv, ]
+                # One value per panel, in facet_wrap()'s order: the used levels, then NA last
+                # when missing values are kept (ignoreNA unchecked), which gets its own panel
+                facetValues <- levels(droplevels(plotData[[self$options$facet]]))
+                if (anyNA(plotData[[self$options$facet]]))
+                    facetValues <- c(facetValues, NA)
+                # Column widths are computed per facet, so each panel needs its own x breaks/labels.
+                # %in% rather than ==: it matches the NA panel, and never yields all-NA rows
+                xScales <- lapply(facetValues, function(lv) {
+                    subData <- plotData[plotData[[self$options$facet]] %in% lv, ]
                     xAxisData <- unique(subData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
                     if (self$options$showCategoryPercent) {
                         xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$.XWIDTH), ")")
@@ -281,8 +286,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # KNOWN LIMITATION: breaks/labels come only from the first (leftmost) column, so a
                     # group with zero count there is silently missing from the y-axis even if present
                     # in other columns.
-                    yScales <- lapply(facetLevels, function(lv) {
-                        subData <- plotData[plotData[[self$options$facet]] == lv, ]
+                    yScales <- lapply(facetValues, function(lv) {
+                        subData <- plotData[plotData[[self$options$facet]] %in% lv, ]
                         firstColBreaks <- dplyr::filter(subData, .X_CENTER == min(.X_CENTER))
                         ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
                                                     labels = firstColBreaks[[group]],

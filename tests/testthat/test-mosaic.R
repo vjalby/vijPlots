@@ -192,6 +192,21 @@ test_that("mosaic: missing values kept (ignoreNA = FALSE)", {
     expect_plot_snapshot("mosaic-ignoreNA-false", testPlot)
 })
 
+test_that("mosaic: faceted by a variable with missing values kept (ignoreNA = FALSE)", {
+    # sex has NAs: facet_wrap() adds an NA panel, which needs its own x/y scales, and
+    # the other panels must keep their group labels
+    testPlot <- vijPlots::mosaic(
+        data = testData,
+        category = "species",
+        group = "island",
+        counts = NULL,
+        facet = "sex",
+        yAxis = "label",
+        ignoreNA = FALSE
+    )$plot
+    expect_plot_snapshot("mosaic-faceted-na-yaxis-label", testPlot)
+})
+
 test_that("mosaic: titles, axis and legend text options", {
     testPlot <- vijPlots::mosaic(
         data = testData,

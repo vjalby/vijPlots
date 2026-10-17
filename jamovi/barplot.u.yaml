@@ -118,6 +118,11 @@ children:
                 optionName: order
                 optionPart: decreasing
                 label: Decreasing
+          - type: Label
+            label: Table
+            children:
+              - type: CheckBox
+                name: frequencyTable
   - type: CollapseBox
     label: Plot Options
     collapsed: true

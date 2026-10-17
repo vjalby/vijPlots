@@ -37,6 +37,11 @@ options:
       permitted:
         - numeric
 
+    - name: ignoreNA
+      title: Ignore missing values
+      type: Bool
+      default: true
+
     - name: donut
       title: Donut chart
       type: Bool
@@ -44,6 +49,23 @@ options:
 
     - name: clockwise
       title: Clockwise
+      type: Bool
+      default: false
+
+    - name: order
+      title: Sorting
+      type: List
+      options:
+        - title: Decreasing
+          name:  decreasing
+        - title: Increasing
+          name:  increasing
+        - title: None
+          name:  none
+      default: none
+
+    - name: frequencyTable
+      title: "Frequency table"
       type: Bool
       default: false
 
@@ -77,6 +99,11 @@ options:
 
     - name: overlap
       title: Prevent overlap
+      type: Bool
+      default: false
+
+    - name: hideLabelsBelow
+      title: "Hide % labels below 5%"
       type: Bool
       default: false
 

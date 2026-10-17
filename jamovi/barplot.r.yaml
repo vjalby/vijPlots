@@ -4,6 +4,46 @@ title: Bar Plot
 jrs:   '1.1'
 
 items:
+    - name: frequencies
+      title: Frequency Table
+      type: Table
+      visible: (frequencyTable)
+      rows:  0
+      columns:
+        - name: facet
+          title: ""
+          type: text
+          combineBelow: true
+          visible: (facet)
+        - name: outer
+          title: ""
+          type: text
+          combineBelow: true
+          visible: (columns)
+        - name: inner
+          title: ""
+          type: text
+        - name: counts
+          title: Counts
+          type: integer
+        - name: percent
+          title: "%"
+          type: number
+          format: pc
+        - name: cumPercent
+          title: "Cumulative %"
+          type: number
+          format: pc
+      clearWith:
+        - rows
+        - columns
+        - facet
+        - counts
+        - ignoreNA
+        - order
+        - yaxis
+        - percentWithin
+
     - name: plot
       title: ""
       type: Image

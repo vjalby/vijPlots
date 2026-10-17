@@ -248,3 +248,166 @@ test_that("piechart: a variable named like the internal counts column is rejecte
         "reserved name"
     )
 })
+
+test_that("piechart: frequency table", {
+    r <- vijPlots::piechart(
+        data = testData,
+        aVar = "species",
+        facet = NULL,
+        counts = NULL,
+        frequencyTable = TRUE
+    )
+    expect_true(r$frequencies$visible)
+    df <- r$frequencies$asDF
+    # no missing value: no note
+    expect_null(r$frequencies$notes$missing)
+    expect_equal(df$category, c("Adelie", "Chinstrap", "Gentoo", "Total"))
+    expect_equal(df$counts, c(152, 68, 124, 344))
+    expect_equal(df$percent, c(152, 68, 124, 344) / 344)
+    expect_equal(df$cumPercent, c(c(152, 220, 344) / 344, NA))
+})
+
+test_that("piechart: frequency table is hidden by default", {
+    r <- vijPlots::piechart(data = testData, aVar = "species", facet = NULL, counts = NULL)
+    expect_false(r$frequencies$visible)
+})
+
+test_that("piechart: frequency table with facet and counts", {
+    facetData <- data.frame(
+        cat = factor(c("a", "b", "a", "c", "b", NA, NA, NA, NA)),
+        fac = factor(c("x", "x", "y", "y", "y", "y", "y", NA, "x"), levels = c("x", "y", "z")),
+        w = c(2, 3, 1, 4, 5, 6, 7, 8, NA)
+    )
+    r <- vijPlots::piechart(
+        data = facetData,
+        aVar = "cat",
+        facet = "fac",
+        counts = "w",
+        frequencyTable = TRUE
+    )
+    df <- r$frequencies$asDF
+    # all categories in each facet, empty facet "z" skipped, percentages within facet
+    expect_equal(df$facet, rep(c("x", "y"), each = 4))
+    expect_equal(df$category, rep(c("a", "b", "c", "Total"), 2))
+    expect_equal(df$counts, c(2, 3, 0, 5, 1, 5, 4, 10))
+    expect_equal(df$percent, c(c(2, 3, 0, 5) / 5, c(1, 5, 4, 10) / 10))
+    # cumulative % restarts in each facet
+    expect_equal(df$cumPercent, c(c(2, 5, 5) / 5, NA, c(1, 6, 10) / 10, NA))
+    # excluded observations, weighted and overall (6 + 7 + 8; the row without weight isn't counted)
+    expect_equal(r$frequencies$notes$missing$note, "Missing values: 21")
+})
+
+test_that("piechart: percent labels below 5% are hidden", {
+    smallData <- data.frame(cat = factor(c("a", "b", "c")), w = c(60, 37, 3))
+    renderLabels <- function(labels, hide, labType = "text") {
+        r <- vijPlots::piechart(
+            data = smallData,
+            aVar = "cat",
+            facet = NULL,
+            counts = "w",
+            labType = labType,
+            labels = labels,
+            hideLabelsBelow = hide
+        )
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        # labels use a thin space (U+2009) before "%"
+        gsub("\u2009", " ", ggplot2::layer_data(ggplot2::last_plot(), 2)$label)
+    }
+    expect_equal(sort(renderLabels("percent", FALSE)), c("3.0 %", "37.0 %", "60.0 %"))
+    expect_equal(sort(renderLabels("percent", TRUE)), c("37.0 %", "60.0 %"))
+    expect_equal(sort(renderLabels("percent", TRUE, "label")), c("37.0 %", "60.0 %"))
+    # group+percent keeps the group name of small slices
+    expect_equal(sort(renderLabels("group+percent", TRUE)), c("a\n60.0 %", "b\n37.0 %", "c"))
+})
+
+test_that("piechart: hidden percent labels", {
+    smallData <- data.frame(cat = factor(c("a", "b", "c")), w = c(60, 37, 3))
+    testPlot <- vijPlots::piechart(
+        data = smallData,
+        aVar = "cat",
+        facet = NULL,
+        counts = "w",
+        labType = "text",
+        labels = "percent",
+        hideLabelsBelow = TRUE
+    )$plot
+    expect_plot_snapshot("piechart-hide-labels-below", testPlot)
+})
+
+test_that("piechart: categories sorted by count", {
+    sortData <- data.frame(cat = factor(c("a", "b", "c", "d"), levels = c("a", "b", "c", "d")), w = c(10, 40, 0, 25))
+    sortedLevels <- function(order) {
+        r <- vijPlots::piechart(
+            data = sortData,
+            aVar = "cat",
+            facet = NULL,
+            counts = "w",
+            order = order,
+            frequencyTable = TRUE
+        )
+        list(state = levels(r$plot$state$cat), table = head(r$frequencies$asDF$category, -1))
+    }
+    expect_equal(sortedLevels("none")$state, c("a", "b", "c", "d"))
+    # sorted levels drive both the plot and the frequency table
+    expect_equal(sortedLevels("decreasing"), list(state = c("b", "d", "a", "c"), table = c("b", "d", "a", "c")))
+    expect_equal(sortedLevels("increasing"), list(state = c("c", "a", "d", "b"), table = c("c", "a", "d", "b")))
+})
+
+test_that("piechart: decreasing order", {
+    testPlot <- vijPlots::piechart(
+        data = testData,
+        aVar = "species",
+        facet = NULL,
+        counts = NULL,
+        labType = "text",
+        labels = "group+percent",
+        order = "decreasing"
+    )$plot
+    expect_plot_snapshot("piechart-order-decreasing", testPlot)
+})
+
+test_that("piechart: missing values kept (ignoreNA = FALSE)", {
+    naData <- testData
+    naData$isl <- naData$island
+    naData$isl[1:4] <- NA
+    r <- vijPlots::piechart(
+        data = naData,
+        aVar = "sex",
+        facet = "isl",
+        counts = NULL,
+        ignoreNA = FALSE,
+        frequencyTable = TRUE
+    )
+    df <- r$frequencies$asDF
+    # NA is a category and a facet of its own, last, and counts in the percentages
+    expect_equal(unique(df$facet), c("Biscoe", "Dream", "Torgersen", "NA"))
+    expect_equal(df$category[df$facet == "NA"], c("female", "male", "NA", "Total"))
+    expect_equal(df$counts[df$facet == "NA"], c(2, 1, 1, 4))
+    expect_equal(df$percent[df$facet == "Torgersen"], c(22, 22, 4, 48) / 48)
+
+    # default: missing values are left out
+    r <- vijPlots::piechart(data = naData, aVar = "sex", facet = "isl", counts = NULL, frequencyTable = TRUE)
+    df <- r$frequencies$asDF
+    expect_false("NA" %in% c(df$facet, df$category))
+})
+
+test_that("piechart: percent labels keep the NA slice (ignoreNA = FALSE)", {
+    r <- vijPlots::piechart(
+        data = testData,
+        aVar = "sex",
+        facet = NULL,
+        counts = NULL,
+        labType = "text",
+        labels = "percent",
+        ignoreNA = FALSE
+    )
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    # same percentages as the frequency table: 165, 168 and 11 NA out of 344
+    labels <- gsub(" ", " ", ggplot2::layer_data(ggplot2::last_plot(), 2)$label)
+    expect_equal(labels, c("48.0 %", "48.8 %", "3.2 %"))
+    expect_plot_snapshot("piechart-ignorena-false-percent", r$plot)
+})

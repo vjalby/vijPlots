@@ -74,6 +74,11 @@ options:
           name:  none
       default: none
 
+    - name: frequencyTable
+      title: "Frequency table"
+      type: Bool
+      default: false
+
     - name: reverseStack
       title: Reverse stacking order
       type: Bool

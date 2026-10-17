@@ -35,21 +35,32 @@ children:
     style: inline
     children:
       - type: LayoutBox
+        margin: large
         cell:
           column: 0
           row: 0
         stretchFactor: 1
         children:
           - type: Label
-            label: Plot Options
+            label: Sorting
             children:
-              - type: LayoutBox
-                children:
-                  - type: CheckBox
-                    name: donut
-                  - type: CheckBox
-                    name: clockwise
+              - type: RadioButton
+                name: order_none
+                optionName: order
+                optionPart: none
+                label: None
+              - type: RadioButton
+                name: order_increasing
+                optionName: order
+                optionPart: increasing
+                label: Increasing
+              - type: RadioButton
+                name: order_decreasing
+                optionName: order
+                optionPart: decreasing
+                label: Decreasing
       - type: LayoutBox
+        margin: large
         cell:
           column: 1
           row: 0
@@ -89,6 +100,36 @@ children:
                     type: RadioButton
                     optionName: labels
                     optionPart: group+percent
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 0
+          row: 1
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Plot Options
+            children:
+              - type: LayoutBox
+                children:
+                  - type: CheckBox
+                    name: clockwise
+                  - type: CheckBox
+                    name: ignoreNA
+                  - type: CheckBox
+                    name: donut
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 1
+          row: 1
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Table
+            children:
+              - type: CheckBox
+                name: frequencyTable
   - type: CollapseBox
     label: Labels
     collapsed: true
@@ -129,6 +170,9 @@ children:
               - type: Label
                 label: Label Options
                 children:
+                  - type: CheckBox
+                    name: hideLabelsBelow
+                    enable: ({ return ['percent','group+percent'].includes(ui['labels'].value()); })
                   - type: CheckBox
                     name: overlap
                     enable: (!labels_none)

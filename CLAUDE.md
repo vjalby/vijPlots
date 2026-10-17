@@ -27,6 +27,15 @@ longer calls the deprecated `ggplot2::element_line(size = ...)`, so the "The `si
 `element_line()` is deprecated" warning that used to be expected/ignorable on 2.7.37 should no
 longer appear — if it does show up again, treat it as a real regression, not a known non-issue.
 
+## Working style
+
+Never start or propose a parallel session or a git worktree for vijPlots work (user's rule,
+2026-10-17): do everything in the current session, on `main`, in the main checkout.
+
+Before editing code or YAML, show the planned changes (excerpt or diff, per file) and wait for
+the user's go-ahead (user's preference, 2026-10-17). Simple actions the user asks for directly
+(deleting a named file, running tests) don't need this step.
+
 ## Commands
 
 ```r
@@ -43,6 +52,11 @@ there outright (e.g. `inst/i18n/fr.json`) as part of its regeneration pass rathe
 overwrite them. If you need to keep in-progress edits to a tracked file under `inst/`, commit or
 copy it out *before* running `prepare()`/`install()`, since anything lost this way isn't
 recoverable from the working tree afterward.
+
+**Next release (not yet scheduled, requested 2026-10-16): remind the user to create a git tag** for
+the released version, prefixed with `v` like the first one (`v1.3.3`, on the "Version 1.3.3"
+commit). Use a plain lightweight tag, not an annotated one (user's choice, 2026-10-16 — `v1.3.3`
+itself is annotated, but don't redo it): `git tag vX.Y.Z <commit>` then `git push origin vX.Y.Z`.
 
 Testing (testthat edition 3, run from the package root after `devtools::load_all(".")`):
 

@@ -82,6 +82,8 @@ msgid "# of rows/columns"
 msgstr ""
 
 #: barchart/ui[3][0][0]/errorBars_ci/ciLevel.suffix
+#: barplot/results/frequencies.columns.title
+#: piechart/results/frequencies.columns.title
 msgid "%"
 msgstr ""
 
@@ -1646,12 +1648,14 @@ msgid "Counted value string may not be empty."
 msgstr ""
 
 #: R/mrfrequencies.b.R
+#: barplot/results/frequencies.columns.title
 #: likertplot/options/frequencies/counts.title
 #: likertplot/ui[2][0][1][0]/frequencies_counts.label
 #: mrcrosstabs/options/computedValues/count.title
 #: mrfrequencies/options/showCounts.title
 #: mrfrequencies/options/yaxis/counts.title
 #: mrfrequencies/results/responses.columns.title
+#: piechart/results/frequencies.columns.title
 msgid "Counts"
 msgstr ""
 
@@ -1688,6 +1692,7 @@ msgstr ""
 
 #: R/barplot.b.R
 #: R/mosaic.b.R
+#: R/piechart.b.R
 msgid "Counts may not contain missing values."
 msgstr ""
 
@@ -1727,8 +1732,10 @@ msgid "Crosstab (% of responses)"
 msgstr ""
 
 #: R/multcorresp.b.R
+#: barplot/results/frequencies.columns.title
 #: corresp/results/eigenvalues.columns.title
 #: multcorresp/results/eigenvalues.columns.title
+#: piechart/results/frequencies.columns.title
 #: principal/results/summaryTable.columns.title
 msgid "Cumulative %"
 msgstr ""
@@ -1800,6 +1807,8 @@ msgstr ""
 #: mrcrosstabs/ui[1][2][0]/order_decreasing.label
 #: mrfrequencies/options/order/decreasing.title
 #: mrfrequencies/ui[1][1][0]/order_decreasing.label
+#: piechart/options/order/decreasing.title
+#: piechart/ui[1][0][0]/order_decreasing.label
 msgid "Decreasing"
 msgstr ""
 
@@ -2239,11 +2248,15 @@ msgstr ""
 msgid "Frequency Plot"
 msgstr ""
 
+#: barplot/options/frequencyTable.title
 #: likertplot/options/frequencyTable.title
+#: piechart/options/frequencyTable.title
 msgid "Frequency table"
 msgstr ""
 
+#: barplot/results/frequencies.title
 #: likertplot/results/frequencies.title
+#: piechart/results/frequencies.title
 msgid "Frequency Table"
 msgstr ""
 
@@ -2586,6 +2599,7 @@ msgid "hidden"
 msgstr ""
 
 #: likertplot/options/hideLabelsBelow.title
+#: piechart/options/hideLabelsBelow.title
 msgid "Hide % labels below 5%"
 msgstr ""
 
@@ -2650,6 +2664,7 @@ msgstr ""
 #: boxplot/options/ignoreNA.title
 #: linechart/options/ignoreNA.title
 #: mosaic/options/ignoreNA.title
+#: piechart/options/ignoreNA.title
 msgid "Ignore missing values"
 msgstr ""
 
@@ -2671,6 +2686,8 @@ msgstr ""
 #: mrcrosstabs/ui[1][2][0]/order_increasing.label
 #: mrfrequencies/options/order/increasing.title
 #: mrfrequencies/ui[1][1][0]/order_increasing.label
+#: piechart/options/order/increasing.title
+#: piechart/ui[1][0][0]/order_increasing.label
 msgid "Increasing"
 msgstr ""
 
@@ -3585,6 +3602,11 @@ msgstr ""
 msgid "Minimum of {var}"
 msgstr ""
 
+#: R/barplot.b.R
+#: R/piechart.b.R
+msgid "Missing values: {n}"
+msgstr ""
+
 #: package/analyses/mosaic.title
 #: package/analyses/mosaic.menuTitle
 #: mosaic/options.title
@@ -3689,8 +3711,10 @@ msgstr ""
 #: mrfrequencies/options/order/none.title
 #: mrfrequencies/options/borderColor/none.title
 #: mrfrequencies/ui[1][1][0]/order_none.label
+#: piechart/options/order/none.title
 #: piechart/options/labels/none.title
 #: piechart/options/borderColor/none.title
+#: piechart/ui[1][0][0]/order_none.label
 #: principal/options/rotation/none.title
 #: scatterplot/options/singleColor/none.title
 msgid "None"
@@ -4294,7 +4318,7 @@ msgstr ""
 #: mrfrequencies/ui[2].label
 #: mrfrequencies/ui[2][0][0][0].label
 #: multcorresp/ui[7].label
-#: piechart/ui[1][0][0].label
+#: piechart/ui[1][2][0].label
 #: qqplot/ui[2][1][0].label
 #: raincloud/ui[1][0][0].label
 #: scatterplot/ui[1][0][0].label
@@ -5258,6 +5282,8 @@ msgstr ""
 #: mrcrosstabs/ui[1][2][0].label
 #: mrfrequencies/options/order.title
 #: mrfrequencies/ui[1][1][0].label
+#: piechart/options/order.title
+#: piechart/ui[1][0][0].label
 msgid "Sorting"
 msgstr ""
 
@@ -5493,10 +5519,12 @@ msgstr ""
 msgid "Symmetric normalization"
 msgstr ""
 
+#: barplot/ui[1][2][1].label
 #: likertplot/ui[2].label
 #: likertplot/ui[2][0][0][0].label
 #: mrcrosstabs/ui[1][0][0].label
 #: mrfrequencies/ui[1][0][0].label
+#: piechart/ui[1][3][0].label
 msgid "Table"
 msgstr ""
 
@@ -5857,9 +5885,11 @@ msgstr ""
 msgid "Top"
 msgstr ""
 
+#: R/barplot.b.R
 #: R/mrcrosstabs.b.R
 #: R/mrfrequencies.b.R
 #: R/multcorresp.b.R
+#: R/piechart.b.R
 #: mrfrequencies/options/showTotal.title
 msgid "Total"
 msgstr ""

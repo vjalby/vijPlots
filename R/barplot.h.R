@@ -14,6 +14,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             horizontal = FALSE,
             showLabels = TRUE,
             order = "none",
+            frequencyTable = FALSE,
             reverseStack = FALSE,
             yaxis = "count",
             percentWithin = "group",
@@ -123,6 +124,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "increasing",
                     "none"),
                 default="none")
+            private$..frequencyTable <- jmvcore::OptionBool$new(
+                "frequencyTable",
+                frequencyTable,
+                default=FALSE)
             private$..reverseStack <- jmvcore::OptionBool$new(
                 "reverseStack",
                 reverseStack,
@@ -552,6 +557,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..horizontal)
             self$.addOption(private$..showLabels)
             self$.addOption(private$..order)
+            self$.addOption(private$..frequencyTable)
             self$.addOption(private$..reverseStack)
             self$.addOption(private$..yaxis)
             self$.addOption(private$..percentWithin)
@@ -613,6 +619,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         horizontal = function() private$..horizontal$value,
         showLabels = function() private$..showLabels$value,
         order = function() private$..order$value,
+        frequencyTable = function() private$..frequencyTable$value,
         reverseStack = function() private$..reverseStack$value,
         yaxis = function() private$..yaxis$value,
         percentWithin = function() private$..percentWithin$value,
@@ -673,6 +680,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..horizontal = NA,
         ..showLabels = NA,
         ..order = NA,
+        ..frequencyTable = NA,
         ..reverseStack = NA,
         ..yaxis = NA,
         ..percentWithin = NA,
@@ -730,6 +738,7 @@ barplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "barplotResults",
     inherit = jmvcore::Group,
     active = list(
+        frequencies = function() private$.items[["frequencies"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
@@ -738,6 +747,52 @@ barplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Bar Plot")
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="frequencies",
+                title="Frequency Table",
+                visible="(frequencyTable)",
+                rows=0,
+                columns=list(
+                    list(
+                        `name`="facet", 
+                        `title`="", 
+                        `type`="text", 
+                        `combineBelow`=TRUE, 
+                        `visible`="(facet)"),
+                    list(
+                        `name`="outer", 
+                        `title`="", 
+                        `type`="text", 
+                        `combineBelow`=TRUE, 
+                        `visible`="(columns)"),
+                    list(
+                        `name`="inner", 
+                        `title`="", 
+                        `type`="text"),
+                    list(
+                        `name`="counts", 
+                        `title`="Counts", 
+                        `type`="integer"),
+                    list(
+                        `name`="percent", 
+                        `title`="%", 
+                        `type`="number", 
+                        `format`="pc"),
+                    list(
+                        `name`="cumPercent", 
+                        `title`="Cumulative %", 
+                        `type`="number", 
+                        `format`="pc")),
+                clearWith=list(
+                    "rows",
+                    "columns",
+                    "facet",
+                    "counts",
+                    "ignoreNA",
+                    "order",
+                    "yaxis",
+                    "percentWithin")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -779,6 +834,7 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param horizontal .
 #' @param showLabels .
 #' @param order .
+#' @param frequencyTable .
 #' @param reverseStack .
 #' @param yaxis .
 #' @param percentWithin .
@@ -832,8 +888,15 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yTicks .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$frequencies} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$frequencies$asDF}
+#'
+#' \code{as.data.frame(results$frequencies)}
 #'
 #' @export
 barplot <- function(
@@ -846,6 +909,7 @@ barplot <- function(
     horizontal = FALSE,
     showLabels = TRUE,
     order = "none",
+    frequencyTable = FALSE,
     reverseStack = FALSE,
     yaxis = "count",
     percentWithin = "group",
@@ -926,6 +990,7 @@ barplot <- function(
         horizontal = horizontal,
         showLabels = showLabels,
         order = order,
+        frequencyTable = frequencyTable,
         reverseStack = reverseStack,
         yaxis = yaxis,
         percentWithin = percentWithin,

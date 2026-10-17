@@ -4,6 +4,33 @@ title: Pie Chart
 jrs:   '1.1'
 
 items:
+    - name: frequencies
+      title: Frequency Table
+      type: Table
+      visible: (frequencyTable)
+      rows:  0
+      columns:
+        - name: category
+          title: ""
+          type: text
+        - name: counts
+          title: Counts
+          type: integer
+        - name: percent
+          title: "%"
+          type: number
+          format: pc
+        - name: cumPercent
+          title: "Cumulative %"
+          type: number
+          format: pc
+      clearWith:
+        - aVar
+        - facet
+        - counts
+        - ignoreNA
+        - order
+
     - name: plot
       title: ""
       type: Image

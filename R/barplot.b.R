@@ -52,6 +52,27 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 image$setSize2(width, height, fixed_width, fixed_height)
             }
+            # Frequency table columns: percentages are computed within each "outer" block
+            table <- self$results$frequencies
+            blockNames <- private$.tableBlocks()
+            if (!is.null(self$options$facet))
+                table$getColumn('facet')$setTitle(self$options$facet)
+            if (!is.null(blockNames$outer))
+                table$getColumn('outer')$setTitle(blockNames$outer)
+            if (!is.null(blockNames$inner))
+                table$getColumn('inner')$setTitle(blockNames$inner)
+            # Cumulative percentages only make sense for a single variable
+            table$getColumn('cumPercent')$setVisible(is.null(self$options$columns))
+        },
+        .tableBlocks = function() {
+            # Rows are grouped by the variable the percentages are computed within (as in the plot).
+            # In count mode, percentWithin is disabled in the UI, so it has no effect: within groups.
+            if (is.null(self$options$columns))
+                list(outer = NULL, inner = self$options$rows)
+            else if (self$options$yaxis == "count" || self$options$percentWithin == "group")
+                list(outer = self$options$columns, inner = self$options$rows)
+            else
+                list(outer = self$options$rows, inner = self$options$columns)
         },
         .run = function() {
             if (is.null(self$options$rows))
@@ -79,8 +100,13 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
             }
 
-            if (self$options$ignoreNA)
+            # Excluded observations (weighted; rows without a weight can't be counted), for the table note
+            nMissing <- 0
+            if (self$options$ignoreNA) {
+                isIncomplete <- !stats::complete.cases(plotData) & !is.na(plotData$.COUNTS)
+                nMissing <- sum(plotData$.COUNTS[isIncomplete])
                 plotData <- jmvcore::naOmit(plotData)
+            }
             if (nrow(plotData) == 0)
                 return()
 
@@ -102,8 +128,73 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # so store one row per bar/slice rather than one row per case
             plotData <- dplyr::count(plotData, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
 
+            # Sort the categories by overall count
+            categoryName <- self$options$rows
+            if (self$options$order == "decreasing")
+                plotData[[categoryName]] <- forcats::fct_infreq(plotData[[categoryName]], w = plotData$.COUNTS)
+            else if (self$options$order == "increasing")
+                plotData[[categoryName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryName]], w = plotData$.COUNTS))
+
+            if (self$options$frequencyTable)
+                private$.fillFrequencyTable(plotData, nMissing)
+
             image <- self$results$plot
             image$setState(plotData)
+        },
+        .fillFrequencyTable = function(plotData, nMissing) {
+            table <- self$results$frequencies
+            facetName <- self$options$facet
+            blockNames <- private$.tableBlocks()
+            # Values of a variable in the plot's order: all levels, then NA last when missing
+            # values are kept (ignoreNA unchecked). %in% rather than == to match NA.
+            valuesOf <- function(name) {
+                values <- levels(plotData[[name]])
+                if (anyNA(plotData[[name]]))
+                    values <- c(values, NA)
+                values
+            }
+            labelOf <- function(value) if (is.na(value)) "NA" else value
+            # No facet/group: a single block containing all the rows
+            facetValues <- if (is.null(facetName)) list(NULL) else as.list(valuesOf(facetName))
+            outerValues <- if (is.null(blockNames$outer)) list(NULL) else as.list(valuesOf(blockNames$outer))
+            innerValues <- valuesOf(blockNames$inner)
+            rowNo <- 0
+            for (facetValue in facetValues) {
+                inFacet <- if (is.null(facetValue)) TRUE else plotData[[facetName]] %in% facetValue
+                # Only facets with data (as facet_wrap)
+                if (!any(inFacet))
+                    next
+                for (outerValue in outerValues) {
+                    inBlock <- inFacet & (if (is.null(outerValue)) TRUE else plotData[[blockNames$outer]] %in% outerValue)
+                    counts <- vapply(innerValues, function(value) sum(plotData$.COUNTS[inBlock & plotData[[blockNames$inner]] %in% value]), numeric(1))
+                    total <- sum(counts)
+                    # A group/category without data in this facet has no bars: skip it
+                    if (!is.null(outerValue) && total == 0)
+                        next
+                    blockValues <- list(
+                        facet = if (is.null(facetValue)) "" else labelOf(facetValue),
+                        outer = if (is.null(outerValue)) "" else labelOf(outerValue))
+                    cumCounts <- cumsum(counts)
+                    for (i in seq_along(innerValues)) {
+                        rowNo <- rowNo + 1
+                        table$addRow(rowKey = rowNo, values = c(blockValues, list(
+                            inner = labelOf(innerValues[[i]]), counts = counts[[i]],
+                            percent = counts[[i]] / total, cumPercent = cumCounts[[i]] / total)))
+                        # Space above each new block (jamovi only renders BEGIN_GROUP, as a top padding)
+                        if (i == 1 && rowNo > 1)
+                            for (col in c('facet', 'outer', 'inner', 'counts', 'percent', 'cumPercent'))
+                                table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
+                    }
+                    rowNo <- rowNo + 1
+                    table$addRow(rowKey = rowNo, values = c(blockValues, list(
+                        inner = .("Total"), counts = total, percent = 1, cumPercent = "")))
+                    for (col in c('inner', 'counts', 'percent', 'cumPercent'))
+                        table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
+                }
+            }
+            # Observations left out because of missing values (ignoreNA checked), overall
+            if (nMissing > 0)
+                table$setNote('missing', jmvcore::format(.('Missing values: {n}'), n = format(nMissing)))
         },
 
         .plot = function(image, ggtheme, theme, ...) {
@@ -133,11 +224,15 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             yaxis <- self$options$yaxis
 
-            if (self$options$order != "none") {
-                if (self$options$order == "decreasing")
-                    plotData[[categoryVar]] <- forcats::fct_infreq(plotData[[categoryVar]], w = plotData$.COUNTS)
-                else
-                    plotData[[categoryVar]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryVar]], w = plotData$.COUNTS))
+            # ggstats::StatProp drops the rows whose fill/by is NA (stats::aggregate), unlike stat = "count":
+            # make NA an explicit level (still drawn with the scale's na.value) to keep the NA bars.
+            # Done after ordering, so that NA stays last, and only if NA is present (an empty NA level
+            # would otherwise be shown, as scales use drop = FALSE).
+            if (yaxis == "percent") {
+                for (varName in c(self$options$rows, self$options$columns)) {
+                    if (anyNA(plotData[[varName]]))
+                        plotData[[varName]] <- forcats::fct_na_value_to_level(plotData[[varName]])
+                }
             }
 
             reverseStack <- (self$options$reverseStack && positionStack)

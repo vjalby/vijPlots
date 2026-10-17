@@ -9,11 +9,15 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             aVar = NULL,
             facet = NULL,
             counts = NULL,
+            ignoreNA = TRUE,
             donut = FALSE,
             clockwise = FALSE,
+            order = "none",
+            frequencyTable = FALSE,
             labels = "none",
             labType = "text",
             overlap = FALSE,
+            hideLabelsBelow = FALSE,
             labOffset = 0,
             labSize = 12,
             colorPalette = "jmv",
@@ -70,6 +74,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "continuous"),
                 permitted=list(
                     "numeric"))
+            private$..ignoreNA <- jmvcore::OptionBool$new(
+                "ignoreNA",
+                ignoreNA,
+                default=TRUE)
             private$..donut <- jmvcore::OptionBool$new(
                 "donut",
                 donut,
@@ -77,6 +85,18 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..clockwise <- jmvcore::OptionBool$new(
                 "clockwise",
                 clockwise,
+                default=FALSE)
+            private$..order <- jmvcore::OptionList$new(
+                "order",
+                order,
+                options=list(
+                    "decreasing",
+                    "increasing",
+                    "none"),
+                default="none")
+            private$..frequencyTable <- jmvcore::OptionBool$new(
+                "frequencyTable",
+                frequencyTable,
                 default=FALSE)
             private$..labels <- jmvcore::OptionList$new(
                 "labels",
@@ -99,6 +119,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..overlap <- jmvcore::OptionBool$new(
                 "overlap",
                 overlap,
+                default=FALSE)
+            private$..hideLabelsBelow <- jmvcore::OptionBool$new(
+                "hideLabelsBelow",
+                hideLabelsBelow,
                 default=FALSE)
             private$..labOffset <- jmvcore::OptionNumber$new(
                 "labOffset",
@@ -379,11 +403,15 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..aVar)
             self$.addOption(private$..facet)
             self$.addOption(private$..counts)
+            self$.addOption(private$..ignoreNA)
             self$.addOption(private$..donut)
             self$.addOption(private$..clockwise)
+            self$.addOption(private$..order)
+            self$.addOption(private$..frequencyTable)
             self$.addOption(private$..labels)
             self$.addOption(private$..labType)
             self$.addOption(private$..overlap)
+            self$.addOption(private$..hideLabelsBelow)
             self$.addOption(private$..labOffset)
             self$.addOption(private$..labSize)
             self$.addOption(private$..colorPalette)
@@ -416,11 +444,15 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         aVar = function() private$..aVar$value,
         facet = function() private$..facet$value,
         counts = function() private$..counts$value,
+        ignoreNA = function() private$..ignoreNA$value,
         donut = function() private$..donut$value,
         clockwise = function() private$..clockwise$value,
+        order = function() private$..order$value,
+        frequencyTable = function() private$..frequencyTable$value,
         labels = function() private$..labels$value,
         labType = function() private$..labType$value,
         overlap = function() private$..overlap$value,
+        hideLabelsBelow = function() private$..hideLabelsBelow$value,
         labOffset = function() private$..labOffset$value,
         labSize = function() private$..labSize$value,
         colorPalette = function() private$..colorPalette$value,
@@ -452,11 +484,15 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..aVar = NA,
         ..facet = NA,
         ..counts = NA,
+        ..ignoreNA = NA,
         ..donut = NA,
         ..clockwise = NA,
+        ..order = NA,
+        ..frequencyTable = NA,
         ..labels = NA,
         ..labType = NA,
         ..overlap = NA,
+        ..hideLabelsBelow = NA,
         ..labOffset = NA,
         ..labSize = NA,
         ..colorPalette = NA,
@@ -490,6 +526,7 @@ piechartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "piechartResults",
     inherit = jmvcore::Group,
     active = list(
+        frequencies = function() private$.items[["frequencies"]],
         plot = function() private$.items[["plot"]]),
     private = list(),
     public=list(
@@ -498,6 +535,37 @@ piechartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Pie Chart")
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="frequencies",
+                title="Frequency Table",
+                visible="(frequencyTable)",
+                rows=0,
+                columns=list(
+                    list(
+                        `name`="category", 
+                        `title`="", 
+                        `type`="text"),
+                    list(
+                        `name`="counts", 
+                        `title`="Counts", 
+                        `type`="integer"),
+                    list(
+                        `name`="percent", 
+                        `title`="%", 
+                        `type`="number", 
+                        `format`="pc"),
+                    list(
+                        `name`="cumPercent", 
+                        `title`="Cumulative %", 
+                        `type`="number", 
+                        `format`="pc")),
+                clearWith=list(
+                    "aVar",
+                    "facet",
+                    "counts",
+                    "ignoreNA",
+                    "order")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -534,11 +602,15 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param aVar .
 #' @param facet .
 #' @param counts .
+#' @param ignoreNA .
 #' @param donut .
 #' @param clockwise .
+#' @param order .
+#' @param frequencyTable .
 #' @param labels .
 #' @param labType .
 #' @param overlap .
+#' @param hideLabelsBelow .
 #' @param labOffset .
 #' @param labSize .
 #' @param colorPalette .
@@ -568,8 +640,15 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param legendPosition .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$frequencies} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$frequencies$asDF}
+#'
+#' \code{as.data.frame(results$frequencies)}
 #'
 #' @export
 piechart <- function(
@@ -577,11 +656,15 @@ piechart <- function(
     aVar,
     facet,
     counts,
+    ignoreNA = TRUE,
     donut = FALSE,
     clockwise = FALSE,
+    order = "none",
+    frequencyTable = FALSE,
     labels = "none",
     labType = "text",
     overlap = FALSE,
+    hideLabelsBelow = FALSE,
     labOffset = 0,
     labSize = 12,
     colorPalette = "jmv",
@@ -630,11 +713,15 @@ piechart <- function(
         aVar = aVar,
         facet = facet,
         counts = counts,
+        ignoreNA = ignoreNA,
         donut = donut,
         clockwise = clockwise,
+        order = order,
+        frequencyTable = frequencyTable,
         labels = labels,
         labType = labType,
         overlap = overlap,
+        hideLabelsBelow = hideLabelsBelow,
         labOffset = labOffset,
         labSize = labSize,
         colorPalette = colorPalette,

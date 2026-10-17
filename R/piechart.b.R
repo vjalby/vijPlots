@@ -51,6 +51,13 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 image$setSize2(width, height, fixed_width, fixed_height)
             }
+            # Frequency table columns
+            table <- self$results$frequencies
+            if (!is.null(self$options$aVar))
+                table$getColumn('category')$setTitle(self$options$aVar)
+            if (!is.null(self$options$facet))
+                table$addColumn(name = 'facet', title = self$options$facet, type = 'text',
+                                combineBelow = TRUE, index = 1)
         },
         .run = function() {
             if (is.null(self$options$aVar) || nrow(self$data) == 0) {
@@ -80,11 +87,20 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
             }
 
-            plotData <- jmvcore::naOmit(plotData)
+            # Excluded observations (weighted; rows without a weight can't be counted), for the table note
+            nMissing <- 0
+            if (self$options$ignoreNA) {
+                isIncomplete <- !stats::complete.cases(plotData) & !is.na(plotData$.COUNTS)
+                nMissing <- sum(plotData$.COUNTS[isIncomplete])
+                plotData <- jmvcore::naOmit(plotData)
+            }
             if (nrow(plotData) == 0)
                 return(FALSE)
 
-            # Validate .COUNTS (non negative / not infinite / not all zero)
+            # Validate .COUNTS (NA / non negative / not infinite / not all zero)
+            if (any(is.na(plotData$.COUNTS)))  {
+                vijErrorMessage(self, .('Counts may not contain missing values.'))
+            }
             if (any(plotData$.COUNTS < 0)) {
                 vijErrorMessage(self, .('Counts may not be negative.'))
             }
@@ -99,14 +115,82 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # so store one row per bar/slice rather than one row per case
             plotData <- dplyr::count(plotData, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
 
+            # Sort the categories by overall count (slices, legend and frequency table)
+            aVarName <- self$options$aVar
+            if (self$options$order == "decreasing")
+                plotData[[aVarName]] <- forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS)
+            else if (self$options$order == "increasing")
+                plotData[[aVarName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS))
+
+            if (self$options$frequencyTable)
+                private$.fillFrequencyTable(plotData, nMissing)
+
             image <- self$results$plot
             image$setState(plotData)
+        },
+        .fillFrequencyTable = function(plotData, nMissing) {
+            table <- self$results$frequencies
+            aVarName <- self$options$aVar
+            facetName <- self$options$facet
+            # Values of a variable in the plot's order: all levels, then NA last when missing
+            # values are kept (ignoreNA unchecked). %in% rather than == to match NA.
+            valuesOf <- function(name) {
+                values <- levels(plotData[[name]])
+                if (anyNA(plotData[[name]]))
+                    values <- c(values, NA)
+                values
+            }
+            labelOf <- function(value) if (is.na(value)) "NA" else value
+            # All categories are listed (as in the legend), only non-empty facets (as in the plot)
+            categories <- valuesOf(aVarName)
+            if (is.null(facetName)) {
+                facetLevels <- list(NULL)
+            } else {
+                facetLevels <- Filter(function(value) any(plotData[[facetName]] %in% value), as.list(valuesOf(facetName)))
+            }
+            rowNo <- 0
+            for (facetLevel in facetLevels) {
+                if (is.null(facetLevel)) {
+                    inFacet <- rep(TRUE, nrow(plotData))
+                    facetValue <- NULL
+                } else {
+                    inFacet <- plotData[[facetName]] %in% facetLevel
+                    facetValue <- list(facet = labelOf(facetLevel))
+                }
+                counts <- vapply(categories, function(cat) sum(plotData$.COUNTS[inFacet & plotData[[aVarName]] %in% cat]), numeric(1))
+                total <- sum(counts)
+                cumCounts <- cumsum(counts)
+                for (i in seq_along(categories)) {
+                    rowNo <- rowNo + 1
+                    table$addRow(rowKey = rowNo, values = c(facetValue, list(
+                        category = labelOf(categories[[i]]), counts = counts[[i]], percent = counts[[i]] / total,
+                        cumPercent = cumCounts[[i]] / total)))
+                    # Space above each new facet (jamovi only renders BEGIN_GROUP, as a top padding)
+                    if (i == 1 && rowNo > 1)
+                        for (col in c('facet', 'category', 'counts', 'percent', 'cumPercent'))
+                            table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
+                }
+                rowNo <- rowNo + 1
+                table$addRow(rowKey = rowNo, values = c(facetValue, list(
+                    category = .("Total"), counts = total, percent = 1, cumPercent = "")))
+                for (col in c('category', 'counts', 'percent', 'cumPercent'))
+                    table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
+            }
+            # Observations left out because of missing values (ignoreNA checked), overall
+            if (nMissing > 0)
+                table$setNote('missing', jmvcore::format(.('Missing values: {n}'), n = format(nMissing)))
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
 
             plotData <- image$state
+
+            # ggstats::StatProp (percent labels) drops the rows whose fill is NA (stats::aggregate):
+            # make NA an explicit level (still drawn with the scale's na.value) to keep the NA slice
+            # in the percentages. Only if NA is present (an empty NA level would show in the legend).
+            if (self$options$labels %in% c("percent", "group+percent") && anyNA(plotData[[self$options$aVar]]))
+                plotData[[self$options$aVar]] <- forcats::fct_na_value_to_level(plotData[[self$options$aVar]])
 
             #### Set variables ####
             aVar <- rlang::sym(self$options$aVar)
@@ -160,13 +244,16 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     geomLab <- baseGeomLab
                 }
 
-                # label format
+                # label format (percentages of small slices are hidden: NA labels are dropped by na.rm)
+                hideBelow <- if (self$options$hideLabelsBelow) 0.05 else 0
                 labelExpr <- rlang::expr(switch(self$options$labels,
                                    "count" = ggplot2::after_stat(count),
-                                   "percent" = doPercent(ggplot2::after_stat(prop)),
+                                   "percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, NA_character_,
+                                                      doPercent(ggplot2::after_stat(prop))),
                                    "group" = .data$fill,
                                    "group+count" = paste0(.data$fill, "\n", ggplot2::after_stat(count)),
-                                   "group+percent" = paste0(.data$fill, "\n", doPercent(ggplot2::after_stat(prop)))))
+                                   "group+percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, as.character(.data$fill),
+                                                            paste0(.data$fill, "\n", doPercent(ggplot2::after_stat(prop))))))
 
                 # Label stat and position
                 statLab <- switch(self$options$labels, "percent" = ggstats::StatProp,
@@ -188,7 +275,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                        position = ggplot2::position_fill(vjust = 0.5),
                                        fontface = "bold",
                                        size = self$options$labSize / ggplot2::.pt,
-                                       show.legend = FALSE)
+                                       show.legend = FALSE, na.rm = TRUE)
             }
 
             #### Facet ####

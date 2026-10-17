@@ -1237,6 +1237,9 @@
             "Minimum of {var}": [
                 "Minimum de {var}"
             ],
+            "Missing values: {n}": [
+                "Valeurs manquantes : {n}"
+            ],
             "Mosaic Plot": [
                 "Diagramme en mosaïque"
             ],

@@ -399,3 +399,30 @@ test_that("mosaic: a variable named like the internal counts column is rejected"
         "reserved name"
     )
 })
+
+test_that("mosaic: invalid weights are rejected even on a row with a missing value", {
+    weightData <- data.frame(cat = factor(c("a", "b", NA)), grp = factor(c("g1", "g2", "g1")),
+                             w = c(2, 3, NA))
+    expect_error(
+        vijPlots::mosaic(data = weightData, category = "cat", group = "grp", facet = NULL,
+                         counts = "w", ignoreNA = TRUE),
+        "Counts may not contain missing values."
+    )
+    weightData$w[3] <- -1
+    expect_error(
+        vijPlots::mosaic(data = weightData, category = "cat", group = "grp", facet = NULL,
+                         counts = "w", ignoreNA = TRUE),
+        "Counts may not be negative."
+    )
+})
+
+test_that("mosaic: zero weights are treated as no data", {
+    zeroData <- data.frame(cat = factor(c("a", "a", "b", "b", "a")), grp = factor(c("g1", "g2", "g1", "g2", "g1")),
+                           fac = factor(c("x", "x", "x", "x", "y")), w = c(3, 4, 0, 0, 0))
+    r <- vijPlots::mosaic(data = zeroData, category = "cat", group = "grp", facet = "fac", counts = "w")
+    state <- r$plot$state
+    # no NaN width/height: category "b" and facet "y" (all zero weights) are left out, as without data
+    expect_false(anyNA(state$.XWIDTH) || anyNA(state$.PERCENTAGE))
+    expect_equal(unique(as.character(state$fac)), "x")
+    expect_equal(unique(as.character(state$cat)), "a")
+})

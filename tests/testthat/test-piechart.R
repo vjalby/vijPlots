@@ -261,7 +261,7 @@ test_that("piechart: frequency table", {
     df <- r$frequencies$asDF
     # no missing value: no note
     expect_null(r$frequencies$notes$missing)
-    expect_equal(df$category, c("Adelie", "Chinstrap", "Gentoo", "Total"))
+    expect_equal(df$inner, c("Adelie", "Chinstrap", "Gentoo", "Total"))
     expect_equal(df$counts, c(152, 68, 124, 344))
     expect_equal(df$percent, c(152, 68, 124, 344) / 344)
     expect_equal(df$cumPercent, c(c(152, 220, 344) / 344, NA))
@@ -276,7 +276,7 @@ test_that("piechart: frequency table with facet and counts", {
     facetData <- data.frame(
         cat = factor(c("a", "b", "a", "c", "b", NA, NA, NA, NA)),
         fac = factor(c("x", "x", "y", "y", "y", "y", "y", NA, "x"), levels = c("x", "y", "z")),
-        w = c(2, 3, 1, 4, 5, 6, 7, 8, NA)
+        w = c(2, 3, 1, 4, 5, 6, 7, 8, 9)
     )
     r <- vijPlots::piechart(
         data = facetData,
@@ -288,13 +288,13 @@ test_that("piechart: frequency table with facet and counts", {
     df <- r$frequencies$asDF
     # all categories in each facet, empty facet "z" skipped, percentages within facet
     expect_equal(df$facet, rep(c("x", "y"), each = 4))
-    expect_equal(df$category, rep(c("a", "b", "c", "Total"), 2))
+    expect_equal(df$inner, rep(c("a", "b", "c", "Total"), 2))
     expect_equal(df$counts, c(2, 3, 0, 5, 1, 5, 4, 10))
     expect_equal(df$percent, c(c(2, 3, 0, 5) / 5, c(1, 5, 4, 10) / 10))
     # cumulative % restarts in each facet
     expect_equal(df$cumPercent, c(c(2, 5, 5) / 5, NA, c(1, 6, 10) / 10, NA))
-    # excluded observations, weighted and overall (6 + 7 + 8; the row without weight isn't counted)
-    expect_equal(r$frequencies$notes$missing$note, "Missing values: 21")
+    # excluded observations, weighted and overall (6 + 7 + 8 + 9)
+    expect_equal(r$frequencies$notes$missing$note, "Missing values: 30")
 })
 
 test_that("piechart: percent labels below 5% are hidden", {
@@ -347,7 +347,7 @@ test_that("piechart: categories sorted by count", {
             order = order,
             frequencyTable = TRUE
         )
-        list(state = levels(r$plot$state$cat), table = head(r$frequencies$asDF$category, -1))
+        list(state = levels(r$plot$state$cat), table = head(r$frequencies$asDF$inner, -1))
     }
     expect_equal(sortedLevels("none")$state, c("a", "b", "c", "d"))
     # sorted levels drive both the plot and the frequency table
@@ -383,14 +383,14 @@ test_that("piechart: missing values kept (ignoreNA = FALSE)", {
     df <- r$frequencies$asDF
     # NA is a category and a facet of its own, last, and counts in the percentages
     expect_equal(unique(df$facet), c("Biscoe", "Dream", "Torgersen", "NA"))
-    expect_equal(df$category[df$facet == "NA"], c("female", "male", "NA", "Total"))
+    expect_equal(df$inner[df$facet == "NA"], c("female", "male", "NA", "Total"))
     expect_equal(df$counts[df$facet == "NA"], c(2, 1, 1, 4))
     expect_equal(df$percent[df$facet == "Torgersen"], c(22, 22, 4, 48) / 48)
 
     # default: missing values are left out
     r <- vijPlots::piechart(data = naData, aVar = "sex", facet = "isl", counts = NULL, frequencyTable = TRUE)
     df <- r$frequencies$asDF
-    expect_false("NA" %in% c(df$facet, df$category))
+    expect_false("NA" %in% c(df$facet, df$inner))
 })
 
 test_that("piechart: percent labels keep the NA slice (ignoreNA = FALSE)", {
@@ -410,4 +410,35 @@ test_that("piechart: percent labels keep the NA slice (ignoreNA = FALSE)", {
     labels <- gsub(" ", " ", ggplot2::layer_data(ggplot2::last_plot(), 2)$label)
     expect_equal(labels, c("48.0 %", "48.8 %", "3.2 %"))
     expect_plot_snapshot("piechart-ignorena-false-percent", r$plot)
+})
+
+test_that("piechart: invalid weights are rejected even on a row with a missing value", {
+    weightData <- data.frame(cat = factor(c("a", "b", NA)), w = c(2, 3, NA))
+    # a missing weight is invalid data, even with ignoreNA checked
+    expect_error(
+        vijPlots::piechart(data = weightData, aVar = "cat", facet = NULL, counts = "w", ignoreNA = TRUE),
+        "Counts may not contain missing values."
+    )
+    # a negative weight on a row left out for its missing category
+    weightData$w[3] <- -1
+    expect_error(
+        vijPlots::piechart(data = weightData, aVar = "cat", facet = NULL, counts = "w", ignoreNA = TRUE),
+        "Counts may not be negative."
+    )
+})
+
+test_that("piechart: a facet whose weights are all zero is treated as a facet without data", {
+    zeroData <- data.frame(cat = factor(c("a", "b", "a")), fac = factor(c("x", "x", "y")), w = c(0, 0, 10))
+    r <- vijPlots::piechart(data = zeroData, aVar = "cat", facet = "fac", counts = "w", frequencyTable = TRUE)
+    # no zero-weight row in the state: facet "x" has no slice
+    expect_false(any(r$plot$state$.COUNTS == 0))
+    df <- r$frequencies$asDF
+    expect_equal(df$facet, rep("y", 3))
+    expect_equal(df$counts, c(10, 0, 10))
+    expect_equal(df$percent, c(1, 0, 1))
+    # and no panel for facet "x"
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    expect_equal(nlevels(ggplot2::layer_data(ggplot2::last_plot(), 1)$PANEL), 1)
 })

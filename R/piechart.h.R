@@ -543,7 +543,13 @@ piechartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=0,
                 columns=list(
                     list(
-                        `name`="category", 
+                        `name`="facet", 
+                        `title`="", 
+                        `type`="text", 
+                        `combineBelow`=TRUE, 
+                        `visible`="(facet)"),
+                    list(
+                        `name`="inner", 
                         `title`="", 
                         `type`="text"),
                     list(

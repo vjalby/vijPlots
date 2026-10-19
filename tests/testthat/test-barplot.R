@@ -324,12 +324,14 @@ test_that("barplot: frequency table, percentages within groups", {
         counts = NULL,
         frequencyTable = TRUE
     )
-    expect_false(r$frequencies$getColumn("cumPercent")$visible)
+    expect_true(r$frequencies$getColumn("cumPercent")$visible)
     df <- r$frequencies$asDF
     expect_equal(df$outer, rep(c("female", "male"), each = 4))
     expect_equal(df$inner, rep(c("Adelie", "Chinstrap", "Gentoo", "Total"), 2))
     expect_equal(df$counts, c(73, 34, 58, 165, 73, 34, 61, 168))
     expect_equal(df$percent, c(c(73, 34, 58, 165) / 165, c(73, 34, 61, 168) / 168))
+    # cumulative % restarts in each group, blank on the Total rows
+    expect_equal(df$cumPercent, c(c(73, 107, 165) / 165, NA, c(73, 107, 168) / 168, NA))
 })
 
 test_that("barplot: frequency table matches the plot", {
@@ -359,6 +361,8 @@ test_that("barplot: frequency table matches the plot", {
     # every block (facet x category) sums to 100 %, an empty category in a facet is skipped
     expect_false(any(df$facet == "Biscoe" & df$outer == "Chinstrap"))
     expect_true(all(abs(tapply(df$percent, paste(df$facet, df$outer), sum) - 1) < 1e-9))
+    # cumulative % reaches 100 % at the end of every block
+    expect_true(all(abs(tapply(df$cumPercent, paste(df$facet, df$outer), max) - 1) < 1e-9))
     # the plot's bars, compared with the table's non-zero rows
     expect_equal(sort(res$bars$prop), sort(df$percent[df$counts > 0]))
     expect_equal(sort(res$bars$count), sort(df$counts[df$counts > 0]))
@@ -411,4 +415,43 @@ test_that("barplot: frequency table note on excluded missing values", {
         frequencyTable = TRUE
     )
     expect_null(r$frequencies$notes$missing)
+})
+
+test_that("barplot: invalid weights are rejected even on a row with a missing value", {
+    weightData <- data.frame(cat = factor(c("a", "b", NA)), w = c(2, 3, NA))
+    # a missing weight is invalid data, even with ignoreNA checked
+    expect_error(
+        vijPlots::barplot(data = weightData, rows = "cat", columns = NULL, facet = NULL, counts = "w", ignoreNA = TRUE),
+        "Counts may not contain missing values."
+    )
+    # a negative weight on a row left out for its missing category
+    weightData$w[3] <- -1
+    expect_error(
+        vijPlots::barplot(data = weightData, rows = "cat", columns = NULL, facet = NULL, counts = "w", ignoreNA = TRUE),
+        "Counts may not be negative."
+    )
+})
+
+test_that("barplot: zero weights are treated as no data", {
+    zeroData <- data.frame(
+        cat = factor(c("a", "b", "a", "a", "b")),
+        grp = factor(c("g1", "g1", "g2", "g1", "g2")),
+        fac = factor(c("x", "x", "x", "y", "y")),
+        w = c(0, 0, 5, 10, 0)
+    )
+    # a facet whose weights are all zero: no panel, no table block
+    r <- vijPlots::barplot(data = zeroData, rows = "cat", columns = NULL, facet = "fac", counts = "w",
+                           frequencyTable = TRUE)
+    expect_false(any(r$plot$state$.COUNTS == 0))
+    df <- r$frequencies$asDF
+    expect_equal(unique(df$facet), c("x", "y"))
+    expect_equal(df$counts, c(5, 0, 5, 10, 0, 10))
+    expect_false(any(is.nan(df$percent)))
+    # a group whose weights are all zero in a facet: skipped like a group without data
+    r <- vijPlots::barplot(data = zeroData, rows = "cat", columns = "grp", facet = "fac", counts = "w",
+                           frequencyTable = TRUE)
+    df <- r$frequencies$asDF
+    # facet x: only g2 (g1 has zero weights); facet y: only g1
+    expect_equal(unique(paste(df$facet, df$outer)), c("x g2", "y g1"))
+    expect_false(any(is.nan(df$percent)))
 })

@@ -1,25 +1,10 @@
 mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "mosaicClass",
     inherit = mosaicBase,
-    #### Active bindings ---- from jmv/conttables.b.R
-    active = list(
-        countsName = function() {
-            if ( ! is.null(self$options$counts)) {
-                return(self$options$counts)
-            } else if ( ! is.null(attr(self$data, "jmv-weights-name"))) {
-                return (attr(self$data, "jmv-weights-name"))
-            }
-            NULL
-        }
-    ),
     private = list(
         .init = function() {
             # Weight message
-            countsName <- self$countsName
-            if (!is.null(countsName)) {
-                warningMessage <- ..('The data is weighted by the variable {}.', countsName)
-                vijWarningMessage(self, warningMessage, '.weights')
-            }
+            vijWeightsMessage(self, self$options$counts)
             # Stretchable dimensions
             if (!is.null(self$options$facet)) {
                 nbOfFacet <- nlevels(self$data[[self$options$facet]])
@@ -73,7 +58,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(reservedVar) > 0)
                 vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
 
-            plotData <- jmvcore::select(self$data, c(categoryName, groupName, facetName))
+            weighted <- vijWeightedData(self, c(categoryName, groupName, facetName), countsName = self$options$counts,
+                                        ignoreNA = self$options$ignoreNA)
+            if (is.null(weighted))
+                return(FALSE)
+            plotData <- weighted$data
 
             # Drop ordered-ness (level order is preserved): nothing downstream relies on
             # it, and chisq.test()$residuals loses it when converted back to a data frame,
@@ -81,39 +70,6 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # type mismatch if category or group is an ordinal variable
             plotData[[categoryName]] <- factor(plotData[[categoryName]], levels = levels(plotData[[categoryName]]), ordered = FALSE)
             plotData[[groupName]] <- factor(plotData[[groupName]], levels = levels(plotData[[groupName]]), ordered = FALSE)
-
-            # Weight data
-            countsName <- self$options$counts
-            if (!is.null(countsName)) {
-                # vijPlots/Mosaic weights
-                plotData[['.COUNTS']] <- jmvcore::toNumeric(self$data[[countsName]])
-            } else if (!is.null(attr(self$data, "jmv-weights"))) {
-                # jamovi built-in weights
-                plotData[['.COUNTS']] <- jmvcore::toNumeric(attr(self$data, "jmv-weights"))
-            } else {
-                # no weights
-                plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
-            }
-
-            # Remove NA (including weights !)
-            if (self$options$ignoreNA)
-                plotData <- jmvcore::naOmit(plotData)
-            if (nrow(plotData) == 0)
-                return(FALSE)
-
-            # Validate .COUNTS (NA / non negative / not infinite / not all zero)
-            if (any(is.na(plotData$.COUNTS)))  {
-                vijErrorMessage(self, .('Counts may not contain missing values.'))
-            }
-            if (any(plotData$.COUNTS < 0)) {
-                vijErrorMessage(self, .('Counts may not be negative.'))
-            }
-            if (any(is.infinite(plotData$.COUNTS))) {
-                vijErrorMessage(self, .('Counts may not be infinite.'))
-            }
-            if (sum(plotData$.COUNTS) == 0) {
-                vijErrorMessage(self, .('Counts may not all be zero.'))
-            }
 
             mdf <- private$.mosaicData(plotData, categoryName, groupName, facetName, self$options$order, self$options$reverseStack)
 

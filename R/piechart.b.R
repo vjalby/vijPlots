@@ -1,25 +1,10 @@
 piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "piechartClass",
     inherit = piechartBase,
-    #### Active bindings ---- from jmv/conttables.b.R
-    active = list(
-        countsName = function() {
-            if ( ! is.null(self$options$counts)) {
-                return(self$options$counts)
-            } else if ( ! is.null(attr(self$data, "jmv-weights-name"))) {
-                return (attr(self$data, "jmv-weights-name"))
-            }
-            NULL
-        }
-    ),
     private = list(
         .init = function() {
             # Weight message
-            countsName <- self$countsName
-            if (!is.null(countsName)) {
-                warningMessage <- ..('The data is weighted by the variable {}.', countsName)
-                vijWarningMessage(self, warningMessage, '.weights')
-            }
+            vijWeightsMessage(self, self$options$counts)
             # Stretchable dimensions
             if (!is.null(self$options$facet)) {
                 nbOfFacet <- nlevels(self$data[[self$options$facet]])
@@ -54,10 +39,9 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Frequency table columns
             table <- self$results$frequencies
             if (!is.null(self$options$aVar))
-                table$getColumn('category')$setTitle(self$options$aVar)
+                table$getColumn('inner')$setTitle(self$options$aVar)
             if (!is.null(self$options$facet))
-                table$addColumn(name = 'facet', title = self$options$facet, type = 'text',
-                                combineBelow = TRUE, index = 1)
+                table$getColumn('facet')$setTitle(self$options$facet)
         },
         .run = function() {
             if (is.null(self$options$aVar) || nrow(self$data) == 0) {
@@ -72,48 +56,14 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (length(reservedVar) > 0)
                 vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
 
-            plotData <- jmvcore::select(self$data, varNames)
-
-            # Weight data
-            countsName <- self$options$counts
-            if (!is.null(countsName)) {
-                # vijPlots weights
-                plotData[['.COUNTS']] <- jmvcore::toNumeric(self$data[[countsName]])
-            } else if (!is.null(attr(self$data, "jmv-weights"))) {
-                # jamovi built-in weights
-                plotData[['.COUNTS']] <- jmvcore::toNumeric(attr(self$data, "jmv-weights"))
-            } else {
-                # no weights
-                plotData[['.COUNTS']] <- as.integer(rep(1, nrow(plotData)))
-            }
-
-            # Excluded observations (weighted; rows without a weight can't be counted), for the table note
-            nMissing <- 0
-            if (self$options$ignoreNA) {
-                isIncomplete <- !stats::complete.cases(plotData) & !is.na(plotData$.COUNTS)
-                nMissing <- sum(plotData$.COUNTS[isIncomplete])
-                plotData <- jmvcore::naOmit(plotData)
-            }
-            if (nrow(plotData) == 0)
+            weighted <- vijWeightedData(self, varNames, countsName = self$options$counts,
+                                        ignoreNA = self$options$ignoreNA)
+            if (is.null(weighted))
                 return(FALSE)
-
-            # Validate .COUNTS (NA / non negative / not infinite / not all zero)
-            if (any(is.na(plotData$.COUNTS)))  {
-                vijErrorMessage(self, .('Counts may not contain missing values.'))
-            }
-            if (any(plotData$.COUNTS < 0)) {
-                vijErrorMessage(self, .('Counts may not be negative.'))
-            }
-            if (any(is.infinite(plotData$.COUNTS))) {
-                vijErrorMessage(self, .('Counts may not be infinite.'))
-            }
-            if (sum(plotData$.COUNTS) == 0) {
-                vijErrorMessage(self, .('Counts may not all be zero.'))
-            }
 
             # Sum the counts per combination of variables: the state is saved into the .omv,
             # so store one row per bar/slice rather than one row per case
-            plotData <- dplyr::count(plotData, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
+            plotData <- dplyr::count(weighted$data, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
 
             # Sort the categories by overall count (slices, legend and frequency table)
             aVarName <- self$options$aVar
@@ -123,62 +73,11 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData[[aVarName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS))
 
             if (self$options$frequencyTable)
-                private$.fillFrequencyTable(plotData, nMissing)
+                vijFrequencyTable(self, plotData, inner = aVarName,
+                                  facet = self$options$facet, nMissing = weighted$nMissing)
 
             image <- self$results$plot
             image$setState(plotData)
-        },
-        .fillFrequencyTable = function(plotData, nMissing) {
-            table <- self$results$frequencies
-            aVarName <- self$options$aVar
-            facetName <- self$options$facet
-            # Values of a variable in the plot's order: all levels, then NA last when missing
-            # values are kept (ignoreNA unchecked). %in% rather than == to match NA.
-            valuesOf <- function(name) {
-                values <- levels(plotData[[name]])
-                if (anyNA(plotData[[name]]))
-                    values <- c(values, NA)
-                values
-            }
-            labelOf <- function(value) if (is.na(value)) "NA" else value
-            # All categories are listed (as in the legend), only non-empty facets (as in the plot)
-            categories <- valuesOf(aVarName)
-            if (is.null(facetName)) {
-                facetLevels <- list(NULL)
-            } else {
-                facetLevels <- Filter(function(value) any(plotData[[facetName]] %in% value), as.list(valuesOf(facetName)))
-            }
-            rowNo <- 0
-            for (facetLevel in facetLevels) {
-                if (is.null(facetLevel)) {
-                    inFacet <- rep(TRUE, nrow(plotData))
-                    facetValue <- NULL
-                } else {
-                    inFacet <- plotData[[facetName]] %in% facetLevel
-                    facetValue <- list(facet = labelOf(facetLevel))
-                }
-                counts <- vapply(categories, function(cat) sum(plotData$.COUNTS[inFacet & plotData[[aVarName]] %in% cat]), numeric(1))
-                total <- sum(counts)
-                cumCounts <- cumsum(counts)
-                for (i in seq_along(categories)) {
-                    rowNo <- rowNo + 1
-                    table$addRow(rowKey = rowNo, values = c(facetValue, list(
-                        category = labelOf(categories[[i]]), counts = counts[[i]], percent = counts[[i]] / total,
-                        cumPercent = cumCounts[[i]] / total)))
-                    # Space above each new facet (jamovi only renders BEGIN_GROUP, as a top padding)
-                    if (i == 1 && rowNo > 1)
-                        for (col in c('facet', 'category', 'counts', 'percent', 'cumPercent'))
-                            table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
-                }
-                rowNo <- rowNo + 1
-                table$addRow(rowKey = rowNo, values = c(facetValue, list(
-                    category = .("Total"), counts = total, percent = 1, cumPercent = "")))
-                for (col in c('category', 'counts', 'percent', 'cumPercent'))
-                    table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
-            }
-            # Observations left out because of missing values (ignoreNA checked), overall
-            if (nMissing > 0)
-                table$setNote('missing', jmvcore::format(.('Missing values: {n}'), n = format(nMissing)))
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))

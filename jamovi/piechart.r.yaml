@@ -10,7 +10,12 @@ items:
       visible: (frequencyTable)
       rows:  0
       columns:
-        - name: category
+        - name: facet
+          title: ""
+          type: text
+          combineBelow: true
+          visible: (facet)
+        - name: inner
           title: ""
           type: text
         - name: counts

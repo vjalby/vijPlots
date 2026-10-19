@@ -65,8 +65,13 @@ The module is available in the **Plots** tab.
 
 ![](img/areachart.jpg)
 
-## Last changes: vijPlots 1.3.4
+## Last changes: vijPlots 1.4.0
 
+* Bar Plot / Pie Chart: optional frequency table
+* Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values
+* Bar Plot: missing values are now kept in percent mode when "Ignore missing values" is unchecked
+* Bar Plot / Pie Chart / Mosaic Plot: missing, negative or infinite weights are now always rejected
+* Mosaic Plot: fixed the facet of missing values (when "Ignore missing values" is unchecked)
 * The fixed-length color palettes are now extended by interpolation
 * Code optimization
 

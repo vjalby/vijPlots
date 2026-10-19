@@ -102,6 +102,20 @@ exposes; `vijHelpMessage()`/`vijErrorMessage()`/`vijWarningMessage()`/`vijDebugM
 eager build to surface any ggplot2 warning/message as a Notice instead of letting jmvcore silently
 swallow it (see gotcha below).
 
+### Data helpers (`R/utilsData.R`)
+
+Data preparation/tabulation shared by several analyses (unlike `utils.R`, which is
+presentation-only and shared with vijMulti): `vijFrequencyTable(self, plotData, inner, outer,
+facet, nMissing)` fills the optional frequency table (`self$results$frequencies`) of
+`barplot`/`piechart` from the aggregated plot data. It takes `self` because jmvcore's `.()`
+translation function looks `self` up in its caller. `vijWeightedData(self, varNames, countsName, ignoreNA)` builds the
+weighted data of `barplot`/`piechart`/`mosaic` (`.COUNTS` from the `countsName` variable, else jamovi's
+weights, else 1; missing/negative/infinite weights rejected on every row, as in
+`jmv::conttables`; missing values left out when `ignoreNA`, counted in `nMissing`; zero-weight
+rows dropped) and returns `list(data, nMissing)`, or `NULL` when no row is left;
+`vijWeightsMessage(self, countsName)` shows the "data is weighted" notice from `.init()`. Options
+are passed explicitly (user's preference), `self` is only used for `self$data`, errors and `.()`.
+
 ### Non-obvious runtime gotchas
 
 - Keep validation and expensive/one-off computation (parameter estimation, model fitting, data
@@ -224,7 +238,12 @@ swallow it (see gotcha below).
 - `Table$setNote(key, NULL)` (or `""`) does **not** reliably clear a previously-shown note on the
   jamovi client (confirmed live on jamovi 28.2/jmvcore 2.7.38) unless the table's `rows:` in its
   `.r.yaml` is a non-zero value — a `rows: 0` (fully dynamic) table keeps showing a stale note from
-  the last successful run even though its rows/columns correctly reset to empty. This was root-caused
+  the last successful run even though its rows/columns correctly reset to empty.
+  **Update (2026-10-17): no longer reproduced on jamovi 28.13/jmvcore 28.3** — after a
+  `reject()`-interrupted run (weights with a negative value), `barplot`/`piechart`'s `rows: 0`
+  frequency table was emptied and its `'missing'` note cleared. The exact fixing version is
+  unknown. The `corresp` `rows: 1` + `deleteRows()` workaround is left as is (legacy analysis, see
+  Overview). This was root-caused
   and fixed for `corresp`'s `eigenvalues`/`chisq` note (`rows: 1` + an explicit `deleteRows()` before
   repopulating, to work around the phantom placeholder row `rows: 1` itself introduces — see
   `corresp.b.R`'s `.run()`). Note this is specifically a `reject()`-interrupted-run problem, not a

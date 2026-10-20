@@ -52,6 +52,18 @@ options:
       type: Bool
       default: true
 
+    - name: whiskers
+      title: Whiskers
+      type: List
+      options:
+        - title: "1.5 × IQR (Tukey)"
+          name:  tukey
+        - title: "3 × IQR"
+          name:  tukey3
+        - title: Min–max
+          name:  minmax
+      default: tukey
+
     - name: showMean
       title: Mean
       type: Bool

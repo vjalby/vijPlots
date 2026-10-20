@@ -71,7 +71,9 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Compute the outliers ####
-            if (!is.null(self$options$label)) {
+            # Not needed with min-max whiskers: no value is an outlier.
+            if (!is.null(self$options$label) && self$options$whiskers != "minmax") {
+                whiskerCoef <- private$.whiskerCoef()
                 labelVar <- rlang::sym(self$options$label)
                 groupVar <- vijVar(self$options$group)
                 facetVar <- vijVar(self$options$facet)
@@ -80,7 +82,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     aVar <- rlang::sym(varName)
                     data <- data |>
                         dplyr::group_by(!!groupVar, !!facetVar) |>
-                        dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!aVar), as.character(!!labelVar), NA)) |>
+                        dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!aVar, whiskerCoef), as.character(!!labelVar), NA)) |>
                         dplyr::ungroup()
                 }
             }
@@ -111,6 +113,11 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             notches <- self$options$notches
             notchWidth <- as.numeric(self$options$notchWidth)
+
+            #### Whiskers ####
+            # coef = Inf: whiskers reach the min and max, no value is an outlier.
+            whiskerCoef <- private$.whiskerCoef()
+            showOutliers <- self$options$showOutliers && self$options$whiskers != "minmax"
 
             #### Plot options ####
 
@@ -166,20 +173,20 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!is.null(fillMapping)) {
                     plot <- plot + ggplot2::geom_boxplot(
                         ggplot2::aes(y = !!yVar, x = !!xVar, fill = !!fillMapping),
-                        outliers = self$options$showOutliers, na.rm = TRUE,
+                        outliers = showOutliers, coef = whiskerCoef, na.rm = TRUE,
                         staplewidth = stapleWidth, notch = notches, notchwidth = notchWidth,
                         show.legend = multiGroup, key_glyph = ggplot2::draw_key_rect
                     )
                 } else {
                     plot <- plot + ggplot2::geom_boxplot(
                         ggplot2::aes(y = !!yVar, x = !!xVar), fill = fillStatic,
-                        outliers = self$options$showOutliers, na.rm = TRUE,
+                        outliers = showOutliers, coef = whiskerCoef, na.rm = TRUE,
                         staplewidth = stapleWidth, notch = notches, notchwidth = notchWidth
                     )
                 }
 
                 # Outliers
-                if (!is.null(labelVar) && self$options$showOutliers) {
+                if (!is.null(labelVar) && showOutliers) {
                     outlierVar <- rlang::sym(paste0(".outliers_", varName))
 
                     if (multiGroup) {
@@ -291,7 +298,13 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             return(plot)
         },
-        .isOutlier = function(x) {
+        .whiskerCoef = function() {
+            switch(self$options$whiskers,
+                   tukey  = 1.5,
+                   tukey3 = 3,
+                   minmax = Inf)
+        },
+        .isOutlier = function(x, coef = 1.5) {
             # Be careful that ggplot2::geom_boxplot and graphics::boxplot use different hinges
             if (length(stats::na.omit(x)) == 0) {
                 return(rep(FALSE, length(x)))
@@ -299,7 +312,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 q1 <- stats::quantile(x, .25, na.rm = TRUE)
                 q3 <- stats::quantile(x, .75, na.rm = TRUE)
                 iqr <- q3-q1
-                return(x < q1 - 1.5*iqr | x > q3 + 1.5*iqr)
+                return(x < q1 - coef*iqr | x > q3 + coef*iqr)
             }
         }
     )

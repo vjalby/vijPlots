@@ -11,6 +11,7 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             label = NULL,
             facet = NULL,
             showOutliers = TRUE,
+            whiskers = "tukey",
             showMean = FALSE,
             staple = FALSE,
             notches = FALSE,
@@ -105,6 +106,14 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "showOutliers",
                 showOutliers,
                 default=TRUE)
+            private$..whiskers <- jmvcore::OptionList$new(
+                "whiskers",
+                whiskers,
+                options=list(
+                    "tukey",
+                    "tukey3",
+                    "minmax"),
+                default="tukey")
             private$..showMean <- jmvcore::OptionBool$new(
                 "showMean",
                 showMean,
@@ -513,6 +522,7 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..label)
             self$.addOption(private$..facet)
             self$.addOption(private$..showOutliers)
+            self$.addOption(private$..whiskers)
             self$.addOption(private$..showMean)
             self$.addOption(private$..staple)
             self$.addOption(private$..notches)
@@ -571,6 +581,7 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         label = function() private$..label$value,
         facet = function() private$..facet$value,
         showOutliers = function() private$..showOutliers$value,
+        whiskers = function() private$..whiskers$value,
         showMean = function() private$..showMean$value,
         staple = function() private$..staple$value,
         notches = function() private$..notches$value,
@@ -628,6 +639,7 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..label = NA,
         ..facet = NA,
         ..showOutliers = NA,
+        ..whiskers = NA,
         ..showMean = NA,
         ..staple = NA,
         ..notches = NA,
@@ -731,6 +743,7 @@ boxplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param label .
 #' @param facet .
 #' @param showOutliers .
+#' @param whiskers .
 #' @param showMean .
 #' @param staple .
 #' @param notches .
@@ -795,6 +808,7 @@ boxplot <- function(
     label,
     facet,
     showOutliers = TRUE,
+    whiskers = "tukey",
     showMean = FALSE,
     staple = FALSE,
     notches = FALSE,
@@ -871,6 +885,7 @@ boxplot <- function(
         label = label,
         facet = facet,
         showOutliers = showOutliers,
+        whiskers = whiskers,
         showMean = showMean,
         staple = staple,
         notches = notches,

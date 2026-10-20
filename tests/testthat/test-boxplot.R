@@ -135,6 +135,42 @@ test_that("boxplot: outliers hidden despite a label variable", {
     expect_plot_snapshot("boxplot-outliers-hidden", testPlot)
 })
 
+test_that("boxplot: 3 x IQR whiskers", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = "group2",
+        facet = NULL,
+        whiskers = "tukey3"
+    )$plot
+    expect_plot_snapshot("boxplot-whiskers-tukey3", testPlot)
+})
+
+test_that("boxplot: min-max whiskers", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = "group2",
+        facet = NULL,
+        whiskers = "minmax"
+    )$plot
+    expect_plot_snapshot("boxplot-whiskers-minmax", testPlot)
+})
+
+test_that("boxplot: no outlier columns with min-max whiskers", {
+    results <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = "group2",
+        facet = NULL,
+        whiskers = "minmax"
+    )
+    expect_false(any(startsWith(names(results$plot$state), ".outliers_")))
+})
+
 test_that("boxplot: missing group level kept (ignoreNA = FALSE)", {
     testPlot <- vijPlots::boxplot(
         data = testData,

@@ -58,6 +58,7 @@ children:
                 enable: (!(!group) || !(!facet))
               - type: CheckBox
                 name: showOutliers
+                enable: (!whiskers:minmax)
               - type: CheckBox
                 name: showMean
               - type: CheckBox
@@ -137,6 +138,8 @@ children:
               - type: Label
                 label: Box Elements
                 children:
+                  - type: ComboBox
+                    name: whiskers
                   - type: CheckBox
                     name: staple
                     children:

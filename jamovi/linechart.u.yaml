@@ -107,6 +107,8 @@ children:
                     name: xTicks
                     format: number
                     enable: (!isDate)
+                  - type: CheckBox
+                    name: xGridLines
               - type: Label
                 label: Range
                 children:
@@ -148,6 +150,8 @@ children:
                   - type: TextBox
                     name: yTicks
                     format: number
+                  - type: CheckBox
+                    name: yGridLines
               - type: Label
                 label: Range
                 children:

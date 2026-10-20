@@ -188,6 +188,11 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             # Theme and colors
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
+            # Grid lines (value axis only)
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$horizontal && self$options$xGridLines,
+                                        y = !self$options$horizontal && self$options$yGridLines)
+
             #### Axis Limits & flip ####
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {

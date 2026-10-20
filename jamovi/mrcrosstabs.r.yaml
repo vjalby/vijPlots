@@ -90,5 +90,7 @@ items:
         - xAxisRangeMax
         - xTicks
         - yTicks
+        - xGridLines
+        - yGridLines
 
 ...

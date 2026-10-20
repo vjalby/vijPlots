@@ -250,6 +250,11 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme and colors ####
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) # drop to include unused levels in color scales
 
+            #### Grid lines (value axis only) ####
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$horizontal && self$options$xGridLines,
+                                        y = !self$options$horizontal && self$options$yGridLines)
+
             #### Titles & Labels ####
             defaults <- list(y = ylabel, x = xVar, legend = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = !is.null(groupVar))

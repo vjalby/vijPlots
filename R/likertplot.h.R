@@ -594,7 +594,6 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "frequencies",
                     "showMean",
                     "showMedian",
-                    "frequencyTable",
                     "toInteger",
                     "tidyUp",
                     "descAsVarName")))
@@ -636,6 +635,8 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "liks",
                                 "group",
                                 "ignoreNA",
+                                "toInteger",
+                                "tidyUp",
                                 "adjustMethod",
                                 "pValue",
                                 "descAsVarName")))
@@ -668,6 +669,8 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "liks",
                                 "group",
                                 "ignoreNA",
+                                "toInteger",
+                                "tidyUp",
                                 "adjustMethod",
                                 "pValue",
                                 "descAsVarName")))
@@ -690,6 +693,8 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "liks",
                                 "group",
                                 "ignoreNA",
+                                "toInteger",
+                                "tidyUp",
                                 "adjustMethod",
                                 "postHoc",
                                 "sorting",

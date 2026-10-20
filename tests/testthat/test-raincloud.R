@@ -126,3 +126,26 @@ test_that("raincloud: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("raincloud-titles-axis-legend", testPlot)
 })
+
+test_that("raincloud: grid lines (vertical)", {
+    testPlot <- vijPlots::raincloud(
+        data = testData,
+        aVar = "Petal.Width",
+        groupOne = "Species",
+        groupTwo = NULL,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("raincloud-gridlines-vertical", testPlot)
+})
+
+test_that("raincloud: grid lines (horizontal)", {
+    testPlot <- vijPlots::raincloud(
+        data = testData,
+        aVar = "Petal.Width",
+        groupOne = "Species",
+        groupTwo = NULL,
+        horizontal = TRUE,
+        xGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("raincloud-gridlines-horizontal", testPlot)
+})

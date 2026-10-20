@@ -1,10 +1,12 @@
-# vijPlots 1.4.0 (2026-10-18)
+# vijPlots 1.4.0 (2026-10-20)
 
 * Bar Plot / Pie Chart: optional frequency table
 * Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values
 * Bar Plot: missing values are now kept in percent mode when "Ignore missing values" is unchecked
 * Bar Plot / Pie Chart / Mosaic Plot: missing, negative or infinite weights are now always rejected
 * Mosaic Plot: fixed the facet of missing values (when "Ignore missing values" is unchecked)
+* Box Plot: whisker options (1.5 × IQR, 3 × IQR, min-max)
+* Grid lines option for numeric axes
 * The fixed-length color palettes are now extended by interpolation
 * Code optimization (smaller .omv files: summary plots now store aggregated data)
 

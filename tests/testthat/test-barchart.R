@@ -156,3 +156,15 @@ testthat::test_that("barchart: a variable named like an internal column is rejec
         "reserved name"
     )
 })
+
+testthat::test_that("barchart: grid lines (vertical)", {
+    testPlot <- vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = NULL, facet = NULL,
+                                   yGridLines = TRUE)$plot
+    expect_plot_snapshot("barchart-gridlines-vertical", testPlot)
+})
+
+testthat::test_that("barchart: grid lines (horizontal)", {
+    testPlot <- vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = NULL, facet = NULL,
+                                   horizontal = TRUE, xGridLines = TRUE)$plot
+    expect_plot_snapshot("barchart-gridlines-horizontal", testPlot)
+})

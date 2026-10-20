@@ -573,4 +573,14 @@ options:
       default: 0
       min: 0
       max: 99
+
+    - name: xGridLines
+      title: Grid lines
+      type: Bool
+      default: false
+
+    - name: yGridLines
+      title: Grid lines
+      type: Bool
+      default: false
 ...

@@ -274,3 +274,26 @@ test_that("mrfrequencies: plot, titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("mrfrequencies-titles-axis-legend", testPlot)
 })
+
+test_that("mrfrequencies: grid lines (vertical)", {
+    testPlot <- vijPlots::mrfrequencies(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("mrfrequencies-gridlines-vertical", testPlot)
+})
+
+test_that("mrfrequencies: grid lines (horizontal)", {
+    testPlot <- vijPlots::mrfrequencies(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        horizontal = TRUE,
+        xGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("mrfrequencies-gridlines-horizontal", testPlot)
+})

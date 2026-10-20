@@ -2504,8 +2504,30 @@ msgstr ""
 msgid "Greys"
 msgstr ""
 
+#: areachart/options/xGridLines.title
+#: areachart/options/yGridLines.title
+#: barchart/options/xGridLines.title
+#: barchart/options/yGridLines.title
+#: barplot/options/xGridLines.title
+#: barplot/options/yGridLines.title
 #: boxplot/options/xGridLines.title
 #: boxplot/options/yGridLines.title
+#: histogram/options/xGridLines.title
+#: histogram/options/yGridLines.title
+#: linechart/options/xGridLines.title
+#: linechart/options/yGridLines.title
+#: lollipop/options/xGridLines.title
+#: lollipop/options/yGridLines.title
+#: mrcrosstabs/options/xGridLines.title
+#: mrcrosstabs/options/yGridLines.title
+#: mrfrequencies/options/xGridLines.title
+#: mrfrequencies/options/yGridLines.title
+#: qqplot/options/xGridLines.title
+#: qqplot/options/yGridLines.title
+#: raincloud/options/xGridLines.title
+#: raincloud/options/yGridLines.title
+#: scatterplot/options/xGridLines.title
+#: scatterplot/options/yGridLines.title
 msgid "Grid lines"
 msgstr ""
 

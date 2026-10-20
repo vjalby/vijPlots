@@ -162,6 +162,11 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Theme and colors
             plot <- plot + ggtheme
 
+            # Grid lines (value axis only)
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$horizontal && self$options$xGridLines,
+                                        y = !self$options$horizontal && self$options$yGridLines)
+
             # Titles & Labels
             defaults <- list(y = ylabel, x = groupVar)
             plot <- plot + vijTitlesAndLabels(self$options, defaults, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = FALSE)

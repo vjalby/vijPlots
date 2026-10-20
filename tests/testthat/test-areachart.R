@@ -185,3 +185,20 @@ test_that("areachart: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("areachart-titles-axis-legend", testPlot)
 })
+
+test_that("areachart: grid lines, date axis", {
+    testPlot <- vijPlots::areachart(
+        mode = "severalVariables",
+        data = testData,
+        timeVar = NULL,
+        timeVar1 = "dateUS1",
+        vars = c("Var3", "Var4"),
+        var = NULL,
+        group = NULL,
+        isDate = TRUE,
+        position = "stack",
+        xGridLines = TRUE,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("areachart-gridlines-date", testPlot)
+})

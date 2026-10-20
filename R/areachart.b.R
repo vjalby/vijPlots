@@ -154,6 +154,11 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Theme and colors
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
+            # Grid lines
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$xGridLines,
+                                        y = self$options$yGridLines)
+
             if (self$options$position == "fill")
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
             else

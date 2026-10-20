@@ -295,6 +295,12 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   different only in form: it turns a missing *group* into a real `"NA"` text level ("Ignore missing
   groups"), which is harmless since the group never drives the colour (the Likert levels do, and
   their NA are always ignored) — a translated label would just replace that level's text.
+- A plot Image with an explicit `clearWith:` list in its `.r.yaml` (currently only `mrfrequencies`
+  and `mrcrosstabs`) is redrawn only when one of the listed options changes. When adding an option
+  that affects such a plot, add it to that list too, or toggling it in jamovi leaves the plot
+  unchanged. Tests don't catch this: they render once with the option already set, so the snapshot
+  looks right (bit the `xGridLines`/`yGridLines` options, 2026-10-20). Images without `clearWith:`
+  (all the other analyses) are redrawn on any option change.
 
 ### Dependency graph has soft/transitive requirements
 

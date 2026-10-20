@@ -241,6 +241,9 @@ children:
                     name: xTicks
                     format: number
                     enable: (horizontal)
+                  - type: CheckBox
+                    name: xGridLines
+                    enable: (horizontal)
               - type: Label
                 label: Range
                 children:
@@ -282,6 +285,9 @@ children:
                   - type: TextBox
                     name: yTicks
                     format: number
+                    enable: (!horizontal)
+                  - type: CheckBox
+                    name: yGridLines
                     enable: (!horizontal)
               - type: Label
                 label: Range

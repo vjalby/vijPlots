@@ -143,6 +143,11 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Theme and colors
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
 
+            # Grid lines
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$xGridLines,
+                                        y = self$options$yGridLines)
+
             # Shapes
             if (self$options$groupShapes && !is.null(groupVar)) {
                 #plot <- plot + ggplot2::scale_shape_manual(values = c(16, 17, 15, 18, 8, 3, 4,16, 17, 15, 18, 8, 3, 4))

@@ -51,7 +51,9 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xAxisRangeMin = 0,
             xAxisRangeMax = 10,
             xTicks = 0,
-            yTicks = 0, ...) {
+            yTicks = 0,
+            xGridLines = FALSE,
+            yGridLines = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -434,6 +436,14 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0,
                 min=0,
                 max=99)
+            private$..xGridLines <- jmvcore::OptionBool$new(
+                "xGridLines",
+                xGridLines,
+                default=FALSE)
+            private$..yGridLines <- jmvcore::OptionBool$new(
+                "yGridLines",
+                yGridLines,
+                default=FALSE)
 
             self$.addOption(private$..aVar)
             self$.addOption(private$..group)
@@ -481,6 +491,8 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..xAxisRangeMax)
             self$.addOption(private$..xTicks)
             self$.addOption(private$..yTicks)
+            self$.addOption(private$..xGridLines)
+            self$.addOption(private$..yGridLines)
         }),
     active = list(
         aVar = function() private$..aVar$value,
@@ -528,7 +540,9 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xAxisRangeMin = function() private$..xAxisRangeMin$value,
         xAxisRangeMax = function() private$..xAxisRangeMax$value,
         xTicks = function() private$..xTicks$value,
-        yTicks = function() private$..yTicks$value),
+        yTicks = function() private$..yTicks$value,
+        xGridLines = function() private$..xGridLines$value,
+        yGridLines = function() private$..yGridLines$value),
     private = list(
         ..aVar = NA,
         ..group = NA,
@@ -575,7 +589,9 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xAxisRangeMin = NA,
         ..xAxisRangeMax = NA,
         ..xTicks = NA,
-        ..yTicks = NA)
+        ..yTicks = NA,
+        ..xGridLines = NA,
+        ..yGridLines = NA)
 )
 
 lollipopResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -669,6 +685,8 @@ lollipopBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param xAxisRangeMax .
 #' @param xTicks .
 #' @param yTicks .
+#' @param xGridLines .
+#' @param yGridLines .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -722,7 +740,9 @@ lollipop <- function(
     xAxisRangeMin = 0,
     xAxisRangeMax = 10,
     xTicks = 0,
-    yTicks = 0) {
+    yTicks = 0,
+    xGridLines = FALSE,
+    yGridLines = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lollipop requires jmvcore to be installed (restart may be required)")
@@ -786,7 +806,9 @@ lollipop <- function(
         xAxisRangeMin = xAxisRangeMin,
         xAxisRangeMax = xAxisRangeMax,
         xTicks = xTicks,
-        yTicks = yTicks)
+        yTicks = yTicks,
+        xGridLines = xGridLines,
+        yGridLines = yGridLines)
 
     analysis <- lollipopClass$new(
         options = options,

@@ -240,6 +240,11 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Theme and colors
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
+            # Grid lines (value axis only)
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$horizontal && self$options$xGridLines,
+                                        y = !self$options$horizontal && self$options$yGridLines)
+
             # Y scale and lab
             if (self$options$computedValues == "responses") {
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])

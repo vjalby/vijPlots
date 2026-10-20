@@ -131,3 +131,26 @@ test_that("lollipop: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("lollipop-titles-axis-legend", testPlot)
 })
+
+test_that("lollipop: grid lines (vertical)", {
+    testPlot <- vijPlots::lollipop(
+        data = testData,
+        aVar = "Petal.Width",
+        group = "Species",
+        facet = NULL,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("lollipop-gridlines-vertical", testPlot)
+})
+
+test_that("lollipop: grid lines (horizontal)", {
+    testPlot <- vijPlots::lollipop(
+        data = testData,
+        aVar = "Petal.Width",
+        group = "Species",
+        facet = NULL,
+        horizontal = TRUE,
+        xGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("lollipop-gridlines-horizontal", testPlot)
+})

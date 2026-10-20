@@ -306,3 +306,30 @@ test_that("mrcrosstabs: plot, titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("mrcrosstabs-titles-axis-legend", testPlot)
 })
+
+test_that("mrcrosstabs: grid lines (vertical)", {
+    testPlot <- vijPlots::mrcrosstabs(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        group = "Age",
+        group2 = NULL,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("mrcrosstabs-gridlines-vertical", testPlot)
+})
+
+test_that("mrcrosstabs: grid lines (horizontal)", {
+    testPlot <- vijPlots::mrcrosstabs(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        group = "Age",
+        group2 = NULL,
+        horizontal = TRUE,
+        xGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("mrcrosstabs-gridlines-horizontal", testPlot)
+})

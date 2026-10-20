@@ -53,7 +53,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xAxisLabelFontSize = 12,
             xAxisLabelRotation = 0,
             xTicks = 0,
-            yTicks = 0, ...) {
+            yTicks = 0,
+            xGridLines = FALSE,
+            yGridLines = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -472,6 +474,14 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0,
                 min=0,
                 max=99)
+            private$..xGridLines <- jmvcore::OptionBool$new(
+                "xGridLines",
+                xGridLines,
+                default=FALSE)
+            private$..yGridLines <- jmvcore::OptionBool$new(
+                "yGridLines",
+                yGridLines,
+                default=FALSE)
 
             self$.addOption(private$..mode)
             self$.addOption(private$..timeVar)
@@ -521,6 +531,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..xAxisLabelRotation)
             self$.addOption(private$..xTicks)
             self$.addOption(private$..yTicks)
+            self$.addOption(private$..xGridLines)
+            self$.addOption(private$..yGridLines)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -570,7 +582,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xAxisLabelFontSize = function() private$..xAxisLabelFontSize$value,
         xAxisLabelRotation = function() private$..xAxisLabelRotation$value,
         xTicks = function() private$..xTicks$value,
-        yTicks = function() private$..yTicks$value),
+        yTicks = function() private$..yTicks$value,
+        xGridLines = function() private$..xGridLines$value,
+        yGridLines = function() private$..yGridLines$value),
     private = list(
         ..mode = NA,
         ..timeVar = NA,
@@ -619,7 +633,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xAxisLabelFontSize = NA,
         ..xAxisLabelRotation = NA,
         ..xTicks = NA,
-        ..yTicks = NA)
+        ..yTicks = NA,
+        ..xGridLines = NA,
+        ..yGridLines = NA)
 )
 
 areachartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -715,6 +731,8 @@ areachartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param xAxisLabelRotation .
 #' @param xTicks .
 #' @param yTicks .
+#' @param xGridLines .
+#' @param yGridLines .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -770,7 +788,9 @@ areachart <- function(
     xAxisLabelFontSize = 12,
     xAxisLabelRotation = 0,
     xTicks = 0,
-    yTicks = 0) {
+    yTicks = 0,
+    xGridLines = FALSE,
+    yGridLines = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("areachart requires jmvcore to be installed (restart may be required)")
@@ -839,7 +859,9 @@ areachart <- function(
         xAxisLabelFontSize = xAxisLabelFontSize,
         xAxisLabelRotation = xAxisLabelRotation,
         xTicks = xTicks,
-        yTicks = yTicks)
+        yTicks = yTicks,
+        xGridLines = xGridLines,
+        yGridLines = yGridLines)
 
     analysis <- areachartClass$new(
         options = options,

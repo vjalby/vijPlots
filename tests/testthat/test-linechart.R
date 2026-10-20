@@ -164,3 +164,30 @@ test_that("linechart: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("linechart-titles-axis-legend", testPlot)
 })
+
+test_that("linechart: grid lines, date axis", {
+    testPlot <- vijPlots::linechart(
+        data = testData,
+        timeVar = "dateUS1",
+        vars = "Var3",
+        group = NULL,
+        isDate = TRUE,
+        dateFormat = "auto",
+        displayFormat = "%b %Y",
+        xGridLines = TRUE,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("linechart-gridlines-date", testPlot)
+})
+
+test_that("linechart: grid lines, categorical axis", {
+    testPlot <- vijPlots::linechart(
+        data = testData,
+        timeVar = "Month2",
+        vars = "VarA",
+        group = "Group",
+        xGridLines = TRUE,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("linechart-gridlines-categorical", testPlot)
+})

@@ -455,3 +455,28 @@ test_that("barplot: zero weights are treated as no data", {
     expect_equal(unique(paste(df$facet, df$outer)), c("x g2", "y g1"))
     expect_false(any(is.nan(df$percent)))
 })
+
+test_that("barplot: grid lines (vertical)", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = NULL,
+        facet = NULL,
+        counts = NULL,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("barplot-gridlines-vertical", testPlot)
+})
+
+test_that("barplot: grid lines (horizontal)", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = NULL,
+        facet = NULL,
+        counts = NULL,
+        horizontal = TRUE,
+        xGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("barplot-gridlines-horizontal", testPlot)
+})

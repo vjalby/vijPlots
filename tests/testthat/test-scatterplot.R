@@ -203,3 +203,18 @@ test_that("scatterplot: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("scatterplot-titles-axis-legend", testPlot)
 })
+
+test_that("scatterplot: grid lines", {
+    testPlot <- vijPlots::scatterplot(
+        data = testData,
+        xaxis = "Petal.Length",
+        yaxis = "Petal.Width",
+        group = NULL,
+        labelVar = NULL,
+        ptSize = NULL,
+        facet = NULL,
+        xGridLines = TRUE,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("scatterplot-gridlines", testPlot)
+})

@@ -129,3 +129,14 @@ test_that("qqplot: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("qqplot-titles-axis-legend", testPlot)
 })
+
+test_that("qqplot: grid lines", {
+    testPlot <- vijPlots::qqplot(
+        data = testData,
+        dep = "Petal.Length",
+        group = NULL,
+        xGridLines = TRUE,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("qqplot-gridlines", testPlot)
+})

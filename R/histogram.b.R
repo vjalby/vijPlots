@@ -261,6 +261,11 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
                                     vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE)
 
+            # Grid lines
+            plot <- plot + vijGridLines(self$options$theme,
+                                        x = self$options$xGridLines,
+                                        y = self$options$yGridLines)
+
             # Titles & Labels
             yLab <- ifelse(self$options$histtype == "density", .("Density"), .("Count"))
             defaults <- list(legend = groupVar, x = xVar, y = yLab)

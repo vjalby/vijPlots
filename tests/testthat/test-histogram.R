@@ -196,3 +196,9 @@ test_that("histogram: mean line snapshot, grouped, with label", {
         meanLine = TRUE, summaryLineLabel = TRUE)$plot
     expect_plot_snapshot("histogram-mean-grouped-label", testPlot)
 })
+
+test_that("histogram: grid lines", {
+    testPlot <- vijPlots::histogram(data = testData, aVar = "Petal.Width", group = NULL, facet = NULL,
+                                    xGridLines = TRUE, yGridLines = TRUE)$plot
+    expect_plot_snapshot("histogram-gridlines", testPlot)
+})

@@ -264,6 +264,21 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     ))
 }
 
+# Theme adding major grid lines on the displayed x and/or y axis (with coord_flip(),
+# theme elements follow the displayed axes). Nothing is added with the jamovi themes
+# that already draw a grid (hadley, minimal).
+vijGridLines = function(themeName, x = FALSE, y = FALSE) {
+    gridTheme <- ggplot2::theme()
+    if (themeName %in% c("hadley", "minimal"))
+        return(gridTheme)
+    gridLine <- ggplot2::element_line(colour = "#E8E8E8", linewidth = 0.73)
+    if (x)
+        gridTheme <- gridTheme + ggplot2::theme(panel.grid.major.x = gridLine)
+    if (y)
+        gridTheme <- gridTheme + ggplot2::theme(panel.grid.major.y = gridLine)
+    return(gridTheme)
+}
+
 vijHelpMessage = function(self, htmlText) {
     # Hide other results
     for (resName in names(self$results)) {

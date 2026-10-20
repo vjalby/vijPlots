@@ -394,6 +394,10 @@ msgstr ""
 msgid "1 year"
 msgstr ""
 
+#: boxplot/options/whiskers/tukey.title
+msgid "1.5 × IQR (Tukey)"
+msgstr ""
+
 #: areachart/options/dateBreak/10year.title
 #: linechart/options/dateBreak/10year.title
 msgid "10 years"
@@ -462,6 +466,10 @@ msgstr ""
 #: areachart/options/dateBreak/25year.title
 #: linechart/options/dateBreak/25year.title
 msgid "25 years"
+msgstr ""
+
+#: boxplot/options/whiskers/tukey3.title
+msgid "3 × IQR"
 msgstr ""
 
 #: areachart/options/dateBreak/3month.title
@@ -1670,29 +1678,21 @@ msgstr ""
 msgid "Counts (optional)"
 msgstr ""
 
-#: R/barplot.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not all be zero."
 msgstr ""
 
-#: R/barplot.b.R
 #: R/corresp.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not be infinite."
 msgstr ""
 
-#: R/barplot.b.R
 #: R/corresp.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not be negative."
 msgstr ""
 
-#: R/barplot.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not contain missing values."
 msgstr ""
 
@@ -2502,6 +2502,11 @@ msgstr ""
 #: raincloud/options/colorPalette/Greys.title
 #: scatterplot/options/colorPalette/Greys.title
 msgid "Greys"
+msgstr ""
+
+#: boxplot/options/xGridLines.title
+#: boxplot/options/yGridLines.title
+msgid "Grid lines"
 msgstr ""
 
 #: areachart/options/group.title
@@ -3593,6 +3598,10 @@ msgstr ""
 msgid "Min / Max"
 msgstr ""
 
+#: boxplot/options/whiskers/minmax.title
+msgid "Min–max"
+msgstr ""
+
 #: principal/options/rotation/entropy.title
 msgid "Minimum entropy"
 msgstr ""
@@ -3602,8 +3611,7 @@ msgstr ""
 msgid "Minimum of {var}"
 msgstr ""
 
-#: R/barplot.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Missing values: {n}"
 msgstr ""
 
@@ -5885,11 +5893,10 @@ msgstr ""
 msgid "Top"
 msgstr ""
 
-#: R/barplot.b.R
 #: R/mrcrosstabs.b.R
 #: R/mrfrequencies.b.R
 #: R/multcorresp.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 #: mrfrequencies/options/showTotal.title
 msgid "Total"
 msgstr ""
@@ -6199,6 +6206,10 @@ msgstr ""
 #: R/qqplot.b.R
 #: qqplot/options/distrib/weibull.title
 msgid "Weibull"
+msgstr ""
+
+#: boxplot/options/whiskers.title
+msgid "Whiskers"
 msgstr ""
 
 #: barchart/options/borderColor/white.title

@@ -121,6 +121,9 @@
             "1 year": [
                 "1 an"
             ],
+            "1.5 × IQR (Tukey)": [
+                "1,5 × IQR (Tukey)"
+            ],
             "10 years": [
                 "10 ans"
             ],
@@ -162,6 +165,9 @@
             ],
             "25 years": [
                 "25 ans"
+            ],
+            "3 × IQR": [
+                "3 × IQR"
             ],
             "3 months": [
                 "3 mois"
@@ -859,6 +865,9 @@
             "Greys": [
                 "Gris"
             ],
+            "Grid lines": [
+                "Quadrillage"
+            ],
             "Group": [
                 "Groupe"
             ],
@@ -1230,6 +1239,9 @@
             ],
             "Min / Max": [
                 "Min / Max"
+            ],
+            "Min–max": [
+                "Min–max"
             ],
             "Minimum entropy": [
                 "Entropie minimale"
@@ -2205,6 +2217,9 @@
             ],
             "Weibull": [
                 "Weibull"
+            ],
+            "Whiskers": [
+                "Moustaches"
             ],
             "White": [
                 "Blanc"

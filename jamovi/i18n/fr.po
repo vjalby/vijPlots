@@ -619,6 +619,10 @@ msgstr "1 semaine"
 msgid "1 year"
 msgstr "1 an"
 
+#: boxplot/options/whiskers/tukey.title
+msgid "1.5 × IQR (Tukey)"
+msgstr "1,5 × IQR (Tukey)"
+
 #: areachart/options/dateBreak/10year.title
 #: linechart/options/dateBreak/10year.title
 msgid "10 years"
@@ -688,6 +692,10 @@ msgstr "2035-10-20"
 #: linechart/options/dateBreak/25year.title
 msgid "25 years"
 msgstr "25 ans"
+
+#: boxplot/options/whiskers/tukey3.title
+msgid "3 × IQR"
+msgstr "3 × IQR"
 
 #: areachart/options/dateBreak/3month.title
 #: linechart/options/dateBreak/3month.title
@@ -1895,29 +1903,21 @@ msgstr "Effectifs"
 msgid "Counts (optional)"
 msgstr "Effectifs (optionnel)"
 
-#: R/barplot.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not all be zero."
 msgstr "Les effectifs ne peuvent pas être tous nuls."
 
-#: R/barplot.b.R
 #: R/corresp.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not be infinite."
 msgstr "Les effectifs ne peuvent pas être infinis."
 
-#: R/barplot.b.R
 #: R/corresp.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not be negative."
 msgstr "Les effectifs ne peuvent pas être négatifs."
 
-#: R/barplot.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Counts may not contain missing values."
 msgstr "Les effectifs ne peuvent pas contenir de valeurs manquantes."
 
@@ -2728,6 +2728,11 @@ msgstr "Gris"
 #: scatterplot/options/colorPalette/Greys.title
 msgid "Greys"
 msgstr "Gris"
+
+#: boxplot/options/xGridLines.title
+#: boxplot/options/yGridLines.title
+msgid "Grid lines"
+msgstr "Quadrillage"
 
 #: areachart/options/group.title
 #: areachart/ui/mode/oneVariable[0][0][2].label
@@ -3820,6 +3825,10 @@ msgstr "Min"
 msgid "Min / Max"
 msgstr "Min / Max"
 
+#: boxplot/options/whiskers/minmax.title
+msgid "Min–max"
+msgstr "Min–max"
+
 #: principal/options/rotation/entropy.title
 msgid "Minimum entropy"
 msgstr "Entropie minimale"
@@ -3829,8 +3838,7 @@ msgstr "Entropie minimale"
 msgid "Minimum of {var}"
 msgstr "Minimum de {var}"
 
-#: R/barplot.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "Missing values: {n}"
 msgstr "Valeurs manquantes : {n}"
 
@@ -6135,11 +6143,10 @@ msgstr "Texte du titre"
 msgid "Top"
 msgstr "Haut"
 
-#: R/barplot.b.R
 #: R/mrcrosstabs.b.R
 #: R/mrfrequencies.b.R
 #: R/multcorresp.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 #: mrfrequencies/options/showTotal.title
 msgid "Total"
 msgstr "Total"
@@ -6456,6 +6463,10 @@ msgstr "Viridis:Viridis"
 #: qqplot/options/distrib/weibull.title
 msgid "Weibull"
 msgstr "Weibull"
+
+#: boxplot/options/whiskers.title
+msgid "Whiskers"
+msgstr "Moustaches"
 
 #: barchart/options/borderColor/white.title
 #: barchart/options/textColor/white.title

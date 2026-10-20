@@ -171,6 +171,31 @@ test_that("boxplot: no outlier columns with min-max whiskers", {
     expect_false(any(startsWith(names(results$plot$state), ".outliers_")))
 })
 
+test_that("boxplot: grid lines (vertical)", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = NULL,
+        facet = NULL,
+        yGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("boxplot-gridlines-vertical", testPlot)
+})
+
+test_that("boxplot: grid lines (horizontal)", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = NULL,
+        facet = NULL,
+        horizontal = TRUE,
+        xGridLines = TRUE
+    )$plot
+    expect_plot_snapshot("boxplot-gridlines-horizontal", testPlot)
+})
+
 test_that("boxplot: missing group level kept (ignoreNA = FALSE)", {
     testPlot <- vijPlots::boxplot(
         data = testData,

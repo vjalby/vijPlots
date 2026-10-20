@@ -32,6 +32,9 @@ longer appear — if it does show up again, treat it as a real regression, not a
 Never start or propose a parallel session or a git worktree for vijPlots work (user's rule,
 2026-10-17): do everything in the current session, on `main`, in the main checkout.
 
+Never run `git commit` (nor amend, reset or push) in vijPlots (user's rule, 2026-10-19): leave
+changes in the working tree, the user commits themself. At most, propose a commit message.
+
 Before editing code or YAML, show the planned changes (excerpt or diff, per file) and wait for
 the user's go-ahead (user's preference, 2026-10-17). Simple actions the user asks for directly
 (deleting a named file, running tests) don't need this step.
@@ -280,6 +283,18 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   analyses afterward with a battery of ad hoc (non-testthat) scripts using variable names with
   spaces/`!+?%-`/backticks and with non-ASCII characters (accented Latin, Chinese, Japanese) — all
   passed, so this was an isolated case, not a systemic issue.
+- Missing values kept as a category (`ignoreNA`/"Ignore missing groups" unchecked) are labelled
+  `"NA"` everywhere — ggplot2's default for axes/legends/facet strips (drawn in gray via
+  `vijColorScale()`'s `na.value`), and `labelOf()` in `vijFrequencyTable()`. Decided 2026-10-19 to
+  keep it: it only shows when the user opts in, it is a common statistical convention, and a
+  translated label would touch ~10 analyses and many snapshots. If it is ever changed: keep the
+  real `NA` in the data (a text level loses the gray `na.value`, and anything converted in `.run()`
+  is saved in the `.omv` in the language of the moment), change only the displayed label in
+  `.plot()` (scale `labels`, facet `labeller`, text labels) through one shared helper returning
+  e.g. `.("(Missing)")`, parenthesized to avoid clashing with a real level. `likertplot` is
+  different only in form: it turns a missing *group* into a real `"NA"` text level ("Ignore missing
+  groups"), which is harmless since the group never drives the colour (the Likert levels do, and
+  their NA are always ignored) — a translated label would just replace that level's text.
 
 ### Dependency graph has soft/transitive requirements
 

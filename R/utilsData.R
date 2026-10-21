@@ -47,16 +47,21 @@ vijFrequencyTable = function(self, plotData, inner, outer = NULL, facet = NULL, 
                 table$addRow(rowKey = rowNo, values = c(blockValues, list(
                     inner = labelOf(innerLevels[[i]]), counts = counts[[i]],
                     percent = counts[[i]] / total, cumPercent = cumCounts[[i]] / total)))
-                # Space above each new block (jamovi only renders BEGIN_GROUP, as a top padding)
-                if (i == 1 && rowNo > 1)
+                # Blocks marked as in jmv::conttables: BEGIN_GROUP on the block's first row (jamovi
+                # renders it as a top padding), END_GROUP on its last row before the Total
+                if (i == 1)
                     for (col in blockColumns)
                         table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
+                if (i == length(innerLevels))
+                    for (col in blockColumns)
+                        table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.END_GROUP)
             }
             rowNo <- rowNo + 1
             table$addRow(rowKey = rowNo, values = c(blockValues, list(
                 inner = .("Total"), counts = total, percent = 1, cumPercent = "")))
+            # The Total row is a group of its own
             for (col in c('inner', 'counts', 'percent', 'cumPercent'))
-                table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_GROUP)
+                table$addFormat(rowKey = rowNo, col = col, jmvcore::Cell.BEGIN_END_GROUP)
         }
     }
     # Observations left out because of missing values (ignoreNA checked), overall

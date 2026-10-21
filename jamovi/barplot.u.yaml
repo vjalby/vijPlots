@@ -42,9 +42,24 @@ children:
     style: inline
     children:
       - type: LayoutBox
+        margin: large
         cell:
           column: 0
           row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Options
+            children:
+              - type: CheckBox
+                name: ignoreNA
+              - type: CheckBox
+                name: frequencyTable
+      - type: LayoutBox
+        margin: large
+        cell:
+          column: 1
+          row: 1
         stretchFactor: 1
         children:
           - type: Label
@@ -54,26 +69,23 @@ children:
                 name: yaxis_count
                 optionName: yaxis
                 optionPart: count
-                label: Count
               - type: RadioButton
                 name: yaxis_percent
                 optionName: yaxis
                 optionPart: percent
-                label: Percent
                 children:
                   - type: RadioButton
                     name: percentWithin_gGroup
                     optionName: percentWithin
                     optionPart: group
-                    label: Within groups
                     enable: (!(!columns) && yaxis_percent)
                   - type: RadioButton
                     name: percentWithin_category
                     optionName: percentWithin
                     optionPart: category
-                    label: Within categories
                     enable: (!(!columns) && yaxis_percent)
       - type: LayoutBox
+        margin: large
         cell:
           column: 1
           row: 0
@@ -95,9 +107,10 @@ children:
                 optionName: barType
                 optionPart: stack
       - type: LayoutBox
+        margin: large
         cell:
-          column: 2
-          row: 0
+          column: 0
+          row: 1
         stretchFactor: 1
         children:
           - type: Label
@@ -107,22 +120,14 @@ children:
                 name: order_none
                 optionName: order
                 optionPart: none
-                label: None
               - type: RadioButton
                 name: order_increasing
                 optionName: order
                 optionPart: increasing
-                label: Increasing
               - type: RadioButton
                 name: order_decreasing
                 optionName: order
                 optionPart: decreasing
-                label: Decreasing
-          - type: Label
-            label: Table
-            children:
-              - type: CheckBox
-                name: frequencyTable
   - type: CollapseBox
     label: Plot Options
     collapsed: true
@@ -141,8 +146,6 @@ children:
               - type: Label
                 label: Plot Options
                 children:
-                  - type: CheckBox
-                    name: ignoreNA
                   - type: CheckBox
                     name: showLabels
                   - type: CheckBox
@@ -163,13 +166,11 @@ children:
                     name: labelPosition_middle
                     optionName: labelPosition
                     optionPart: middle
-                    label: Middle
                     enable: (showLabels && !barType_stack)
                   - type: RadioButton
                     name: labelPosition_top
                     optionName: labelPosition
                     optionPart: top
-                    label: Top
                     enable: (showLabels && !barType_stack)
               - type: Label
                 label: Text Size
@@ -191,19 +192,16 @@ children:
                     name: accuracy_1
                     optionName: accuracy
                     optionPart: '1'
-                    label: '1'
                     enable: (showLabels && yaxis_percent)
                   - type: RadioButton
                     name: accuracy_01
                     optionName: accuracy
                     optionPart: '0.1'
-                    label: '0.1'
                     enable: (showLabels && yaxis_percent)
                   - type: RadioButton
                     name: accuracy_001
                     optionName: accuracy
                     optionPart: '0.01'
-                    label: '0.01'
                     enable: (showLabels && yaxis_percent)
   - type: CollapseBox
     label: Colors
@@ -273,13 +271,11 @@ children:
                         name: facetBy_row
                         optionName: facetBy
                         optionPart: row
-                        label: Row
                         enable: (!(!facet))
                       - type: RadioButton
                         name: facetBy_column
                         optionName: facetBy
                         optionPart: column
-                        label: Column
                         enable: (!(!facet))
                   - type: TextBox
                     name: facetNumber

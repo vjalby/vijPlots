@@ -477,3 +477,17 @@ test_that("piechart: missing values are labelled (Missing) in the legend, facets
     expect_true("(Missing)" %in% strips)
     expect_false("NA" %in% strips)
 })
+
+test_that("piechart: frequency table blocks marked as in jmv::conttables", {
+    r <- vijPlots::piechart(data = testData, aVar = "species", facet = "island", counts = NULL,
+                            frequencyTable = TRUE)
+    table <- r$frequencies
+    hasFormat <- function(format) vapply(seq_len(table$rowCount), function(row)
+        bitwAnd(table$getCell(rowNo = row, col = "inner")$format, format) == format, logical(1))
+    # 3 facets x (3 species + Total): begin on each block's first row, end on its last row
+    # before the Total, the Total a group of its own (begin and end)
+    block <- c(TRUE, FALSE, FALSE, TRUE)
+    expect_equal(hasFormat(jmvcore::Cell.BEGIN_GROUP), rep(block, 3))
+    expect_equal(hasFormat(jmvcore::Cell.END_GROUP), rep(c(FALSE, FALSE, TRUE, TRUE), 3))
+    expect_equal(hasFormat(jmvcore::Cell.BEGIN_END_GROUP), rep(c(FALSE, FALSE, FALSE, TRUE), 3))
+})

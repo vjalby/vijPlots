@@ -162,7 +162,7 @@ test_that("scatterplot: plot border", {
     expect_plot_snapshot("scatterplot-border", testPlot)
 })
 
-test_that("scatterplot: missing group level kept (keepNA = TRUE)", {
+test_that("scatterplot: missing group level kept (ignoreNA = FALSE)", {
     testPlot <- vijPlots::scatterplot(
         data = testData,
         xaxis = "Petal.Length",
@@ -171,7 +171,7 @@ test_that("scatterplot: missing group level kept (keepNA = TRUE)", {
         labelVar = NULL,
         ptSize = NULL,
         facet = NULL,
-        keepNA = TRUE
+        ignoreNA = FALSE
     )$plot
     expect_plot_snapshot("scatterplot-keepNA", testPlot)
 })
@@ -217,4 +217,54 @@ test_that("scatterplot: grid lines", {
         yGridLines = TRUE
     )$plot
     expect_plot_snapshot("scatterplot-gridlines", testPlot)
+})
+
+test_that("scatterplot: missing group and facet labelled (Missing) (ignoreNA = FALSE)", {
+    r <- vijPlots::scatterplot(
+        data = testData,
+        xaxis = "Petal.Length",
+        yaxis = "Petal.Width",
+        group = "Species",
+        labelVar = NULL,
+        ptSize = NULL,
+        facet = "group2",
+        ignoreNA = FALSE,
+        groupShapes = TRUE
+    )
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    built <- ggplot2::ggplot_build(ggplot2::last_plot())
+    # the same labels on the merged colour/fill/shape legend, NA points in gray
+    for (aes in c("colour", "fill", "shape"))
+        expect_equal(built$plot$scales$get_scales(aes)$get_labels(), c("setosa", "versicolor", "virginica", "(Missing)"))
+    expect_true("gray" %in% built$data[[1]]$colour)
+    gt <- ggplot2::ggplot_gtable(built)
+    guideBox <- gt$grobs[[which(gt$layout$name == "guide-box-right")]]
+    expect_equal(sum(grepl("^guides", guideBox$layout$name)), 1)
+    # facet strips
+    strips <- unlist(lapply(gt$grobs[grepl("^strip", gt$layout$name)], function(g) {
+        unlist(lapply(g$grobs, function(s) tryCatch(s$children[[2]]$children[[1]]$label, error = function(e) NULL)))
+    }))
+    expect_true("(Missing)" %in% strips)
+    expect_false("NA" %in% strips)
+})
+
+test_that("scatterplot: a missing label keeps the point, a missing group removes it", {
+    naData <- data.frame(x = c(1, 2, 3, 4), y = c(1, 2, 3, NA),
+                         g = factor(c("a", "b", NA, "a")), lab = c("p1", NA, "p3", "p4"))
+    r <- vijPlots::scatterplot(data = naData, xaxis = "x", yaxis = "y", group = "g",
+                               labelVar = "lab", ptSize = NULL, facet = NULL)
+    # default (ignoreNA): point 2 kept without label, point 3 (no group) and 4 (no y) left out
+    expect_equal(r$plot$state$x, c(1, 2))
+    r <- vijPlots::scatterplot(data = naData, xaxis = "x", yaxis = "y", group = "g",
+                               labelVar = "lab", ptSize = NULL, facet = NULL, ignoreNA = FALSE)
+    expect_equal(r$plot$state$x, c(1, 2, 3))
+})
+
+test_that("scatterplot: the former keepNA option has no effect", {
+    args <- list(data = testData, xaxis = "Petal.Length", yaxis = "Petal.Width", group = "Species",
+                 labelVar = NULL, ptSize = NULL, facet = NULL)
+    expect_equal(do.call(vijPlots::scatterplot, c(args, keepNA = TRUE))$plot$state,
+                 do.call(vijPlots::scatterplot, c(args, keepNA = FALSE))$plot$state)
 })

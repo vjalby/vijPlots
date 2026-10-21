@@ -103,6 +103,8 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             labelVar <- vijVar(self$options$label)
             groupVar <- vijVar(self$options$group)
             facetVar <- vijVar(self$options$facet)
+            # Missing values (ignoreNA unchecked) shown as "(Missing)": axis, legend, facet strips
+            labelNA <- vijLabelNA(self)
 
             #### Set boxplot staples and notches ####
 
@@ -241,13 +243,13 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 aVar <- depVarNames # length(depVarNames) = 1
                 orderedLevelsData <- forcats::fct_reorder(plotData[[groupVar]], plotData[[aVar]], .desc = (self$options$order == "decreasing"))
                 orderedLevels <- levels(addNA(orderedLevelsData, ifany=TRUE))
-                plot <- plot + ggplot2::scale_x_discrete(limits = orderedLevels, drop = FALSE)
+                plot <- plot + ggplot2::scale_x_discrete(limits = orderedLevels, drop = FALSE, labels = labelNA)
             } else if (!is.null(groupVar)) {
-                plot <- plot + ggplot2::scale_x_discrete(drop = FALSE) # keep unused levels
+                plot <- plot + ggplot2::scale_x_discrete(drop = FALSE, labels = labelNA) # keep unused levels
             }
 
             #### Theme and colors ####
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
 
             #### Grid lines (value axis only) ####
             plot <- plot + vijGridLines(self$options$theme,
@@ -278,9 +280,11 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Facet ####
             if (!is.null(facetVar)) {
                 if (self$options$facetBy == "column")
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber),
+                                                       labeller = ggplot2::as_labeller(labelNA))
                 else
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber),
+                                                       labeller = ggplot2::as_labeller(labelNA))
             }
 
             #### Titles & Labels ####

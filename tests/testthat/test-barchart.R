@@ -168,3 +168,28 @@ testthat::test_that("barchart: grid lines (horizontal)", {
                                    horizontal = TRUE, xGridLines = TRUE)$plot
     expect_plot_snapshot("barchart-gridlines-horizontal", testPlot)
 })
+
+testthat::test_that("barchart: missing values are labelled (Missing) on the axis, legend and facets", {
+    renderBuilt <- function(...) {
+        r <- vijPlots::barchart(data = testData, yVar = "Petal.Width", ignoreNA = FALSE, ...)
+        print(r$plot)
+        ggplot2::ggplot_build(ggplot2::last_plot())
+    }
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    # NA category on the x-axis, NA group in the legend (gray bars)
+    built <- renderBuilt(xVar = "Species", group = "group2", facet = NULL)
+    xLabels <- built$layout$panel_params[[1]]$x$get_labels()
+    expect_true("(Missing)" %in% xLabels)
+    expect_false("NA" %in% xLabels)
+    expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("A", "B", "C", "(Missing)"))
+    expect_true("gray" %in% built$data[[1]]$fill)
+    # NA facet
+    built <- renderBuilt(xVar = "Species", group = NULL, facet = "group2")
+    gt <- ggplot2::ggplot_gtable(built)
+    strips <- unlist(lapply(gt$grobs[grepl("^strip", gt$layout$name)], function(g) {
+        unlist(lapply(g$grobs, function(s) tryCatch(s$children[[2]]$children[[1]]$label, error = function(e) NULL)))
+    }))
+    expect_true("(Missing)" %in% strips)
+    expect_false("NA" %in% strips)
+})

@@ -283,18 +283,27 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   analyses afterward with a battery of ad hoc (non-testthat) scripts using variable names with
   spaces/`!+?%-`/backticks and with non-ASCII characters (accented Latin, Chinese, Japanese) — all
   passed, so this was an isolated case, not a systemic issue.
-- Missing values kept as a category (`ignoreNA`/"Ignore missing groups" unchecked) are labelled
-  `"NA"` everywhere — ggplot2's default for axes/legends/facet strips (drawn in gray via
-  `vijColorScale()`'s `na.value`), and `labelOf()` in `vijFrequencyTable()`. Decided 2026-10-19 to
-  keep it: it only shows when the user opts in, it is a common statistical convention, and a
-  translated label would touch ~10 analyses and many snapshots. If it is ever changed: keep the
-  real `NA` in the data (a text level loses the gray `na.value`, and anything converted in `.run()`
-  is saved in the `.omv` in the language of the moment), change only the displayed label in
-  `.plot()` (scale `labels`, facet `labeller`, text labels) through one shared helper returning
-  e.g. `.("(Missing)")`, parenthesized to avoid clashing with a real level. `likertplot` is
-  different only in form: it turns a missing *group* into a real `"NA"` text level ("Ignore missing
-  groups"), which is harmless since the group never drives the colour (the Likert levels do, and
-  their NA are always ignored) — a translated label would just replace that level's text.
+- Missing values kept as a category ("Ignore missing values/groups" unchecked) are labelled
+  `"(Missing)"` (translated, fr "(Manquant)"), not ggplot2's default `"NA"` (changed 2026-10-21, in
+  all 9 analyses that can keep them: `barplot`, `piechart`, `mosaic`, `boxplot`, `barchart`,
+  `raincloud`, `linechart`, `areachart`, `scatterplot`, plus `likertplot`). `vijLabelNA(self)`
+  (`utils.R`) returns the labelling function; each `.plot()` creates it once (`labelNA <-
+  vijLabelNA(self)`) and passes it to every place a level is shown: `vijColorScale(..., labels =
+  labelNA)` (new `labels` argument, default `waiver()`), `scale_x_discrete(labels = )`, other
+  discrete scales (`scale_shape_manual`, `scale_linetype_discrete`), `facet_wrap(labeller =
+  ggplot2::as_labeller(labelNA))`, hand-built axes (`mosaic`) and text labels (`piechart`'s
+  "Group" labels); `vijFrequencyTable()` uses it too. The real `NA` stays in the data: a text level
+  would lose the gray `na.value`, and anything converted in `.run()` is saved in the `.omv` in the
+  language of the moment. When an aesthetic is mapped to the group on several merged scales
+  (`raincloud`: fill/colour/slab_color; `scatterplot`: colour/fill/shape), give all of them the
+  same `labels`, or the legend splits. Exception: `likertplot` turns a missing *group* into a real
+  text level in `.run()` (it is a group of its own in the frequency table and the comparison
+  tests), now `vijLabelNA(self)(NA)` instead of `"NA"` — so its label is saved in the `.omv` in the
+  run's language (accepted: harmless, the group never drives the colour). Fixed along the way:
+  `linechart` with several variables drew no line at all for a missing group (ggplot2's NA
+  linetype is blank): now `na.value = "dotted"`, and `addNA()` in its `interaction()` grouping so
+  the variables' NA lines aren't merged into one. Not yet done: the `fr.po` translation of
+  "(Missing)" (needs `jmvtools::i18nUpdate("fr")`) and copying `utils.R` to vijMulti.
 - A plot Image with an explicit `clearWith:` list in its `.r.yaml` (currently only `mrfrequencies`
   and `mrcrosstabs`) is redrawn only when one of the listed options changes. When adding an option
   that affects such a plot, add it to that list too, or toggling it in jamovi leaves the plot

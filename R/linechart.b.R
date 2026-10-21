@@ -103,6 +103,8 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             timeVar <- rlang::sym(self$options$timeVar)
             depVars <- self$options$vars
             groupVar <- vijVar(self$options$group)
+            # Missing values (ignoreNA unchecked) shown as "(Missing)" in the legend
+            labelNA <- vijLabelNA(self)
 
             # timeVar format
             timeVarIsNumeric <- is.numeric(plotData[[timeVar]])
@@ -123,7 +125,9 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (is.null(groupVar)) {
                     plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, group = .variable))
                 } else {
-                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, linetype = !!groupVar, group = interaction(.variable, !!groupVar)))
+                    # addNA(): with a missing group (ignoreNA unchecked), interaction() would give NA for
+                    # every variable, merging their lines into one (not drawable with a dotted linetype)
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!timeVar, y = .value, color = .variable, linetype = !!groupVar, group = interaction(.variable, addNA(!!groupVar, ifany = TRUE))))
                 }
             } else {
                 # A single variable
@@ -139,7 +143,10 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::geom_point(size = dotSize)
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, labels = labelNA)
+            # Group as linetype (several variables): NA would otherwise get no line at all
+            if (length(depVars) > 1 && !is.null(groupVar))
+                plot <- plot + ggplot2::scale_linetype_discrete(labels = labelNA, na.value = "dotted")
 
             # Grid lines
             plot <- plot + vijGridLines(self$options$theme,

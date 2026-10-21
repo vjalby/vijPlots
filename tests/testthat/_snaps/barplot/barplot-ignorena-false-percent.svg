@@ -45,7 +45,7 @@
 <polyline points='586.85,521.03 586.85,517.04 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
 <text x='192.83' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='36.02px' lengthAdjust='spacingAndGlyphs'>female</text>
 <text x='389.84' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='26.01px' lengthAdjust='spacingAndGlyphs'>male</text>
-<text x='586.85' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>NA</text>
+<text x='586.85' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='48.68px' lengthAdjust='spacingAndGlyphs'>(Missing)</text>
 <text x='389.84' y='559.40' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='24.91px' lengthAdjust='spacingAndGlyphs'>sex</text>
 <text transform='translate(27.62,265.99) rotate(-90)' text-anchor='middle' style='font-size: 16.00px; fill: #333333; font-family: sans;' textLength='55.15px' lengthAdjust='spacingAndGlyphs'>Percent</text>
 </g>

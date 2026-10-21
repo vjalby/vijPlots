@@ -85,6 +85,9 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- image$state
 
+            # Missing values (ignoreNA unchecked) shown as "(Missing)": legend, facet strips, text labels
+            labelNA <- vijLabelNA(self)
+
             # ggstats::StatProp (percent labels) drops the rows whose fill is NA (stats::aggregate):
             # make NA an explicit level (still drawn with the scale's na.value) to keep the NA slice
             # in the percentages. Only if NA is present (an empty NA level would show in the legend).
@@ -149,10 +152,10 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                    "count" = ggplot2::after_stat(count),
                                    "percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, NA_character_,
                                                       doPercent(ggplot2::after_stat(prop))),
-                                   "group" = .data$fill,
-                                   "group+count" = paste0(.data$fill, "\n", ggplot2::after_stat(count)),
-                                   "group+percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, as.character(.data$fill),
-                                                            paste0(.data$fill, "\n", doPercent(ggplot2::after_stat(prop))))))
+                                   "group" = labelNA(.data$fill),
+                                   "group+count" = paste0(labelNA(.data$fill), "\n", ggplot2::after_stat(count)),
+                                   "group+percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, labelNA(.data$fill),
+                                                            paste0(labelNA(.data$fill), "\n", doPercent(ggplot2::after_stat(prop))))))
 
                 # Label stat and position
                 statLab <- switch(self$options$labels, "percent" = ggstats::StatProp,
@@ -181,15 +184,17 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (!is.null(facetVar) ) {
                 if (self$options$facetBy == "column")
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = "free")
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = "free",
+                                                       labeller = ggplot2::as_labeller(labelNA))
                 else
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = "free")
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = "free",
+                                                       labeller = ggplot2::as_labeller(labelNA))
             }
 
             #### Theme & colors ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
 
             # Guide
             if (self$options$labels %in% c("group","group+count","group+percent"))

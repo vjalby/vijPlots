@@ -87,6 +87,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             category <- rlang::sym(self$options$category)
             group <- rlang::sym(self$options$group)
+            # Missing values (ignoreNA unchecked) shown as "(Missing)": axes, legend, facet strips
+            labelNA <- vijLabelNA(self)
 
             plot <- ggplot2::ggplot(plotData)
 
@@ -149,9 +151,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(self$options$facet)) {
                 xAxisData <- unique(plotData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
                 if (self$options$showCategoryPercent) {
-                    xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$.XWIDTH), ")")
+                    xAxisLabels <- paste0(labelNA(xAxisData[[category]]), "\n(", doPercent(xAxisData$.XWIDTH), ")")
                 } else {
-                    xAxisLabels <- xAxisData[[category]]
+                    xAxisLabels <- labelNA(xAxisData[[category]])
                 }
                 plot <- plot + ggplot2::scale_x_continuous(breaks = xAxisData$.X_CENTER,
                                                            labels = xAxisLabels,
@@ -172,7 +174,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # zero count in the first column is silently missing from the y-axis labels.
                     firstColBreaks <- dplyr::filter(plotData, .X_CENTER == min(.X_CENTER))
                     plot <- plot + ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
-                                                                labels = firstColBreaks[[group]],
+                                                                labels = labelNA(firstColBreaks[[group]]),
                                                                 expand = ggplot2::expansion(mult = expFactMult))
                 }
                 # else: per-facet breaks/labels added below via facetted_pos_scales(y = ...)
@@ -211,9 +213,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     "free_x"
                 }
                 if (self$options$facetBy == "column")
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = freeScale)
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber), scales = freeScale,
+                                                       labeller = ggplot2::as_labeller(labelNA))
                 else
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = freeScale)
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber), scales = freeScale,
+                                                       labeller = ggplot2::as_labeller(labelNA))
 
                 # xScales
                 # One value per panel, in facet_wrap()'s order: the used levels, then NA last
@@ -227,9 +231,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     subData <- plotData[plotData[[self$options$facet]] %in% lv, ]
                     xAxisData <- unique(subData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
                     if (self$options$showCategoryPercent) {
-                        xAxisLabels <- paste0(xAxisData[[category]], "\n(", doPercent(xAxisData$.XWIDTH), ")")
+                        xAxisLabels <- paste0(labelNA(xAxisData[[category]]), "\n(", doPercent(xAxisData$.XWIDTH), ")")
                     } else {
-                        xAxisLabels <- xAxisData[[category]]
+                        xAxisLabels <- labelNA(xAxisData[[category]])
                     }
                     ggplot2::scale_x_continuous(breaks = xAxisData$.X_CENTER,
                                                 labels = xAxisLabels,
@@ -246,7 +250,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         subData <- plotData[plotData[[self$options$facet]] %in% lv, ]
                         firstColBreaks <- dplyr::filter(subData, .X_CENTER == min(.X_CENTER))
                         ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
-                                                    labels = firstColBreaks[[group]],
+                                                    labels = labelNA(firstColBreaks[[group]]),
                                                     expand = ggplot2::expansion(mult = expFactMult))
                     })
                 }
@@ -263,7 +267,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme, Legend & Axes ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
 
             # Titles & Labels
             defaults <- list(y = self$options$group, x = self$options$category, legend = self$options$group)

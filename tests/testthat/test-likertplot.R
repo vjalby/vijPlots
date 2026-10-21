@@ -396,3 +396,25 @@ test_that("likertplot: tidyUp alone reconciles two already-labeled variables (Qu
     expect_plot_snapshot("likertplot-tidyUp-labeled", testPlot)
 })
 
+
+test_that("likertplot: missing group labelled (Missing) in the plot, tables and comparisons", {
+    r <- vijPlots::likertplot(
+        data = testData,
+        liks = c("Question 1", "Question 2", "Question 3"),
+        group = "Group",
+        ignoreNA = FALSE,
+        frequencyTable = TRUE,
+        showPostHoc = TRUE,
+        postHoc = "dunn"
+    )
+    # plot data: the missing group is a level of its own
+    groupCol <- jmvcore::toB64("Group")
+    expect_equal(levels(r$plot$state$mainData[[groupCol]]), c("A", "B", "C", "(Missing)"))
+    # frequency table and pairwise comparisons
+    freqCells <- unlist(lapply(r$frequencies$asDF, as.character))
+    expect_true("(Missing)" %in% freqCells)
+    expect_false("NA" %in% freqCells)
+    pw <- r$comp$pwTable$asDF
+    expect_true("(Missing)" %in% c(pw$group1, pw$group2))
+    expect_false("NA" %in% c(pw$group1, pw$group2))
+})

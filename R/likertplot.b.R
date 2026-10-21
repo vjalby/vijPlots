@@ -110,8 +110,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # column's custom "values" attribute, needed by jmvcore::toNumeric() below
                     mainData <- dplyr::filter(mainData, !is.na(.data[[self$options$group]]))
                 } else if (anyNA(mainData[[self$options$group]])) {
-                    # change NA to "NA"
-                    mainData[[self$options$group]] <- forcats::fct_na_value_to_level(mainData[[self$options$group]], level="NA")
+                    # Missing group kept as a group of its own, labelled "(Missing)" everywhere:
+                    # plot, frequency table and comparison tests
+                    mainData[[self$options$group]] <- forcats::fct_na_value_to_level(mainData[[self$options$group]],
+                                                                                     level = vijLabelNA(self)(NA))
                 }
             }
             # Cleaning the group variable name (it would crash gglikert)

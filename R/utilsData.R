@@ -18,8 +18,9 @@ vijFrequencyTable = function(self, plotData, inner, outer = NULL, facet = NULL, 
             return(as.list(values))
         }
     }
-    # Label of a value: "" when no such variable (NULL), "NA" for missing values
-    labelOf <- function(value) if (is.null(value)) "" else if (is.na(value)) "NA" else value
+    # Label of a value: "" when no such variable (NULL), "(Missing)" for missing values
+    labelNA <- vijLabelNA(self)
+    labelOf <- function(value) if (is.null(value)) "" else labelNA(value)
     # Columns of the block's first row (facet/outer only exist when used)
     blockColumns <- c(if (!is.null(facet)) 'facet', if (!is.null(outer)) 'outer',
                       'inner', 'counts', 'percent', 'cumPercent')

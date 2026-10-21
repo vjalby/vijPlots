@@ -29,6 +29,10 @@ msgstr ""
 msgid "\"Tick Count\" option for the X-axis is only available for numeric variables."
 msgstr ""
 
+#: R/utils.R
+msgid "(Missing)"
+msgstr ""
+
 #: R/qqplot.b.R
 msgid "{distrib} distribution requires positive (>0) data."
 msgstr ""
@@ -2680,16 +2684,17 @@ msgstr ""
 msgid "Identity line"
 msgstr ""
 
+#: areachart/options/ignoreNA.title
 #: barchart/options/ignoreNA.title
+#: boxplot/options/ignoreNA.title
 #: likertplot/options/ignoreNA.title
+#: linechart/options/ignoreNA.title
 #: raincloud/options/ignoreNA.title
+#: scatterplot/options/ignoreNA.title
 msgid "Ignore missing groups"
 msgstr ""
 
-#: areachart/options/ignoreNA.title
 #: barplot/options/ignoreNA.title
-#: boxplot/options/ignoreNA.title
-#: linechart/options/ignoreNA.title
 #: mosaic/options/ignoreNA.title
 #: piechart/options/ignoreNA.title
 msgid "Ignore missing values"

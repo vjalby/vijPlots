@@ -41,7 +41,7 @@ options:
       default: true
 
     - name: ignoreNA
-      title: Ignore missing values
+      title: Ignore missing groups
       type: Bool
       default: true
 

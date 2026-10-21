@@ -105,6 +105,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             categoryVar <- rlang::sym(self$options$rows)
             groupVar <- vijVar(self$options$columns)
+            # Missing values (ignoreNA unchecked) shown as "(Missing)": axis, legend, facet strips
+            labelNA <- vijLabelNA(self)
 
             if (self$options$borderColor == "none")
                 borderColor <- NA
@@ -281,7 +283,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Show unused levels (if checked in data/var setting)
-            plot <- plot + ggplot2::scale_x_discrete(drop = FALSE)
+            plot <- plot + ggplot2::scale_x_discrete(drop = FALSE, labels = labelNA)
 
             # Axis Limits & flip
             if (self$options$horizontal) {
@@ -319,13 +321,15 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(self$options$facet)) {
                 facetVar <- rlang::sym(self$options$facet)
                 if (self$options$facetBy == "column")
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber),
+                                                       labeller = ggplot2::as_labeller(labelNA))
                 else
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber))
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber),
+                                                       labeller = ggplot2::as_labeller(labelNA))
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
 
             # Grid lines (value axis only)
             plot <- plot + vijGridLines(self$options$theme,

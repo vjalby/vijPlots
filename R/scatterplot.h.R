@@ -13,6 +13,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             ptSize = NULL,
             facet = NULL,
             keepNA = FALSE,
+            ignoreNA = TRUE,
             overlap = FALSE,
             plotBorder = FALSE,
             groupShapes = FALSE,
@@ -125,7 +126,12 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             private$..keepNA <- jmvcore::OptionBool$new(
                 "keepNA",
                 keepNA,
-                default=FALSE)
+                default=FALSE,
+                hidden=TRUE)
+            private$..ignoreNA <- jmvcore::OptionBool$new(
+                "ignoreNA",
+                ignoreNA,
+                default=TRUE)
             private$..overlap <- jmvcore::OptionBool$new(
                 "overlap",
                 overlap,
@@ -571,6 +577,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..ptSize)
             self$.addOption(private$..facet)
             self$.addOption(private$..keepNA)
+            self$.addOption(private$..ignoreNA)
             self$.addOption(private$..overlap)
             self$.addOption(private$..plotBorder)
             self$.addOption(private$..groupShapes)
@@ -636,6 +643,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ptSize = function() private$..ptSize$value,
         facet = function() private$..facet$value,
         keepNA = function() private$..keepNA$value,
+        ignoreNA = function() private$..ignoreNA$value,
         overlap = function() private$..overlap$value,
         plotBorder = function() private$..plotBorder$value,
         groupShapes = function() private$..groupShapes$value,
@@ -700,6 +708,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..ptSize = NA,
         ..facet = NA,
         ..keepNA = NA,
+        ..ignoreNA = NA,
         ..overlap = NA,
         ..plotBorder = NA,
         ..groupShapes = NA,
@@ -810,6 +819,7 @@ scatterplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ptSize .
 #' @param facet .
 #' @param keepNA .
+#' @param ignoreNA .
 #' @param overlap .
 #' @param plotBorder .
 #' @param groupShapes .
@@ -881,6 +891,7 @@ scatterplot <- function(
     ptSize,
     facet,
     keepNA = FALSE,
+    ignoreNA = TRUE,
     overlap = FALSE,
     plotBorder = FALSE,
     groupShapes = FALSE,
@@ -968,6 +979,7 @@ scatterplot <- function(
         ptSize = ptSize,
         facet = facet,
         keepNA = keepNA,
+        ignoreNA = ignoreNA,
         overlap = overlap,
         plotBorder = plotBorder,
         groupShapes = groupShapes,

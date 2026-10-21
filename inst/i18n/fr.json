@@ -16,6 +16,9 @@
             "\"Tick Count\" option for the X-axis is only available for numeric variables.": [
                 "L'options \"Graduations\" pour l'axe des abscisses n'est disponible que pour les variables numériques."
             ],
+            "(Missing)": [
+                ""
+            ],
             "{distrib} distribution requires positive (>0) data.": [
                 "La loi {distrib} nécessite des données strictement positives."
             ],

@@ -34,6 +34,10 @@ msgstr ""
 "L'options \"Graduations\" pour l'axe des abscisses n'est disponible que pour "
 "les variables numériques."
 
+#: R/utils.R
+msgid "(Missing)"
+msgstr ""
+
 #: R/qqplot.b.R
 msgid "{distrib} distribution requires positive (>0) data."
 msgstr "La loi {distrib} nécessite des données strictement positives."
@@ -2905,16 +2909,17 @@ msgstr "Graphe horizontal"
 msgid "Identity line"
 msgstr "Droite identité"
 
+#: areachart/options/ignoreNA.title
 #: barchart/options/ignoreNA.title
+#: boxplot/options/ignoreNA.title
 #: likertplot/options/ignoreNA.title
+#: linechart/options/ignoreNA.title
 #: raincloud/options/ignoreNA.title
+#: scatterplot/options/ignoreNA.title
 msgid "Ignore missing groups"
 msgstr "Ignorer les groupes manquants"
 
-#: areachart/options/ignoreNA.title
 #: barplot/options/ignoreNA.title
-#: boxplot/options/ignoreNA.title
-#: linechart/options/ignoreNA.title
 #: mosaic/options/ignoreNA.title
 #: piechart/options/ignoreNA.title
 msgid "Ignore missing values"

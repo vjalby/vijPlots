@@ -1,7 +1,19 @@
-vijColorScale = function(pal, type = "fill", theme, drop = TRUE) {
+vijColorScale = function(pal, type = "fill", theme, drop = TRUE, labels = ggplot2::waiver()) {
     palette <- vijColorPalette(pal, type, theme)
     # drop = FALSE to include unused levels in color scales
-    return(ggplot2::discrete_scale(aesthetics = type, palette = palette, na.value="gray", drop = drop))
+    return(ggplot2::discrete_scale(aesthetics = type, palette = palette, na.value = "gray", drop = drop,
+                                   labels = labels))
+}
+
+# Labelling function for discrete scales, facets, text labels and tables: NA shown as "(Missing)".
+# as.character() first: a factor with an explicit NA level (fct_na_value_to_level()) is not
+# is.na(), but its value converts to NA_character_
+vijLabelNA = function(self) {
+    naLabel <- .("(Missing)")
+    function(x) {
+        x <- as.character(x)
+        ifelse(is.na(x), naLabel, x)
+    }
 }
 
 vijColorPalette = function(pal, type = "fill", theme) {

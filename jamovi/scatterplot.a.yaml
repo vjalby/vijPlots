@@ -63,10 +63,18 @@ options:
       permitted:
         - factor
 
+    # Replaced by ignoreNA (2026-10-21), kept hidden so that old .omv files where it is set still
+    # open; it has no effect any more
     - name: keepNA
       title: Points with missing group/label
       type: Bool
       default: false
+      hidden: true
+
+    - name: ignoreNA
+      title: Ignore missing groups
+      type: Bool
+      default: true
 
     - name: overlap
       title: Prevent overlap

@@ -233,3 +233,31 @@ test_that("boxplot: titles, axis and legend text options", {
     )$plot
     expect_plot_snapshot("boxplot-titles-axis-legend", testPlot)
 })
+
+test_that("boxplot: missing values are labelled (Missing) on the axis, legend and facets", {
+    renderBuilt <- function(...) {
+        r <- vijPlots::boxplot(data = testData, label = NULL, ignoreNA = FALSE, ...)
+        print(r$plot)
+        ggplot2::ggplot_build(ggplot2::last_plot())
+    }
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    # one variable, NA group on the axis (unsorted and sorted by median)
+    for (order in c("none", "increasing")) {
+        built <- renderBuilt(vars = "Petal.Width", group = "Species", facet = NULL, order = order)
+        xLabels <- built$layout$panel_params[[1]]$x$get_labels()
+        expect_true("(Missing)" %in% xLabels)
+        expect_false("NA" %in% xLabels)
+    }
+    # two variables, NA group in the legend
+    built <- renderBuilt(vars = c("Petal.Width", "Sepal.Width"), group = "Species", facet = NULL)
+    expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("setosa", "versicolor", "virginica", "(Missing)"))
+    # NA facet
+    built <- renderBuilt(vars = "Petal.Width", group = NULL, facet = "group2")
+    gt <- ggplot2::ggplot_gtable(built)
+    strips <- unlist(lapply(gt$grobs[grepl("^strip", gt$layout$name)], function(g) {
+        unlist(lapply(g$grobs, function(s) tryCatch(s$children[[2]]$children[[1]]$label, error = function(e) NULL)))
+    }))
+    expect_true("(Missing)" %in% strips)
+    expect_false("NA" %in% strips)
+})

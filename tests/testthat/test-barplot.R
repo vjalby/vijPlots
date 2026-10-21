@@ -370,7 +370,7 @@ test_that("barplot: frequency table matches the plot", {
     # missing values kept: the NA group is a block of the table, as it is a bar of the count plot
     res <- renderBoth("count", FALSE)
     df <- res$table
-    expect_true("NA" %in% df$outer)
+    expect_true("(Missing)" %in% df$outer)
     expect_equal(sort(res$bars$count), sort(df$counts[df$counts > 0]))
 })
 
@@ -479,4 +479,34 @@ test_that("barplot: grid lines (horizontal)", {
         xGridLines = TRUE
     )$plot
     expect_plot_snapshot("barplot-gridlines-horizontal", testPlot)
+})
+
+test_that("barplot: missing values are labelled (Missing) on the axis, legend and facets", {
+    naData <- testData
+    naData$isl <- naData$island
+    naData$isl[1:4] <- NA
+    for (yaxis in c("count", "percent")) {
+        # NA group (sex) in the legend, NA facet
+        r <- vijPlots::barplot(data = naData, rows = "species", columns = "sex", facet = "isl",
+                               counts = NULL, ignoreNA = FALSE, yaxis = yaxis)
+        grDevices::pdf(NULL)
+        print(r$plot)
+        p <- ggplot2::last_plot()
+        built <- ggplot2::ggplot_build(p)
+        expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("female", "male", "(Missing)"))
+        expect_true("gray" %in% ggplot2::layer_data(p, 1)$fill)
+        gt <- ggplot2::ggplot_gtable(built)
+        strips <- unlist(lapply(gt$grobs[grepl("^strip", gt$layout$name)], function(g) {
+            unlist(lapply(g$grobs, function(s) tryCatch(s$children[[2]]$children[[1]]$label, error = function(e) NULL)))
+        }))
+        expect_true("(Missing)" %in% strips)
+        expect_false("NA" %in% strips)
+        # NA category (sex) on the axis
+        r <- vijPlots::barplot(data = naData, rows = "sex", columns = NULL, facet = NULL,
+                               counts = NULL, ignoreNA = FALSE, yaxis = yaxis)
+        print(r$plot)
+        built <- ggplot2::ggplot_build(ggplot2::last_plot())
+        expect_equal(built$layout$panel_params[[1]]$x$get_labels(), c("female", "male", "(Missing)"))
+        grDevices::dev.off()
+    }
 })

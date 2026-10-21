@@ -382,15 +382,15 @@ test_that("piechart: missing values kept (ignoreNA = FALSE)", {
     )
     df <- r$frequencies$asDF
     # NA is a category and a facet of its own, last, and counts in the percentages
-    expect_equal(unique(df$facet), c("Biscoe", "Dream", "Torgersen", "NA"))
-    expect_equal(df$inner[df$facet == "NA"], c("female", "male", "NA", "Total"))
-    expect_equal(df$counts[df$facet == "NA"], c(2, 1, 1, 4))
+    expect_equal(unique(df$facet), c("Biscoe", "Dream", "Torgersen", "(Missing)"))
+    expect_equal(df$inner[df$facet == "(Missing)"], c("female", "male", "(Missing)", "Total"))
+    expect_equal(df$counts[df$facet == "(Missing)"], c(2, 1, 1, 4))
     expect_equal(df$percent[df$facet == "Torgersen"], c(22, 22, 4, 48) / 48)
 
     # default: missing values are left out
     r <- vijPlots::piechart(data = naData, aVar = "sex", facet = "isl", counts = NULL, frequencyTable = TRUE)
     df <- r$frequencies$asDF
-    expect_false("NA" %in% c(df$facet, df$inner))
+    expect_false("(Missing)" %in% c(df$facet, df$inner))
 })
 
 test_that("piechart: percent labels keep the NA slice (ignoreNA = FALSE)", {
@@ -441,4 +441,39 @@ test_that("piechart: a facet whose weights are all zero is treated as a facet wi
     on.exit(grDevices::dev.off())
     print(r$plot)
     expect_equal(nlevels(ggplot2::layer_data(ggplot2::last_plot(), 1)$PANEL), 1)
+})
+
+test_that("piechart: missing values are labelled (Missing) in the legend, facets, labels and table", {
+    naData <- testData
+    naData$isl <- naData$island
+    naData$isl[1:4] <- NA
+    r <- vijPlots::piechart(
+        data = naData,
+        aVar = "sex",
+        facet = "isl",
+        counts = NULL,
+        labType = "text",
+        labels = "group+percent",
+        ignoreNA = FALSE,
+        frequencyTable = TRUE
+    )
+    expect_true("(Missing)" %in% r$frequencies$asDF$inner)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    p <- ggplot2::last_plot()
+    built <- ggplot2::ggplot_build(p)
+    # legend
+    expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("female", "male", "(Missing)"))
+    # slice labels (group + percent) and gray NA slice
+    labels <- ggplot2::layer_data(p, 2)$label
+    expect_true(any(startsWith(labels, "(Missing)\n")))
+    expect_true("gray" %in% ggplot2::layer_data(p, 1)$fill)
+    # facet strips
+    gt <- ggplot2::ggplot_gtable(built)
+    strips <- unlist(lapply(gt$grobs[grepl("^strip", gt$layout$name)], function(g) {
+        unlist(lapply(g$grobs, function(s) tryCatch(s$children[[2]]$children[[1]]$label, error = function(e) NULL)))
+    }))
+    expect_true("(Missing)" %in% strips)
+    expect_false("NA" %in% strips)
 })

@@ -426,3 +426,31 @@ test_that("mosaic: zero weights are treated as no data", {
     expect_equal(unique(as.character(state$fac)), "x")
     expect_equal(unique(as.character(state$cat)), "a")
 })
+
+test_that("mosaic: missing values are labelled (Missing) on the axes, legend and facets", {
+    naData <- datasets::penguins
+    naData$isl <- naData$island
+    naData$isl[1:4] <- NA
+    renderBuilt <- function(...) {
+        r <- vijPlots::mosaic(data = naData, counts = NULL, ignoreNA = FALSE, yAxis = "label", ...)
+        print(r$plot)
+        ggplot2::ggplot_build(ggplot2::last_plot())
+    }
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    # NA category (sex): x-axis
+    built <- renderBuilt(category = "sex", group = "species", facet = NULL)
+    expect_equal(built$layout$panel_params[[1]]$x$get_labels(), c("female", "male", "(Missing)"))
+    # NA group (sex): legend and y-axis
+    built <- renderBuilt(category = "species", group = "sex", facet = NULL)
+    expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("female", "male", "(Missing)"))
+    expect_true("(Missing)" %in% built$layout$panel_params[[1]]$y$get_labels())
+    # NA facet: strips
+    built <- renderBuilt(category = "species", group = "sex", facet = "isl")
+    gt <- ggplot2::ggplot_gtable(built)
+    strips <- unlist(lapply(gt$grobs[grepl("^strip", gt$layout$name)], function(g) {
+        unlist(lapply(g$grobs, function(s) tryCatch(s$children[[2]]$children[[1]]$label, error = function(e) NULL)))
+    }))
+    expect_true("(Missing)" %in% strips)
+    expect_false("NA" %in% strips)
+})

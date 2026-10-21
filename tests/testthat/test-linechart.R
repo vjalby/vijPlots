@@ -191,3 +191,27 @@ test_that("linechart: grid lines, categorical axis", {
     )$plot
     expect_plot_snapshot("linechart-gridlines-categorical", testPlot)
 })
+
+test_that("linechart: missing group labelled (Missing) and drawn (ignoreNA = FALSE)", {
+    naData <- testData
+    naData$Group[1:3] <- NA
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    # one variable: group as colour, NA line in gray
+    r <- vijPlots::linechart(data = naData, timeVar = "Month2", vars = "VarA", group = "Group", ignoreNA = FALSE)
+    print(r$plot)
+    built <- ggplot2::ggplot_build(ggplot2::last_plot())
+    expect_equal(built$plot$scales$get_scales("colour")$get_labels(), c("One", "Two", "(Missing)"))
+    expect_true("gray" %in% built$data[[1]]$colour)
+    # several variables: group as linetype, NA lines dotted (they used to get no line at all)
+    r <- vijPlots::linechart(data = naData, timeVar = "Month2", vars = c("VarA", "VarB"), group = "Group", ignoreNA = FALSE)
+    print(r$plot)
+    built <- ggplot2::ggplot_build(ggplot2::last_plot())
+    expect_equal(built$plot$scales$get_scales("linetype")$get_labels(), c("One", "Two", "(Missing)"))
+    expect_true("dotted" %in% built$data[[1]]$linetype)
+    expect_false(anyNA(built$data[[1]]$linetype))
+    # one dotted line per variable, not a single merged one
+    dotted <- built$data[[1]][built$data[[1]]$linetype == "dotted", ]
+    expect_equal(length(unique(dotted$group)), 2)
+    expect_equal(length(unique(dotted$colour)), 2)
+})

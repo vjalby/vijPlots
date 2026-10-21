@@ -70,8 +70,8 @@ children:
               - type: CheckBox
                 name: plotBorder
               - type: CheckBox
-                name: keepNA
-                enable: (!(!labelVar) || !(!group))
+                name: ignoreNA
+                enable: (!(!group) || !(!facet))
               - type: CheckBox
                 name: overlap
                 enable: (!(!labelVar))

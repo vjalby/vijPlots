@@ -72,6 +72,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             aVar <- rlang::sym(self$options$aVar)
             groupOne <- vijVar(self$options$groupOne)
             groupTwo <- vijVar(self$options$groupTwo)
+            # Missing values (ignoreNA unchecked) shown as "(Missing)": axis and legend
+            labelNA <- vijLabelNA(self)
 
             #### Plot options ####
             alphaC <- as.numeric(self$options$alphaC)
@@ -166,14 +168,14 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                      slab_alpha = alphaC, slab_linewidth = 0.8, show.legend = FALSE)
                     plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)), size = "none", slab_color = "none")
                 }
-                plot <- plot + ggplot2::scale_x_discrete(drop = FALSE) # keep unused levels
+                plot <- plot + ggplot2::scale_x_discrete(drop = FALSE, labels = labelNA) # keep unused levels
             }
 
             #### Colors and axes ####
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE) +
-                                    vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
-                                    vijColorScale(self$options$colorPalette, "slab_color", theme, drop = FALSE)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE, labels = labelNA) +
+                                    vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) +
+                                    vijColorScale(self$options$colorPalette, "slab_color", theme, drop = FALSE, labels = labelNA)
 
             # Grid lines (value axis only)
             plot <- plot + vijGridLines(self$options$theme,

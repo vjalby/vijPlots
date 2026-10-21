@@ -80,7 +80,7 @@ options:
       default: false
 
     - name: ignoreNA
-      title: Ignore missing values
+      title: Ignore missing groups
       type: Bool
       default: true
 

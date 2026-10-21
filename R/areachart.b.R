@@ -108,6 +108,8 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plotData <- image$state$data
             dateLim <- image$state$dateLim
             oneVariable <- (self$options$mode == "oneVariable")
+            # Missing group (ignoreNA unchecked) shown as "(Missing)" in the legend
+            labelNA <- vijLabelNA(self)
             if (oneVariable) {
                 timeVar <- rlang::sym(self$options$timeVar)
                 depVar <- rlang::sym(self$options$var)
@@ -152,7 +154,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                       alpha = alpha)
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, labels = labelNA)
 
             # Grid lines
             plot <- plot + vijGridLines(self$options$theme,

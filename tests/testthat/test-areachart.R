@@ -202,3 +202,25 @@ test_that("areachart: grid lines, date axis", {
     )$plot
     expect_plot_snapshot("areachart-gridlines-date", testPlot)
 })
+
+test_that("areachart: missing group labelled (Missing) and drawn in gray (ignoreNA = FALSE)", {
+    naData <- testData
+    naData$Group[1:3] <- NA
+    r <- vijPlots::areachart(
+        mode = "oneVariable",
+        data = naData,
+        timeVar = "Month2",
+        timeVar1 = NULL,
+        vars = NULL,
+        var = "VarA",
+        group = "Group",
+        position = "stack",
+        ignoreNA = FALSE
+    )
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    built <- ggplot2::ggplot_build(ggplot2::last_plot())
+    expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("One", "Two", "(Missing)"))
+    expect_true("gray" %in% built$data[[1]]$fill)
+})

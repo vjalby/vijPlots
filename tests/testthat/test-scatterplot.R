@@ -173,7 +173,7 @@ test_that("scatterplot: missing group level kept (ignoreNA = FALSE)", {
         facet = NULL,
         ignoreNA = FALSE
     )$plot
-    expect_plot_snapshot("scatterplot-keepNA", testPlot)
+    expect_plot_snapshot("scatterplot-ignoreNA-false", testPlot)
 })
 
 test_that("scatterplot: titles, axis and legend text options", {

@@ -173,6 +173,8 @@ test_that("mrcrosstabs: computedValues = % by row (options)", {
     expect_equal(unname(ct$`Young Adult`), c(0.2307692307692308, 0.2, 0.1666666666666667, 0.2, 0.2058823529411765, 0.2352941176470588), tolerance = 1e-9)
     expect_equal(unname(ct$Adult), c(0.3846153846153846, 0.4, 0.6666666666666666, 0.4, 0.4411764705882353, 0.4117647058823529), tolerance = 1e-9)
     expect_equal(unname(ct$Total), c(1, 1, 1, 1, 1, 1), tolerance = 1e-9)
+    # the last row is the distribution of the cases among the groups, labelled as such
+    expect_equal(unname(ct$var)[6], "% of cases")
 })
 
 test_that("mrcrosstabs: plot, dummy variables mode (default)", {
@@ -332,4 +334,17 @@ test_that("mrcrosstabs: grid lines (horizontal)", {
         xGridLines = TRUE
     )$plot
     expect_plot_snapshot("mrcrosstabs-gridlines-horizontal", testPlot)
+})
+
+test_that("mrcrosstabs: table blocks marked as in jmv::conttables", {
+    r <- vijPlots::mrcrosstabs(data = testData, mode = "morevar", repVar = NULL,
+                               resps = c("Mastercard", "Amex", "VISA", "Diners Club"), group = "Age", group2 = NULL)
+    table <- r$crosstab
+    hasFormat <- function(format) vapply(seq_len(table$rowCount), function(row)
+        bitwAnd(table$getCell(rowNo = row, col = 1)$format, format) == format, logical(1))
+    # 4 options, then Total and Number of cases: the options one block (begin on the first, end on the last),
+    # each summary row a block of its own (begin and end)
+    expect_equal(hasFormat(jmvcore::Cell.BEGIN_GROUP), c(TRUE, FALSE, FALSE, FALSE, TRUE, TRUE))
+    expect_equal(hasFormat(jmvcore::Cell.END_GROUP), c(FALSE, FALSE, FALSE, TRUE, TRUE, TRUE))
+    expect_equal(hasFormat(jmvcore::Cell.BEGIN_END_GROUP), c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE))
 })

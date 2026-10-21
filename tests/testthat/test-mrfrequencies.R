@@ -297,3 +297,16 @@ test_that("mrfrequencies: grid lines (horizontal)", {
     )$plot
     expect_plot_snapshot("mrfrequencies-gridlines-horizontal", testPlot)
 })
+
+test_that("mrfrequencies: table blocks marked as in jmv::conttables", {
+    r <- vijPlots::mrfrequencies(data = testData, mode = "morevar", repVar = NULL,
+                                 resps = c("Mastercard", "Amex", "VISA", "Diners Club"))
+    table <- r$responses
+    hasFormat <- function(format) vapply(seq_len(table$rowCount), function(row)
+        bitwAnd(table$getCell(rowNo = row, col = 1)$format, format) == format, logical(1))
+    # 4 options, then Total: the options one block (begin on the first, end on the last),
+    # each summary row a block of its own (begin and end)
+    expect_equal(hasFormat(jmvcore::Cell.BEGIN_GROUP), c(TRUE, FALSE, FALSE, FALSE, TRUE))
+    expect_equal(hasFormat(jmvcore::Cell.END_GROUP), c(FALSE, FALSE, FALSE, TRUE, TRUE))
+    expect_equal(hasFormat(jmvcore::Cell.BEGIN_END_GROUP), c(FALSE, FALSE, FALSE, FALSE, TRUE))
+})

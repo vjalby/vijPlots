@@ -36,7 +36,7 @@ msgstr ""
 
 #: R/utils.R
 msgid "(Missing)"
-msgstr ""
+msgstr "(Manquant)"
 
 #: R/qqplot.b.R
 msgid "{distrib} distribution requires positive (>0) data."

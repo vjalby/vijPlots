@@ -24,7 +24,7 @@ test_that("likertplot: frequency table (counts), group = Sex", {
         frequencies = "counts"
     )
     freq <- r$frequencies$asDF
-    expect_equal(unname(freq$.question), c("Question 1", " ", "Question 2", " ", "Question 3", " "))
+    expect_equal(unname(freq$.question), rep(c("Question 1", "Question 2", "Question 3"), each = 2))
     expect_equal(unname(as.character(freq$Sex)), c("Male", "Female", "Male", "Female", "Male", "Female"))
     expect_equal(unname(freq$Sum), c(10L, 12L, 9L, 11L, 9L, 12L))
     expect_equal(unname(freq$`Strongly disagree`), c(3L, 5L, 3L, 1L, 3L, 2L))
@@ -42,7 +42,7 @@ test_that("likertplot: frequency table (percentages, median, mean), group = Grou
         showMean = TRUE
     )
     freq <- r$frequencies$asDF
-    expect_equal(unname(freq$.question), c("Question 1", " ", " ", "Question 2", " ", " ", "Question 3", " ", " "))
+    expect_equal(unname(freq$.question), rep(c("Question 1", "Question 2", "Question 3"), each = 3))
     expect_equal(unname(as.character(freq$Group)), c("A", "B", "C", "A", "B", "C", "A", "B", "C"))
     expect_equal(unname(freq$Sum), c(7L, 7L, 7L, 6L, 7L, 7L, 6L, 7L, 8L))
     expect_equal(unname(freq$`Strongly disagree`), c(0.1428571429, 0.4285714286, 0.5714285714, 0.3333333333, 0.1428571429, 0.1428571429, 0.1666666667, 0.1428571429, 0.25), tolerance = 1e-6)
@@ -417,4 +417,26 @@ test_that("likertplot: missing group labelled (Missing) in the plot, tables and 
     pw <- r$comp$pwTable$asDF
     expect_true("(Missing)" %in% c(pw$group1, pw$group2))
     expect_false("NA" %in% c(pw$group1, pw$group2))
+})
+
+test_that("likertplot: frequency table grouped by group, as the plot (groupBy = group)", {
+    r <- vijPlots::likertplot(
+        data = testData,
+        liks = c("Question 1", "Question 2", "Question 3"),
+        group = "Sex",
+        groupBy = "group",
+        frequencyTable = TRUE,
+        frequencies = "counts"
+    )
+    # the group column comes first, the rows are grouped by group then question
+    expect_equal(names(r$frequencies$asDF)[1:2], c("Sex", ".question"))
+    freq <- r$frequencies$asDF
+    expect_equal(unname(as.character(freq$Sex)), rep(c("Male", "Female"), each = 3))
+    expect_equal(unname(freq$.question), rep(c("Question 1", "Question 2", "Question 3"), 2))
+    # same counts as grouped by question, in the other order
+    expect_equal(unname(freq$Sum), c(10L, 9L, 9L, 12L, 11L, 12L))
+    # blocks marked as in jmv::conttables: begin on each block's first row, end on its last
+    formatOf <- function(row) r$frequencies$getCell(rowNo = row, col = 1)$format
+    expect_equal(bitwAnd(vapply(1:6, formatOf, numeric(1)), jmvcore::Cell.BEGIN_GROUP) > 0, c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
+    expect_equal(bitwAnd(vapply(1:6, formatOf, numeric(1)), jmvcore::Cell.END_GROUP) > 0, c(FALSE, FALSE, TRUE, FALSE, FALSE, TRUE))
 })

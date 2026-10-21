@@ -6,8 +6,10 @@
 * Bar Plot / Pie Chart / Mosaic Plot: missing, negative or infinite weights are now always rejected
 * Mosaic Plot: fixed the facet of missing values (when "Ignore missing values" is unchecked)
 * Box Plot: whisker options (1.5 × IQR, 3 × IQR, min-max)
-* Missing values kept as a category are now labelled "(Missing)" instead of "NA"
+* Likert Plot: the frequency table follows the "Group By" option; 0.01 % accuracy
+* Line Chart: fixed the missing group not drawn with several variables
 * Scatter Plot: "Points with missing group/label" replaced by "Ignore missing groups"; points with a missing label are now kept
+* Missing values kept as a category are now labelled "(Missing)" instead of "NA"
 * Grid lines option for numeric axes
 * The fixed-length color palettes are now extended by interpolation
 * Code optimization (smaller .omv files: summary plots now store aggregated data)

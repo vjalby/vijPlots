@@ -17,18 +17,24 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                 table$getColumn('var')$setTitle(self$options$repVar)
             # Set the rows
             if (morevar) {
-                for (i in seq_along(self$options$resps))
-                    table$addRow(rowKey = as.character(i))
+                nOptions <- length(self$options$resps)
             } else {
                 aCol <- self$data[[self$options$repVar]]
                 uniqueValues <- private$.oneHotEncoding(aCol, self$options$separator, init = TRUE)
-                for (i in seq_along(uniqueValues))
-                    table$addRow(rowKey = as.character(i))
+                nOptions <- length(uniqueValues)
+            }
+            for (i in seq_len(nOptions))
+                table$addRow(rowKey = as.character(i))
+            # Blocks marked as in jmv::conttables: the option rows are one block (BEGIN_GROUP on its
+            # first row, rendered as a top padding; END_GROUP on its last), the Total a block of its own
+            if (nOptions > 0) {
+                table$addFormat(rowKey = "1", col = 1, jmvcore::Cell.BEGIN_GROUP)
+                table$addFormat(rowKey = as.character(nOptions), col = 1, jmvcore::Cell.END_GROUP)
             }
             # Add the "total" row
             if (self$options$showTotal) {
                 table$addRow(rowKey = '.total', values = list(var=.("Total")))
-                table$addFormat(rowKey = ".total", col = 1, jmvcore::Cell.BEGIN_GROUP)
+                table$addFormat(rowKey = ".total", col = 1, jmvcore::Cell.BEGIN_END_GROUP)
             }
             # Set the image dimensions
             width <- 425
@@ -84,9 +90,9 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
             if ( self$options$showTotal ) {
                 i <- nrow(myresult$df)
+                # label set in .init()
                 table$setRow(rowKey = ".total",
-                             values = list(var = .("Total"),
-                                         freq = myresult$df[i,2],
+                             values = list(freq = myresult$df[i,2],
                                          responsepercent = myresult$df[i,3],
                                          casepercent = myresult$df[i,4]))
             }

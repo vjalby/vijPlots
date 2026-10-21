@@ -20,22 +20,34 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             # Table rows
             if (morevar) {
-                for (i in seq_along(self$options$resps))
+                nOptions <- length(self$options$resps)
+                for (i in seq_len(nOptions))
                     table$addRow(rowKey = as.character(i), list(var = self$options$resps[i]))
             } else {
                 aCol <- self$data[[self$options$repVar]]
                 uniqueValues <- private$.oneHotEncoding(aCol, self$options$separator, init = TRUE)
-                for (i in seq_along(uniqueValues))
+                nOptions <- length(uniqueValues)
+                for (i in seq_len(nOptions))
                     table$addRow(rowKey = as.character(i), list(var = uniqueValues[i]))
+            }
+            # Blocks marked as in jmv::conttables: the option rows are one block (BEGIN_GROUP on its
+            # first row, rendered as a top padding; END_GROUP on its last), Total and Number of cases
+            # blocks of their own
+            if (nOptions > 0) {
+                table$addFormat(rowKey = "1", col = 1, jmvcore::Cell.BEGIN_GROUP)
+                table$addFormat(rowKey = as.character(nOptions), col = 1, jmvcore::Cell.END_GROUP)
             }
             # Add the "total" row here (to prevent flickering)
             if ( self$options$totalRow ) {
                 table$addRow(rowKey='.total', values=list(var=.("Total")))
-                table$addFormat(rowKey=".total", col=1, jmvcore::Cell.BEGIN_GROUP)
+                table$addFormat(rowKey=".total", col=1, jmvcore::Cell.BEGIN_END_GROUP)
             }
             if ( self$options$showNbOfCases && ( self$options$computedValues == "count" || self$options$computedValues == "options") ) {
-                table$addRow(rowKey='.nbofcases', values=list(var=.("Number of cases")))
-                table$addFormat(rowKey=".nbofcases", col=1, jmvcore::Cell.BEGIN_GROUP)
+                # The number of cases by group, or (% by row) its distribution among the groups,
+                # i.e. the % of cases, comparable to the option rows
+                nbOfCasesLabel <- if (self$options$computedValues == "options") .("% of cases") else .("Number of cases")
+                table$addRow(rowKey='.nbofcases', values=list(var=nbOfCasesLabel))
+                table$addFormat(rowKey=".nbofcases", col=1, jmvcore::Cell.BEGIN_END_GROUP)
             }
             # Set custom name for options column
             if (morevar)
@@ -128,10 +140,10 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                              values = c(var = rownames(crosstab)[i], crosstab[i,]))
             }
             if ( self$options$totalRow ) {
-                table$setRow(rowKey = '.total', values = c(var=.("Total"), crosstab[n-1,]))
+                table$setRow(rowKey = '.total', values = as.list(crosstab[n-1,]))   # label set in .init()
             }
             if ( self$options$showNbOfCases && (self$options$computedValues == "count" || self$options$computedValues == "options") ) {
-                table$setRow(rowKey = '.nbofcases', values = append(list(var=.("Number of cases")), crosstab[n,]))
+                table$setRow(rowKey = '.nbofcases', values = as.list(crosstab[n,]))   # label set in .init()
             }
             image <- self$results$plot
             image$setState(crosstab[1:nAnswers,1:nGroups])

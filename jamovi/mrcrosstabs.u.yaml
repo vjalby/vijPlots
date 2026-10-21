@@ -107,6 +107,7 @@ children:
             children:
               - type: CheckBox
                 name: showNbOfCases
+                enable: (computedValues_count || computedValues_options)
               - type: CheckBox
                 name: totalRow
               - type: CheckBox

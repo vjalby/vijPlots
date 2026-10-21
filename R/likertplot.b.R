@@ -336,9 +336,13 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 fType <- 'number'
                 fmt <- 'pc'
             }
+            # Rows grouped as in the plot ("Group by"): by question (default), or by group
+            byGroup <- ng > 0 && self$options$groupBy == "group"
             # Set columns
             if (ng > 0) {
-                table$addColumn(self$options$group, type = "text", title = private$.getVarName(self$options$group))
+                # First column when the rows are grouped by group; combined below like .question
+                table$addColumn(self$options$group, index = if (byGroup) 1 else NA, type = "text",
+                                title = private$.getVarName(self$options$group), combineBelow = TRUE)
             }
             table$addColumn("Sum", type = "integer", title = "N")
             answers_levels <- levels(ggLikertData[['.answer']])
@@ -369,31 +373,36 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             } else { # Freq table by group
                 group_sym <- rlang::sym(groupingVar)
-                for (ques in questions) {
-                    firstGroup <- TRUE
-                    for (group in groups) {
-                        groupAndQues <- paste0(group, ques)
-                        row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
-                        values <- as.list(row_data)
-                        if (firstGroup)
-                            values[".question"] <- private$.getVarName(ques)
-                        else
-                            values[".question"] <- " "
-                        values[[self$options$group]] <- group
-                        numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
+                # One row per question x group, the outer variable varying slowest
+                # (expand.grid() varies its first column fastest)
+                if (byGroup)
+                    rows <- expand.grid(ques = questions, group = groups, stringsAsFactors = FALSE)
+                else
+                    rows <- expand.grid(group = groups, ques = questions, stringsAsFactors = FALSE)
+                outer <- if (byGroup) rows$group else rows$ques
+                for (i in seq_len(nrow(rows))) {
+                    ques <- rows$ques[i]
+                    group <- rows$group[i]
+                    groupAndQues <- paste0(group, ques)
+                    row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
+                    values <- as.list(row_data)
+                    values[".question"] <- private$.getVarName(ques)
+                    values[[self$options$group]] <- group
+                    numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
 
-                        if (self$options$showMedian)
-                            values["Median"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
-                        if (self$options$showMean) {
-                            values["Mean"] <- mean(numericData, na.rm = TRUE)
-                            values["SD"] <- stats::sd(numericData, na.rm = TRUE)
-                        }
-                        table$addRow(rowKey = groupAndQues, values = values)
-                        if (firstGroup)
-                            table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.BEGIN_GROUP)
-                        firstGroup <- FALSE
+                    if (self$options$showMedian)
+                        values["Median"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
+                    if (self$options$showMean) {
+                        values["Mean"] <- mean(numericData, na.rm = TRUE)
+                        values["SD"] <- stats::sd(numericData, na.rm = TRUE)
                     }
-                    table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.END_GROUP)
+                    table$addRow(rowKey = groupAndQues, values = values)
+                    # Blocks of the outer variable, marked as in jmv::conttables: BEGIN_GROUP on each
+                    # block's first row (jamovi renders it as a top padding), END_GROUP on its last
+                    if (i == 1 || outer[i] != outer[i - 1])
+                        table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.BEGIN_GROUP)
+                    if (i == nrow(rows) || outer[i + 1] != outer[i])
+                        table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.END_GROUP)
                 }
             }
         },

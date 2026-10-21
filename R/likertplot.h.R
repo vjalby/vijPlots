@@ -150,7 +150,8 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 accuracy,
                 options=list(
                     "1",
-                    "0.1"),
+                    "0.1",
+                    "0.01"),
                 default="1")
             private$..vLabelWrap <- jmvcore::OptionList$new(
                 "vLabelWrap",
@@ -585,10 +586,12 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`=".question", 
                         `title`="Questions", 
-                        `type`="text")),
+                        `type`="text", 
+                        `combineBelow`=TRUE)),
                 clearWith=list(
                     "liks",
                     "group",
+                    "groupBy",
                     "sorting",
                     "ignoreNA",
                     "frequencies",

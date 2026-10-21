@@ -45,7 +45,7 @@ children:
                 name: descAsVarName
       - type: LayoutBox
         cell:
-          column: 1
+          column: 2
           row: 0
         stretchFactor: 1
         children:
@@ -56,17 +56,33 @@ children:
                 name: sorting_none
                 optionName: sorting
                 optionPart: none
-                label: None
               - type: RadioButton
                 name: sorting_descending
                 optionName: sorting
                 optionPart: descending
-                label: Descending
               - type: RadioButton
                 name: sorting_ascending
                 optionName: sorting
                 optionPart: ascending
-                label: Ascending
+      - type: LayoutBox
+        cell:
+          column: 1
+          row: 0
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: Group By
+            children:
+              - type: RadioButton
+                name: groupBy_variable
+                optionName: groupBy
+                optionPart: variable
+                enable: (!(!group))
+              - type: RadioButton
+                name: groupBy_group
+                optionName: groupBy
+                optionPart: group
+                enable: (!(!group))
   - type: CollapseBox
     label: Table
     collapsed: true
@@ -106,13 +122,11 @@ children:
                     name: frequencies_counts
                     optionName: frequencies
                     optionPart: counts
-                    label: Counts
                     enable: (frequencyTable)
                   - type: RadioButton
                     name: frequencies_percentages
                     optionName: frequencies
                     optionPart: percentages
-                    label: Percentages
                     enable: (frequencyTable)
   - type: CollapseBox
     label: Comparison Tests
@@ -154,19 +168,16 @@ children:
                     name: postHoc_dunn
                     optionName: postHoc
                     optionPart: dunn
-                    label: Dunn
                     enable: (!(!group) && showPostHoc)
                   - type: RadioButton
                     name: postHoc_conover
                     optionName: postHoc
                     optionPart: conover
-                    label: Conover
                     enable: (!(!group) && showPostHoc)
                   - type: RadioButton
                     name: postHoc_dscf
                     optionName: postHoc
                     optionPart: dscf
-                    label: DSCF
                     enable: (!(!group) && showPostHoc)
           - type: LayoutBox
             cell:
@@ -181,19 +192,16 @@ children:
                     name: pValue_none
                     optionName: pValue
                     optionPart: none
-                    label: None
                     enable: (!(!group) && (showKW || showMannU || showPostHoc))
                   - type: RadioButton
                     name: pValue_group
                     optionName: pValue
                     optionPart: group
-                    label: Groupwise
                     enable: (!(!group) && showPostHoc)
                   - type: RadioButton
                     name: pValue_overall
                     optionName: pValue
                     optionPart: overall
-                    label: Overall
                     enable: (!(!group) && (showKW || showMannU || showPostHoc))
               - type: ComboBox
                 name: adjustMethod
@@ -220,12 +228,10 @@ children:
                     name: type_stacked
                     optionName: type
                     optionPart: stacked
-                    label: Stacked
                   - type: RadioButton
                     name: type_centered
                     optionName: type
                     optionPart: centered
-                    label: Centered
           - type: LayoutBox
             cell:
               column: 1
@@ -233,39 +239,13 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: Group
+                label: Options
                 children:
-                  - type: RadioButton
-                    name: groupBy_variable
-                    optionName: groupBy
-                    optionPart: variable
-                    label: By variable
-                    enable: (!(!group))
-                  - type: RadioButton
-                    name: groupBy_group
-                    optionName: groupBy
-                    optionPart: group
-                    label: By group
-                    enable: (!(!group))
-          - type: LayoutBox
-            cell:
-              column: 2
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: '% Accuracy'
-                children:
-                  - type: RadioButton
-                    name: accuracy_1
-                    optionName: accuracy
-                    optionPart: '1'
-                    label: '1'
-                  - type: RadioButton
-                    name: accuracy_01
-                    optionName: accuracy
-                    optionPart: '0.1'
-                    label: '0.1'
+                  - type: CheckBox
+                    name: addMedianLine
+                    enable: (type_stacked)
+                  - type: CheckBox
+                    name: reverseLikert
       - type: LayoutBox
         margin: large
         stretchFactor: 1
@@ -294,13 +274,20 @@ children:
             stretchFactor: 1
             children:
               - type: Label
-                label: Options
+                label: '% Accuracy'
                 children:
-                  - type: CheckBox
-                    name: addMedianLine
-                    enable: (type_stacked)
-                  - type: CheckBox
-                    name: reverseLikert
+                  - type: RadioButton
+                    name: accuracy_1
+                    optionName: accuracy
+                    optionPart: '1'
+                  - type: RadioButton
+                    name: accuracy_01
+                    optionName: accuracy
+                    optionPart: '0.1'
+                  - type: RadioButton
+                    name: accuracy_001
+                    optionName: accuracy
+                    optionPart: '0.01'
       - type: LayoutBox
         margin: large
         stretchFactor: 1

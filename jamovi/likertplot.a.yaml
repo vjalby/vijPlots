@@ -123,6 +123,8 @@ options:
           name:  "1"
         - title: "0.1"
           name:  "0.1"
+        - title: "0.01"
+          name:  "0.01"
       default: "1"
 
     - name: vLabelWrap

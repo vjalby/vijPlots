@@ -15,9 +15,11 @@ items:
         - name: .question
           title: Questions
           type: text
+          combineBelow: true
       clearWith:
         - liks
         - group
+        - groupBy
         - sorting
         - ignoreNA
         - frequencies

@@ -151,7 +151,7 @@ options:
       title: Width
       min: 0
       max: 1
-      default: 0.2
+      default: 0.25
 
     - name: errorBarLineSize
       type: Number

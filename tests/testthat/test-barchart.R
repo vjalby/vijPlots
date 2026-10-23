@@ -113,7 +113,7 @@ testthat::test_that("barchart: state holds one summarised row per bar", {
         facet = NULL,
         errorBars = "se"
     )
-    state <- r$plot$state
+    state <- r$plot$state$data
     cleanData <- testData[!is.na(testData$Species) & !is.na(testData$Petal.Width), ]
     expectedMean <- tapply(cleanData$Petal.Width, cleanData$Species, mean)
     expectedSe <- tapply(cleanData$Petal.Width, cleanData$Species, function(x) stats::sd(x) / sqrt(length(x)))
@@ -143,9 +143,9 @@ testthat::test_that("barchart: variables named like the summary columns (y, ymin
         facet = NULL,
         errorBars = "se"
     )
-    testthat::expect_equal(r$plot$state$.Y, reference$plot$state$.Y)
-    testthat::expect_equal(r$plot$state$.YMIN, reference$plot$state$.YMIN)
-    testthat::expect_equal(levels(r$plot$state$y), levels(testData$group2))
+    testthat::expect_equal(r$plot$state$data$.Y, reference$plot$state$data$.Y)
+    testthat::expect_equal(r$plot$state$data$.YMIN, reference$plot$state$data$.YMIN)
+    testthat::expect_equal(levels(r$plot$state$data$y), levels(testData$group2))
     testthat::expect_no_error(ggplot2::ggplot_build(suppressMessages(r$plot$plot$fun())))
 })
 
@@ -204,4 +204,98 @@ testthat::test_that("barchart: horizontal, labels at the bars' end (fixed gap)",
     built <- ggplot2::layer_data(ggplot2::last_plot(), 2)
     expect_true(all(startsWith(built$label, "  ")))
     expect_true(all(built$hjust == 0))
+})
+
+testthat::test_that("barchart: error bars centred on their bars with Grouped (dodge2), even in an incomplete category", {
+    # Chinstrap has no penguin with a missing sex: 2 bars, against 3 for Adelie and Gentoo
+    r <- vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass", group = "sex",
+                            facet = NULL, errorBars = "se", ignoreNA = FALSE)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    p <- ggplot2::last_plot()
+    bars <- ggplot2::layer_data(p, 1)
+    errors <- ggplot2::layer_data(p, length(p$layers))
+    centre <- function(d) data.frame(x = round(d$x), group = d$group, centre = round((d$xmin + d$xmax) / 2, 6))
+    both <- merge(centre(bars), centre(errors), by = c("x", "group"))
+    expect_equal(nrow(both), 8)
+    expect_equal(both$centre.x, both$centre.y)
+    # the same cap width everywhere
+    expect_equal(length(unique(round(errors$xmax - errors$xmin, 6))), 1)
+})
+
+testthat::test_that("barchart: error bar Width is a fraction of the bar's width (1 = as wide as the bar)", {
+    capRatio <- function(...) {
+        r <- vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass",
+                                facet = NULL, errorBars = "se", ...)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        p <- ggplot2::last_plot()
+        bars <- ggplot2::layer_data(p, 1)
+        errors <- ggplot2::layer_data(p, length(p$layers))
+        unique(round((errors$xmax - errors$xmin) / (bars$xmax - bars$xmin), 6))
+    }
+    expect_equal(capRatio(group = "sex", barType = "dodge2", errorBarWidth = 1), 1)
+    expect_equal(capRatio(group = "sex", barType = "dodge", errorBarWidth = 1), 1)
+    expect_equal(capRatio(group = NULL, errorBarWidth = 1), 1)
+    expect_equal(capRatio(group = "sex", barType = "dodge2", errorBarWidth = 0.2), 0.2)
+})
+
+testthat::test_that("barchart: labels outside the bars on the side of the value's sign", {
+    signData <- data.frame(x = factor(rep(c("A", "B"), each = 2)), y = c(3, 5, -2, -4))
+    labelsOf <- function(horizontal) {
+        r <- vijPlots::barchart(data = signData, xVar = "x", yVar = "y", group = NULL, facet = NULL,
+                                showLabels = TRUE, horizontal = horizontal)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        built <- ggplot2::ggplot_build(ggplot2::last_plot())
+        # room on both sides for the labels: the axis goes as far below the negative bar as above the positive one
+        range <- built$layout$panel_params[[1]][[if (horizontal) "x" else "y"]]$continuous_range
+        expect_equal(-3 - range[1], range[2] - 4, tolerance = 1e-6)   # bars: mean 4 (A), mean -3 (B)
+        ggplot2::layer_data(ggplot2::last_plot(), 2)[, c("label", "vjust", "hjust")]
+    }
+    # vertical: above the positive bar, below the negative one
+    v <- labelsOf(FALSE)
+    expect_equal(v$label, c("4", "-3"))
+    expect_equal(v$vjust, c(-0.5, 1.5))
+    # horizontal: right of the positive bar (spaces before), left of the negative one (spaces after)
+    h <- labelsOf(TRUE)
+    expect_equal(h$label, c("  4", "-3  "))
+    expect_equal(h$hjust, c(0, 1))
+})
+
+testthat::test_that("barchart: no label on a bar or segment whose value rounds to 0", {
+    zeroData <- data.frame(x = factor(rep(c("A", "B"), each = 2)), g = factor(rep(c("g1", "g2"), 2)),
+                           y = c(3, 0.004, 0, 2))
+    labelsOf <- function(...) {
+        r <- vijPlots::barchart(data = zeroData, xVar = "x", yVar = "y", facet = NULL, showLabels = TRUE, ...)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        ggplot2::layer_data(ggplot2::last_plot(), 2)$label
+    }
+    expect_equal(labelsOf(group = NULL), c("1.5", "1"))                     # means 1.502, 1 (not hidden)
+    expect_setequal(labelsOf(group = "g", barType = "dodge"), c("3", "", "", "2"))
+    expect_setequal(labelsOf(group = "g", barType = "stack"), c("3", "", "", "2"))
+})
+
+testthat::test_that("barchart: stacked sum label at the end of the stack, on the side of the total's sign", {
+    stackData <- data.frame(x = factor(rep(c("A", "B", "C"), each = 6)),
+                            g = factor(rep(c("g1", "g2", "g3"), times = 6)),
+                            y = c(rep(c(5, -3, 2), 2), rep(c(-4, 6, -1), 2), rep(c(-2, -3, -1), 2)))
+    r <- vijPlots::barchart(data = stackData, xVar = "x", yVar = "y", group = "g", facet = NULL,
+                            yaxis = "sum", barType = "stack", showLabels = TRUE)
+    # sums per segment: A 10, -6, 4 (total 8); B -8, 12, -2 (total 2); C -4, -6, -2 (total -12)
+    totals <- r$plot$state$totals
+    expect_equal(totals$.TOTAL, c(8, 2, -12))
+    expect_equal(totals$.END, c(14, 12, -12))   # top of the positive part, or bottom of the negative part
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    labels <- ggplot2::layer_data(ggplot2::last_plot(), 3)
+    expect_equal(labels$label, c("8", "2", "-12"))
+    expect_equal(labels$y, c(14, 12, -12))
+    expect_equal(labels$vjust, c(-0.5, -0.5, 1.5))
 })

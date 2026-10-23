@@ -22,7 +22,7 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             errorBars = "none",
             ciLevel = 95,
             bootstrap = FALSE,
-            errorBarWidth = 0.2,
+            errorBarWidth = 0.25,
             errorBarLineSize = 0.5,
             singleColor = TRUE,
             colorNo = 1,
@@ -186,7 +186,7 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 errorBarWidth,
                 min=0,
                 max=1,
-                default=0.2)
+                default=0.25)
             private$..errorBarLineSize <- jmvcore::OptionNumber$new(
                 "errorBarLineSize",
                 errorBarLineSize,
@@ -906,7 +906,7 @@ barchart <- function(
     errorBars = "none",
     ciLevel = 95,
     bootstrap = FALSE,
-    errorBarWidth = 0.2,
+    errorBarWidth = 0.25,
     errorBarLineSize = 0.5,
     singleColor = TRUE,
     colorNo = 1,

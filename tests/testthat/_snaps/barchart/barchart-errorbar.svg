@@ -23,15 +23,15 @@
 <rect x='94.90' y='55.26' width='180.05' height='438.96' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
 <rect x='294.95' y='208.07' width='180.05' height='286.16' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
 <rect x='495.00' y='441.37' width='180.05' height='52.85' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<polyline points='164.91,37.77 204.92,37.77 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='162.41,37.77 207.43,37.77 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <polyline points='184.92,37.77 184.92,72.75 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polyline points='164.91,72.75 204.92,72.75 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polyline points='364.97,196.05 404.98,196.05 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='162.41,72.75 207.43,72.75 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='362.47,196.05 407.48,196.05 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <polyline points='384.97,196.05 384.97,220.09 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polyline points='364.97,220.09 404.98,220.09 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polyline points='565.02,434.73 605.03,434.73 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='362.47,220.09 407.48,220.09 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='562.52,434.73 607.53,434.73 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <polyline points='585.02,434.73 585.02,448.00 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polyline points='565.02,448.00 605.03,448.00 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='562.52,448.00 607.53,448.00 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <polyline points='64.89,517.04 64.89,14.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='47.58' y='498.35' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.0</text>
 <text x='47.58' y='391.75' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>0.5</text>

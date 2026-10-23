@@ -46,8 +46,9 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             yName <- self$options$yVar
             xName <- self$options$xVar
 
-            # ".X", ".Y", ".YMIN" and ".YMAX" are the column names of the summary computed below
-            reservedVar <- intersect(c(yName, xName, self$options$group, self$options$facet), c(".X", ".Y", ".YMIN", ".YMAX"))
+            # ".X", ".Y", ".YMIN", ".YMAX", ".TOTAL" and ".END" are the column names of the summaries computed below
+            reservedVar <- intersect(c(yName, xName, self$options$group, self$options$facet),
+                                     c(".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END"))
             if (length(reservedVar) > 0)
                 vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
 
@@ -97,15 +98,26 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 dplyr::summarise(cellFun(.data[[yName]]), .groups = "drop") |>
                 as.data.frame()
 
+            # Stacked sums: net total per x (and facet), and the end of the stack on the side of its sign, where its
+            # label goes (ggplot2 stacks positive and negative values apart, on each side of 0)
+            totals <- NULL
+            if (self$options$barType == "stack" && !is.null(self$options$group) && self$options$yaxis == "sum")
+                totals <- plotData |>
+                    dplyr::group_by(dplyr::pick(dplyr::all_of(c(".X", self$options$facet)))) |>
+                    dplyr::summarise(.TOTAL = sum(.data[[".Y"]]),
+                                     .END = if (.TOTAL >= 0) sum(pmax(.data[[".Y"]], 0)) else sum(pmin(.data[[".Y"]], 0)),
+                                     .groups = "drop") |>
+                    as.data.frame()
+
             image <- self$results$plot
-            image$setState(plotData)
+            image$setState(list(data = plotData, totals = totals))
         },
         .plot = function(image, ggtheme, theme, ...) {  # <-- the plot function
             # Long by design (reviewed 2026-10-09): a linear `plot <- plot + ...` build; splitting
             # it would scatter the plot's construction without simplifying it.
             if (is.null(image$state))
                 return(FALSE)
-            plotData <- image$state
+            plotData <- image$state$data
 
             yVar <- rlang::sym(".Y")
             xVar <- rlang::sym(self$options$xVar)
@@ -130,12 +142,25 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     position <- ggplot2::position_stack()
                     labPosition <- ggplot2::position_stack(vjust = 0.5)
                 }
+                # no error bars on stacked bars (see .errorBars())
             } else if (dodge2) {
                 position <- ggplot2::position_dodge2(preserve = "single", width = 0.9)
                 labPosition <- ggplot2::position_dodge2(preserve = "single", width = 0.9)
+                # Error bars laid out with the bars' width (0.9): dodge2 places each element according to its
+                # own width, so with their narrower width they were offset in a category with fewer bars.
+                # padding then draws them narrower around the same centre: a bar is drawn 0.9 of its slot
+                # (dodge2's default padding = 0.1), so padding = 1 - 0.9 * errorBarWidth makes the cap
+                # errorBarWidth times the bar's width (1 = as wide as the bar)
+                errorWidth <- 0.9
+                errorPosition <- ggplot2::position_dodge2(preserve = "single", width = 0.9,
+                                                          padding = 1 - 0.9 * self$options$errorBarWidth)
             } else {
                 position <- ggplot2::position_dodge(width = 0.9)
                 labPosition <- ggplot2::position_dodge(width = 0.9)
+                # A bar takes its whole slot (0.9 / number of bars), as does an element 0.9 wide: the cap is
+                # errorBarWidth times the bar's width (1 = as wide as the bar)
+                errorWidth <- 0.9 * self$options$errorBarWidth
+                errorPosition <- ggplot2::position_dodge(width = 0.9)
             }
 
             #### Single color ####
@@ -165,35 +190,53 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showLabels) {
                 labelSize <- self$options$labelTextSize / ggplot2::.pt
                 digits <- self$options$decimalPrecision
-                # Justification of a label drawn outside its bar (at its end). Horizontal: text after two
-                # spaces, with hjust = 0, i.e. the same gap whatever the label length (a negative hjust is
+                # Labels drawn outside their bars, beyond the bar's end on the side of the value's sign: above
+                # (right) of a positive bar, below (left) of a negative one. Horizontal: hjust 0/1 with two spaces
+                # between the bar and the text, i.e. the same gap whatever the label length (a negative hjust is
                 # a fraction of the label's own width)
-                if (self$options$horizontal)
-                    outside <- list(vjust = 0.5, hjust = 0, prefix = "  ")
-                else
-                    outside <- list(vjust = -0.5, hjust = 0.5, prefix = "")
+                horizontal <- self$options$horizontal
+                outsideText <- function(value) {
+                    text <- round(value, digits)
+                    if (horizontal) ifelse(value < 0, paste0(text, "  "), paste0("  ", text)) else paste0(text)
+                }
+                outsideVjust <- function(value) if (horizontal) 0.5 else ifelse(value < 0, 1.5, -0.5)
+                outsideHjust <- function(value) if (horizontal) ifelse(value < 0, 1, 0) else 0.5
                 # Labels of stacked bars are centred inside each bar
-                just <- if (stacked) list(vjust = 0.5, hjust = 0.5, prefix = "") else outside
+                # No label on a bar (or a stacked segment) whose value rounds to 0
+                if (stacked) {
+                    labelText <- function(value) ifelse(round(value, digits) == 0, "", paste0(round(value, digits)))
+                    labelVjust <- function(value) 0.5
+                    labelHjust <- function(value) 0.5
+                } else {
+                    labelText <- function(value) ifelse(round(value, digits) == 0, "", outsideText(value))
+                    labelVjust <- outsideVjust
+                    labelHjust <- outsideHjust
+                }
 
                 textColor <- self$options$textColor
                 if (!stacked && textColor == "auto")
                     textColor <- "black"
 
                 geomText <- function(...) ggplot2::geom_text(..., size = labelSize, fontface = if (stacked) "bold" else "plain",
-                                                             position = labPosition, vjust = just$vjust, hjust = just$hjust)
+                                                             position = labPosition)
                 if (textColor == "auto")
-                    plot <- plot + geomText(ggplot2::aes(label = paste0(just$prefix, round(!!yVar, digits)),
+                    plot <- plot + geomText(ggplot2::aes(label = labelText(!!yVar), vjust = labelVjust(!!yVar), hjust = labelHjust(!!yVar),
                                                          color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))))
                 else
-                    plot <- plot + geomText(ggplot2::aes(label = paste0(just$prefix, round(!!yVar, digits))), color = textColor)
+                    plot <- plot + geomText(ggplot2::aes(label = labelText(!!yVar), vjust = labelVjust(!!yVar), hjust = labelHjust(!!yVar)),
+                                            color = textColor)
 
-                # Label for stacked sum (sum, per x, of the sums already computed per bar)
-                if (stacked && self$options$yaxis == "sum") {
+                # Label for stacked sum: the net total, at the end of the stack on the side of its sign (see .run()),
+                # so that with mixed signs it doesn't fall inside the stack, among the segments' labels
+                totals <- image$state$totals
+                if (!is.null(totals)) {
                     textColor2 <- ifelse(textColor %in% c("auto", "white"), "black", textColor)
-                    plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "text",
-                                                ggplot2::aes(y = !!yVar, label = paste0(outside$prefix, round(ggplot2::after_stat(y), digits)), group = NULL, fill = NULL),
-                                                size = labelSize, vjust = outside$vjust, hjust = outside$hjust,
-                                                color = textColor2)
+                    plot <- plot + ggplot2::geom_text(data = totals, inherit.aes = FALSE,
+                                                      ggplot2::aes(x = .data[[".X"]], y = .data[[".END"]],
+                                                                   label = outsideText(.data[[".TOTAL"]]),
+                                                                   vjust = outsideVjust(.data[[".TOTAL"]]),
+                                                                   hjust = outsideHjust(.data[[".TOTAL"]])),
+                                                      size = labelSize, color = textColor2)
                 }
             }
 
@@ -201,9 +244,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             errorBars <- private$.errorBars()
             if (errorBars != "none")
                 plot <- plot +  ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[".YMIN"]], ymax = .data[[".YMAX"]]),
-                                             width = self$options$errorBarWidth, linewidth = self$options$errorBarLineSize,
-                                             color = "black",
-                                             position = ggplot2::position_dodge(width = 0.9))
+                                             width = errorWidth, linewidth = self$options$errorBarLineSize,
+                                             color = "black", position = errorPosition)
 
             # Show unused levels (if checked in data/var setting)
             plot <- plot + ggplot2::scale_x_discrete(drop = FALSE, labels = labelNA)
@@ -226,10 +268,14 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
             if ((self$options$showLabels && !stacked) || (self$options$showLabels && summaryFun == "sum" && stacked)) {
+                # Room for the labels beyond the bars' ends: on the positive side, and on the negative side too
+                # when a bar is negative (its label is then drawn below/left of it)
+                upper <- if (self$options$horizontal) 0.2 else 0.1
+                lower <- if (any(plotData$.Y < 0, na.rm = TRUE)) upper else 0.05
                 if (self$options$horizontal && self$options$xAxisRangeType == "auto")
-                    expand_arg <- ggplot2::expansion(mult = c(0.05, 0.2))
+                    expand_arg <- ggplot2::expansion(mult = c(lower, upper))
                 else if (!self$options$horizontal && self$options$yAxisRangeType == "auto")
-                    expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
+                    expand_arg <- ggplot2::expansion(mult = c(lower, upper))
             }
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), expand = expand_arg)

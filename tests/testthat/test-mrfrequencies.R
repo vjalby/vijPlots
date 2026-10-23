@@ -330,3 +330,18 @@ test_that("mrfrequencies: plot, horizontal, labels at the bars' end (fixed gap)"
     expect_true(all(built$hjust == 0))
     expect_plot_snapshot("mrfrequencies-horizontal-labels-top", r$plot)
 })
+
+test_that("mrfrequencies: no label for an empty bar (an option nobody chose)", {
+    emptyData <- testData
+    emptyData$Amex <- 0
+    r <- vijPlots::mrfrequencies(data = emptyData, mode = "morevar", repVar = NULL,
+                                 resps = c("Mastercard", "Amex", "VISA", "Diners Club"), showLabels = TRUE)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    labels <- gsub(" ", " ", ggplot2::layer_data(ggplot2::last_plot(), 2)$label)
+    # the empty option's label is NA (not drawn), the three chosen options keep theirs
+    expect_false("0.0 %" %in% labels)
+    expect_equal(sum(is.na(labels)), 1)
+    expect_equal(sum(!is.na(labels)), 3)
+})

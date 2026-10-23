@@ -163,11 +163,15 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             labelPrefix <- if (self$options$horizontal && self$options$labelPosition != "middle" &&
                                self$options$bartype != "stack") "  " else ""
             # Label formats
-            percentLabel <- scales::label_percent(accuracy = as.numeric(self$options$accuracy), suffix = ' %',
-                                                  decimal.mark = self$options[['decSymbol']], prefix = labelPrefix)
-            countLabel <- vijFormatCount(self$options[['decSymbol']], prefix = labelPrefix)
-            # Labels of the bars: counts, or percentages (computedValues)
-            valueLabel <- if (self$options$computedValues == "count") countLabel else percentLabel
+            percentFormat <- scales::label_percent(accuracy = as.numeric(self$options$accuracy), suffix = ' %',
+                                                   decimal.mark = self$options[['decSymbol']], prefix = labelPrefix)
+            countFormat <- vijFormatCount(self$options[['decSymbol']], prefix = labelPrefix)
+            # Labels of the bars: counts, or percentages (computedValues). No label for an empty bar (an
+            # option nobody chose in a group): NA, not drawn (na.rm in geom_text), the bar keeping its place
+            if (self$options$computedValues == "count")
+                valueLabel <- function(x) ifelse(x == 0, NA_character_, countFormat(x))
+            else
+                valueLabel <- function(x) ifelse(x == 0, NA_character_, percentFormat(x))
 
             # Border color
             if (self$options$borderColor == "none")
@@ -235,11 +239,11 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$textColor == "auto" && self$options$labelPosition == "middle") { # using hex_bw
                     plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = Count / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
-                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 } else {
                     plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = Count / vfactor), color = textColor,
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
-                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt)
+                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 }
             }
 

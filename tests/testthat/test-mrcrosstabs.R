@@ -370,3 +370,19 @@ test_that("mrcrosstabs: plot, horizontal, labels at the bars' end (fixed gap)", 
     expect_true(all(built$hjust == 0))
     expect_plot_snapshot("mrcrosstabs-horizontal-labels-top", r$plot)
 })
+
+test_that("mrcrosstabs: no label for an empty bar (an option nobody chose in a group)", {
+    emptyData <- testData
+    emptyData$Amex[emptyData$Age == "Young Adult"] <- 0
+    r <- vijPlots::mrcrosstabs(data = emptyData, mode = "morevar", repVar = NULL,
+                               resps = c("Mastercard", "Amex", "VISA", "Diners Club"), group = "Age", group2 = NULL,
+                               showLabels = TRUE)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    p <- ggplot2::last_plot()
+    bars <- ggplot2::layer_data(p, 1)
+    labels <- ggplot2::layer_data(p, 2)
+    expect_true(any(bars$y == 0))              # the empty bar is still there (keeps its place)
+    expect_false("0" %in% labels$label)        # but has no label
+})

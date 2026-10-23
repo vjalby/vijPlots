@@ -206,6 +206,17 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   decimal symbol is never reported as an option change — an already-rendered plot is not redrawn
   until another option changes, and listing `decSymbol` in a `clearWith:` has no effect (tried on
   `mrfrequencies`/`mrcrosstabs`, 2026-10-13).
+  Keep passing `decimal.mark = self$options[['decSymbol']]` explicitly to the label formats
+  (`scales::label_percent()`/`label_number()`, `vijFormatCount()`), even though it looks
+  redundant: while rendering a plot, `jmvcore::Analysis$.createImage()` sets R's `OutDec` to the
+  decimal symbol, but only jmvcore 28.x (jamovi 28) also sets `scales.decimal.mark`, which
+  `scales` functions read when `decimal.mark` is `NULL`; jmvcore 2.7.35 (jamovi 2.7.37, "solid")
+  sets `OutDec` only (checked 2026-10-23). So on jamovi 2.7.x, `scales` labels without an explicit
+  `decimal.mark` would show a `.` — whereas numbers converted by `as.character()`/`format()`/
+  `formatC()` at render time (e.g. `barchart`'s `round()` labels) follow `OutDec` on both versions.
+  Neither applies to text formatted in `.run()` (outside rendering). **To revisit once jamovi 28
+  is the "solid" version** (expected when jamovi 29 becomes "current"): the explicit arguments
+  could then go, if 2.7.x is no longer supported.
 - `vijTitlesAndLabels()` takes an optional `plot` argument: when supplied, it inspects
   `plot$mapping`/`layer$mapping` (minus each layer's `aes_params`, which shadow an inherited
   mapping — e.g. `geom_histogram(fill = fixedColor)`) to decide which of `fill`/`colour`/`shape`

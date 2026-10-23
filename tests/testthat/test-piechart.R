@@ -515,3 +515,9 @@ test_that("piechart: count labels keep the decimals of weighted counts", {
     expect_equal(labelsOf("count"), c("1.75", "2"))
     expect_equal(labelsOf("group+count"), c("a\n1.75", "b\n2"))
 })
+
+test_that("piechart: the missing values note keeps the decimals of weighted counts", {
+    decData <- data.frame(cat = factor(c("a", "b", NA)), w = c(2, 3, 1.25))
+    r <- vijPlots::piechart(data = decData, aVar = "cat", facet = NULL, counts = "w", frequencyTable = TRUE)
+    expect_equal(r$frequencies$notes$missing$note, "Missing values: 1.25")
+})

@@ -73,7 +73,9 @@ vijFrequencyTable = function(self, plotData, inner, outer = NULL, facet = NULL, 
     }
     # Observations left out because of missing values (ignoreNA checked), overall
     if (nMissing > 0)
-        table$setNote('missing', jmvcore::format(.('Missing values: {n}'), n = format(nMissing)))
+        # formatted with jamovi's decimal symbol: in .run(), R's OutDec is not set (see CLAUDE.md)
+        table$setNote('missing', jmvcore::format(.('Missing values: {n}'),
+                                                 n = vijFormatCount(self$options[['decSymbol']])(nMissing)))
 }
 
 # Warning shown when the data is weighted (by the "counts" option or jamovi's weights)

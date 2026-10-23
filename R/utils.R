@@ -5,6 +5,13 @@ vijColorScale = function(pal, type = "fill", theme, drop = TRUE, labels = ggplot
                                    labels = labels))
 }
 
+# Labelling function for (possibly weighted) counts: integers as they are, decimal counts (decimal
+# weights) rounded to 2 decimals without trailing zeros, with jamovi's decimal symbol, after prefix
+vijFormatCount = function(decimal.mark = ".", prefix = "") {
+    function(x) paste0(prefix, formatC(round(x, 2), format = "f", digits = 2, drop0trailing = TRUE,
+                                        decimal.mark = decimal.mark))
+}
+
 # Labelling function for discrete scales, facets, text labels and tables: NA shown as "(Missing)".
 # as.character() first: a factor with an explicit NA level (fct_na_value_to_level()) is not
 # is.na(), but its value converts to NA_character_

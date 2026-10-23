@@ -7,6 +7,13 @@
 # - nMissing: observations left out because of missing values (ignoreNA checked), shown as a note
 vijFrequencyTable = function(self, plotData, inner, outer = NULL, facet = NULL, nMissing = 0) {
     table <- self$results$frequencies
+    # Weighted counts may be decimal: switch the "counts" column (declared integer, which would round
+    # them) to number. This is the approach of jmv::descriptives (its frequency tables): jmvcore has no
+    # setter for a column type, so the private field of the column is changed directly
+    if (any(abs(plotData$.COUNTS - round(plotData$.COUNTS)) > sqrt(.Machine$double.eps))) {
+        countsColumn <- table$columns[['counts']]
+        countsColumn$.__enclos_env__$private$.type <- 'number'
+    }
     # Levels of a variable completed with NA if necessary
     levelsOf <- function(name, drop = FALSE) {
         if (is.null(name)) {

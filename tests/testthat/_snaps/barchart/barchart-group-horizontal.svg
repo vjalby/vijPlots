@@ -52,10 +52,10 @@
 <text x='140.59' y='329.90' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>8.2</text>
 <text x='156.52' y='210.35' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>14.5</text>
 <text x='128.21' y='90.80' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>3.3</text>
-<text x='191.71' y='449.45' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>11.9</text>
-<text x='436.93' y='329.90' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>60.4</text>
-<text x='537.55' y='210.35' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>80.3</text>
-<text x='269.57' y='90.80' style='font-size: 12.00px; font-family: sans;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'>27.3</text>
+<text x='180.03' y='449.45' style='font-size: 12.00px; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>  11.9</text>
+<text x='425.25' y='329.90' style='font-size: 12.00px; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>  60.4</text>
+<text x='525.87' y='210.35' style='font-size: 12.00px; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>  80.3</text>
+<text x='257.90' y='90.80' style='font-size: 12.00px; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>  27.3</text>
 <polyline points='99.56,517.04 99.56,14.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='64.92' y='449.45' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='35.37px' lengthAdjust='spacingAndGlyphs'>setosa</text>
 <text x='64.92' y='329.90' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='51.36px' lengthAdjust='spacingAndGlyphs'>versicolor</text>

@@ -510,3 +510,30 @@ test_that("barplot: missing values are labelled (Missing) on the axis, legend an
         grDevices::dev.off()
     }
 })
+
+test_that("barplot: count labels keep the decimals of weighted counts", {
+    decData <- data.frame(cat = factor(c("a", "b", "a")), w = c(1.5, 2, 0.25))
+    labelsOf <- function(...) {
+        r <- vijPlots::barplot(data = decData, rows = "cat", columns = NULL, facet = NULL, counts = "w", ...)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        ggplot2::layer_data(ggplot2::last_plot(), 2)$label
+    }
+    expect_equal(labelsOf(), c("1.75", "2"))
+    # horizontal, labels at the bar's end: after two spaces (fixed gap), no longer truncated to integers
+    expect_equal(labelsOf(horizontal = TRUE, labelPosition = "top"), c("  1.75", "  2"))
+})
+
+test_that("barplot: horizontal, labels at the bars' end (fixed gap)", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = "sex",
+        facet = NULL,
+        counts = NULL,
+        horizontal = TRUE,
+        labelPosition = "top"
+    )$plot
+    expect_plot_snapshot("barplot-horizontal-labels-top", testPlot)
+})

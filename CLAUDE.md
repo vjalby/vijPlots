@@ -111,7 +111,12 @@ Data preparation/tabulation shared by several analyses (unlike `utils.R`, which 
 presentation-only and shared with vijMulti): `vijFrequencyTable(self, plotData, inner, outer,
 facet, nMissing)` fills the optional frequency table (`self$results$frequencies`) of
 `barplot`/`piechart` from the aggregated plot data. It takes `self` because jmvcore's `.()`
-translation function looks `self` up in its caller. `vijWeightedData(self, varNames, countsName, ignoreNA)` builds the
+translation function looks `self` up in its caller. When weighted counts are decimal, it switches
+the `counts` column (declared `integer` in the `.r.yaml`, which would round them) to `number` by
+setting the column's private `.type` field (`table$columns[['counts']]$.__enclos_env__$private$.type`):
+this is deliberate, the approach of `jmv::descriptives` for its frequency tables, as jmvcore has no
+setter for a column type — not a mistake to "fix" (vijMulti's CA builds its columns in `.run()`
+instead, with the type chosen at creation). `vijWeightedData(self, varNames, countsName, ignoreNA)` builds the
 weighted data of `barplot`/`piechart`/`mosaic` (`.COUNTS` from the `countsName` variable, else jamovi's
 weights, else 1; missing/negative/infinite weights rejected on every row, as in
 `jmv::conttables`; missing values left out when `ignoreNA`, counted in `nMissing`; zero-weight
@@ -302,8 +307,15 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   run's language (accepted: harmless, the group never drives the colour). Fixed along the way:
   `linechart` with several variables drew no line at all for a missing group (ggplot2's NA
   linetype is blank): now `na.value = "dotted"`, and `addNA()` in its `interaction()` grouping so
-  the variables' NA lines aren't merged into one. Not yet done: the `fr.po` translation of
-  "(Missing)" (needs `jmvtools::i18nUpdate("fr")`) and copying `utils.R` to vijMulti.
+  the variables' NA lines aren't merged into one. "(Missing)" is translated in `fr.po` ("(Manquant)"). Not yet done:
+  copying `utils.R` to vijMulti.
+- Percent labels and axes use a **thin space** (U+2009) before `%`, not a regular space:
+  `scales::label_percent(suffix = "\u2009%", ...)` — the source files hold the character itself — in every analysis
+  that formats percentages (`areachart`, `barplot`, `mosaic`, `piechart`, `mrfrequencies`,
+  `mrcrosstabs`, plus the legacy ones). It looks like a plain space in an editor: keep the same
+  character when writing or moving such code (a find-and-replace on `' %'` with a regular space
+  won't match), and normalize it in tests that compare label text
+  (`gsub("\u2009", " ", label)`, as in `test-piechart.R`).
 - A plot Image with an explicit `clearWith:` list in its `.r.yaml` (currently only `mrfrequencies`
   and `mrcrosstabs`) is redrawn only when one of the listed options changes. When adding an option
   that affects such a plot, add it to that list too, or toggling it in jamovi leaves the plot

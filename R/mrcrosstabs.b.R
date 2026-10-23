@@ -30,9 +30,6 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 for (i in seq_len(nOptions))
                     table$addRow(rowKey = as.character(i), list(var = uniqueValues[i]))
             }
-            # Blocks marked as in jmv::conttables: the option rows are one block (BEGIN_GROUP on its
-            # first row, rendered as a top padding; END_GROUP on its last), Total and Number of cases
-            # blocks of their own
             if (nOptions > 0) {
                 table$addFormat(rowKey = "1", col = 1, jmvcore::Cell.BEGIN_GROUP)
                 table$addFormat(rowKey = as.character(nOptions), col = 1, jmvcore::Cell.END_GROUP)
@@ -162,18 +159,15 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 groupVar <- self$options$group2
                 optionName <- self$options$repVar
             }
-
-            # Percent format (scales)
-            doPercent <- scales::label_percent(
-                accuracy = as.numeric(self$options$accuracy),
-                suffix = ' %',
-                decimal.mark = self$options[['decSymbol']])
-
-            # Percent format (scales)
-            if (self$options$computedValues == "count")
-                doNumber <- function (x){x}
-            else
-                doNumber <- doPercent
+            # In horizontal mode, add 2 spaces before label "at top"
+            labelPrefix <- if (self$options$horizontal && self$options$labelPosition != "middle" &&
+                               self$options$bartype != "stack") "  " else ""
+            # Label formats
+            percentLabel <- scales::label_percent(accuracy = as.numeric(self$options$accuracy), suffix = ' %',
+                                                  decimal.mark = self$options[['decSymbol']], prefix = labelPrefix)
+            countLabel <- vijFormatCount(self$options[['decSymbol']], prefix = labelPrefix)
+            # Labels of the bars: counts, or percentages (computedValues)
+            valueLabel <- if (self$options$computedValues == "count") countLabel else percentLabel
 
             # Border color
             if (self$options$borderColor == "none")
@@ -204,7 +198,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xLab <- optionName
                 gLab <- groupVar
             }
-            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = Count, label = doNumber(Count)))
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = Count, label = valueLabel(Count)))
             plot <- plot + ggplot2::geom_col(ggplot2::aes(fill=!!zVarName), position = bartype, color = borderColor)
 
             #### Labels ####
@@ -225,7 +219,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     } else {
                         labelPosition <- ggplot2::position_dodge(width = 0.9)
                         if (self$options$horizontal) {
-                            hjust2 <- -0.2
+                            hjust2 <- 0
                         } else {
                             vjust2 <- -0.6
                         }

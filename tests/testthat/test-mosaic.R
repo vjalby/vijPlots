@@ -454,3 +454,15 @@ test_that("mosaic: missing values are labelled (Missing) on the axes, legend and
     expect_true("(Missing)" %in% strips)
     expect_false("NA" %in% strips)
 })
+
+test_that("mosaic: count labels keep the decimals of weighted counts", {
+    decData <- data.frame(cat = factor(c("a", "a", "b", "b")), grp = factor(c("x", "y", "x", "y")),
+                          w = c(1.5, 2, 0.25, 3))
+    r <- vijPlots::mosaic(data = decData, category = "cat", group = "grp", facet = NULL, counts = "w",
+                          labelType = "count")
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    labels <- ggplot2::layer_data(ggplot2::last_plot(), 2)$label
+    expect_setequal(labels, c("1.5", "2", "0.25", "3"))
+})

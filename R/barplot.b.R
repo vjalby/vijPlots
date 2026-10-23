@@ -139,16 +139,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (reverseStack)
                 position <- ggplot2::position_stack(reverse = TRUE)
 
-            # Percent format (scales)
-            doPercent <- scales::label_percent(
-                            accuracy = as.numeric(self$options$accuracy),
-                            suffix = ' %',
-                            decimal.mark = self$options[['decSymbol']])
-            if (self$options$horizontal)
-                doNumber <- function(x) formatC(x, width = 2, format = "d")
-            else
-                doNumber <- as.character
-
             # Correct Single color option
             if (positionStack || !is.null(groupVar))
                 singleColor <- FALSE
@@ -215,6 +205,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 vjust2 <- 0.5
                 hjust2 <- 0.5
                 vfactor <- 1
+                labelPrefix <- ""
 
                 # Change justifications
                 if (positionStack) {
@@ -231,12 +222,20 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         vfactor <- 2
                     } else {
                         if (self$options$horizontal) {
-                            hjust2 <- -0.2
+                            # Text starts at the bar's end, after two spaces: the same gap whatever the
+                            # label length (a negative hjust is a fraction of the label's own width)
+                            hjust2 <- 0
+                            labelPrefix <- "  "
                         } else {
                             vjust2 <- -0.6
                         }
                     }
                 }
+
+                # Label formats (a space before the text when it follows the end of a horizontal bar)
+                countLabel <- vijFormatCount(self$options[['decSymbol']], prefix = labelPrefix)
+                percentLabel <- scales::label_percent(accuracy = as.numeric(self$options$accuracy), suffix = ' %',
+                                                      decimal.mark = self$options[['decSymbol']], prefix = labelPrefix)
 
                 # Count labels
 
@@ -246,20 +245,20 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 if (yaxis == "count") {
                     if (textColor == "auto") {
-                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count)),
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = countLabel(ggplot2::after_stat(count)),
                                                              color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                  stat = "count")
                     } else {
-                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = doNumber(ggplot2::after_stat(count))),
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(count)/vfactor, label = countLabel(ggplot2::after_stat(count))),
                                                  stat = "count", color = textColor)
                     }
                 } else { # Percent
                     if (textColor == "auto") {
-                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop)),
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = percentLabel(ggplot2::after_stat(prop)),
                                                              color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                  stat = ggstats::StatProp)
                     } else {
-                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = doPercent(ggplot2::after_stat(prop))),
+                        plot <- plot + geomText(ggplot2::aes(y = ggplot2::after_stat(prop)/vfactor, label = percentLabel(ggplot2::after_stat(prop))),
                                                  stat = ggstats::StatProp, color = textColor)
                     }
                 }

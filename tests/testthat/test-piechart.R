@@ -491,3 +491,27 @@ test_that("piechart: frequency table blocks marked as in jmv::conttables", {
     expect_equal(hasFormat(jmvcore::Cell.END_GROUP), rep(c(FALSE, FALSE, TRUE, TRUE), 3))
     expect_equal(hasFormat(jmvcore::Cell.BEGIN_END_GROUP), rep(c(FALSE, FALSE, FALSE, TRUE), 3))
 })
+
+test_that("piechart: frequency table counts keep their decimals with decimal weights", {
+    decData <- data.frame(cat = factor(c("a", "b", "a")), w = c(1.5, 2, 0.25))
+    r <- vijPlots::piechart(data = decData, aVar = "cat", facet = NULL, counts = "w", frequencyTable = TRUE)
+    expect_equal(r$frequencies$getColumn("counts")$type, "number")
+    expect_equal(r$frequencies$asDF$counts, c(1.75, 2, 3.75))
+    expect_match(paste(capture.output(print(r$frequencies)), collapse = "\n"), "1\\.75")
+    # integer counts: the column stays integer
+    r <- vijPlots::piechart(data = testData, aVar = "species", facet = NULL, counts = NULL, frequencyTable = TRUE)
+    expect_equal(r$frequencies$getColumn("counts")$type, "integer")
+})
+
+test_that("piechart: count labels keep the decimals of weighted counts", {
+    decData <- data.frame(cat = factor(c("a", "b", "a")), w = c(1.5, 2, 0.25))
+    labelsOf <- function(labels) {
+        r <- vijPlots::piechart(data = decData, aVar = "cat", facet = NULL, counts = "w", labType = "text", labels = labels)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        ggplot2::layer_data(ggplot2::last_plot(), 2)$label
+    }
+    expect_equal(labelsOf("count"), c("1.75", "2"))
+    expect_equal(labelsOf("group+count"), c("a\n1.75", "b\n2"))
+})

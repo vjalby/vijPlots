@@ -110,6 +110,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 accuracy = as.numeric(self$options$accuracy),
                 suffix = ' %',
                 decimal.mark = self$options[['decSymbol']])
+            doCount <- vijFormatCount(self$options[['decSymbol']])
             doNumber <- scales::label_number(
                 accuracy = as.numeric(self$options$accuracy),
                 decimal.mark = self$options[['decSymbol']])
@@ -118,7 +119,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData <- plotData |>
                     dplyr::mutate(
                         .LABEL_TEXT = switch(self$options$labelType,
-                                             "count"     = as.character(.FREQ),
+                                             "count"     = doCount(.FREQ),
                                              "percent"   = doPercent(.PERCENTAGE),
                                              "residuals" = doNumber(.RESIDUALS)
                         )

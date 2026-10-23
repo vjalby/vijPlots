@@ -193,3 +193,15 @@ testthat::test_that("barchart: missing values are labelled (Missing) on the axis
     expect_true("(Missing)" %in% strips)
     expect_false("NA" %in% strips)
 })
+
+testthat::test_that("barchart: horizontal, labels at the bars' end (fixed gap)", {
+    r <- vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = NULL, facet = NULL,
+                            horizontal = TRUE, showLabels = TRUE)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    # text after two spaces, with hjust = 0: the same gap whatever the label length
+    built <- ggplot2::layer_data(ggplot2::last_plot(), 2)
+    expect_true(all(startsWith(built$label, "  ")))
+    expect_true(all(built$hjust == 0))
+})

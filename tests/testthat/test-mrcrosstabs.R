@@ -348,3 +348,25 @@ test_that("mrcrosstabs: table blocks marked as in jmv::conttables", {
     expect_equal(hasFormat(jmvcore::Cell.END_GROUP), c(FALSE, FALSE, FALSE, TRUE, TRUE, TRUE))
     expect_equal(hasFormat(jmvcore::Cell.BEGIN_END_GROUP), c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE))
 })
+
+test_that("mrcrosstabs: plot, horizontal, labels at the bars' end (fixed gap)", {
+    r <- vijPlots::mrcrosstabs(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        group = "Age",
+        group2 = NULL,
+        showLabels = TRUE,
+        labelPosition = "top",
+        horizontal = TRUE
+    )
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    # text after two spaces, with hjust = 0: the same gap whatever the label length
+    built <- ggplot2::layer_data(ggplot2::last_plot(), 2)
+    expect_true(all(startsWith(built$label, "  ")))
+    expect_true(all(built$hjust == 0))
+    expect_plot_snapshot("mrcrosstabs-horizontal-labels-top", r$plot)
+})

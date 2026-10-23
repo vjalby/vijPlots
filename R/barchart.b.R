@@ -165,13 +165,15 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showLabels) {
                 labelSize <- self$options$labelTextSize / ggplot2::.pt
                 digits <- self$options$decimalPrecision
-                # Justification of a label drawn outside its bar (at its end)
+                # Justification of a label drawn outside its bar (at its end). Horizontal: text after two
+                # spaces, with hjust = 0, i.e. the same gap whatever the label length (a negative hjust is
+                # a fraction of the label's own width)
                 if (self$options$horizontal)
-                    outside <- list(vjust = 0.5, hjust = -0.5)
+                    outside <- list(vjust = 0.5, hjust = 0, prefix = "  ")
                 else
-                    outside <- list(vjust = -0.5, hjust = 0.5)
+                    outside <- list(vjust = -0.5, hjust = 0.5, prefix = "")
                 # Labels of stacked bars are centred inside each bar
-                just <- if (stacked) list(vjust = 0.5, hjust = 0.5) else outside
+                just <- if (stacked) list(vjust = 0.5, hjust = 0.5, prefix = "") else outside
 
                 textColor <- self$options$textColor
                 if (!stacked && textColor == "auto")
@@ -180,16 +182,16 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 geomText <- function(...) ggplot2::geom_text(..., size = labelSize, fontface = if (stacked) "bold" else "plain",
                                                              position = labPosition, vjust = just$vjust, hjust = just$hjust)
                 if (textColor == "auto")
-                    plot <- plot + geomText(ggplot2::aes(label = round(!!yVar, digits),
+                    plot <- plot + geomText(ggplot2::aes(label = paste0(just$prefix, round(!!yVar, digits)),
                                                          color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))))
                 else
-                    plot <- plot + geomText(ggplot2::aes(label = round(!!yVar, digits)), color = textColor)
+                    plot <- plot + geomText(ggplot2::aes(label = paste0(just$prefix, round(!!yVar, digits))), color = textColor)
 
                 # Label for stacked sum (sum, per x, of the sums already computed per bar)
                 if (stacked && self$options$yaxis == "sum") {
                     textColor2 <- ifelse(textColor %in% c("auto", "white"), "black", textColor)
                     plot <- plot + ggplot2::stat_summary(fun = summaryFun, geom = "text",
-                                                ggplot2::aes(y = !!yVar, label = round(ggplot2::after_stat(y), digits), group = NULL, fill = NULL),
+                                                ggplot2::aes(y = !!yVar, label = paste0(outside$prefix, round(ggplot2::after_stat(y), digits)), group = NULL, fill = NULL),
                                                 size = labelSize, vjust = outside$vjust, hjust = outside$hjust,
                                                 color = textColor2)
                 }

@@ -110,6 +110,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 accuracy = as.numeric(self$options$accuracy),
                 suffix = ' %',
                 decimal.mark = self$options[['decSymbol']])
+            doCount <- vijFormatCount(self$options[['decSymbol']])
 
             #### Build the plot ####
 
@@ -149,11 +150,11 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # label format (percentages of small slices are hidden: NA labels are dropped by na.rm)
                 hideBelow <- if (self$options$hideLabelsBelow) 0.05 else 0
                 labelExpr <- rlang::expr(switch(self$options$labels,
-                                   "count" = ggplot2::after_stat(count),
+                                   "count" = doCount(ggplot2::after_stat(count)),
                                    "percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, NA_character_,
                                                       doPercent(ggplot2::after_stat(prop))),
                                    "group" = labelNA(.data$fill),
-                                   "group+count" = paste0(labelNA(.data$fill), "\n", ggplot2::after_stat(count)),
+                                   "group+count" = paste0(labelNA(.data$fill), "\n", doCount(ggplot2::after_stat(count))),
                                    "group+percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, labelNA(.data$fill),
                                                             paste0(labelNA(.data$fill), "\n", doPercent(ggplot2::after_stat(prop))))))
 

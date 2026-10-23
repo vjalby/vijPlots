@@ -25,8 +25,6 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
             for (i in seq_len(nOptions))
                 table$addRow(rowKey = as.character(i))
-            # Blocks marked as in jmv::conttables: the option rows are one block (BEGIN_GROUP on its
-            # first row, rendered as a top padding; END_GROUP on its last), the Total a block of its own
             if (nOptions > 0) {
                 table$addFormat(rowKey = "1", col = 1, jmvcore::Cell.BEGIN_GROUP)
                 table$addFormat(rowKey = as.character(nOptions), col = 1, jmvcore::Cell.END_GROUP)
@@ -114,16 +112,12 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             # to be sure the factor ordering is kept
             plotData$Option <- factor(plotData$Option, levels = plotData$Option)
 
-            # Percent format (scales)
-            doPercent <- scales::label_percent(
-                accuracy = as.numeric(self$options$accuracy),
-                suffix = ' %',
-                decimal.mark = self$options[['decSymbol']])
-
-            if (self$options$horizontal)
-                doNumber <- function(x) formatC(x, width = 2, format = "d")
-            else
-                doNumber <- as.character
+            # In horizontal mode, add 2 spaces before label "at top"
+            labelPrefix <- if (self$options$horizontal && self$options$labelPosition != "middle") "  " else ""
+            # Label formats
+            percentLabel <- scales::label_percent(accuracy = as.numeric(self$options$accuracy), suffix = ' %',
+                                                  decimal.mark = self$options[['decSymbol']], prefix = labelPrefix)
+            countLabel <- vijFormatCount(self$options[['decSymbol']], prefix = labelPrefix)
 
             # Border color
             if (self$options$borderColor == "none")
@@ -133,17 +127,17 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             #### Doing the plot ####
             if (self$options$yaxis == "responses") {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Responses, label = doPercent(Responses)))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Responses, label = percentLabel(Responses)))
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
                 yLab <- .("% of Responses")
                 yScaleFactor <- 100 # yScaleFactor is used for manual range computation (1 = count, 100 = percent)
             } else if (self$options$yaxis == "cases") {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Cases, label = doPercent(Cases)))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Cases, label = percentLabel(Cases)))
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
                 yLab <- .("% of Cases")
                 yScaleFactor <- 100
             } else {
-                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Frequency, label = doNumber(Frequency)))
+                plot <- ggplot2::ggplot(plotData, ggplot2::aes(Option, Frequency, label = countLabel(Frequency)))
                 labelFnct <- ggplot2::waiver()
                 yLab <- .("Counts")
                 yScaleFactor <- 1
@@ -171,7 +165,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             } else {
                 vjust1 <- 1
                 if (self$options$horizontal) {
-                    hjust2 <- -0.2
+                    hjust2 <- 0
                     vjust2 <- 0.5
                 } else {
                     hjust2 <- 0.5

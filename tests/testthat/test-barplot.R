@@ -537,3 +537,15 @@ test_that("barplot: horizontal, labels at the bars' end (fixed gap)", {
     )$plot
     expect_plot_snapshot("barplot-horizontal-labels-top", testPlot)
 })
+
+test_that("barplot: stacked, label position Top left selected: no extra room (labels in the middle)", {
+    axisRange <- function(labelPosition) {
+        r <- vijPlots::barplot(data = testData, rows = "species", columns = "sex", facet = NULL, counts = NULL,
+                               barType = "stack", showLabels = TRUE, labelPosition = labelPosition)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]]$y$continuous_range
+    }
+    expect_equal(axisRange("top"), axisRange("middle"))
+})

@@ -24,7 +24,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Fixed dimension
             fixed_width <- 50 # Y-Axis legend
             fixed_height <- 50 # X-Axis legend
-            if( !is.null(self$options$columns)) {
+            # Legend: the groups, or (stacked bars without group) the categories (see .plot())
+            if (!is.null(self$options$columns) || self$options$barType == "stack") {
                 if (self$options$legendPosition %in% c('top','bottom'))
                     fixed_height <- fixed_height + 50
                 else
@@ -301,7 +302,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if (self$options$showLabels && self$options$labelPosition == "top") {
+            if (self$options$showLabels && labelPosition == "top") {   # effective position: middle when stacked
                 if (self$options$horizontal  && self$options$xAxisRangeType == "auto")
                     expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
                 else if (!self$options$horizontal  && self$options$yAxisRangeType == "auto")

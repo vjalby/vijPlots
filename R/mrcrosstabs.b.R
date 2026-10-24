@@ -161,9 +161,11 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 groupVar <- self$options$group2
                 optionName <- self$options$repVar
             }
+            # Labels at the bars' end: "top" is ignored on stacked bars (centred in each segment), even when
+            # left selected (the option is only disabled in the UI)
+            labelTop <- (self$options$labelPosition == "top" && self$options$bartype != "stack")
             # In horizontal mode, add 2 spaces before label "at top"
-            labelPrefix <- if (self$options$horizontal && self$options$labelPosition != "middle" &&
-                               self$options$bartype != "stack") "  " else ""
+            labelPrefix <- if (self$options$horizontal && labelTop) "  " else ""
             # Label formats
             percentFormat <- scales::label_percent(accuracy = as.numeric(self$options$accuracy), suffix = ' %',
                                                    decimal.mark = self$options[['decSymbol']], prefix = labelPrefix)
@@ -233,13 +235,13 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                 }
 
-                if (self$options$labelPosition == "top")
+                if (labelTop)
                     textColor <- "black"
                 else
                     textColor <- self$options$textColor
 
 
-                if (self$options$textColor == "auto" && self$options$labelPosition == "middle") { # using hex_bw
+                if (self$options$textColor == "auto" && !labelTop) { # using hex_bw
                     plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = .data[[".COUNT"]] / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
                                                         fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
@@ -296,7 +298,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
             # Room for the labels at the bars' end, unless the range of the value axis is set by hand
             rangeType <- if (self$options$horizontal) self$options$xAxisRangeType else self$options$yAxisRangeType
-            if (self$options$showLabels && self$options$labelPosition == "top" && rangeType == "auto") {
+            if (self$options$showLabels && labelTop && rangeType == "auto") {
                 expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
             }
             if (self$options$horizontal && self$options$xTicks > 0) {

@@ -503,3 +503,22 @@ test_that("mrcrosstabs: vertical, labels at the top and manual y range: no extra
     range <- ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]]$y$continuous_range
     expect_equal(range, c(-0.5, 10.5))   # the default expansion (5 %) only
 })
+
+test_that("mrcrosstabs: stacked, label position Top left selected: labels as in the middle", {
+    labelsOf <- function(labelPosition) {
+        r <- vijPlots::mrcrosstabs(data = testData, mode = "morevar", repVar = NULL,
+                                   resps = c("Mastercard", "Amex", "VISA", "Diners Club"), group = "Age", group2 = NULL,
+                                   bartype = "stack", showLabels = TRUE, labelPosition = labelPosition,
+                                   colorPalette = "viridis::viridis")   # dark segments: some labels white
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        built <- ggplot2::ggplot_build(ggplot2::last_plot())
+        list(range = built$layout$panel_params[[1]]$y$continuous_range, colour = ggplot2::layer_data(ggplot2::last_plot(), 2)$colour)
+    }
+    top <- labelsOf("top")
+    middle <- labelsOf("middle")
+    expect_equal(top$range, middle$range)
+    expect_true("#FFFFFF" %in% toupper(middle$colour))
+    expect_equal(top$colour, middle$colour)   # "Auto": black or white according to the segment
+})

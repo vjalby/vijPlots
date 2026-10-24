@@ -345,3 +345,30 @@ test_that("mrfrequencies: no label for an empty bar (an option nobody chose)", {
     expect_equal(sum(is.na(labels)), 1)
     expect_equal(sum(!is.na(labels)), 3)
 })
+
+test_that("mrfrequencies: % of responses missing (not NaN) when no response was selected", {
+    d <- data.frame(q1 = factor(c("0", "0", "0")), q2 = factor(c("0", "0", "0")))
+    r <- vijPlots::mrfrequencies(data = d, resps = c("q1", "q2"), repVar = NULL)
+    df <- r$responses$asDF
+    expect_true(all(is.na(df$responsepercent)))
+    expect_false(any(is.nan(df$responsepercent)))
+    expect_equal(df$casepercent, c(0, 0, 0))
+})
+
+test_that("mrfrequencies: multi-valued variable mode with a single row", {
+    r <- vijPlots::mrfrequencies(data = data.frame(v = factor("a;b;c")), mode = "onevar", repVar = "v", resps = NULL)
+    df <- r$responses$asDF
+    expect_setequal(df$var, c("a", "b", "c", "Total"))
+    expect_equal(df$freq[df$var != "Total"], c(1, 1, 1))
+})
+
+test_that("mrfrequencies: vertical, labels at the top and manual y range: no extra room beyond the range", {
+    d <- data.frame(q1 = factor(c("1", "0", "1")), q2 = factor(c("1", "1", "0")))
+    r <- vijPlots::mrfrequencies(data = d, resps = c("q1", "q2"), repVar = NULL, yaxis = "counts",
+                                 showLabels = TRUE, labelPosition = "top", yAxisRangeType = "manual", yAxisRangeMin = 0, yAxisRangeMax = 10)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    range <- ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]]$y$continuous_range
+    expect_equal(range, c(-0.5, 10.5))   # the default expansion (5 %) only
+})

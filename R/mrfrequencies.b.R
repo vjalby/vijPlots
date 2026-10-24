@@ -20,7 +20,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                 nOptions <- length(self$options$resps)
             } else {
                 aCol <- self$data[[self$options$repVar]]
-                uniqueValues <- private$.oneHotEncoding(aCol, self$options$separator, init = TRUE)
+                uniqueValues <- vijOneHotEncoding(aCol, self$options$separator, init = TRUE)
                 nOptions <- length(uniqueValues)
             }
             for (i in seq_len(nOptions))
@@ -70,7 +70,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                     vijErrorMessage(self, .("Separator string may not be empty."))
                 } else {
                     rawData <- self$data[[self$options$repVar]]
-                    oneHotData <- private$.oneHotEncoding(rawData, self$options$separator, self$options$emptyAsNA)
+                    oneHotData <- vijOneHotEncoding(rawData, self$options$separator, self$options$emptyAsNA)
                     if (length(oneHotData) == 0) {
                         vijErrorMessage(self, .("No distinct values found in the selected variable."))
                     }
@@ -214,7 +214,9 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
+            # Room for the labels at the bars' end, unless the range of the value axis is set by hand
+            rangeType <- if (self$options$horizontal) self$options$xAxisRangeType else self$options$yAxisRangeType
+            if (self$options$showLabels && self$options$labelPosition == "top" && rangeType == "auto") {
                 expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
             }
             if (self$options$horizontal && self$options$xTicks > 0) {
@@ -251,6 +253,9 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                               totals, (totals/nrOfEndorsements),
                               (totals/nrOfCases))
             names(res) <- c("Option", "Frequency", "Responses", "Cases")
+            # Percentages with a zero denominator (no response selected at all): missing (an empty cell) rather
+            # than NaN. The counts and option names are never missing, so is.na() only finds those NaN
+            res[is.na(res)] <- NA
             # Sort
             n <- length(items)
             if (order == 'decreasing') {
@@ -260,41 +265,6 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
             }
 
             return( list('nrOfCases' = nrOfCases, 'df' = res) )
-        },
-        .oneHotEncoding = function (aCol, separator, na = TRUE, init = FALSE) {
-            # List of values
-            uniqueValues <- unique(unlist(strsplit(levels(aCol), split = separator, fixed = TRUE)))
-            uniqueValues <- trimws(uniqueValues)
-            uniqueValues <- unique(uniqueValues)  # le trim peut créer des doublons
-            uniqueValues <- uniqueValues[uniqueValues != ""]
-            # Return the list of values/columns for table init
-            if (init)
-                return(uniqueValues)
-            # No distinct value found: return an empty (0-column) table instead of
-            # letting vapply()/`+` below crash on a zero-length input
-            if (length(uniqueValues) == 0)
-                return(as.data.frame(matrix(nrow = length(aCol), ncol = 0)))
-            # Build the encoded table
-            rawValues <- as.character(aCol)
-            # split then clean (heading/trailing spaces) the values
-            splitted <- lapply(
-                strsplit(rawValues, split = separator, fixed = TRUE),
-                trimws
-            )
-            # build the TRUE/FALSE matrix (vapply guarantees a matrix even with a single uniqueValue)
-            encoded <- vapply(uniqueValues, function(opt) {
-                vapply(splitted, function(x) opt %in% x, logical(1))
-            }, FUN.VALUE = logical(length(splitted)))
-            # + OL converts TRUE/FALSE to 1/0
-            onehotDF <- as.data.frame(encoded + 0L)
-            # NA/empty rawvalues set to NA (a value containing only separators, e.g. ";",
-            # splits into all-empty pieces after trimws() and must count as missing too —
-            # trimws(rawValues) == "" alone misses that since it never removes separators)
-            if (na) {
-                isMissing <- is.na(aCol) | vapply(splitted, function(x) all(x == ""), logical(1))
-                onehotDF[isMissing, ] <- NA
-            }
-            return(onehotDF)
         },
         .showHelpMessage = function() {
             helpMsg <- .('<p>This module computes frequencies for multiple response questions, also known as "Check All That Apply" (CATA) questions.</p>

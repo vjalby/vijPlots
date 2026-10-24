@@ -133,3 +133,45 @@ vijWeightedData = function(self, varNames, countsName = NULL, ignoreNA = TRUE) {
 
     list(data = data, nMissing = nMissing)
 }
+
+# One-hot encoding of a multi-valued variable (mrfrequencies, mrcrosstabs): each value of aCol holds
+# several responses separated by `separator` (e.g. "a;b").
+# - init = TRUE: returns only the distinct responses (the columns, for the table's init)
+# - otherwise: a data.frame with one row per case and one 0/1 column per response (1 = the case chose it)
+# - na: a missing or empty value (only separators, e.g. ";") is a missing case (NA row), not a case with
+#   no response
+vijOneHotEncoding = function(aCol, separator, na = TRUE, init = FALSE) {
+    # List of values
+    uniqueValues <- unique(unlist(strsplit(levels(aCol), split = separator, fixed = TRUE)))
+    uniqueValues <- trimws(uniqueValues)
+    uniqueValues <- unique(uniqueValues)  # trimming may create duplicates
+    uniqueValues <- uniqueValues[uniqueValues != ""]
+    # Return the list of values/columns for table init
+    if (init)
+        return(uniqueValues)
+    # No distinct value found: an empty (0-column) table, still with one row per case
+    if (length(uniqueValues) == 0)
+        return(as.data.frame(matrix(nrow = length(aCol), ncol = 0)))
+    # Build the encoded table
+    rawValues <- as.character(aCol)
+    # split then clean (heading/trailing spaces) the values
+    splitted <- lapply(
+        strsplit(rawValues, split = separator, fixed = TRUE),
+        trimws
+    )
+    # build the 0/1 table: one row per case, one column per value (1 = the case chose that value).
+    # Filled column by column, so that it keeps one row per case even with a single case
+    onehotDF <- data.frame(row.names = seq_along(splitted))
+    for (opt in uniqueValues) {
+        chosen <- vapply(splitted, function(x) opt %in% x, logical(1))
+        onehotDF[[opt]] <- as.integer(chosen)
+    }
+    # NA/empty rawvalues set to NA (a value containing only separators, e.g. ";",
+    # splits into all-empty pieces after trimws() and must count as missing too —
+    # trimws(rawValues) == "" alone misses that since it never removes separators)
+    if (na) {
+        isMissing <- is.na(aCol) | vapply(splitted, function(x) all(x == ""), logical(1))
+        onehotDF[isMissing, ] <- NA
+    }
+    return(onehotDF)
+}

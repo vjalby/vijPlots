@@ -121,7 +121,13 @@ weighted data of `barplot`/`piechart`/`mosaic` (`.COUNTS` from the `countsName` 
 weights, else 1; missing/negative/infinite weights rejected on every row, as in
 `jmv::conttables`; missing values left out when `ignoreNA`, counted in `nMissing`; zero-weight
 rows dropped) and returns `list(data, nMissing)`, or `NULL` when no row is left;
-`vijWeightsMessage(self, countsName)` shows the "data is weighted" notice from `.init()`. Options
+`vijWeightsMessage(self, countsName)` shows the "data is weighted" notice from `.init()`.
+`vijOneHotEncoding(aCol, separator, na, init)` turns the multi-valued variable of `mrfrequencies`/
+`mrcrosstabs` ("onevar" mode, e.g. `"a;b"`) into one 0/1 column per distinct response, one row per
+case (a missing or separator-only value gives an `NA` row when `na`), or returns just the distinct
+responses when `init` (for the tables' `.init()`); it takes no `self`. It fills the data.frame column
+by column on purpose: the former nested `vapply()` came out as a plain vector, not a one-row matrix,
+when the data had a single row (fixed 2026-10-24). Options
 are passed explicitly (user's preference), `self` is only used for `self$data`, errors and `.()`.
 
 ### Non-obvious runtime gotchas

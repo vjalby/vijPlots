@@ -25,7 +25,7 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     table$addRow(rowKey = as.character(i), list(var = self$options$resps[i]))
             } else {
                 aCol <- self$data[[self$options$repVar]]
-                uniqueValues <- private$.oneHotEncoding(aCol, self$options$separator, init = TRUE)
+                uniqueValues <- vijOneHotEncoding(aCol, self$options$separator, init = TRUE)
                 nOptions <- length(uniqueValues)
                 for (i in seq_len(nOptions))
                     table$addRow(rowKey = as.character(i), list(var = uniqueValues[i]))
@@ -66,10 +66,13 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 groupVar <- self$options$group2
             if ( ! is.null(groupVar) ) {
                 gLevels <- levels(self$data[,groupVar])
+                # Column names: the level prefixed by ".G." (the level as title), so that a level can never take
+                # the name of another column ("var", ".TOTAL"); .run() names crosstab's columns the same way
                 for(i in seq_along(gLevels))
-                    table$addColumn(name = gLevels[i], type=cellType, format=cellFormat, superTitle=groupVar)
+                    table$addColumn(name = paste0(".G.", gLevels[i]), title = gLevels[i], type=cellType, format=cellFormat, superTitle=groupVar)
             }
-            table$addColumn(name = "Total", title=.("Overall"), type=cellType, format=cellFormat, visible=self$options$overall)
+            # Margin column named ".TOTAL", not "Total": a group level may be named "Total"
+            table$addColumn(name = ".TOTAL", title=.("Overall"), type=cellType, format=cellFormat, visible=self$options$overall)
 
             # Set the image dimensions
             width <- 425
@@ -92,58 +95,57 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$mode == "morevar") { # Several dichotomous variables
                 if (length(self$options$resps) < 1 || is.null(self$options$group) || nrow(self$data) == 0) {
                     return()
-                } else if (all(is.na(self$data[, self$options$resps, drop = FALSE]))) {
+                } else if (all(is.na(self$data[, self$options$resps, drop = FALSE])) || all(is.na(self$data[[self$options$group]]))) {
                     return()
                 } else if (self$options$endorsed == '') {
                     vijErrorMessage(self, .("Counted value string may not be empty."))
                 } else {
-                    nGroups <- nlevels(self$data[,self$options$group])
-                    nAnswers <- length(self$options$resps)
                     # Encode as 0/1 by comparing each level's text to the endorsed value.
                     encodedData <- as.data.frame(lapply(self$data[, self$options$resps, drop = FALSE], function(col) {
                         as.integer(as.character(col) == self$options$endorsed)
                     }), check.names = FALSE)
-                    encodedData[, self$options$group] <- self$data[, self$options$group]
-                    crosstab <- private$.crossTab(encodedData, self$options$resps, self$options$group,
+                    crosstab <- private$.crossTab(encodedData, self$options$resps, self$data[[self$options$group]],
                                                   1, self$options$order, self$options$computedValues)
                 }
             } else { # One Multiple Value Variables
                 if (is.null(self$options$repVar) || is.null(self$options$group2) || nrow(self$data) == 0) {
                     return()
-                } else if (all(is.na(self$data[[self$options$repVar]]))) {
+                } else if (all(is.na(self$data[[self$options$repVar]])) || all(is.na(self$data[[self$options$group2]]))) {
                     return()
                 } else if (self$options$separator == '') {
                     vijErrorMessage(self, .("Separator string may not be empty."))
                 } else {
-                    nGroups <- nlevels(self$data[,self$options$group2])
                     rawData <- self$data[[self$options$repVar]]
-                    oneHotData <- private$.oneHotEncoding(rawData, self$options$separator, self$options$emptyAsNA)
+                    oneHotData <- vijOneHotEncoding(rawData, self$options$separator, self$options$emptyAsNA)
                     if (length(oneHotData) == 0) {
                         vijErrorMessage(self, .("No distinct values found in the selected variable."))
                     }
                     answerList <- names(oneHotData)
-                    nAnswers <- length(answerList)
-                    oneHotData[, self$options$group2] <- self$data[,self$options$group2]
-                    crosstab <- private$.crossTab(oneHotData, answerList, self$options$group2,
+                    crosstab <- private$.crossTab(oneHotData, answerList, self$data[[self$options$group2]],
                                                           1, self$options$order, self$options$computedValues)
                 }
             }
 
             #### Fill the table ####
             table <- self$results$crosstab
+            # The columns by their names in the table (.init()): each group column prefixed by ".G.", then the margin
+            values <- crosstab
+            names(values) <- c(paste0(".G.", names(crosstab)[-ncol(crosstab)]), ".TOTAL")
             n <- nrow(crosstab)
             for(i in seq_len(n-2)) {
                 table$setRow(rowKey = as.character(i),
-                             values = c(var = rownames(crosstab)[i], crosstab[i,]))
+                             values = c(var = rownames(crosstab)[i], values[i,]))
             }
             if ( self$options$totalRow ) {
-                table$setRow(rowKey = '.total', values = as.list(crosstab[n-1,]))   # label set in .init()
+                table$setRow(rowKey = '.total', values = as.list(values[n-1,]))   # label set in .init()
             }
             if ( self$options$showNbOfCases && (self$options$computedValues == "count" || self$options$computedValues == "options") ) {
-                table$setRow(rowKey = '.nbofcases', values = as.list(crosstab[n,]))   # label set in .init()
+                table$setRow(rowKey = '.nbofcases', values = as.list(values[n,]))   # label set in .init()
             }
             image <- self$results$plot
-            image$setState(crosstab[1:nAnswers,1:nGroups])
+            # Plot data: the options x groups block, without the margins (the Total column, the last two rows
+            # Total and Nb of Cases): every level of the group, drop = FALSE for a single option or group
+            image$setState(crosstab[seq_len(nrow(crosstab) - 2), seq_len(ncol(crosstab) - 1), drop = FALSE])
         },
 
         .plot = function(image, ggtheme, theme, ...) {
@@ -185,24 +187,25 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (reverseStack)
                 bartype <- ggplot2::position_stack(reverse = TRUE)
 
-            # Data
-            plotData <- cbind("Options" = factor(rownames(image$state), levels=rownames(image$state)),image$state)
-            plotData <- tidyr::pivot_longer(plotData, cols=colnames(image$state), names_to = groupVar, values_to = "Count")
-            plotData[[groupVar]] <- factor(plotData[[groupVar]], levels = names(image$state) )
+            # Data, in long format: one row per option x group, with internal column names (.OPTION, .GROUP,
+            # .COUNT) whatever the names of the group variable and of its levels (e.g. a group variable "Count")
+            state <- image$state
+            plotData <- data.frame(.OPTION = factor(rep(rownames(state), each = ncol(state)), levels = rownames(state)),
+                                   .GROUP = factor(rep(names(state), times = nrow(state)), levels = names(state)),
+                                   .COUNT = as.vector(t(as.matrix(state))))
             # Plot
-            optionsVar <- "Options"
             if (self$options$xaxis == "xcols") {
-                xVarName <- rlang::sym(groupVar)
-                zVarName <- rlang::sym(optionsVar)
+                xVarName <- rlang::sym(".GROUP")
+                zVarName <- rlang::sym(".OPTION")
                 xLab <- groupVar
                 gLab <- optionName
             } else {
-                xVarName <- rlang::sym(optionsVar)
-                zVarName <- rlang::sym(groupVar)
+                xVarName <- rlang::sym(".OPTION")
+                zVarName <- rlang::sym(".GROUP")
                 xLab <- optionName
                 gLab <- groupVar
             }
-            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = Count, label = valueLabel(Count)))
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = .data[[".COUNT"]], label = valueLabel(.data[[".COUNT"]])))
             plot <- plot + ggplot2::geom_col(ggplot2::aes(fill=!!zVarName), position = bartype, color = borderColor)
 
             #### Labels ####
@@ -237,11 +240,11 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
                 if (self$options$textColor == "auto" && self$options$labelPosition == "middle") { # using hex_bw
-                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = Count / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = .data[[".COUNT"]] / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
                                                         fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 } else {
-                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = Count / vfactor), color = textColor,
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = .data[[".COUNT"]] / vfactor), color = textColor,
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
                                                         fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 }
@@ -291,7 +294,9 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if (self$options$showLabels && self$options$labelPosition == "top" && self$options$xAxisRangeType == "auto") {
+            # Room for the labels at the bars' end, unless the range of the value axis is set by hand
+            rangeType <- if (self$options$horizontal) self$options$xAxisRangeType else self$options$yAxisRangeType
+            if (self$options$showLabels && self$options$labelPosition == "top" && rangeType == "auto") {
                 expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
             }
             if (self$options$horizontal && self$options$xTicks > 0) {
@@ -312,31 +317,35 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(plot)
         },
 
+        # group: the values of the grouping variable (one per row of data), not its name. Added as a column
+        # of data, it would overwrite a response of the same name (e.g. a group variable "Age" and a response "Age")
         .crossTab = function (data, items = NULL, group = NULL, endorsedOption = 1, order='none', values='count') {
-            options <- data[, items]
-            groups <- list(data[,group])
+            options <- data[, items, drop = FALSE]
+            groups <- list(group)
             # CrossTab
-            crossTab <- aggregate(options == endorsedOption, groups, sum, na.rm = TRUE)
+            # Every level of the group, in its order, as the table's columns (.init()): drop = FALSE keeps a level
+            # with no case at all (unused level retained in jamovi), whose sum is NA: counted 0
+            crossTab <- aggregate(options == endorsedOption, groups, sum, na.rm = TRUE, drop = FALSE)
+            crossTab[is.na(crossTab)] <- 0
             # Save group names
             groupNames <- crossTab[,1]
             # Transpose the content of the table
-            crossTab <- as.data.frame(t(crossTab[,-1]))
+            crossTab <- as.data.frame(t(crossTab[, -1, drop = FALSE]))
             # Rename the columns of the table
             names(crossTab) <- groupNames
             # Compute the number of cases by group
-            if (length(items) > 1) {
-                NbOfCases <- aggregate( rowSums(!is.na(options)) > 0, groups, sum )
-            } else {
-                NbOfCases <- aggregate( !is.na(options), groups, sum )
-            }
-            NbOfCases <- c( NbOfCases[,2], sum(NbOfCases[,2]))
+            # (a case: a row with at least one non-missing response)
+            NbOfCases <- aggregate( rowSums(!is.na(options)) > 0, groups, sum, drop = FALSE )
+            NbOfCases <- NbOfCases[,2]
+            NbOfCases[is.na(NbOfCases)] <- 0   # a level with no case
+            NbOfCases <- c(NbOfCases, sum(NbOfCases))
             # Add the margin column to crosstab
-            crossTab <- cbind(crossTab, "Total" = rowSums(crossTab))
+            crossTab <- cbind(crossTab, ".TOTAL" = rowSums(crossTab))
             # Sorting crosstab
             if (order == 'decreasing') {
-                crossTab <- crossTab[order(crossTab$Total, decreasing = TRUE),]
+                crossTab <- crossTab[order(crossTab$.TOTAL, decreasing = TRUE),]
             } else if (order == 'increasing') {
-                crossTab <- crossTab[order(crossTab$Total, decreasing = FALSE),]
+                crossTab <- crossTab[order(crossTab$.TOTAL, decreasing = FALSE),]
             }
             # add margin row to  crosstab
             NbOfResps <- colSums(crossTab)
@@ -350,47 +359,15 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 crossTab <- rbind(crossTab, "Nb of Cases"=NbOfCases)
             } else if (values == 'options' ) {
                 crossTab <- rbind(crossTab, "Nb of Cases"=NbOfCases)
-                crossTab <- sweep( crossTab , 1, crossTab$Total, "/")
+                crossTab <- sweep( crossTab , 1, crossTab$.TOTAL, "/")
             } else {
                 crossTab <- rbind(crossTab, "Nb of Cases"=NbOfCases)
             }
+            # Percentages with a zero denominator (a group with no response or no case, an option nobody chose):
+            # missing (an empty cell) rather than NaN. The counts are never missing, so is.na() only finds those NaN
+            crossTab[is.na(crossTab)] <- NA
             # Return result
             return(crossTab)
-        },
-        .oneHotEncoding = function (aCol, separator, na = TRUE, init = FALSE) {
-            # List of values
-            uniqueValues <- unique(unlist(strsplit(levels(aCol), split = separator, fixed = TRUE)))
-            uniqueValues <- trimws(uniqueValues)
-            uniqueValues <- unique(uniqueValues)  # le trim peut créer des doublons
-            uniqueValues <- uniqueValues[uniqueValues != ""]
-            # Return the list of values/columns for table init
-            if (init)
-                return(uniqueValues)
-            # No distinct value found: return an empty (0-column) table instead of
-            # letting vapply()/`+` below crash on a zero-length input
-            if (length(uniqueValues) == 0)
-                return(as.data.frame(matrix(nrow = length(aCol), ncol = 0)))
-            # Build the encoded table
-            rawValues <- as.character(aCol)
-            # split then clean (heading/trailing spaces) the values
-            splitted <- lapply(
-                strsplit(rawValues, split = separator, fixed = TRUE),
-                trimws
-            )
-            # build the TRUE/FALSE matrix (vapply guarantees a matrix even with a single uniqueValue)
-            encoded <- vapply(uniqueValues, function(opt) {
-                vapply(splitted, function(x) opt %in% x, logical(1))
-            }, FUN.VALUE = logical(length(splitted)))
-            # + OL converts TRUE/FALSE to 1/0
-            onehotDF <- as.data.frame(encoded + 0L)
-            # NA/empty rawvalues set to NA (a value containing only separators, e.g. ";",
-            # splits into all-empty pieces after trimws() and must count as missing too —
-            # trimws(rawValues) == "" alone misses that since it never removes separators)
-            if (na) {
-                isMissing <- is.na(aCol) | vapply(splitted, function(x) all(x == ""), logical(1))
-                onehotDF[isMissing, ] <- NA
-            }
-            return(onehotDF)
         },
         .showHelpMessage = function() {
             helpMsg <- .('<p>This module computes two-way frequencies for multiple response questions, also known as "Check All That Apply" (CATA) questions.</p>

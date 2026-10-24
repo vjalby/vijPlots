@@ -179,8 +179,6 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Bars ####
             plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = .data[[".X"]], y = !!yVar, group = !!groupVar, fill = !!fillVar))
 
-            summaryFun <- self$options$yaxis
-
             if(singleColor)
                 plot <- plot + ggplot2::geom_col(position = position, color = borderColor, fill = oneColorOfPalette)
             else
@@ -267,11 +265,11 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Ticks & Axis Expansion ####
             expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if ((self$options$showLabels && !stacked) || (self$options$showLabels && summaryFun == "sum" && stacked)) {
+            if (self$options$showLabels && (!stacked || !is.null(image$state$totals))) {
                 # Room for the labels beyond the bars' ends: on the positive side, and on the negative side too
-                # when a bar is negative (its label is then drawn below/left of it)
+                # when a bar (or, stacked, a total) is negative: its label is then drawn below/left of it
                 upper <- if (self$options$horizontal) 0.2 else 0.1
-                lower <- if (any(plotData$.Y < 0, na.rm = TRUE)) upper else 0.05
+                lower <- if (any((image$state$totals$.TOTAL %||% plotData$.Y) < 0, na.rm = TRUE)) upper else 0.05
                 if (self$options$horizontal && self$options$xAxisRangeType == "auto")
                     expand_arg <- ggplot2::expansion(mult = c(lower, upper))
                 else if (!self$options$horizontal && self$options$yAxisRangeType == "auto")

@@ -52,6 +52,11 @@ options:
       type: Bool
       default: false
 
+    - name: alwaysShowLegend
+      title: Always show legend
+      type: Bool
+      default: false
+
     - name: order
       title: Sorting
       type: List
@@ -103,7 +108,7 @@ options:
       default: false
 
     - name: hideLabelsBelow
-      title: "Hide % labels below 5%"
+      title: "Hide labels below 5%"
       type: Bool
       default: false
 

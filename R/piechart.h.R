@@ -12,6 +12,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ignoreNA = TRUE,
             donut = FALSE,
             clockwise = FALSE,
+            alwaysShowLegend = FALSE,
             order = "none",
             frequencyTable = FALSE,
             labels = "none",
@@ -85,6 +86,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..clockwise <- jmvcore::OptionBool$new(
                 "clockwise",
                 clockwise,
+                default=FALSE)
+            private$..alwaysShowLegend <- jmvcore::OptionBool$new(
+                "alwaysShowLegend",
+                alwaysShowLegend,
                 default=FALSE)
             private$..order <- jmvcore::OptionList$new(
                 "order",
@@ -406,6 +411,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..donut)
             self$.addOption(private$..clockwise)
+            self$.addOption(private$..alwaysShowLegend)
             self$.addOption(private$..order)
             self$.addOption(private$..frequencyTable)
             self$.addOption(private$..labels)
@@ -447,6 +453,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ignoreNA = function() private$..ignoreNA$value,
         donut = function() private$..donut$value,
         clockwise = function() private$..clockwise$value,
+        alwaysShowLegend = function() private$..alwaysShowLegend$value,
         order = function() private$..order$value,
         frequencyTable = function() private$..frequencyTable$value,
         labels = function() private$..labels$value,
@@ -487,6 +494,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ignoreNA = NA,
         ..donut = NA,
         ..clockwise = NA,
+        ..alwaysShowLegend = NA,
         ..order = NA,
         ..frequencyTable = NA,
         ..labels = NA,
@@ -611,6 +619,7 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param ignoreNA .
 #' @param donut .
 #' @param clockwise .
+#' @param alwaysShowLegend .
 #' @param order .
 #' @param frequencyTable .
 #' @param labels .
@@ -665,6 +674,7 @@ piechart <- function(
     ignoreNA = TRUE,
     donut = FALSE,
     clockwise = FALSE,
+    alwaysShowLegend = FALSE,
     order = "none",
     frequencyTable = FALSE,
     labels = "none",
@@ -722,6 +732,7 @@ piechart <- function(
         ignoreNA = ignoreNA,
         donut = donut,
         clockwise = clockwise,
+        alwaysShowLegend = alwaysShowLegend,
         order = order,
         frequencyTable = frequencyTable,
         labels = labels,

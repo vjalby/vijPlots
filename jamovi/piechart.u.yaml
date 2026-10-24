@@ -64,6 +64,9 @@ children:
                     name: clockwise
                   - type: CheckBox
                     name: donut
+                  - type: CheckBox
+                    name: alwaysShowLegend
+                    enable: (!labels_none && !labels_count && !labels_percent)
       - type: LayoutBox
         margin: large
         cell:
@@ -167,7 +170,7 @@ children:
                 children:
                   - type: CheckBox
                     name: hideLabelsBelow
-                    enable: ({ return ['percent','group+percent'].includes(ui['labels'].value()); })
+                    enable: (!labels_none)
                   - type: CheckBox
                     name: overlap
                     enable: (!labels_none)

@@ -22,11 +22,16 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 height <- 400
             }
             # Fixed dimension
-            if (self$options$legendPosition %in% c('top','bottom')) {
-                fixed_width <- 0
-                fixed_height <- 50
+            if (private$.showLegend()) {
+                if (self$options$legendPosition %in% c('top','bottom')) {
+                    fixed_width <- 0
+                    fixed_height <- 50
+                } else {
+                    fixed_width <- 100
+                    fixed_height <- 0
+                }
             } else {
-                fixed_width <- 100
+                fixed_width <- 0
                 fixed_height <- 0
             }
             # Set the image dimensions
@@ -42,6 +47,11 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table$getColumn('inner')$setTitle(self$options$aVar)
             if (!is.null(self$options$facet))
                 table$getColumn('facet')$setTitle(self$options$facet)
+        },
+        # Legend of the categories: none when the labels show them (redundant), unless always shown.
+        # Used by .init() (room for the legend) and .plot()
+        .showLegend = function() {
+            self$options$alwaysShowLegend || !(self$options$labels %in% c("group", "group+count", "group+percent"))
         },
         .run = function() {
             if (is.null(self$options$aVar) || nrow(self$data) == 0) {
@@ -88,10 +98,10 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Missing values (ignoreNA unchecked) shown as "(Missing)": legend, facet strips, text labels
             labelNA <- vijLabelNA(self)
 
-            # ggstats::StatProp (percent labels) drops the rows whose fill is NA (stats::aggregate):
+            # ggstats::StatProp (labels) drops the rows whose fill is NA (stats::aggregate):
             # make NA an explicit level (still drawn with the scale's na.value) to keep the NA slice
-            # in the percentages. Only if NA is present (an empty NA level would show in the legend).
-            if (self$options$labels %in% c("percent", "group+percent") && anyNA(plotData[[self$options$aVar]]))
+            # in the labels. Only if NA is present (an empty NA level would show in the legend).
+            if (self$options$labels != "none" && anyNA(plotData[[self$options$aVar]]))
                 plotData[[self$options$aVar]] <- forcats::fct_na_value_to_level(plotData[[self$options$aVar]])
 
             #### Set variables ####
@@ -147,21 +157,20 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     geomLab <- baseGeomLab
                 }
 
-                # label format (percentages of small slices are hidden: NA labels are dropped by na.rm)
-                hideBelow <- if (self$options$hideLabelsBelow) 0.05 else 0
-                labelExpr <- rlang::expr(switch(self$options$labels,
+                # label format
+                labelText <- rlang::expr(switch(self$options$labels,
                                    "count" = doCount(ggplot2::after_stat(count)),
-                                   "percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, NA_character_,
-                                                      doPercent(ggplot2::after_stat(prop))),
+                                   "percent" = doPercent(ggplot2::after_stat(prop)),
                                    "group" = labelNA(.data$fill),
                                    "group+count" = paste0(labelNA(.data$fill), "\n", doCount(ggplot2::after_stat(count))),
-                                   "group+percent" = ifelse(ggplot2::after_stat(prop) < !!hideBelow, labelNA(.data$fill),
-                                                            paste0(labelNA(.data$fill), "\n", doPercent(ggplot2::after_stat(prop))))))
+                                   "group+percent" = paste0(labelNA(.data$fill), "\n", doPercent(ggplot2::after_stat(prop)))))
+                # The whole label of small slices is hidden (NA labels are dropped by na.rm); with the categories
+                # as labels, the legend (alwaysShowLegend) keeps them identifiable
+                hideBelow <- if (self$options$hideLabelsBelow) 0.05 else 0
+                labelExpr <- rlang::expr(ifelse(ggplot2::after_stat(prop) < !!hideBelow, NA_character_, !!labelText))
 
-                # Label stat and position
-                statLab <- switch(self$options$labels, "percent" = ggstats::StatProp,
-                                  "group+percent" = ggstats::StatProp,
-                                  "count")
+                # Label stat: StatProp gives the count of each slice and its share (prop, for the threshold)
+                statLab <- ggstats::StatProp
 
                 labX <- self$options$labOffset/10 + xOffset
 
@@ -198,7 +207,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
 
             # Guide
-            if (self$options$labels %in% c("group","group+count","group+percent"))
+            if (!private$.showLegend())
                 plot <- plot + ggplot2::guides(fill = "none")
 
             #### Axes and titles ####

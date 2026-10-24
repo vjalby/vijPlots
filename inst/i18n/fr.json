@@ -223,6 +223,9 @@
             "Always show group legend": [
                 "Toujours afficher la légende"
             ],
+            "Always show legend": [
+                "Toujours afficher la légende"
+            ],
             "Apr": [
                 "avr."
             ],
@@ -915,6 +918,9 @@
             ],
             "Hide axes": [
                 "Masquer les axes"
+            ],
+            "Hide labels below 5%": [
+                "Masquer les étiquettes inférieures à 5 %"
             ],
             "Histogram": [
                 "Histogramme"

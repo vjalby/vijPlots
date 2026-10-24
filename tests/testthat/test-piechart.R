@@ -297,7 +297,7 @@ test_that("piechart: frequency table with facet and counts", {
     expect_equal(r$frequencies$notes$missing$note, "Missing values: 30")
 })
 
-test_that("piechart: percent labels below 5% are hidden", {
+test_that("piechart: labels below 5% are hidden", {
     smallData <- data.frame(cat = factor(c("a", "b", "c")), w = c(60, 37, 3))
     renderLabels <- function(labels, hide, labType = "text") {
         r <- vijPlots::piechart(
@@ -318,8 +318,28 @@ test_that("piechart: percent labels below 5% are hidden", {
     expect_equal(sort(renderLabels("percent", FALSE)), c("3.0 %", "37.0 %", "60.0 %"))
     expect_equal(sort(renderLabels("percent", TRUE)), c("37.0 %", "60.0 %"))
     expect_equal(sort(renderLabels("percent", TRUE, "label")), c("37.0 %", "60.0 %"))
-    # group+percent keeps the group name of small slices
-    expect_equal(sort(renderLabels("group+percent", TRUE)), c("a\n60.0 %", "b\n37.0 %", "c"))
+    expect_equal(sort(renderLabels("count", FALSE)), c("3", "37", "60"))
+    expect_equal(sort(renderLabels("count", TRUE)), c("37", "60"))
+    # the whole label, group name included
+    expect_equal(sort(renderLabels("group", TRUE)), c("a", "b"))
+    expect_equal(sort(renderLabels("group+count", TRUE)), c("a\n60", "b\n37"))
+    expect_equal(sort(renderLabels("group+percent", TRUE)), c("a\n60.0 %", "b\n37.0 %"))
+})
+
+test_that("piechart: legend with group labels only when always shown", {
+    smallData <- data.frame(cat = factor(c("a", "b", "c")), w = c(60, 37, 3))
+    hasLegend <- function(labels, hide, always) {
+        r <- vijPlots::piechart(data = smallData, aVar = "cat", facet = NULL, counts = "w", labels = labels,
+                                hideLabelsBelow = hide, alwaysShowLegend = always)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        !is.null(ggplot2::get_guide_data(ggplot2::last_plot(), "fill"))
+    }
+    expect_false(hasLegend("group+percent", TRUE, FALSE))
+    expect_true(hasLegend("group+percent", TRUE, TRUE))
+    expect_true(hasLegend("group+percent", FALSE, TRUE))    # also without hidden labels
+    expect_true(hasLegend("percent", FALSE, FALSE))         # no group label: legend always shown
 })
 
 test_that("piechart: hidden percent labels", {

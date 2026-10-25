@@ -116,6 +116,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                                                      level = vijLabelNA(self)(NA))
                 }
             }
+            if (nrow(mainData) == 0)
+                return()
             # Cleaning the group variable name (it would crash gglikert)
             if (!is.null(self$options$group)) {
                 groupingVar <- jmvcore::toB64(self$options$group)

@@ -169,8 +169,9 @@ msgid ""
 "order in table and graph (when some variables miss some levels).</li>\n"
 "<li><strong>Convert variables to integer:</strong> when checked, the level "
 "labels are ignored and only integer values are used.</li>\n"
-"<li><strong>Sort Variables by Median:</strong> orders the list of Likert "
-"variables by median.</li>\n"
+"<li><strong>Sort Variables:</strong> orders the Likert variables by the "
+"proportion of answers in the upper half of the scale (middle level "
+"excluded).</li>\n"
 "</ul>\n"
 "<h3>Comparison Tests</h3>\n"
 "<p>When using a group variable, several tests are available:</p>\n"
@@ -5286,7 +5287,7 @@ msgstr ""
 
 #: likertplot/options/sorting.title
 #: likertplot/ui[1][1][0].label
-msgid "Sort Variables by Median"
+msgid "Sort Variables"
 msgstr ""
 
 #: barchart/options/order.title

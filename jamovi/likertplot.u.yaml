@@ -50,7 +50,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: Sort Variables by Median
+            label: Sort Variables
             children:
               - type: RadioButton
                 name: sorting_none

@@ -40,7 +40,7 @@ options:
       default: centered
 
     - name: sorting
-      title: Sort Variables by Median
+      title: Sort Variables
       type: List
       options:
         - title: None

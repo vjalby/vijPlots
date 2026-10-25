@@ -125,7 +125,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Data for table
-            ggLikertData <- ggstats::gglikert_data(tibble::as_tibble(mainData), include = self$options$liks, sort = self$options$sorting)
+            # Same question order as the plot: gglikert_data() includes the centre level in the sorting
+            # proportion by default, unlike gglikert()/gglikert_stacked()
+            ggLikertData <- ggstats::gglikert_data(tibble::as_tibble(mainData), include = self$options$liks, sort = self$options$sorting,
+                                                   sort_prop_include_center = FALSE)
             questions <- levels(ggLikertData[['.question']])
             nq <- length(questions)
             if (!is.null(groupingVar)) {
@@ -822,7 +825,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <li>If you plan to compute mean/median/sd or to use comparison tests, they must be of integer data-type.</li>
 <li><strong>Tidy up levels:</strong> when checked, try to fix the labels order in table and graph (when some variables miss some levels).</li>
 <li><strong>Convert variables to integer:</strong> when checked, the level labels are ignored and only integer values are used.</li>
-<li><strong>Sort Variables by Median:</strong> orders the list of Likert variables by median.</li>
+<li><strong>Sort Variables:</strong> orders the Likert variables by the proportion of answers in the upper half of the scale (middle level excluded).</li>
 </ul>
 <h3>Comparison Tests</h3>
 <p>When using a group variable, several tests are available:</p>

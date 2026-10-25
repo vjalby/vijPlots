@@ -248,7 +248,7 @@ test_that("likertplot: grouped by group instead of variable (groupBy = group)", 
     expect_plot_snapshot("likertplot-groupBy-group", testPlot)
 })
 
-test_that("likertplot: sorted by median (descending)", {
+test_that("likertplot: sorted (descending)", {
     testPlot <- vijPlots::likertplot(
         data = testData,
         liks = c("Question 1", "Question 2", "Question 3"),

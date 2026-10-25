@@ -619,7 +619,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             group <- data[[group]]
             tryCatch(
                 stats::kruskal.test(variable, group),
-                error = function(e) list(p.value = NA)
+                error = function(e) list(statistic = NA_real_, parameter = NA_integer_, p.value = NA_real_)
             )
         },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/dscfAllPairsTest.R

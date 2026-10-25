@@ -504,6 +504,9 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 } else if (self$options$postHoc == "dscf") {
                     testRes <- private$.dscfAllPairs(mainData[[ques]], mainData[[groupingVar]])
                 }
+                # Degenerate data (all answers identical; for Conover, one answer per group) gives NaN:
+                # shown as empty cells instead
+                testRes <- lapply(testRes, function(l) lapply(l, function(v) if (is.finite(v)) v else NA_real_))
                 res.p.values[[ques]] <- testRes$p.values
                 res.statistics[[ques]] <- testRes$statistics
                 # Compute groupwise adjusted p
@@ -617,10 +620,16 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .kruskalW = function(var, group, data) {
             variable <- jmvcore::toNumeric(data[[var]])
             group <- data[[group]]
-            tryCatch(
+            res <- tryCatch(
                 stats::kruskal.test(variable, group),
                 error = function(e) list(statistic = NA_real_, parameter = NA_integer_, p.value = NA_real_)
             )
+            # All answers identical gives NaN: shown as empty cells instead
+            if (!is.finite(res$statistic)) {
+                res$statistic <- NA_real_
+                res$p.value <- NA_real_
+            }
+            res
         },
         # Modified from https://github.com/cran/PMCMRplus/blob/master/R/dscfAllPairsTest.R
         .dscfAllPairs = function(x, g){

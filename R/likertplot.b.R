@@ -383,7 +383,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 for (i in seq_len(nrow(rows))) {
                     ques <- rows$ques[i]
                     group <- rows$group[i]
-                    groupAndQues <- paste0(group, ques)
+                    rowKey <- as.character(i)
                     row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
                     values <- as.list(row_data)
                     values[".question"] <- private$.getVarName(ques)
@@ -396,13 +396,13 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         values["Mean"] <- mean(numericData, na.rm = TRUE)
                         values["SD"] <- stats::sd(numericData, na.rm = TRUE)
                     }
-                    table$addRow(rowKey = groupAndQues, values = values)
+                    table$addRow(rowKey = rowKey, values = values)
                     # Blocks of the outer variable, marked as in jmv::conttables: BEGIN_GROUP on each
                     # block's first row (jamovi renders it as a top padding), END_GROUP on its last
                     if (i == 1 || outer[i] != outer[i - 1])
-                        table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.BEGIN_GROUP)
+                        table$addFormat(rowKey = rowKey, 1, jmvcore::Cell.BEGIN_GROUP)
                     if (i == nrow(rows) || outer[i + 1] != outer[i])
-                        table$addFormat(rowKey = groupAndQues, 1, jmvcore::Cell.END_GROUP)
+                        table$addFormat(rowKey = rowKey, 1, jmvcore::Cell.END_GROUP)
                 }
             }
         },

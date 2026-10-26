@@ -440,3 +440,62 @@ test_that("likertplot: frequency table grouped by group, as the plot (groupBy = 
     expect_equal(bitwAnd(vapply(1:6, formatOf, numeric(1)), jmvcore::Cell.BEGIN_GROUP) > 0, c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
     expect_equal(bitwAnd(vapply(1:6, formatOf, numeric(1)), jmvcore::Cell.END_GROUP) > 0, c(FALSE, FALSE, TRUE, FALSE, FALSE, TRUE))
 })
+
+# Group levels without any (valid) observation are dropped: they must not count as groups
+
+test_that("likertplot: group level without observation is ignored (Mann-Whitney U, tables)", {
+    emptyC <- testData
+    emptyC$Group[emptyC$Group == "C"] <- NA     # level "C" stays, with no observation left
+    r <- vijPlots::likertplot(
+        data = emptyC,
+        liks = c("Q1", "Q3"),
+        group = "Group",
+        frequencyTable = TRUE,
+        showMannU = TRUE,
+        showPostHoc = TRUE,
+        postHoc = "dunn"
+    )
+    # two groups with data: the test is run (not refused as with three groups)
+    uTest <- r$comp$uTestTable$asDF
+    expectedMW <- function(var) {
+        x <- as.numeric(emptyC[[var]])
+        a <- stats::na.omit(x[emptyC$Group %in% "A"])
+        b <- stats::na.omit(x[emptyC$Group %in% "B"])
+        res <- suppressWarnings(stats::wilcox.test(a, b))
+        c(min(res$statistic, length(a) * length(b) - res$statistic), res$p.value)
+    }
+    expect_equal(unname(uTest$statistic), c(expectedMW("Q1")[1], expectedMW("Q3")[1]), tolerance = 1e-6)
+    expect_equal(unname(uTest$p.value), c(expectedMW("Q1")[2], expectedMW("Q3")[2]), tolerance = 1e-6)
+    expect_null(r$comp$uTestTable$notes$p)
+    # no row for the empty group in the plot data, the frequency table and the pairwise comparisons
+    groupCol <- jmvcore::toB64("Group")
+    expect_equal(levels(r$plot$state$mainData[[groupCol]]), c("A", "B"))
+    freq <- r$frequencies$asDF
+    expect_equal(unname(as.character(freq$Group)), rep(c("A", "B"), 2))
+    pw <- r$comp$pwTable$asDF
+    expect_equal(nrow(pw), 1)
+    expect_equal(c(pw$group1, pw$group2), c("A", "B"))
+})
+
+test_that("likertplot: a single group with observations is not enough for comparison tests", {
+    onlyA <- testData
+    onlyA$Group <- factor(ifelse(onlyA$Group %in% "A", "A", NA), levels = c("A", "B", "C"))
+    r <- vijPlots::likertplot(
+        data = onlyA,
+        liks = c("Q1", "Q3"),
+        group = "Group",
+        frequencyTable = TRUE,
+        showMannU = TRUE,
+        showKW = TRUE,
+        showPostHoc = TRUE
+    )
+    groupCol <- jmvcore::toB64("Group")
+    expect_equal(levels(r$plot$state$mainData[[groupCol]]), "A")
+    expect_equal(nrow(r$frequencies$asDF), 2)
+    # warning about the number of groups, tests left empty
+    notice <- r$get(rlang::hash("Comparison tests require at least two groups."))
+    expect_equal(notice$content, "Comparison tests require at least two groups.")
+    expect_equal(unname(r$comp$uTestTable$asDF$p.value), c(NA, NA))
+    expect_equal(unname(r$comp$kwTable$asDF$p.value), c(NA, NA))
+    expect_equal(nrow(r$comp$pwTable$asDF), 0)
+})

@@ -125,6 +125,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 groupingVar <- NULL
             }
+            # Groups without any (valid) observation are dropped: they would count in ng, wrongly
+            # refusing Mann-Whitney U, and add empty rows to the tables
+            if (!is.null(groupingVar))
+                mainData[[groupingVar]] <- droplevels(mainData[[groupingVar]])
 
             # Data for table
             # Same question order as the plot: gglikert_data() includes the centre level in the sorting

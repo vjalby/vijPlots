@@ -128,7 +128,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Data for table
             # Same question order as the plot: gglikert_data() includes the centre level in the sorting
-            # proportion by default, unlike gglikert()/gglikert_stacked()
+            # proportion by default, so all three calls set sort_prop_include_center explicitly
             ggLikertData <- ggstats::gglikert_data(tibble::as_tibble(mainData), include = self$options$liks, sort = self$options$sorting,
                                                    sort_prop_include_center = FALSE)
             questions <- levels(ggLikertData[['.question']])
@@ -242,6 +242,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if( self$options$type == 'centered' ) {
                 plot <- ggstats::gglikert(tibble::as_tibble(mainData), include = self$options$liks,
                                           sort = self$options$sorting,
+                                          sort_prop_include_center = FALSE,
                                           add_labels = self$options$addLabels,
                                           labels_size = self$options$labelSize / ggplot2::.pt ,
                                           labels_accuracy = accuracy,
@@ -255,6 +256,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else { # Stacked
                 plot <- ggstats::gglikert_stacked(tibble::as_tibble(mainData), include = self$options$liks,
                                                   sort = self$options$sorting,
+                                                  sort_prop_include_center = FALSE,
                                                   add_labels = self$options$addLabels,
                                                   labels_size = self$options$labelSize / ggplot2::.pt ,
                                                   labels_accuracy = accuracy,

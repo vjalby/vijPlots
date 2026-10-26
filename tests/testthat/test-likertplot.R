@@ -25,8 +25,8 @@ test_that("likertplot: frequency table (counts), group = Sex", {
     )
     freq <- r$frequencies$asDF
     expect_equal(unname(freq$.question), rep(c("Question 1", "Question 2", "Question 3"), each = 2))
-    expect_equal(unname(as.character(freq$Sex)), c("Male", "Female", "Male", "Female", "Male", "Female"))
-    expect_equal(unname(freq$Sum), c(10L, 12L, 9L, 11L, 9L, 12L))
+    expect_equal(unname(as.character(freq$.GROUP)), c("Male", "Female", "Male", "Female", "Male", "Female"))
+    expect_equal(unname(freq$.SUM), c(10L, 12L, 9L, 11L, 9L, 12L))
     expect_equal(unname(freq$`Strongly disagree`), c(3L, 5L, 3L, 1L, 3L, 2L))
     expect_equal(unname(freq$`Strongly agree`), c(2L, 1L, 2L, 3L, 2L, 2L))
 })
@@ -43,13 +43,13 @@ test_that("likertplot: frequency table (percentages, median, mean), group = Grou
     )
     freq <- r$frequencies$asDF
     expect_equal(unname(freq$.question), rep(c("Question 1", "Question 2", "Question 3"), each = 3))
-    expect_equal(unname(as.character(freq$Group)), c("A", "B", "C", "A", "B", "C", "A", "B", "C"))
-    expect_equal(unname(freq$Sum), c(7L, 7L, 7L, 6L, 7L, 7L, 6L, 7L, 8L))
+    expect_equal(unname(as.character(freq$.GROUP)), c("A", "B", "C", "A", "B", "C", "A", "B", "C"))
+    expect_equal(unname(freq$.SUM), c(7L, 7L, 7L, 6L, 7L, 7L, 6L, 7L, 8L))
     expect_equal(unname(freq$`Strongly disagree`), c(0.1428571429, 0.4285714286, 0.5714285714, 0.3333333333, 0.1428571429, 0.1428571429, 0.1666666667, 0.1428571429, 0.25), tolerance = 1e-6)
     expect_equal(unname(freq$`Strongly agree`), c(0.2857142857, 0.1428571429, 0, 0.3333333333, 0.1428571429, 0.2857142857, 0.1666666667, 0.4285714286, 0), tolerance = 1e-6)
-    expect_equal(unname(freq$Median), c(3, 3, 1, 3, 3, 3, 2.5, 4, 3))
-    expect_equal(unname(freq$Mean), c(3.142857143, 2.571428571, 1.714285714, 3, 3, 3.285714286, 2.666666667, 3.428571429, 2.75), tolerance = 1e-6)
-    expect_equal(unname(freq$SD), c(1.573591585, 1.618347187, 0.9511897312, 1.897366596, 1.414213562, 1.496026483, 1.366260102, 1.718249386, 1.281739889), tolerance = 1e-6)
+    expect_equal(unname(freq$.MEDIAN), c(3, 3, 1, 3, 3, 3, 2.5, 4, 3))
+    expect_equal(unname(freq$.MEAN), c(3.142857143, 2.571428571, 1.714285714, 3, 3, 3.285714286, 2.666666667, 3.428571429, 2.75), tolerance = 1e-6)
+    expect_equal(unname(freq$.SD), c(1.573591585, 1.618347187, 0.9511897312, 1.897366596, 1.414213562, 1.496026483, 1.366260102, 1.718249386, 1.281739889), tolerance = 1e-6)
 })
 
 test_that("likertplot: Mann-Whitney U test, group = Sex", {
@@ -429,12 +429,12 @@ test_that("likertplot: frequency table grouped by group, as the plot (groupBy = 
         frequencies = "counts"
     )
     # the group column comes first, the rows are grouped by group then question
-    expect_equal(names(r$frequencies$asDF)[1:2], c("Sex", ".question"))
+    expect_equal(names(r$frequencies$asDF)[1:2], c(".GROUP", ".question"))
     freq <- r$frequencies$asDF
-    expect_equal(unname(as.character(freq$Sex)), rep(c("Male", "Female"), each = 3))
+    expect_equal(unname(as.character(freq$.GROUP)), rep(c("Male", "Female"), each = 3))
     expect_equal(unname(freq$.question), rep(c("Question 1", "Question 2", "Question 3"), 2))
     # same counts as grouped by question, in the other order
-    expect_equal(unname(freq$Sum), c(10L, 9L, 9L, 12L, 11L, 12L))
+    expect_equal(unname(freq$.SUM), c(10L, 9L, 9L, 12L, 11L, 12L))
     # blocks marked as in jmv::conttables: begin on each block's first row, end on its last
     formatOf <- function(row) r$frequencies$getCell(rowNo = row, col = 1)$format
     expect_equal(bitwAnd(vapply(1:6, formatOf, numeric(1)), jmvcore::Cell.BEGIN_GROUP) > 0, c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE))
@@ -471,7 +471,7 @@ test_that("likertplot: group level without observation is ignored (Mann-Whitney 
     groupCol <- jmvcore::toB64("Group")
     expect_equal(levels(r$plot$state$mainData[[groupCol]]), c("A", "B"))
     freq <- r$frequencies$asDF
-    expect_equal(unname(as.character(freq$Group)), rep(c("A", "B"), 2))
+    expect_equal(unname(as.character(freq$.GROUP)), rep(c("A", "B"), 2))
     pw <- r$comp$pwTable$asDF
     expect_equal(nrow(pw), 1)
     expect_equal(c(pw$group1, pw$group2), c("A", "B"))
@@ -498,4 +498,67 @@ test_that("likertplot: a single group with observations is not enough for compar
     expect_equal(unname(r$comp$uTestTable$asDF$p.value), c(NA, NA))
     expect_equal(unname(r$comp$kwTable$asDF$p.value), c(NA, NA))
     expect_equal(nrow(r$comp$pwTable$asDF), 0)
+})
+
+# Frequency table: technical column names, so that answer labels and the group variable name can't collide with them
+
+collisionData <- local({
+    lv <- c("Sum", "Median", "Mean", "SD", "Other")
+    mk <- function(x) {
+        f <- factor(x, levels = lv, ordered = TRUE)
+        attr(f, "values") <- 1:5
+        f
+    }
+    data.frame(
+        Q1 = mk(rep_len(lv, 20)),
+        Q2 = mk(rep_len(c("Sum", "Sum", "Median", "Mean", "SD"), 20)),
+        Sum = factor(rep(c("A", "B"), each = 10))      # group variable named like an answer
+    )
+})
+
+test_that("likertplot: frequency table with answers named Sum, Median, Mean, SD and a group variable named Sum", {
+    r <- vijPlots::likertplot(
+        data = collisionData,
+        liks = c("Q1", "Q2"),
+        group = "Sum",
+        frequencyTable = TRUE,
+        frequencies = "counts",
+        showMedian = TRUE,
+        showMean = TRUE
+    )
+    freq <- r$frequencies$asDF
+    # rows: Q1/A, Q1/B, Q2/A, Q2/B
+    expect_equal(unname(freq$.question), c("Q1", "Q1", "Q2", "Q2"))
+    expect_equal(unname(as.character(freq$.GROUP)), c("A", "B", "A", "B"))
+    expect_equal(unname(freq$.SUM), rep(10L, 4))
+    # answers keep their own label as column name
+    expect_equal(unname(freq$Sum), c(2L, 2L, 4L, 4L))
+    expect_equal(unname(freq$Median), c(2L, 2L, 2L, 2L))
+    expect_equal(unname(freq$Mean), c(2L, 2L, 2L, 2L))
+    expect_equal(unname(freq$SD), c(2L, 2L, 2L, 2L))
+    expect_equal(unname(freq$Other), c(2L, 2L, 0L, 0L))
+    # statistics
+    expect_equal(unname(freq$.MEDIAN), c(3, 3, 2, 2))
+    expect_equal(unname(freq$.MEAN), c(3, 3, 2.2, 2.2), tolerance = 1e-6)
+    expect_equal(unname(freq$.SD), rep(c(sqrt(20 / 9), sqrt(13.6 / 9)), each = 2), tolerance = 1e-6)
+    # displayed titles
+    titles <- vapply(r$frequencies$columns, function(col) col$title, character(1))
+    expect_true(all(c("N", "Sum", "Median", "Mean", "SD", "Other") %in% titles))
+})
+
+test_that("likertplot: frequency table without group, with answers named Sum, Median, Mean, SD", {
+    r <- vijPlots::likertplot(
+        data = collisionData,
+        liks = c("Q1", "Q2"),
+        group = NULL,
+        frequencyTable = TRUE,
+        frequencies = "counts",
+        showMedian = TRUE,
+        showMean = TRUE
+    )
+    freq <- r$frequencies$asDF
+    expect_equal(unname(freq$.SUM), c(20L, 20L))
+    expect_equal(unname(freq$Sum), c(4L, 8L))
+    expect_equal(unname(freq$Other), c(4L, 0L))
+    expect_equal(unname(freq$.MEDIAN), c(3, 2))
 })

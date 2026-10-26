@@ -306,10 +306,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 freq_df <- ggLikertData |>
                     dplyr::count(.question, .answer, .drop = FALSE) |>
                     dplyr::group_by(.question) |>
-                    dplyr::mutate(Sum = sum(n))
+                    dplyr::mutate(.SUM = sum(n))
 
                 if (self$options$frequencies == "percentages") {
-                    freq_df <- freq_df |> dplyr::mutate(n = ifelse(Sum == 0, 0, n / Sum))
+                    freq_df <- freq_df |> dplyr::mutate(n = ifelse(.SUM == 0, 0, n / .SUM))
                 }
 
                 freq_wide <- freq_df |>
@@ -320,10 +320,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 freq_df <- ggLikertData |>
                     dplyr::count(.question, !!group_sym, .answer, .drop = FALSE) |>
                     dplyr::group_by(.question, !!group_sym) |>
-                    dplyr::mutate(Sum = sum(n))
+                    dplyr::mutate(.SUM = sum(n))
 
                 if (self$options$frequencies == "percentages") {
-                    freq_df <- freq_df |> dplyr::mutate(n = ifelse(Sum == 0, 0, n / Sum))
+                    freq_df <- freq_df |> dplyr::mutate(n = ifelse(.SUM == 0, 0, n / .SUM))
                 }
 
                 freq_wide <- freq_df |>
@@ -349,22 +349,22 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             # Rows grouped as in the plot ("Group by"): by question (default), or by group
             byGroup <- ng > 0 && self$options$groupBy == "group"
-            # Set columns
+            # Set columns (technical names, upper case, so that they can't collide with an answer label or a variable name)
             if (ng > 0) {
                 # First column when the rows are grouped by group; combined below like .question
-                table$addColumn(self$options$group, index = if (byGroup) 1 else NA, type = "text",
+                table$addColumn(".GROUP", index = if (byGroup) 1 else NA, type = "text",
                                 title = private$.getVarName(self$options$group), combineBelow = TRUE)
             }
-            table$addColumn("Sum", type = "integer", title = "N")
+            table$addColumn(".SUM", type = "integer", title = "N")
             answers_levels <- levels(ggLikertData[['.answer']])
             for (col in answers_levels) {
                 table$addColumn(col, type = fType, format = fmt, title = col)
             }
             if (self$options$showMedian)
-                table$addColumn("Median", type = "number", title = .("Median"))
+                table$addColumn(".MEDIAN", type = "number", title = .("Median"))
             if (self$options$showMean) {
-                table$addColumn("Mean", type = "number", title = .("Mean"))
-                table$addColumn("SD", type = "number", title = .("SD"))
+                table$addColumn(".MEAN", type = "number", title = .("Mean"))
+                table$addColumn(".SD", type = "number", title = .("SD"))
             }
 
             # Populate the table
@@ -375,10 +375,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     values[".question"] <- private$.getVarName(ques)
                     numericData <- jmvcore::toNumeric(mainData[[ques]])
                     if (self$options$showMedian)
-                        values['Median'] <- as.numeric(stats::median(numericData, na.rm = TRUE))
+                        values['.MEDIAN'] <- as.numeric(stats::median(numericData, na.rm = TRUE))
                     if (self$options$showMean) {
-                        values["Mean"] <- mean(numericData, na.rm = TRUE)
-                        values["SD"] <- stats::sd(numericData, na.rm = TRUE)
+                        values[".MEAN"] <- mean(numericData, na.rm = TRUE)
+                        values[".SD"] <- stats::sd(numericData, na.rm = TRUE)
                     }
                     table$addRow(rowKey = ques, values = values)
                 }
@@ -398,14 +398,14 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
                     values <- as.list(row_data)
                     values[".question"] <- private$.getVarName(ques)
-                    values[[self$options$group]] <- group
+                    values[[".GROUP"]] <- group
                     numericData <- jmvcore::toNumeric(mainData[[ques]])[mainData[[groupingVar]] == group]
 
                     if (self$options$showMedian)
-                        values["Median"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
+                        values[".MEDIAN"] <- as.numeric(stats::median(numericData, na.rm = TRUE))
                     if (self$options$showMean) {
-                        values["Mean"] <- mean(numericData, na.rm = TRUE)
-                        values["SD"] <- stats::sd(numericData, na.rm = TRUE)
+                        values[".MEAN"] <- mean(numericData, na.rm = TRUE)
+                        values[".SD"] <- stats::sd(numericData, na.rm = TRUE)
                     }
                     table$addRow(rowKey = rowKey, values = values)
                     # Blocks of the outer variable, marked as in jmv::conttables: BEGIN_GROUP on each
@@ -573,19 +573,19 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         if (!is.null(stats1)) {
                             values[paste(ques, "stat")] <- stats1
                             values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr1]]
-                            if (self$options$pValue != "none") {
+                            if (self$options$pValue != "none" && self$options$postHoc != "dscf") {
                                 values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr1]
                             }
                         } else if (!is.null(stats2)) {
                             values[paste(ques, "stat")] <- -stats2
                             values[paste(ques, "p")] <- (res.p.values[[ques]])[[compStr2]]
-                            if (self$options$pValue != "none") {
+                            if (self$options$pValue != "none" && self$options$postHoc != "dscf") {
                                 values[paste(ques, "p.adj")] <- (res.p.adjusted[[ques]])[compStr2]
                             }
                         } else {
                             values[paste(ques, "stat")] <- NA
                             values[paste(ques, "p")] <- NA
-                            if (self$options$pValue != "none") {
+                            if (self$options$pValue != "none" && self$options$postHoc != "dscf") {
                                 values[paste(ques, "p.adj")] <- NA
                             }
                         }

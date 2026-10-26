@@ -13,7 +13,7 @@ items:
       rows:  0
       columns:
         - name: .question
-          title: Questions
+          title: Variables
           type: text
           combineBelow: true
       clearWith:
@@ -41,7 +41,7 @@ items:
           visible: (showMannU)
           columns:
             - name: ques
-              title: Questions
+              title: Variables
               type: text
               content: ($key)
             - name: statistic
@@ -68,7 +68,7 @@ items:
           visible: (showKW)
           columns:
             - name: ques
-              title: Questions
+              title: Variables
               type: text
               content: ($key)
             - name: statistic

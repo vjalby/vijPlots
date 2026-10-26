@@ -585,7 +585,7 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`=".question", 
-                        `title`="Questions", 
+                        `title`="Variables", 
                         `type`="text", 
                         `combineBelow`=TRUE)),
                 clearWith=list(
@@ -622,7 +622,7 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="ques", 
-                                    `title`="Questions", 
+                                    `title`="Variables", 
                                     `type`="text", 
                                     `content`="($key)"),
                                 list(
@@ -652,7 +652,7 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="ques", 
-                                    `title`="Questions", 
+                                    `title`="Variables", 
                                     `type`="text", 
                                     `content`="($key)"),
                                 list(

@@ -182,8 +182,8 @@ msgid ""
 "Dwass-Steel-Critchlow-Fligner (DSCF) pairwise comparisons tests.</li>\n"
 "</ul>\n"
 "<p>The p-values can be adjusted <strong>groupwise</strong> (for each "
-"question) for post hoc tests or <strong>overall</strong> (groupwise and "
-"questionwise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF "
+"variable) for post hoc tests or <strong>overall</strong> (groupwise and "
+"variablewise) for Mann-Whitney U, Kruskal-Wallis and post hoc tests. DSCF "
 "p-values are already adjusted (groupwise); no other adjustment is "
 "possible.</p>\n"
 "<p>A sample file is included at Open > Data Library > vijPlots > Likert</p>"
@@ -4632,12 +4632,6 @@ msgstr ""
 msgid "Quartimax"
 msgstr ""
 
-#: likertplot/results/frequencies.columns.title
-#: likertplot/results/comp/uTestTable.columns.title
-#: likertplot/results/comp/kwTable.columns.title
-msgid "Questions"
-msgstr ""
-
 #: package/analyses/raincloud.title
 #: package/analyses/raincloud.menuTitle
 #: raincloud/options.title
@@ -6055,6 +6049,9 @@ msgstr ""
 #: areachart/ui/mode/severalVariables[0][0][1].label
 #: boxplot/options/vars.title
 #: boxplot/ui[0][0].label
+#: likertplot/results/frequencies.columns.title
+#: likertplot/results/comp/uTestTable.columns.title
+#: likertplot/results/comp/kwTable.columns.title
 #: linechart/options/vars.title
 #: linechart/ui[0][1].label
 #: multcorresp/options/vars.title

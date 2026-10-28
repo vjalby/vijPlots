@@ -91,6 +91,11 @@ options:
       type: Bool
       default: false
 
+    - name: showPoints
+      title: Show observations
+      type: Bool
+      default: false
+
     - name: ignoreNA
       title: Ignore missing groups
       type: Bool
@@ -325,6 +330,49 @@ options:
         - title: Auto
           name:  auto
       default: auto
+
+    - name: pointColor
+      title: Point
+      type: List
+      options:
+        - title: Black
+          name:  black
+        - title: Gray
+          name:  gray
+        - title: Red
+          name:  red
+      default: black
+
+    - name: pointSize
+      title: Size
+      type: Number
+      min: 0.5
+      max: 6
+      default: 2
+
+    - name: pointShape
+      title: Shape
+      type: List
+      options:
+        - title: Circle
+          name:  circle
+        - title: Open circle
+          name:  opencircle
+        - title: Square
+          name:  square
+      default: circle
+
+    - name: errorBarColor
+      title: Error bar
+      type: List
+      options:
+        - title: Black
+          name:  black
+        - title: Gray
+          name:  gray
+        - title: Red
+          name:  red
+      default: black
 
     - name: facetBy
       title: Facet

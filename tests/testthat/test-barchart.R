@@ -299,3 +299,117 @@ testthat::test_that("barchart: stacked sum label at the end of the stack, on the
     expect_equal(labels$y, c(14, 12, -12))
     expect_equal(labels$vjust, c(-0.5, -0.5, 1.5))
 })
+
+# ---- Observations (showPoints) ----
+
+# Layers of the rendered plot, by geom class
+barchartLayers <- function(r) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    p <- ggplot2::last_plot()
+    list(layer = function(geom)
+        ggplot2::layer_data(p, which(vapply(p$layers, function(l) inherits(l$geom, geom), logical(1)))))
+}
+
+testthat::test_that("barchart: observations are kept in the state only when drawn", {
+    points <- function(...) vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width",
+                                               facet = NULL, ...)$plot$state$points
+    expect_null(points(group = NULL))                                           # off by default
+    expect_null(points(group = "group2", showPoints = TRUE, barType = "stack")) # raw values don't belong on a stack
+    for (yaxis in c("sum", "max", "min"))
+        expect_null(points(group = NULL, showPoints = TRUE, yaxis = yaxis))
+    expect_false(is.null(points(group = NULL, showPoints = TRUE, barType = "stack")))   # no group: not stacked
+    expect_false(is.null(points(group = NULL, showPoints = TRUE, yaxis = "median")))
+
+    # one row per observation: x position, group and value
+    r <- vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = "group2", facet = NULL,
+                            showPoints = TRUE)
+    kept <- !is.na(testData$Species) & !is.na(testData$Petal.Width) & !is.na(testData$group2)
+    expect_equal(names(r$plot$state$points), c(".X", "group2", ".PY"))
+    expect_equal(r$plot$state$points$.PY, testData$Petal.Width[kept])
+})
+
+testthat::test_that("barchart: each observation is inside its own bar, with Grouped (dodge2) and Grouped (tight)", {
+    # Chinstrap has no missing sex: 2 bars, against 3 for Adelie and Gentoo; and very different counts per bar
+    # (regression test: ggplot2's own PositionDodge2 spreads the points over the whole category)
+    for (barType in c("dodge2", "dodge")) {
+        layers <- barchartLayers(vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass",
+                                                    group = "sex", facet = NULL, ignoreNA = FALSE, showPoints = TRUE,
+                                                    barType = barType))
+        bars <- layers$layer("GeomCol")
+        points <- layers$layer("GeomPoint")
+        expect_equal(nrow(bars), 8)
+        expect_equal(nrow(points), sum(!is.na(datasets::penguins$body_mass)))
+        bars$cell <- paste(round(bars$x), bars$group)
+        points$cell <- paste(round(points$x), points$group)
+        both <- merge(points, bars[c("cell", "xmin", "xmax")], by = "cell")
+        expect_equal(nrow(both), nrow(points))
+        expect_true(all(both$x >= both$xmin - 1e-9 & both$x <= both$xmax + 1e-9))
+    }
+})
+
+testthat::test_that("barchart: observations' spread is seeded per bar and leaves the random numbers alone", {
+    penguins <- datasets::penguins
+    used <- !is.na(penguins$body_mass)
+    pointsX <- function(data) {
+        r <- vijPlots::barchart(data = data, xVar = "species", yVar = "body_mass", group = "sex", facet = NULL,
+                                ignoreNA = FALSE, showPoints = TRUE, barType = "dodge2")
+        barchartLayers(r)$layer("GeomPoint")$x
+    }
+    x <- pointsX(penguins)
+    expect_equal(pointsX(penguins), x)                       # same data, same points
+    # changing one bar's values moves its points only
+    inBar <- penguins$species %in% "Adelie" & penguins$sex %in% "female" & used
+    edited <- penguins
+    edited$body_mass[inBar] <- edited$body_mass[inBar] + 100
+    xEdited <- pointsX(edited)
+    other <- !inBar[used]
+    expect_equal(xEdited[other], x[other])
+    expect_false(isTRUE(all.equal(xEdited[!other], x[!other])))
+
+    # neither the bootstrap nor the spread change the global random number generator
+    set.seed(123)
+    seedBefore <- get(".Random.seed", globalenv())
+    barchartLayers(vijPlots::barchart(data = penguins, xVar = "species", yVar = "body_mass", group = "sex", facet = NULL,
+                                      errorBars = "ci", bootstrap = TRUE, showPoints = TRUE))
+    expect_identical(get(".Random.seed", globalenv()), seedBefore)
+})
+
+testthat::test_that("barchart: observation and error bar colors, shape and size", {
+    layersOf <- function(...) barchartLayers(vijPlots::barchart(data = datasets::penguins, xVar = "species",
+                                                                yVar = "body_mass", group = NULL, facet = NULL,
+                                                                errorBars = "se", showPoints = TRUE, ...))
+    defaults <- layersOf()
+    expect_equal(unique(defaults$layer("GeomPoint")$colour), "black")
+    expect_equal(unique(defaults$layer("GeomPoint")$shape), 16)
+    expect_equal(unique(defaults$layer("GeomPoint")$size), 2)
+    expect_equal(unique(defaults$layer("GeomErrorbar")$colour), "black")
+    custom <- layersOf(pointColor = "red", pointShape = "square", pointSize = 3, errorBarColor = "gray")
+    expect_equal(unique(custom$layer("GeomPoint")$colour), "red")
+    expect_equal(unique(custom$layer("GeomPoint")$shape), 15)
+    expect_equal(unique(custom$layer("GeomPoint")$size), 3)
+    expect_equal(unique(custom$layer("GeomErrorbar")$colour), "gray")
+    expect_equal(unique(layersOf(pointShape = "opencircle")$layer("GeomPoint")$shape), 1)
+})
+
+testthat::test_that("barchart: observations over Grouped bars (incomplete category)", {
+    testPlot <- vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass", group = "sex",
+                                   facet = NULL, ignoreNA = FALSE, errorBars = "se", showLabels = FALSE,
+                                   showPoints = TRUE)$plot
+    expect_plot_snapshot("barchart-points-dodge2", testPlot)
+})
+
+testthat::test_that("barchart: observations over Grouped (tight) bars, horizontal", {
+    testPlot <- vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass", group = "sex",
+                                   facet = NULL, ignoreNA = FALSE, barType = "dodge", horizontal = TRUE,
+                                   showLabels = FALSE, showPoints = TRUE)$plot
+    expect_plot_snapshot("barchart-points-dodge-horizontal", testPlot)
+})
+
+testthat::test_that("barchart: observations with options, no group", {
+    testPlot <- vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass", group = NULL,
+                                   facet = NULL, errorBars = "se", showPoints = TRUE, pointColor = "red",
+                                   pointShape = "opencircle", pointSize = 3, errorBarColor = "gray")$plot
+    expect_plot_snapshot("barchart-points-options", testPlot)
+})

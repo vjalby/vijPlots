@@ -339,6 +339,27 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   unchanged. Tests don't catch this: they render once with the option already set, so the snapshot
   looks right (bit the `xGridLines`/`yGridLines` options, 2026-10-20). Images without `clearWith:`
   (all the other analyses) are redrawn on any option change.
+- `barchart`'s observations (`showPoints`, added 2026-10-28) draw the raw values over the bars.
+  `.run()` keeps them in the state (`points`: `.X`, group, facet, `.PY`) only when `.showPoints()`
+  allows it (mean or median, not stacked with a group); the points layer comes right after
+  `geom_col`, under the labels and the error bars. Placement depends on `barType`: "dodge" uses
+  `ggplot2::position_jitterdodge()` (it dodges like `position_dodge`, checked against the bars);
+  "dodge2" uses `private$.positionJitterDodge2()`, a ggproto `Position` that works out each bar's slot
+  from the bars themselves (0.9 / largest number of bars at any x, bars centred) and jitters each
+  bar's points with a seed of its own. **Don't use `ggplot2::PositionDodge2`/`position_dodge2()`, nor
+  `ggpp::position_dodge2nudge()` (which extends it), for points:** they treat every point as an
+  element to dodge, so with unequal counts per bar the slots shrink and the points spread over the
+  whole category. The first version did exactly that and passed its tests, which had the same number
+  of points in every bar: the tests now use very unequal counts (`penguins`, `ignoreNA = FALSE`),
+  keep it so. `position_jitterdodge()` is not right for Grouped (dodge2) bars either: in a category
+  with fewer bars it places the points where `position_dodge` would, not where the bars are.
+- Random draws in `barchart` (bootstrap CI, jitter) use `withr::with_seed(strtoi(substr(rlang::hash(x),
+  1, 7), 16L), ...)` rather than `set.seed()`: same values, and the global RNG is left alone.
+  `withr` is in `Imports` for that (it was already installed through ggplot2).
+- The snapshot `tests/testthat/_snaps/barchart/barchart-errorbar-bootstrap.svg` was regenerated on
+  2026-10-28: it already failed at the commit that recorded it (`ef17e8d`), with the same R and
+  package versions, and the cause was not found (only the bootstrap draws differed, not the means).
+  If it fails again for no apparent reason, suspect the draws, not the plot code.
 
 ### Dependency graph has soft/transitive requirements
 

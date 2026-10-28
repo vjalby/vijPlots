@@ -14,6 +14,7 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             order = "none",
             barType = "dodge2",
             horizontal = FALSE,
+            showPoints = FALSE,
             ignoreNA = TRUE,
             reverseStack = FALSE,
             showLabels = TRUE,
@@ -29,6 +30,10 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             colorPalette = "jmv",
             borderColor = "none",
             textColor = "auto",
+            pointColor = "black",
+            pointSize = 2,
+            pointShape = "circle",
+            errorBarColor = "black",
             facetBy = "column",
             facetNumber = 1,
             titleText = "",
@@ -137,6 +142,10 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..horizontal <- jmvcore::OptionBool$new(
                 "horizontal",
                 horizontal,
+                default=FALSE)
+            private$..showPoints <- jmvcore::OptionBool$new(
+                "showPoints",
+                showPoints,
                 default=FALSE)
             private$..ignoreNA <- jmvcore::OptionBool$new(
                 "ignoreNA",
@@ -286,6 +295,36 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "red",
                     "auto"),
                 default="auto")
+            private$..pointColor <- jmvcore::OptionList$new(
+                "pointColor",
+                pointColor,
+                options=list(
+                    "black",
+                    "gray",
+                    "red"),
+                default="black")
+            private$..pointSize <- jmvcore::OptionNumber$new(
+                "pointSize",
+                pointSize,
+                min=0.5,
+                max=6,
+                default=2)
+            private$..pointShape <- jmvcore::OptionList$new(
+                "pointShape",
+                pointShape,
+                options=list(
+                    "circle",
+                    "opencircle",
+                    "square"),
+                default="circle")
+            private$..errorBarColor <- jmvcore::OptionList$new(
+                "errorBarColor",
+                errorBarColor,
+                options=list(
+                    "black",
+                    "gray",
+                    "red"),
+                default="black")
             private$..facetBy <- jmvcore::OptionList$new(
                 "facetBy",
                 facetBy,
@@ -584,6 +623,7 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..order)
             self$.addOption(private$..barType)
             self$.addOption(private$..horizontal)
+            self$.addOption(private$..showPoints)
             self$.addOption(private$..ignoreNA)
             self$.addOption(private$..reverseStack)
             self$.addOption(private$..showLabels)
@@ -599,6 +639,10 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..colorPalette)
             self$.addOption(private$..borderColor)
             self$.addOption(private$..textColor)
+            self$.addOption(private$..pointColor)
+            self$.addOption(private$..pointSize)
+            self$.addOption(private$..pointShape)
+            self$.addOption(private$..errorBarColor)
             self$.addOption(private$..facetBy)
             self$.addOption(private$..facetNumber)
             self$.addOption(private$..titleText)
@@ -650,6 +694,7 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         order = function() private$..order$value,
         barType = function() private$..barType$value,
         horizontal = function() private$..horizontal$value,
+        showPoints = function() private$..showPoints$value,
         ignoreNA = function() private$..ignoreNA$value,
         reverseStack = function() private$..reverseStack$value,
         showLabels = function() private$..showLabels$value,
@@ -665,6 +710,10 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         colorPalette = function() private$..colorPalette$value,
         borderColor = function() private$..borderColor$value,
         textColor = function() private$..textColor$value,
+        pointColor = function() private$..pointColor$value,
+        pointSize = function() private$..pointSize$value,
+        pointShape = function() private$..pointShape$value,
+        errorBarColor = function() private$..errorBarColor$value,
         facetBy = function() private$..facetBy$value,
         facetNumber = function() private$..facetNumber$value,
         titleText = function() private$..titleText$value,
@@ -715,6 +764,7 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..order = NA,
         ..barType = NA,
         ..horizontal = NA,
+        ..showPoints = NA,
         ..ignoreNA = NA,
         ..reverseStack = NA,
         ..showLabels = NA,
@@ -730,6 +780,10 @@ barchartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..colorPalette = NA,
         ..borderColor = NA,
         ..textColor = NA,
+        ..pointColor = NA,
+        ..pointSize = NA,
+        ..pointShape = NA,
+        ..errorBarColor = NA,
         ..facetBy = NA,
         ..facetNumber = NA,
         ..titleText = NA,
@@ -826,6 +880,7 @@ barchartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param order .
 #' @param barType .
 #' @param horizontal .
+#' @param showPoints .
 #' @param ignoreNA .
 #' @param reverseStack .
 #' @param showLabels .
@@ -841,6 +896,10 @@ barchartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param colorPalette .
 #' @param borderColor .
 #' @param textColor .
+#' @param pointColor .
+#' @param pointSize .
+#' @param pointShape .
+#' @param errorBarColor .
 #' @param facetBy .
 #' @param facetNumber .
 #' @param titleText .
@@ -898,6 +957,7 @@ barchart <- function(
     order = "none",
     barType = "dodge2",
     horizontal = FALSE,
+    showPoints = FALSE,
     ignoreNA = TRUE,
     reverseStack = FALSE,
     showLabels = TRUE,
@@ -913,6 +973,10 @@ barchart <- function(
     colorPalette = "jmv",
     borderColor = "none",
     textColor = "auto",
+    pointColor = "black",
+    pointSize = 2,
+    pointShape = "circle",
+    errorBarColor = "black",
     facetBy = "column",
     facetNumber = 1,
     titleText = "",
@@ -983,6 +1047,7 @@ barchart <- function(
         order = order,
         barType = barType,
         horizontal = horizontal,
+        showPoints = showPoints,
         ignoreNA = ignoreNA,
         reverseStack = reverseStack,
         showLabels = showLabels,
@@ -998,6 +1063,10 @@ barchart <- function(
         colorPalette = colorPalette,
         borderColor = borderColor,
         textColor = textColor,
+        pointColor = pointColor,
+        pointSize = pointSize,
+        pointShape = pointShape,
+        errorBarColor = errorBarColor,
         facetBy = facetBy,
         facetNumber = facetNumber,
         titleText = titleText,

@@ -153,6 +153,9 @@ children:
                     enable: (!(!group) && barType_stack)
                   - type: CheckBox
                     name: horizontal
+                  - type: CheckBox
+                    name: showPoints
+                    enable: ((!barType_stack || !group) && (yaxis_mean || yaxis_median))
           - type: LayoutBox
             cell:
               column: 1
@@ -174,7 +177,7 @@ children:
                         format: number
                         enable: (showLabels)
   - type: CollapseBox
-    label: Error Bars
+    label: Error Bars & Observations
     collapsed: true
     stretchFactor: 1
     children:
@@ -230,6 +233,16 @@ children:
               - type: TextBox
                 name: errorBarWidth
                 format: number
+          - type: Label
+            label: Observations
+            children:
+              - type: TextBox
+                name: pointSize
+                format: number
+                enable: (showPoints && (!barType_stack || !group) && (yaxis_mean || yaxis_median))
+              - type: ComboBox
+                name: pointShape
+                enable: (showPoints && (!barType_stack || !group) && (yaxis_mean || yaxis_median))
   - type: CollapseBox
     label: Colors
     collapsed: true
@@ -277,6 +290,12 @@ children:
                   - type: ComboBox
                     name: textColor
                     enable: (showLabels)
+                  - type: ComboBox
+                    name: pointColor
+                    enable: (showPoints && (!barType_stack || !group) && (yaxis_mean || yaxis_median))
+                  - type: ComboBox
+                    name: errorBarColor
+                    enable: (!errorBars_none && (!barType_stack || !group) && yaxis_mean)
   - type: CollapseBox
     label: Facets
     collapsed: true

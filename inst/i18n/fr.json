@@ -427,6 +427,9 @@
             "Chi-squared": [
                 "Khi-deux"
             ],
+            "Circle": [
+                "Cercle"
+            ],
             "Clockwise": [
                 "Modalités dans le sens horaire"
             ],
@@ -733,6 +736,9 @@
             "Equamax": [
                 "Equamax"
             ],
+            "Error bar": [
+                "Barre d'erreur"
+            ],
             "Error Bar Chart": [
                 "Graphique à barres d’erreur"
             ],
@@ -741,6 +747,9 @@
             ],
             "Error Bars": [
                 "Barres d'erreur"
+            ],
+            "Error Bars & Observations": [
+                "Barres d'erreur et observations"
             ],
             "Estimate parameters from data": [
                 "Estimer les paramètres à partir des données"
@@ -1408,6 +1417,9 @@
             "Opacity": [
                 "Opacité"
             ],
+            "Open circle": [
+                "Cercle vide"
+            ],
             "Option name": [
                 "Nom des options"
             ],
@@ -1804,6 +1816,9 @@
             "Several variables": [
                 "Plusieurs variables"
             ],
+            "Shape": [
+                "Forme"
+            ],
             "Shape by group": [
                 "Forme selon groupe"
             ],
@@ -1827,6 +1842,9 @@
             ],
             "Show normal curve": [
                 "Afficher la courbe normale"
+            ],
+            "Show observations": [
+                "Afficher les observations"
             ],
             "Show points": [
                 "Afficher les points"
@@ -1872,6 +1890,9 @@
             ],
             "Spectral": [
                 "Spectral"
+            ],
+            "Square": [
+                "Carré"
             ],
             "SS Loadings": [
                 "Total"

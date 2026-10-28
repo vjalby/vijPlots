@@ -1043,6 +1043,8 @@ msgstr "Type de graphique double"
 
 #: barchart/options/borderColor/black.title
 #: barchart/options/textColor/black.title
+#: barchart/options/pointColor/black.title
+#: barchart/options/errorBarColor/black.title
 #: barplot/options/borderColor/black.title
 #: barplot/options/textColor/black.title
 #: corresp/options/supColor/black.title
@@ -1627,6 +1629,10 @@ msgstr "Centré"
 #: qqplot/options/distrib/chisq.title
 msgid "Chi-squared"
 msgstr "Khi-deux"
+
+#: barchart/options/pointShape/circle.title
+msgid "Circle"
+msgstr "Cercle"
 
 #: piechart/options/clockwise.title
 msgid "Clockwise"
@@ -2239,6 +2245,10 @@ msgstr "Equal Local Levels"
 msgid "Equamax"
 msgstr "Equamax"
 
+#: barchart/options/errorBarColor.title
+msgid "Error bar"
+msgstr "Barre d'erreur"
+
 #: package/analyses/barchart.title
 #: package/analyses/barchart.menuTitle
 #: barchart/options.title
@@ -2252,10 +2262,13 @@ msgid "Error Bar Size"
 msgstr "Taille des barres d'erreur"
 
 #: barchart/options/errorBars.title
-#: barchart/ui[3].label
 #: barchart/ui[3][0][0].label
 msgid "Error Bars"
 msgstr "Barres d'erreur"
+
+#: barchart/ui[3].label
+msgid "Error Bars & Observations"
+msgstr "Barres d'erreur et observations"
 
 #: qqplot/options/paramMethod/paraEstimate.title
 #: qqplot/ui[3][0][0]/paramMethod_paraEstimate.label
@@ -2618,6 +2631,8 @@ msgid "Ggsci:NPG"
 msgstr "Ggsci:NPG"
 
 #: barchart/options/borderColor/gray.title
+#: barchart/options/pointColor/gray.title
+#: barchart/options/errorBarColor/gray.title
 #: barplot/options/borderColor/gray.title
 #: corresp/options/supColor/darkgray.title
 #: histogram/options/fillColor/#999999.title
@@ -4145,6 +4160,7 @@ msgstr "Résumé des observations"
 msgid "Observation Table"
 msgstr "Table des observations"
 
+#: barchart/ui[3][1][1].label
 #: multcorresp/options/showObservations.title
 #: multcorresp/options/showObservationPlot.title
 #: principal/options/showObservations.title
@@ -4203,6 +4219,10 @@ msgstr "seulement"
 #: mosaic/ui[3][0][1][0].label
 msgid "Opacity"
 msgstr "Opacité"
+
+#: barchart/options/pointShape/opencircle.title
+msgid "Open circle"
+msgstr "Cercle vide"
 
 #: mrcrosstabs/options/optionname.title
 #: mrfrequencies/options/optionname.title
@@ -4616,6 +4636,7 @@ msgstr "Type de graphique"
 msgid "Plots"
 msgstr "Graphiques"
 
+#: barchart/options/pointColor.title
 #: scatterplot/options/pointSize.title
 msgid "Point"
 msgstr "Point"
@@ -4902,6 +4923,8 @@ msgid "Range"
 msgstr "Étendue"
 
 #: barchart/options/textColor/red.title
+#: barchart/options/pointColor/red.title
+#: barchart/options/errorBarColor/red.title
 #: corresp/options/rowColor/red.title
 #: corresp/options/colColor/red.title
 #: histogram/options/fillColor/#E41A1C.title
@@ -5380,6 +5403,10 @@ msgstr "Ensemble 3"
 msgid "Several variables"
 msgstr "Plusieurs variables"
 
+#: barchart/options/pointShape.title
+msgid "Shape"
+msgstr "Forme"
+
 #: scatterplot/options/groupShapes.title
 msgid "Shape by group"
 msgstr "Forme selon groupe"
@@ -5413,6 +5440,10 @@ msgstr "Afficher les lignes"
 msgid "Show normal curve"
 msgstr "Afficher la courbe normale"
 
+#: barchart/options/showPoints.title
+msgid "Show observations"
+msgstr "Afficher les observations"
+
 #: linechart/options/showPoint.title
 msgid "Show points"
 msgstr "Afficher les points"
@@ -5436,6 +5467,7 @@ msgstr "Valeur singulière"
 #: areachart/options/legendFontSize.title
 #: areachart/options/xAxisFontSize.title
 #: areachart/options/yAxisFontSize.title
+#: barchart/options/pointSize.title
 #: barchart/options/facetFontSize.title
 #: barchart/options/legendFontSize.title
 #: barchart/options/xAxisFontSize.title
@@ -5558,6 +5590,10 @@ msgstr "Tri (selon médiane)"
 #: scatterplot/options/colorPalette/Spectral.title
 msgid "Spectral"
 msgstr "Spectral"
+
+#: barchart/options/pointShape/square.title
+msgid "Square"
+msgstr "Carré"
 
 #: principal/results/summaryTable.columns.title
 msgid "SS Loadings"

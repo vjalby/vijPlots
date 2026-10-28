@@ -46,9 +46,9 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             yName <- self$options$yVar
             xName <- self$options$xVar
 
-            # ".X", ".Y", ".YMIN", ".YMAX", ".TOTAL" and ".END" are the column names of the summaries computed below
+            # ".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END" and ".PY" are the column names of the summaries computed below
             reservedVar <- intersect(c(yName, xName, self$options$group, self$options$facet),
-                                     c(".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END"))
+                                     c(".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END", ".PY"))
             if (length(reservedVar) > 0)
                 vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
 
@@ -91,6 +91,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                          function(x) private$.meanClNormal(x, conf.int = ciLevel),
                 none = function(x) data.frame(.Y = barFun(x), .YMIN = NA_real_, .YMAX = NA_real_))
 
+            rawData <- plotData
+
             # Summarize per x-value/group/facet, with its value (.Y) and its error bar limits (.YMIN, .YMAX).
             # xName is kept for the color order
             plotData <- plotData |>
@@ -109,8 +111,15 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                      .groups = "drop") |>
                     as.data.frame()
 
+            # Individual observations (only when drawn): their x position, value, group and facet
+            points <- NULL
+            if (private$.showPoints()) {
+                points <- rawData[c(".X", self$options$group, self$options$facet)]
+                points[[".PY"]] <- rawData[[yName]]
+            }
+
             image <- self$results$plot
-            image$setState(list(data = plotData, totals = totals))
+            image$setState(list(data = plotData, totals = totals, points = points))
         },
         .plot = function(image, ggtheme, theme, ...) {  # <-- the plot function
             # Long by design (reviewed 2026-10-09): a linear `plot <- plot + ...` build; splitting
@@ -184,6 +193,20 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 plot <- plot + ggplot2::geom_col(position = position, color = borderColor)
 
+            #### Observations ####
+            # Over the bars, under the value labels and the error bars (layers are drawn in the order they are added).
+            # Dodged like the bars, with the same 0.9 width: jitterdodge dodges like position_dodge ("dodge"), not like
+            # position_dodge2 ("dodge2", see .positionJitterDodge2())
+            if (!is.null(image$state$points)) {
+                pointShape <- switch(self$options$pointShape, circle = 16, opencircle = 1, square = 15)
+                plot <- plot + ggplot2::geom_point(data = image$state$points, inherit.aes = FALSE,
+                                                   ggplot2::aes(x = .data[[".X"]], y = .data[[".PY"]], group = !!groupVar),
+                                                   position = if (dodge2) private$.positionJitterDodge2()
+                                                              else ggplot2::position_jitterdodge(jitter.width = 0.5, dodge.width = 0.9, seed = 42),
+                                                   shape = pointShape, size = self$options$pointSize, color = self$options$pointColor,
+                                                   show.legend = FALSE)
+            }
+
             #### Value labels ####
             if (self$options$showLabels) {
                 labelSize <- self$options$labelTextSize / ggplot2::.pt
@@ -243,7 +266,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (errorBars != "none")
                 plot <- plot +  ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[".YMIN"]], ymax = .data[[".YMAX"]]),
                                              width = errorWidth, linewidth = self$options$errorBarLineSize,
-                                             color = "black", position = errorPosition)
+                                             color = self$options$errorBarColor, position = errorPosition)
 
             # Show unused levels (if checked in data/var setting)
             plot <- plot + ggplot2::scale_x_discrete(drop = FALSE, labels = labelNA)
@@ -321,6 +344,43 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 self$options$errorBars
         },
+        # Observations actually drawn: none on stacked bars with a group (raw values don't belong on a stack of means),
+        # nor around a sum, a minimum or a maximum (the bar is then not a typical value of the points)
+        .showPoints = function() {
+            self$options$showPoints && self$options$yaxis %in% c("mean", "median") &&
+                !(self$options$barType == "stack" && !is.null(self$options$group))
+        },
+        # Position of the observations over "dodge2" bars (position_dodge2(preserve = "single", width = 0.9)): each bar's
+        # slot is worked out from the bars (one per x and group), not from the points, which ggplot2's own
+        # PositionDodge2 would treat as so many bars. Slot = 0.9 / largest number of bars at any x, bars centred; the
+        # points get a random sideways spread inside it. The spread of each bar is seeded by its own values (as in
+        # .meanClBoot): the same values always give the same points, and changing another bar doesn't move them.
+        .positionJitterDodge2 = function(jitterWidth = 0.6) {
+            positionClass <- ggplot2::ggproto("PositionJitterDodge2", ggplot2::Position,
+                required_aes = c("x", "y"),
+                width = 0.9,
+                jitter.width = jitterWidth,
+                setup_params = function(self, data) {
+                    bars <- unique(data[c("PANEL", "x", "group")])
+                    list(n = max(table(bars$PANEL, as.numeric(bars$x))))
+                },
+                compute_panel = function(self, data, params, scales) {
+                    bars <- unique(data[c("x", "group")])
+                    bars <- bars[order(bars$x, bars$group), ]
+                    xs <- as.numeric(bars$x)
+                    nBars <- stats::ave(bars$group, xs, FUN = length)
+                    rank <- stats::ave(bars$group, xs, FUN = seq_along)
+                    slot <- self$width / params$n
+                    bars$center <- xs + slot * (rank - (nBars + 1) / 2)
+                    bar <- match(paste(as.numeric(data$x), data$group), paste(xs, bars$group))
+                    jitter <- stats::ave(data$y, bar, FUN = function(y) {
+                        withr::with_seed(strtoi(substr(rlang::hash(y), 1, 7), 16L), stats::runif(length(y), -0.5, 0.5))
+                    })
+                    data$x <- bars$center[bar] + jitter * slot * self$jitter.width
+                    data
+                })
+            ggplot2::ggproto(NULL, positionClass)
+        },
         .getYLabel = function(yVar, errorBars) {
             if (self$options$yaxis == "mean") {
                 if (errorBars == "sd")
@@ -373,8 +433,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(data.frame(.Y = m, .YMIN = NA_real_, .YMAX = NA_real_))
             # Seed derived from the data: the same values always give the same limits,
             # and each bar gets its own resampling sequence
-            set.seed(strtoi(substr(rlang::hash(x), 1, 7), 16L))
-            means <- vapply(seq_len(B), function(i) mean(x[sample.int(n, n, replace = TRUE)]), numeric(1))
+            means <- withr::with_seed(strtoi(substr(rlang::hash(x), 1, 7), 16L),
+                                      vapply(seq_len(B), function(i) mean(x[sample.int(n, n, replace = TRUE)]), numeric(1)))
             q <- stats::quantile(means, c((1 - conf.int) / 2, (1 + conf.int) / 2), names = FALSE)
             data.frame(.Y = m, .YMIN = q[1], .YMAX = q[2])
         })

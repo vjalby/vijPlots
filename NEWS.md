@@ -1,4 +1,4 @@
-# vijPlots 1.4.0 (2026-10-20)
+# vijPlots 1.4.0 (2026-10-28)
 
 * Bar Plot / Pie Chart: optional frequency table
 * Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values
@@ -6,6 +6,7 @@
 * Bar Plot / Pie Chart / Mosaic Plot: missing, negative or infinite weights are now always rejected
 * Mosaic Plot: fixed the facet of missing values (when "Ignore missing values" is unchecked)
 * Box Plot: whisker options (1.5 × IQR, 3 × IQR, min-max)
+* Error Bar Chart: option to show the individual observations over the bars
 * Likert Plot: the frequency table follows the "Group By" option; 0.01 % accuracy
 * Line Chart: fixed the missing group not drawn with several variables
 * Scatter Plot: "Points with missing group/label" replaced by "Ignore missing groups"; points with a missing label are now kept

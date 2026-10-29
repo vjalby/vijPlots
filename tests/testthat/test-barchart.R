@@ -308,8 +308,9 @@ barchartLayers <- function(r) {
     on.exit(grDevices::dev.off())
     print(r$plot)
     p <- ggplot2::last_plot()
-    list(layer = function(geom)
-        ggplot2::layer_data(p, which(vapply(p$layers, function(l) inherits(l$geom, geom), logical(1)))))
+    index <- function(geom) which(vapply(p$layers, function(l) inherits(l$geom, geom), logical(1)))
+    list(layer = function(geom) ggplot2::layer_data(p, index(geom)),
+         position = function(geom) p$layers[[index(geom)]]$position)
 }
 
 testthat::test_that("barchart: observations are kept in the state only when drawn", {
@@ -337,6 +338,9 @@ testthat::test_that("barchart: each observation is inside its own bar, with Grou
         layers <- barchartLayers(vijPlots::barchart(data = datasets::penguins, xVar = "species", yVar = "body_mass",
                                                     group = "sex", facet = NULL, ignoreNA = FALSE, showPoints = TRUE,
                                                     barType = barType))
+        # our own position, not ggplot2's position_jitterdodge(): before ggplot2 4.0 (jamovi 2.7) it fails without a
+        # fill/colour aesthetic to dodge by
+        expect_s3_class(layers$position("GeomPoint"), "PositionJitterDodge")
         bars <- layers$layer("GeomCol")
         points <- layers$layer("GeomPoint")
         expect_equal(nrow(bars), 8)
@@ -352,21 +356,23 @@ testthat::test_that("barchart: each observation is inside its own bar, with Grou
 testthat::test_that("barchart: observations' spread is seeded per bar and leaves the random numbers alone", {
     penguins <- datasets::penguins
     used <- !is.na(penguins$body_mass)
-    pointsX <- function(data) {
+    pointsX <- function(data, barType) {
         r <- vijPlots::barchart(data = data, xVar = "species", yVar = "body_mass", group = "sex", facet = NULL,
-                                ignoreNA = FALSE, showPoints = TRUE, barType = "dodge2")
+                                ignoreNA = FALSE, showPoints = TRUE, barType = barType)
         barchartLayers(r)$layer("GeomPoint")$x
     }
-    x <- pointsX(penguins)
-    expect_equal(pointsX(penguins), x)                       # same data, same points
-    # changing one bar's values moves its points only
     inBar <- penguins$species %in% "Adelie" & penguins$sex %in% "female" & used
     edited <- penguins
     edited$body_mass[inBar] <- edited$body_mass[inBar] + 100
-    xEdited <- pointsX(edited)
     other <- !inBar[used]
-    expect_equal(xEdited[other], x[other])
-    expect_false(isTRUE(all.equal(xEdited[!other], x[!other])))
+    for (barType in c("dodge2", "dodge")) {
+        x <- pointsX(penguins, barType)
+        expect_equal(pointsX(penguins, barType), x)                  # same data, same points
+        # changing one bar's values moves its points only
+        xEdited <- pointsX(edited, barType)
+        expect_equal(xEdited[other], x[other])
+        expect_false(isTRUE(all.equal(xEdited[!other], x[!other])))
+    }
 
     # neither the bootstrap nor the spread change the global random number generator
     set.seed(123)

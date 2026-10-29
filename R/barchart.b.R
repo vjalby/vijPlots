@@ -195,14 +195,12 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Observations ####
             # Over the bars, under the value labels and the error bars (layers are drawn in the order they are added).
-            # Dodged like the bars, with the same 0.9 width: jitterdodge dodges like position_dodge ("dodge"), not like
-            # position_dodge2 ("dodge2", see .positionJitterDodge2())
+            # Laid out like the bars, see .positionJitterDodge()
             if (!is.null(image$state$points)) {
                 pointShape <- switch(self$options$pointShape, circle = 16, opencircle = 1, square = 15)
                 plot <- plot + ggplot2::geom_point(data = image$state$points, inherit.aes = FALSE,
                                                    ggplot2::aes(x = .data[[".X"]], y = .data[[".PY"]], group = !!groupVar),
-                                                   position = if (dodge2) private$.positionJitterDodge2()
-                                                              else ggplot2::position_jitterdodge(jitter.width = 0.5, dodge.width = 0.9, seed = 42),
+                                                   position = private$.positionJitterDodge(single = dodge2),
                                                    shape = pointShape, size = self$options$pointSize, color = self$options$pointColor,
                                                    show.legend = FALSE)
             }
@@ -350,15 +348,19 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             self$options$showPoints && self$options$yaxis %in% c("mean", "median") &&
                 !(self$options$barType == "stack" && !is.null(self$options$group))
         },
-        # Position of the observations over "dodge2" bars (position_dodge2(preserve = "single", width = 0.9)): each bar's
-        # slot is worked out from the bars (one per x and group), not from the points, which ggplot2's own
-        # PositionDodge2 would treat as so many bars. Slot = 0.9 / largest number of bars at any x, bars centred; the
-        # points get a random sideways spread inside it. The spread of each bar is seeded by its own values (as in
-        # .meanClBoot): the same values always give the same points, and changing another bar doesn't move them.
-        .positionJitterDodge2 = function(jitterWidth = 0.6) {
-            positionClass <- ggplot2::ggproto("PositionJitterDodge2", ggplot2::Position,
+        # Position of the observations over the bars: each bar's slot is worked out from the bars (one per x and
+        # group), not from the points; the points then get a random sideways spread inside it (60% of the slot).
+        # `single` ("dodge2" bars, position_dodge2(preserve = "single")): slot = 0.9 / largest number of bars at any x,
+        # bars centred; otherwise ("dodge" bars, position_dodge): slot = 0.9 / number of bars at this x.
+        # Not ggplot2's own positions: position_dodge2() would treat every point as a bar, and position_jitterdodge()
+        # needs a fill/colour aesthetic to dodge by before ggplot2 4.0 (jamovi 2.7 ships 3.5), and doesn't follow the
+        # bars in an incomplete category. The spread of each bar is seeded by its own values (as in .meanClBoot): the
+        # same values always give the same points, and changing another bar doesn't move them.
+        .positionJitterDodge = function(single, jitterWidth = 0.6) {
+            positionClass <- ggplot2::ggproto("PositionJitterDodge", ggplot2::Position,
                 required_aes = c("x", "y"),
                 width = 0.9,
+                single = single,
                 jitter.width = jitterWidth,
                 setup_params = function(self, data) {
                     bars <- unique(data[c("PANEL", "x", "group")])
@@ -370,13 +372,13 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     xs <- as.numeric(bars$x)
                     nBars <- stats::ave(bars$group, xs, FUN = length)
                     rank <- stats::ave(bars$group, xs, FUN = seq_along)
-                    slot <- self$width / params$n
-                    bars$center <- xs + slot * (rank - (nBars + 1) / 2)
+                    bars$slot <- self$width / (if (self$single) params$n else nBars)
+                    bars$center <- xs + bars$slot * (rank - (nBars + 1) / 2)
                     bar <- match(paste(as.numeric(data$x), data$group), paste(xs, bars$group))
                     jitter <- stats::ave(data$y, bar, FUN = function(y) {
                         withr::with_seed(strtoi(substr(rlang::hash(y), 1, 7), 16L), stats::runif(length(y), -0.5, 0.5))
                     })
-                    data$x <- bars$center[bar] + jitter * slot * self$jitter.width
+                    data$x <- bars$center[bar] + jitter * bars$slot[bar] * self$jitter.width
                     data
                 })
             ggplot2::ggproto(NULL, positionClass)

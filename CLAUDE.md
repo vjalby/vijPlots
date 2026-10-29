@@ -26,6 +26,10 @@ channel (2.7.37) referenced in older notes/commits. As of jamovi 28.1, the bundl
 longer calls the deprecated `ggplot2::element_line(size = ...)`, so the "The `size` argument of
 `element_line()` is deprecated" warning that used to be expected/ignorable on 2.7.37 should no
 longer appear — if it does show up again, treat it as a real regression, not a known non-issue.
+The same warning showed up when running the tests, from the `jmvcore` installed in the R library
+(2.7.7, which still calls `element_line(size = ...)` in `jmvcore::theme_default()` while rendering).
+It disappeared once that library was updated to `jmvcore` 28.3 (2026-10-26): `test-likertplot.R` now
+runs with 0 warnings. So if it comes back in the tests, first check `packageVersion("jmvcore")`.
 
 ## Working style
 
@@ -342,24 +346,32 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
 - `barchart`'s observations (`showPoints`, added 2026-10-28) draw the raw values over the bars.
   `.run()` keeps them in the state (`points`: `.X`, group, facet, `.PY`) only when `.showPoints()`
   allows it (mean or median, not stacked with a group); the points layer comes right after
-  `geom_col`, under the labels and the error bars. Placement depends on `barType`: "dodge" uses
-  `ggplot2::position_jitterdodge()` (it dodges like `position_dodge`, checked against the bars);
-  "dodge2" uses `private$.positionJitterDodge2()`, a ggproto `Position` that works out each bar's slot
-  from the bars themselves (0.9 / largest number of bars at any x, bars centred) and jitters each
-  bar's points with a seed of its own. **Don't use `ggplot2::PositionDodge2`/`position_dodge2()`, nor
-  `ggpp::position_dodge2nudge()` (which extends it), for points:** they treat every point as an
-  element to dodge, so with unequal counts per bar the slots shrink and the points spread over the
-  whole category. The first version did exactly that and passed its tests, which had the same number
-  of points in every bar: the tests now use very unequal counts (`penguins`, `ignoreNA = FALSE`),
-  keep it so. `position_jitterdodge()` is not right for Grouped (dodge2) bars either: in a category
-  with fewer bars it places the points where `position_dodge` would, not where the bars are.
+  `geom_col`, under the labels and the error bars. Both `barType`s use
+  `private$.positionJitterDodge(single)`, a ggproto `Position` that works out each bar's slot from the
+  bars themselves, not from the points ("dodge2": 0.9 / largest number of bars at any x, bars centred;
+  "dodge": 0.9 / number of bars at this x), and jitters each bar's points with a seed of its own.
+  **Don't use `ggplot2::PositionDodge2`/`position_dodge2()`, nor `ggpp::position_dodge2nudge()` (which
+  extends it), for points:** they treat every point as an element to dodge, so with unequal counts
+  per bar the slots shrink and the points spread over the whole category. The first version did
+  exactly that and passed its tests, which had the same number of points in every bar: the tests now
+  use very unequal counts (`penguins`, `ignoreNA = FALSE`), keep it so. **Nor
+  `ggplot2::position_jitterdodge()`:** before ggplot2 4.0.0 (its NEWS: "now dodges by `group`") it
+  needs a fill/colour aesthetic to dodge by and fails with only `group` ("requires at least one
+  aesthetic to dodge by", reproduced on 3.5.2); `minApp: 2.7.1` in `jamovi/0000.yaml` means jamovi 2.7
+  users run ggplot2 3.5. It was used in the first versions, and doesn't follow the bars in an incomplete
+  category either. The position was tested on ggplot2 3.5.2 in isolation, not the whole module (the
+  other installed packages don't load with it); a test checks the layer's position class.
 - Random draws in `barchart` (bootstrap CI, jitter) use `withr::with_seed(strtoi(substr(rlang::hash(x),
   1, 7), 16L), ...)` rather than `set.seed()`: same values, and the global RNG is left alone.
   `withr` is in `Imports` for that (it was already installed through ggplot2).
 - The snapshot `tests/testthat/_snaps/barchart/barchart-errorbar-bootstrap.svg` was regenerated on
-  2026-10-28: it already failed at the commit that recorded it (`ef17e8d`), with the same R and
-  package versions, and the cause was not found (only the bootstrap draws differed, not the means).
-  If it fails again for no apparent reason, suspect the draws, not the plot code.
+  2026-10-28: it already failed at the commit that recorded it (`ef17e8d`, 2026-10-23), before any
+  change of the observations. Only the bootstrap draws differed, not the means. The R library's
+  `jmvcore` went from 2.7.7 to 28.3 on 2026-10-26, the only package change since: the likely cause,
+  not proven. The data reaching `.meanClBoot` (hence the `rlang::hash()` seed) is identical with
+  `jmvcore` 2.7.35 and 28.3, and the old snapshot fails with both, so the difference, if it comes from
+  `jmvcore`, would be in 2.7.7 (no copy left to test). If it fails again for no apparent reason,
+  suspect the draws (and `packageVersion("jmvcore")`), not the plot code.
 
 ### Dependency graph has soft/transitive requirements
 
@@ -410,6 +422,41 @@ every `#:` reference before trusting a shared translation. Long strings also wra
 continuation lines (`msgstr ""` followed by quoted-string lines) — a naive per-line/per-block
 regex check for empty translations will misreport every long string as untranslated; parse
 `msgid`/`msgstr` by concatenating all consecutive `"..."` lines that follow the keyword.
+
+### Ideas under study (not implemented; findings of 2026-10-29)
+
+Possible global "appearance" options shared by all analyses (font family, overall text size, base
+theme, alpha, line width, ...). Only the font and the background were investigated:
+
+- **Font family: the plan.** Nothing sets a `family` today; everything comes from jamovi's theme.
+  Start with the generic `"sans"`/`"serif"`/`"mono"` only (safe on every platform; named fonts must
+  exist on the machine running R). A `serif` test in `barplot` (a `family = "serif"` in `geomText`
+  and a `theme(text = ...)` after `vijTitleAndLabelFormat()`) worked in jamovi's display; it was
+  removed afterwards.
+- **Font family: what the theme reaches.** `theme(text = element_text(family = ))` is enough for
+  titles, axes, legend and facet labels (`vijTitleAndLabelFormat()` never sets `family`, so its
+  `element_text`s inherit). It does **not** reach text layers (`geom_text`, `geom_label`,
+  `ggrepel::geom_text_repel`/`geom_label_repel`, and probably `ggstats::gglikert`, not checked).
+  Tested on ggplot2 4.0.3 / ggrepel 0.9.8: `geom_text`/`geom_label` follow only
+  `theme(geom = element_geom(family = ))`, which exists in ggplot2 4.0 only, not in the 3.5 that
+  jamovi 2.7 users run (`minApp: 2.7.1`); ggrepel has `family = ""` hard-coded in its
+  `default_aes` and follows nothing. So every text layer needs an explicit `family =` (about 25
+  calls in `barchart`, `barplot`, `boxplot`, `histogram`, `mosaic`, `piechart`, `scatterplot`,
+  `mrfrequencies`, `mrcrosstabs`; `piechart`'s `baseGeomLab` covers four variants at once), computed
+  once per `.plot()` and passed explicitly like the other options. Avoid
+  `update_geom_defaults()`: global state in jamovi's long-lived R session, and it can't be reset in
+  an `on.exit()` of `.plot()` since the plot is rendered after it returns. Add a check that no
+  text layer is missing `family`.
+- **Transparent background: impossible from the module.** The white comes from jamovi's graphics
+  device, not from ggplot2: the exported SVG starts with a `<rect>` larger than the `viewBox`
+  filled in white, identical with and without a transparent `plot.background` (tested on
+  `barplot`), and the copied PNG is RGB without an alpha channel. It would need a jamovi-side
+  change (device opened with `bg = "transparent"`).
+- **Vector mode (`mode: vector` of the `Image` results item): not worth it** (tested on
+  `barchart`). jamovi's copy gives a PNG anyway (the clipboard holds only raster formats and an HTML
+  `<img>` with the PNG in base64), and right-click -> SVG export already works on the PNG plot
+  (text drawn as glyph paths, so no font problem). The only gain left is sharpness when zooming on
+  screen, against heavier `.omv` files and slower display for plots with many points.
 
 ## Testing
 

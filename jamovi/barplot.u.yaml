@@ -148,9 +148,10 @@ children:
                 children:
                   - type: CheckBox
                     name: showLabels
-                  - type: CheckBox
-                    name: hideLabelsBelow
-                    enable: (showLabels && yaxis_percent && (barType_stack || labelPosition_middle))
+                    children:
+                      - type: CheckBox
+                        name: hideLabelsBelow
+                        enable: (showLabels && yaxis_percent && (barType_stack || labelPosition_middle))
                   - type: CheckBox
                     name: reverseStack
                     enable: (barType_stack)

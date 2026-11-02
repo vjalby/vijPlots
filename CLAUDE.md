@@ -337,8 +337,9 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   character when writing or moving such code (a find-and-replace on `' %'` with a regular space
   won't match), and normalize it in tests that compare label text
   (`gsub("\u2009", " ", label)`, as in `test-piechart.R`).
-- A plot Image with an explicit `clearWith:` list in its `.r.yaml` (currently only `mrfrequencies`
-  and `mrcrosstabs`) is redrawn only when one of the listed options changes. When adding an option
+- A plot Image with an explicit `clearWith:` list in its `.r.yaml` (currently `mrfrequencies`,
+  `mrcrosstabs`, `likertplot`, and the legacy `principal`, `corresp`, `multcorresp`; `qqplot` and
+  `piechart`'s lists are on their tables only) is redrawn only when one of the listed options changes. When adding an option
   that affects such a plot, add it to that list too, or toggling it in jamovi leaves the plot
   unchanged. Tests don't catch this: they render once with the option already set, so the snapshot
   looks right (bit the `xGridLines`/`yGridLines` options, 2026-10-20). Images without `clearWith:`
@@ -458,25 +459,32 @@ theme, alpha, line width, ...). Only the font and the background were investigat
   (text drawn as glyph paths, so no font problem). The only gain left is sharpness when zooming on
   screen, against heavier `.omv` files and slower display for plots with many points.
 
-### Experiment in progress: hide small % labels (`barplot` only, since 2026-11-02)
+### Experiment in progress: hide small % labels (`barplot`, `mrcrosstabs`, since 2026-11-02)
 
-`barplot` has a `hideLabelsBelow` option ("Hide % labels below 5%", in the "Plot Options" list, enabled
-only with `showLabels`, a percent y axis, and stacked bars or `labelPosition` middle). It was added as
-a trial: the user will decide later whether to keep it and extend it, so don't extend it on your own.
+`barplot` and `mrcrosstabs` have a `hideLabelsBelow` option ("Hide % below 5%", a child of the "Value
+labels" checkbox, enabled only with `showLabels`, percentages, and stacked bars or `labelPosition`
+middle). It was added as a trial: the user will decide later whether to keep it and extend it, so don't
+extend it on your own.
 
 - **Rule kept (simple version):** only the *percent* labels are hidden, when the displayed value is
   below 5%, and only when the label sits over its bar (`labelPosition == "middle"`; stacked bars
   always do). Labels above the bar are never hidden. Counts are never hidden. It is done in the
-  `label` aesthetic (`ifelse(after_stat(prop) < threshold, NA_character_, ...)`) with `na.rm = TRUE`
-  on the text layer, the same mechanism as `piechart`'s small-label hiding.
+  `label` aesthetic with `na.rm = TRUE` on the text layer, the same mechanism as `piechart`'s
+  small-label hiding: `ifelse(after_stat(prop) < threshold, NA_character_, ...)` in `barplot`, in
+  `valueLabel()` in `mrcrosstabs`, whose plot has an explicit `clearWith:` listing the option.
 - **Why not counts:** with a group variable, `after_stat(prop)` is the share within the group or the
   category (depending on `percentWithin`), which is not the bar's share of the plot, so a
   "count < 5%" test would hide the wrong labels. Tried both on a small-groups CSV and on the demo
   file (Age x Sex), where the denominators behave in opposite ways.
 - **Possible later improvement (not done):** hide a count when its bar or stack segment is below 5%
   of the tallest bar or stack, so the same labels are hidden whether the user shows counts or %.
-- **Pending decision:** if the option stays, add it to `mrfrequencies` and `mrcrosstabs` (same
-  structure), and adapt the French strings (the title already exists, reused from `likertplot`).
+- **Pending decision:** if the option stays, add it to `mrfrequencies` too (not stacked, so a smaller
+  gain; enabled with a y axis other than counts and `labelPosition` middle; add it to its plot's
+  `clearWith:`).
+- **The other analyses:** `likertplot` has the same title and child layout, on `ggstats`'
+  `labels_hide_below`: unchecked, it still hides below 1%. `piechart` keeps "Hide labels below 5%", on
+  every label type, a slice's share being well defined. `mosaic` has no option: a fixed filter
+  (`.PERCENTAGE > 0.05 & .XWIDTH > 0.05`) on all its label types, so labels don't overflow small cells.
 - The `showLabels` title of `barplot`, `mrcrosstabs` and `mrfrequencies` (one shared `msgid`) was
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.

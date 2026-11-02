@@ -139,7 +139,7 @@ options:
       default: middle
 
     - name: hideLabelsBelow
-      title: "Hide % labels below 5%"
+      title: "Hide % below 5%"
       type: Bool
       default: false
 

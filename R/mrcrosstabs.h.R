@@ -26,6 +26,7 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             horizontal = FALSE,
             showLabels = FALSE,
             labelPosition = "middle",
+            hideLabelsBelow = FALSE,
             accuracy = "0.1",
             labelFontSize = 12,
             colorPalette = "jmv",
@@ -189,6 +190,10 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                     "middle",
                     "top"),
                 default="middle")
+            private$..hideLabelsBelow <- jmvcore::OptionBool$new(
+                "hideLabelsBelow",
+                hideLabelsBelow,
+                default=FALSE)
             private$..accuracy <- jmvcore::OptionList$new(
                 "accuracy",
                 accuracy,
@@ -545,6 +550,7 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..horizontal)
             self$.addOption(private$..showLabels)
             self$.addOption(private$..labelPosition)
+            self$.addOption(private$..hideLabelsBelow)
             self$.addOption(private$..accuracy)
             self$.addOption(private$..labelFontSize)
             self$.addOption(private$..colorPalette)
@@ -607,6 +613,7 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         horizontal = function() private$..horizontal$value,
         showLabels = function() private$..showLabels$value,
         labelPosition = function() private$..labelPosition$value,
+        hideLabelsBelow = function() private$..hideLabelsBelow$value,
         accuracy = function() private$..accuracy$value,
         labelFontSize = function() private$..labelFontSize$value,
         colorPalette = function() private$..colorPalette$value,
@@ -668,6 +675,7 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..horizontal = NA,
         ..showLabels = NA,
         ..labelPosition = NA,
+        ..hideLabelsBelow = NA,
         ..accuracy = NA,
         ..labelFontSize = NA,
         ..colorPalette = NA,
@@ -772,6 +780,7 @@ mrcrosstabsResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                     "horizontal",
                     "showLabels",
                     "labelPosition",
+                    "hideLabelsBelow",
                     "accuracy",
                     "labelFontSize",
                     "colorPalette",
@@ -858,6 +867,7 @@ mrcrosstabsBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param horizontal .
 #' @param showLabels .
 #' @param labelPosition .
+#' @param hideLabelsBelow .
 #' @param accuracy .
 #' @param labelFontSize .
 #' @param colorPalette .
@@ -933,6 +943,7 @@ mrcrosstabs <- function(
     horizontal = FALSE,
     showLabels = FALSE,
     labelPosition = "middle",
+    hideLabelsBelow = FALSE,
     accuracy = "0.1",
     labelFontSize = 12,
     colorPalette = "jmv",
@@ -1015,6 +1026,7 @@ mrcrosstabs <- function(
         horizontal = horizontal,
         showLabels = showLabels,
         labelPosition = labelPosition,
+        hideLabelsBelow = hideLabelsBelow,
         accuracy = accuracy,
         labelFontSize = labelFontSize,
         colorPalette = colorPalette,

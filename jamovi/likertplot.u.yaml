@@ -261,9 +261,10 @@ children:
                 children:
                   - type: CheckBox
                     name: addLabels
-                  - type: CheckBox
-                    name: hideLabelsBelow
-                    enable: (addLabels)
+                    children:
+                      - type: CheckBox
+                        name: hideLabelsBelow
+                        enable: (addLabels)
                   - type: CheckBox
                     name: addTotals
                     enable: (type_centered)

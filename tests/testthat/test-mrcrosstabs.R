@@ -522,3 +522,47 @@ test_that("mrcrosstabs: stacked, label position Top left selected: labels as in 
     expect_true("#FFFFFF" %in% toupper(middle$colour))
     expect_equal(top$colour, middle$colour)   # "Auto": black or white according to the segment
 })
+
+hideData <- data.frame(
+    A = factor(c(rep(1, 97), rep(0, 3), rep(1, 3), rep(0, 97))),
+    B = factor(rep(rep(c(1, 0), each = 50), 2)),
+    Group = rep(c("g1", "g2"), each = 100))
+
+# Labels of the text layer (NA: hidden)
+hideLabels <- function(...) {
+    r <- vijPlots::mrcrosstabs(data = hideData, mode = "morevar", repVar = NULL, resps = c("A", "B"),
+                               group = "Group", group2 = NULL, showLabels = TRUE, ...)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    ggplot2::layer_data(ggplot2::last_plot(), 2)$label
+}
+
+test_that("mrcrosstabs: small percentages' labels hidden", {
+    for (bartype in c("stack", "dodge")) {
+        expect_equal(sum(is.na(hideLabels(computedValues = "options", bartype = bartype, hideLabelsBelow = FALSE))), 0)
+        expect_equal(sum(is.na(hideLabels(computedValues = "options", bartype = bartype, hideLabelsBelow = TRUE))), 1)
+    }
+})
+
+test_that("mrcrosstabs: no label hidden over counts, nor above the bars", {
+    expect_equal(sum(is.na(hideLabels(computedValues = "count", bartype = "stack", hideLabelsBelow = TRUE))), 0)
+    expect_equal(sum(is.na(hideLabels(computedValues = "options", bartype = "dodge", labelPosition = "top",
+                                      hideLabelsBelow = TRUE))), 0)
+})
+
+test_that("mrcrosstabs: plot, stacked percentages, small labels hidden", {
+    testPlot <- vijPlots::mrcrosstabs(
+        data = hideData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("A", "B"),
+        group = "Group",
+        group2 = NULL,
+        computedValues = "options",
+        bartype = "stack",
+        showLabels = TRUE,
+        hideLabelsBelow = TRUE
+    )$plot
+    expect_plot_snapshot("mrcrosstabs-hideLabels", testPlot)
+})

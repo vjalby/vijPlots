@@ -172,10 +172,12 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             countFormat <- vijFormatCount(self$options[['decSymbol']], prefix = labelPrefix)
             # Labels of the bars: counts, or percentages (computedValues). No label for an empty bar (an
             # option nobody chose in a group): NA, not drawn (na.rm in geom_text), the bar keeping its place
+            # Small percentages' labels are hidden on request, only when the label sits over its bar
+            hideBelow <- if (self$options$hideLabelsBelow && !labelTop) 0.05 else 0
             if (self$options$computedValues == "count")
                 valueLabel <- function(x) ifelse(x == 0, NA_character_, countFormat(x))
             else
-                valueLabel <- function(x) ifelse(x == 0, NA_character_, percentFormat(x))
+                valueLabel <- function(x) ifelse(x == 0 | x < hideBelow, NA_character_, percentFormat(x))
 
             # Border color
             if (self$options$borderColor == "none")

@@ -163,6 +163,11 @@ options:
           name:  top
       default: middle
 
+    - name: hideLabelsBelow
+      title: "Hide % below 5%"
+      type: Bool
+      default: false
+
     - name: accuracy
       title: "% Accuracy"
       type: List

@@ -2857,7 +2857,8 @@ msgstr ""
 
 #: barplot/options/hideLabelsBelow.title
 #: likertplot/options/hideLabelsBelow.title
-msgid "Hide % labels below 5%"
+#: mrcrosstabs/options/hideLabelsBelow.title
+msgid "Hide % below 5%"
 msgstr "Masquer les % inférieurs à 5 %"
 
 #: mosaic/options/hideAxes.title

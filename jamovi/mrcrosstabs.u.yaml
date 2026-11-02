@@ -181,6 +181,10 @@ children:
                 children:
                   - type: CheckBox
                     name: showLabels
+                    children:
+                      - type: CheckBox
+                        name: hideLabelsBelow
+                        enable: (showLabels && !computedValues_count && (bartype_stack || labelPosition_middle))
                   - type: CheckBox
                     name: reverseStack
                     enable: (bartype_stack)

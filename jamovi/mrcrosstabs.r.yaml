@@ -52,6 +52,7 @@ items:
         - horizontal
         - showLabels
         - labelPosition
+        - hideLabelsBelow
         - accuracy
         - labelFontSize
         - colorPalette

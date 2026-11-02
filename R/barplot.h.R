@@ -22,6 +22,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             colorNo = 1,
             barType = "dodge2",
             labelPosition = "middle",
+            hideLabelsBelow = FALSE,
             accuracy = "0.1",
             colorPalette = "jmv",
             borderColor = "none",
@@ -173,6 +174,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "middle",
                     "top"),
                 default="middle")
+            private$..hideLabelsBelow <- jmvcore::OptionBool$new(
+                "hideLabelsBelow",
+                hideLabelsBelow,
+                default=FALSE)
             private$..accuracy <- jmvcore::OptionList$new(
                 "accuracy",
                 accuracy,
@@ -575,6 +580,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..colorNo)
             self$.addOption(private$..barType)
             self$.addOption(private$..labelPosition)
+            self$.addOption(private$..hideLabelsBelow)
             self$.addOption(private$..accuracy)
             self$.addOption(private$..colorPalette)
             self$.addOption(private$..borderColor)
@@ -639,6 +645,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         colorNo = function() private$..colorNo$value,
         barType = function() private$..barType$value,
         labelPosition = function() private$..labelPosition$value,
+        hideLabelsBelow = function() private$..hideLabelsBelow$value,
         accuracy = function() private$..accuracy$value,
         colorPalette = function() private$..colorPalette$value,
         borderColor = function() private$..borderColor$value,
@@ -702,6 +709,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..colorNo = NA,
         ..barType = NA,
         ..labelPosition = NA,
+        ..hideLabelsBelow = NA,
         ..accuracy = NA,
         ..colorPalette = NA,
         ..borderColor = NA,
@@ -858,6 +866,7 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param colorNo .
 #' @param barType .
 #' @param labelPosition .
+#' @param hideLabelsBelow .
 #' @param accuracy .
 #' @param colorPalette .
 #' @param borderColor .
@@ -935,6 +944,7 @@ barplot <- function(
     colorNo = 1,
     barType = "dodge2",
     labelPosition = "middle",
+    hideLabelsBelow = FALSE,
     accuracy = "0.1",
     colorPalette = "jmv",
     borderColor = "none",
@@ -1018,6 +1028,7 @@ barplot <- function(
         colorNo = colorNo,
         barType = barType,
         labelPosition = labelPosition,
+        hideLabelsBelow = hideLabelsBelow,
         accuracy = accuracy,
         colorPalette = colorPalette,
         borderColor = borderColor,

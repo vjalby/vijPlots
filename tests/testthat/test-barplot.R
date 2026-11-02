@@ -549,3 +549,65 @@ test_that("barplot: stacked, label position Top left selected: no extra room (la
     }
     expect_equal(axisRange("top"), axisRange("middle"))
 })
+
+# 3 categories x 5 groups, with small groups (g4, g5): shares of 4.1% (A-g5), 4.0% (B-g4), 1.6% (B-g5), 4.7% (C-g4)
+# and 3.9% (C-g5) within the categories, none under 5% within the groups
+hideCounts <- data.frame(
+    category = rep(c("A", "B", "C"), each = 5),
+    group = rep(paste0("g", 1:5), 3),
+    n = c(71, 41, 17, 12, 6, 67, 35, 16, 5, 2, 64, 40, 13, 6, 5))
+hideData <- hideCounts[rep(seq_len(nrow(hideCounts)), hideCounts$n), c("category", "group")]
+
+# Labels of the text layer (NA: hidden), in the order of the layer's data
+hideLabels <- function(...) {
+    r <- vijPlots::barplot(data = hideData, rows = "category", columns = "group", facet = NULL, counts = NULL,
+                           showLabels = TRUE, ...)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    p <- ggplot2::last_plot()
+    layer <- which(vapply(p$layers, function(l) inherits(l$geom, "GeomText"), logical(1)))
+    ggplot2::layer_data(p, layer)$label
+}
+
+test_that("barplot: small percentages' labels hidden (stacked, within categories)", {
+    shown <- hideLabels(barType = "stack", yaxis = "percent", percentWithin = "category", hideLabelsBelow = FALSE)
+    expect_equal(sum(is.na(shown)), 0)
+    hidden <- hideLabels(barType = "stack", yaxis = "percent", percentWithin = "category", hideLabelsBelow = TRUE)
+    expect_equal(sum(is.na(hidden)), 5)
+    expect_equal(hidden[!is.na(hidden)], shown[!is.na(hidden)])    # the other labels are untouched
+})
+
+test_that("barplot: small percentages' labels hidden, whatever the bar type", {
+    for (barType in c("dodge2", "dodge")) {
+        hidden <- hideLabels(barType = barType, yaxis = "percent", percentWithin = "category", hideLabelsBelow = TRUE)
+        expect_equal(sum(is.na(hidden)), 5)
+    }
+})
+
+test_that("barplot: hiding small percentages uses the displayed percentages", {
+    # within groups, no share is under 5%
+    hidden <- hideLabels(barType = "stack", yaxis = "percent", percentWithin = "group", hideLabelsBelow = TRUE)
+    expect_equal(sum(is.na(hidden)), 0)
+})
+
+test_that("barplot: no label hidden over counts, nor above the bars", {
+    expect_equal(sum(is.na(hideLabels(barType = "stack", yaxis = "count", hideLabelsBelow = TRUE))), 0)
+    expect_equal(sum(is.na(hideLabels(barType = "dodge", yaxis = "percent", percentWithin = "category",
+                                      labelPosition = "top", hideLabelsBelow = TRUE))), 0)
+})
+
+test_that("barplot: stacked percentages, small labels hidden", {
+    testPlot <- vijPlots::barplot(
+        data = hideData,
+        rows = "category",
+        columns = "group",
+        facet = NULL,
+        counts = NULL,
+        barType = "stack",
+        yaxis = "percent",
+        percentWithin = "category",
+        hideLabelsBelow = TRUE
+    )$plot
+    expect_plot_snapshot("barplot-hideLabels-percent", testPlot)
+})

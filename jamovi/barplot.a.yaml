@@ -58,7 +58,7 @@ options:
       default: false
 
     - name: showLabels
-      title: Count labels
+      title: Value labels
       type: Bool
       default: true
 
@@ -137,6 +137,11 @@ options:
         - title: Top
           name:  top
       default: middle
+
+    - name: hideLabelsBelow
+      title: "Hide % labels below 5%"
+      type: Bool
+      default: false
 
     - name: accuracy
       title: "% Accuracy"

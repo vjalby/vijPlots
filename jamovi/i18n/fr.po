@@ -1873,12 +1873,6 @@ msgstr "COS2"
 msgid "Count"
 msgstr "Effectif"
 
-#: barplot/options/showLabels.title
-#: mrcrosstabs/options/showLabels.title
-#: mrfrequencies/options/showLabels.title
-msgid "Count labels"
-msgstr "Afficher les effectifs"
-
 #: mrcrosstabs/options/endorsed.title
 #: mrfrequencies/options/endorsed.title
 msgid "Counted value"
@@ -2861,6 +2855,7 @@ msgstr "Par groupe"
 msgid "hidden"
 msgstr ""
 
+#: barplot/options/hideLabelsBelow.title
 #: likertplot/options/hideLabelsBelow.title
 msgid "Hide % labels below 5%"
 msgstr "Masquer les % inférieurs à 5 %"
@@ -6280,6 +6275,12 @@ msgstr "Utiliser une couleur unique"
 #: principal/options/descAsVarName.title
 msgid "Use variable's description as name"
 msgstr "Description des variables comme nom"
+
+#: barplot/options/showLabels.title
+#: mrcrosstabs/options/showLabels.title
+#: mrfrequencies/options/showLabels.title
+msgid "Value labels"
+msgstr "Étiquettes des valeurs"
 
 #: barchart/ui[2][0][1][0].label
 msgid "Value Labels"

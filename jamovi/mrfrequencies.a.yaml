@@ -117,7 +117,7 @@ options:
       default: false
 
     - name: showLabels
-      title: Count labels
+      title: Value labels
       type: Bool
       default: false
 

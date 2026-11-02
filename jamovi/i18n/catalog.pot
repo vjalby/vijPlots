@@ -1647,12 +1647,6 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
-#: barplot/options/showLabels.title
-#: mrcrosstabs/options/showLabels.title
-#: mrfrequencies/options/showLabels.title
-msgid "Count labels"
-msgstr ""
-
 #: mrcrosstabs/options/endorsed.title
 #: mrfrequencies/options/endorsed.title
 msgid "Counted value"
@@ -2635,6 +2629,7 @@ msgstr ""
 msgid "hidden"
 msgstr ""
 
+#: barplot/options/hideLabelsBelow.title
 #: likertplot/options/hideLabelsBelow.title
 msgid "Hide % labels below 5%"
 msgstr ""
@@ -6026,6 +6021,12 @@ msgstr ""
 
 #: barchart/ui[2][0][1][0].label
 msgid "Value Labels"
+msgstr ""
+
+#: barplot/options/showLabels.title
+#: mrcrosstabs/options/showLabels.title
+#: mrfrequencies/options/showLabels.title
+msgid "Value labels"
 msgstr ""
 
 #: R/areachart.b.R

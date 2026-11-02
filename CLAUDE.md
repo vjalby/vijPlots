@@ -365,14 +365,15 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
 - Random draws in `barchart` (bootstrap CI, jitter) use `withr::with_seed(strtoi(substr(rlang::hash(x),
   1, 7), 16L), ...)` rather than `set.seed()`: same values, and the global RNG is left alone.
   `withr` is in `Imports` for that (it was already installed through ggplot2).
-- The snapshot `tests/testthat/_snaps/barchart/barchart-errorbar-bootstrap.svg` was regenerated on
-  2026-10-28: it already failed at the commit that recorded it (`ef17e8d`, 2026-10-23), before any
-  change of the observations. Only the bootstrap draws differed, not the means. The R library's
-  `jmvcore` went from 2.7.7 to 28.3 on 2026-10-26, the only package change since: the likely cause,
-  not proven. The data reaching `.meanClBoot` (hence the `rlang::hash()` seed) is identical with
-  `jmvcore` 2.7.35 and 28.3, and the old snapshot fails with both, so the difference, if it comes from
-  `jmvcore`, would be in 2.7.7 (no copy left to test). If it fails again for no apparent reason,
-  suspect the draws (and `packageVersion("jmvcore")`), not the plot code.
+  These seeds depend on the installed `rlang`: 1.3.0 changed every `rlang::hash()` value (its NEWS).
+- The 4 snapshots using those draws (`barchart-errorbar-bootstrap`, `barchart-points-dodge2`,
+  `barchart-points-dodge-horizontal`, `barchart-points-options`) therefore differ between `rlang`
+  versions, whereas their text and bars don't move (bootstrap: by about 0.01 px). They were re-recorded
+  on 2026-11-02 with `rlang` 1.3.0, the laptop being on 1.2.0 and the desktop on 1.3.0 (R 4.6.0 and
+  4.6.1, not the cause according to that NEWS; `jmvcore` 28.3 on both). If they fail again for no
+  apparent reason, compare `packageVersion("rlang")` and `rlang::hash(c(1.5, 2.5))` on both machines
+  before accepting anything, not the plot code. An earlier failure of the bootstrap snapshot
+  (2026-10-28) was attributed to `jmvcore`, probably wrongly.
 
 ### Dependency graph has soft/transitive requirements
 

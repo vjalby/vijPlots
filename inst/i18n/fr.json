@@ -550,9 +550,6 @@
             "Count": [
                 "Effectif"
             ],
-            "Count labels": [
-                "Afficher les effectifs"
-            ],
             "Counted value": [
                 "Valeur comptée"
             ],
@@ -2184,6 +2181,9 @@
             ],
             "Use variable's description as name": [
                 "Description des variables comme nom"
+            ],
+            "Value labels": [
+                "Étiquettes des valeurs"
             ],
             "Value Labels": [
                 "Étiquettes des valeurs"

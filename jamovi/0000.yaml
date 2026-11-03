@@ -6,7 +6,7 @@ jms: '1.0'
 authors:
   - Vincent Jalby
 maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
-date: '2026-10-20'
+date: '2026-11-03'
 category: plots
 type: R
 description: >-

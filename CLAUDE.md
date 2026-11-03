@@ -41,7 +41,8 @@ changes in the working tree, the user commits themself. At most, propose a commi
 
 Before editing code or YAML, show the planned changes (excerpt or diff, per file) and wait for
 the user's go-ahead (user's preference, 2026-10-17). Simple actions the user asks for directly
-(deleting a named file, running tests) don't need this step.
+(deleting a named file, running tests) don't need this step. Nor does `CLAUDE.md` itself: edit it
+without asking (user's preference, 2026-11-03).
 
 ## Commands
 
@@ -245,7 +246,7 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   which is why the fix moved 94 visual snapshots by about a pixel (same text, same elements, same
   colours — only positions, and svglite writing one `<text>` per title instead of one per
   character).
-- **To do after the 1.3.3 release (decided 2026-10-10, cosmetic only): stop indexing with a symbol.**
+- **To do for vijPlots 1.5 (decided 2026-10-10, postponed 2026-11-03, cosmetic only): stop indexing with a symbol.**
   Several `.plot()` functions read (or assign) a column with `plotData[[sym]]`, where `sym` comes
   from `rlang::sym()`/`vijVar()`. This is *not* a bug: `[[` and `[[<-` accept a symbol on a
   data.frame, a tibble and a list (checked on R 4.6.1, including non-ASCII names; a missing column
@@ -258,6 +259,14 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   When doing it: no visual snapshot may change (any change means a mistake), and check that every
   edited line is actually executed by a test — some sit in option-dependent branches (`boxplot`
   ordering, `mosaic` facets, `scatterplot` range) — rendering by hand those that are not.
+- **To do for vijPlots 1.5 (deferred 2026-10-21, postponed 2026-11-03, robustness only): replace the
+  base-R group filters.** 11 `df[!is.na(df[[col]]), ]` filters drop the missing groups when "Ignore
+  missing groups/values" is checked: `barchart` (3), `boxplot`, `raincloud`, `linechart`, `areachart`
+  (2 each). Use `dplyr::filter(df, !is.na(.data[[col]]))` or a `vijDropMissing(data, names)` helper in
+  `utilsData.R` (skipping `NULL` names). Not a bug today: `jmvcore::toNumeric()` runs before these
+  filters, so the attribute loss described above doesn't bite, but moving it after them would. Leave
+  `jmvcore::naOmit()` alone (`histogram`, `qqplot`, `lollipop`, `scatterplot`, `vijWeightedData()`): it
+  filters on any column, on purpose. No visual snapshot may change.
 - When forcing legend order via `guides(aes = guide_legend(order = N))` on a plot with multiple
   legends, set an explicit `order` on *every* merged aesthetic (e.g. `color`/`fill`/`shape` all
   mapped to the same grouping variable), not just the one you care about positioning — an
@@ -430,7 +439,8 @@ regex check for empty translations will misreport every long string as untransla
 Possible global "appearance" options shared by all analyses (font family, overall text size, base
 theme, alpha, line width, ...). Only the font and the background were investigated:
 
-- **Font family: the plan.** Nothing sets a `family` today; everything comes from jamovi's theme.
+- **Font family: the plan, for vijPlots 1.5 (user's decision, 2026-11-03).** Nothing sets a `family`
+  today; everything comes from jamovi's theme.
   Start with the generic `"sans"`/`"serif"`/`"mono"` only (safe on every platform; named fonts must
   exist on the machine running R). A `serif` test in `barplot` (a `family = "serif"` in `geomText`
   and a `theme(text = ...)` after `vijTitleAndLabelFormat()`) worked in jamovi's display; it was
@@ -460,12 +470,12 @@ theme, alpha, line width, ...). Only the font and the background were investigat
   (text drawn as glyph paths, so no font problem). The only gain left is sharpness when zooming on
   screen, against heavier `.omv` files and slower display for plots with many points.
 
-### Experiment in progress: hide small % labels (`barplot`, `mrcrosstabs`, since 2026-11-02)
+### Hide small % labels (`barplot`, `mrcrosstabs`, 2026-11-02)
 
 `barplot` and `mrcrosstabs` have a `hideLabelsBelow` option ("Hide % below 5%", a child of the "Value
 labels" checkbox, enabled only with `showLabels`, percentages, and stacked bars or `labelPosition`
-middle). It was added as a trial: the user will decide later whether to keep it and extend it, so don't
-extend it on your own.
+middle). Kept as is (user's decision, 2026-11-03): not extended to `mrfrequencies`, where it would be
+of much less use, nor to counts.
 
 - **Rule kept (simple version):** only the *percent* labels are hidden, when the displayed value is
   below 5%, and only when the label sits over its bar (`labelPosition == "middle"`; stacked bars
@@ -477,11 +487,6 @@ extend it on your own.
   category (depending on `percentWithin`), which is not the bar's share of the plot, so a
   "count < 5%" test would hide the wrong labels. Tried both on a small-groups CSV and on the demo
   file (Age x Sex), where the denominators behave in opposite ways.
-- **Possible later improvement (not done):** hide a count when its bar or stack segment is below 5%
-  of the tallest bar or stack, so the same labels are hidden whether the user shows counts or %.
-- **Pending decision:** if the option stays, add it to `mrfrequencies` too (not stacked, so a smaller
-  gain; enabled with a y axis other than counts and `labelPosition` middle; add it to its plot's
-  `clearWith:`).
 - **The other analyses:** `likertplot` has the same title and child layout, on `ggstats`'
   `labels_hide_below`: unchecked, it still hides below 1%. `piechart` keeps "Hide labels below 5%", on
   every label type, a slice's share being well defined. `mosaic` has no option: a fixed filter

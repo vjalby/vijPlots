@@ -368,6 +368,25 @@ test_that("likertplot: tidyUp leaves plain integer variables unchanged", {
     expect_equal(unname(freq$`5`), c(0L, 2L))
 })
 
+test_that("likertplot: no answer in any variable stops the analysis", {
+    emptyData <- data.frame(q1 = rep(NA_integer_, 4), q2 = rep(NA_integer_, 4),
+                            g = factor(c("x", "x", "y", "y")))
+    r <- vijPlots::likertplot(data = emptyData, liks = c("q1", "q2"), group = NULL, frequencyTable = TRUE)
+    expect_null(r$plot$state)
+    r <- vijPlots::likertplot(data = emptyData, liks = c("q1", "q2"), group = "g", frequencyTable = TRUE)
+    expect_null(r$plot$state)
+})
+
+test_that("likertplot: a group without any answer is dropped", {
+    groupData <- data.frame(q1 = c(NA, NA, 1L, 2L, 3L, 3L, 2L, 1L, 1L, 2L),
+                            q2 = c(NA, NA, 2L, 2L, 3L, 1L, 1L, 1L, 2L, 3L),
+                            g = factor(c("x", "x", rep("y", 4), rep("z", 4))))
+    r <- vijPlots::likertplot(data = groupData, liks = c("q1", "q2"), group = "g",
+                              frequencyTable = TRUE, showMannU = TRUE)
+    expect_equal(unname(as.character(r$frequencies$asDF$.GROUP)), rep(c("y", "z"), 2))
+    expect_equal(unname(r$comp$uTestTable$asDF$p.value), c(0.4, 0.9142857), tolerance = 1e-6)
+})
+
 test_that("likertplot: toInteger reconciles an ordered factor with a plain integer (Question 1 + Q1)", {
     testPlot <- vijPlots::likertplot(
         data = testData,

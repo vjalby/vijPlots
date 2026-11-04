@@ -117,7 +117,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                                                      level = vijLabelNA(self)(NA))
                 }
             }
-            if (nrow(mainData) == 0)
+            # No answer in any variable: nothing to plot or tabulate
+            if (nrow(mainData) == 0 || all(is.na(mainData[self$options$liks])))
                 return()
             # Cleaning the group variable name (it would crash gglikert)
             if (!is.null(self$options$group)) {
@@ -126,10 +127,14 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 groupingVar <- NULL
             }
-            # Groups without any (valid) observation are dropped: they would count in ng, wrongly
+            # Groups without any answer are dropped: they would count in ng, wrongly
             # refusing Mann-Whitney U, and add empty rows to the tables
-            if (!is.null(groupingVar))
+            if (!is.null(groupingVar)) {
+                hasAnswer <- rowSums(!is.na(mainData[self$options$liks])) > 0
+                # !!: a variable may be named hasAnswer
+                mainData <- dplyr::filter(mainData, !!hasAnswer)
                 mainData[[groupingVar]] <- droplevels(mainData[[groupingVar]])
+            }
 
             # Data for table
             # Same question order as the plot: gglikert_data() includes the centre level in the sorting

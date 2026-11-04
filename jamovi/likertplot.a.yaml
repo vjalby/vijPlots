@@ -82,7 +82,7 @@ options:
       default: true
 
     - name: reverseLikert
-      title: Reverse stacking order
+      title: Reverse level order
       type: Bool
       default: false
 

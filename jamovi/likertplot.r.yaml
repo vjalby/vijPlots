@@ -23,6 +23,7 @@ items:
         - sorting
         - ignoreNA
         - frequencies
+        - reverseLikert
         - showMean
         - showMedian
         - toInteger

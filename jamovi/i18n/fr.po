@@ -5077,9 +5077,12 @@ msgstr "Courbe de régression"
 msgid "Reverse disposition"
 msgstr "Renverser la disposition"
 
+#: likertplot/options/reverseLikert.title
+msgid "Reverse level order"
+msgstr "Inverser l'ordre des niveaux"
+
 #: barchart/options/reverseStack.title
 #: barplot/options/reverseStack.title
-#: likertplot/options/reverseLikert.title
 #: mosaic/options/reverseStack.title
 #: mrcrosstabs/options/reverseStack.title
 msgid "Reverse stacking order"

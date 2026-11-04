@@ -595,6 +595,7 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "sorting",
                     "ignoreNA",
                     "frequencies",
+                    "reverseLikert",
                     "showMean",
                     "showMedian",
                     "toInteger",

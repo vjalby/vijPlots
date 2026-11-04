@@ -402,6 +402,16 @@ test_that("likertplot: reverseLikert on plain integer variables", {
     expect_plot_snapshot("likertplot-integer-reverse", testPlot)
 })
 
+test_that("likertplot: reverseLikert reverses the answer columns of the frequency table", {
+    intData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, NA), q2 = c(3L, 4L, 5L, 5L, 4L, 3L))
+    r <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL, frequencyTable = TRUE,
+                              showMean = TRUE, reverseLikert = TRUE)
+    freq <- r$frequencies$asDF
+    expect_equal(names(freq), c(".question", ".SUM", "5", "4", "3", "2", "1", ".MEAN", ".SD"))
+    expect_equal(unname(freq$`1`), c(1L, 0L))
+    expect_equal(unname(freq$`5`), c(0L, 2L))
+})
+
 test_that("likertplot: toInteger reconciles an ordered factor with a plain integer (Question 1 + Q1)", {
     testPlot <- vijPlots::likertplot(
         data = testData,

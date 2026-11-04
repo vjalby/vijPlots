@@ -369,6 +369,9 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             table$addColumn(".SUM", type = "integer", title = "N")
             answers_levels <- levels(ggLikertData[['.answer']])
+            # Same order as the plot
+            if (self$options$reverseLikert)
+                answers_levels <- rev(answers_levels)
             for (col in answers_levels) {
                 table$addColumn(col, type = fType, format = fmt, title = col)
             }

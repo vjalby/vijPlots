@@ -77,7 +77,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Tidy up levels ####
-            if (self$options$tidyUp && length(self$options$liks) >1) {
+            # Appied to factors only
+            if (self$options$tidyUp && length(self$options$liks) >1 && is.factor(mainData[[self$options$liks[1]]])) {
                 all_values <- c()
                 level_value <- list()
                 # Save all levels and values from the variables

@@ -356,6 +356,18 @@ test_that("likertplot: tidyUp alone does not bypass the same-type check", {
     )
 })
 
+test_that("likertplot: tidyUp leaves plain integer variables unchanged", {
+    intData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, 1L), q2 = c(3L, 4L, 5L, 5L, 4L, 3L))
+    r <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL,
+                              tidyUp = TRUE, frequencyTable = TRUE, frequencies = "counts")
+    expect_equal(r$plot$state$mainData$q1, intData$q1)
+    expect_equal(r$plot$state$mainData$q2, intData$q2)
+    freq <- r$frequencies$asDF
+    expect_equal(unname(freq$.SUM), c(6L, 6L))
+    expect_equal(unname(freq$`3`), c(2L, 2L))
+    expect_equal(unname(freq$`5`), c(0L, 2L))
+})
+
 test_that("likertplot: toInteger reconciles an ordered factor with a plain integer (Question 1 + Q1)", {
     testPlot <- vijPlots::likertplot(
         data = testData,

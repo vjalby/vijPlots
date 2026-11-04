@@ -213,6 +213,12 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             mainData <- image$state$mainData
 
             if (self$options$reverseLikert ) {
+                # Plain integers have no levels to reverse: factors on one common scale first
+                if (!is.factor(mainData[[self$options$liks[1]]])) {
+                    allValues <- sort(unique(unlist(mainData[self$options$liks])))
+                    for (var in self$options$liks)
+                        mainData[[var]] <- factor(mainData[[var]], levels = allValues)
+                }
                 for (var in self$options$liks)
                     mainData[[var]] <- forcats::fct_rev(mainData[[var]])
             }

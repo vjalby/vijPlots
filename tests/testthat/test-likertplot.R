@@ -395,6 +395,13 @@ test_that("likertplot: pairwise table shows the group variable over the two grou
     expect_equal(r$comp$pwTable$getColumn("group2")$superTitle, "My group")
 })
 
+test_that("likertplot: reverseLikert on plain integer variables", {
+    intData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, NA), q2 = c(3L, 4L, 5L, 5L, 4L, 3L))
+    testPlot <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL,
+                                     reverseLikert = TRUE)$plot
+    expect_plot_snapshot("likertplot-integer-reverse", testPlot)
+})
+
 test_that("likertplot: toInteger reconciles an ordered factor with a plain integer (Question 1 + Q1)", {
     testPlot <- vijPlots::likertplot(
         data = testData,

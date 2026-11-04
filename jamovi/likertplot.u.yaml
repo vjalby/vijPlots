@@ -37,8 +37,6 @@ children:
               - type: CheckBox
                 name: tidyUp
               - type: CheckBox
-                name: reverseLikert
-              - type: CheckBox
                 name: toInteger
               - type: CheckBox
                 name: ignoreNA
@@ -246,6 +244,8 @@ children:
                   - type: CheckBox
                     name: addMedianLine
                     enable: (type_stacked)
+                  - type: CheckBox
+                    name: reverseLikert
       - type: LayoutBox
         margin: large
         stretchFactor: 1

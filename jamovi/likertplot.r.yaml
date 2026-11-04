@@ -98,10 +98,10 @@ items:
           visible: (showPostHoc)
           columns:
             - name: group1
-              title: ""
+              title: "Group 1"
               type: text
             - name: group2
-              title: ""
+              title: "Group 2"
               type: text
           clearWith:
             - liks

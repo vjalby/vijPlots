@@ -556,6 +556,9 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             self$results$comp$pwTable$setStatus('running')
 
             # Add table's columns
+            groupLabel <- private$.getVarName(self$options$group)
+            self$results$comp$pwTable$getColumn("group1")$setSuperTitle(groupLabel)
+            self$results$comp$pwTable$getColumn("group2")$setSuperTitle(groupLabel)
             for (ques in questions) {
                 superTitle <- private$.getVarName(ques)
                 self$results$comp$pwTable$addColumn(name = paste(ques, "stat"), title = statString, superTitle = superTitle, type = 'number')

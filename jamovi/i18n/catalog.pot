@@ -2579,6 +2579,14 @@ msgstr ""
 msgid "Group + Percent"
 msgstr ""
 
+#: likertplot/results/comp/pwTable.columns.title
+msgid "Group 1"
+msgstr ""
+
+#: likertplot/results/comp/pwTable.columns.title
+msgid "Group 2"
+msgstr ""
+
 #: likertplot/options/groupBy.title
 #: likertplot/ui[1][2][0].label
 msgid "Group By"

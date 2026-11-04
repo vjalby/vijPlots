@@ -387,6 +387,14 @@ test_that("likertplot: a group without any answer is dropped", {
     expect_equal(unname(r$comp$uTestTable$asDF$p.value), c(0.4, 0.9142857), tolerance = 1e-6)
 })
 
+test_that("likertplot: pairwise table shows the group variable over the two group columns", {
+    groupData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, 1L), q2 = c(2L, 2L, 3L, 1L, 1L, 1L),
+                            `My group` = factor(rep(c("x", "y"), 3)), check.names = FALSE)
+    r <- vijPlots::likertplot(data = groupData, liks = c("q1", "q2"), group = "My group", showPostHoc = TRUE)
+    expect_equal(r$comp$pwTable$getColumn("group1")$superTitle, "My group")
+    expect_equal(r$comp$pwTable$getColumn("group2")$superTitle, "My group")
+})
+
 test_that("likertplot: toInteger reconciles an ordered factor with a plain integer (Question 1 + Q1)", {
     testPlot <- vijPlots::likertplot(
         data = testData,

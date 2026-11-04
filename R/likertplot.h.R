@@ -686,11 +686,11 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="group1", 
-                                    `title`="", 
+                                    `title`="Group 1", 
                                     `type`="text"),
                                 list(
                                     `name`="group2", 
-                                    `title`="", 
+                                    `title`="Group 2", 
                                     `type`="text")),
                             clearWith=list(
                                 "liks",

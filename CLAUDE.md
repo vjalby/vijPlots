@@ -434,6 +434,28 @@ continuation lines (`msgstr ""` followed by quoted-string lines) — a naive per
 regex check for empty translations will misreport every long string as untranslated; parse
 `msgid`/`msgstr` by concatenating all consecutive `"..."` lines that follow the keyword.
 
+### `likertplot`: only the plot is sorted and reversed (user's decision, 2026-11-05)
+
+`sorting` and `reverseLikert` apply to the plot only: the frequency table and the comparison tests
+keep the selection order, so `gglikert_data()` in `.run()` takes no `sort`. This undoes the alignment of
+the table on the plot (`44a6fdf`, 2026-10-25), on purpose: don't align them again. Sorting in `.run()` put
+the adjusted p-values of Mann-Whitney/Kruskal-Wallis on the wrong variable (rows in selection order,
+p-values in sorted order), and gave a table/plot mismatch with `reverseLikert`. Rejected as too complex: a
+`.reverseLevels` helper; reversing the table columns.
+
+### Pending: likertplot (temporary note, 2026-11-05; remove once settled)
+
+To do: typo "Appied" (`likertplot.b.R`), `NEWS.md`. To check in jamovi: tables not recomputed when changing
+the sort while the plot follows, pairwise super-title rendering, the French "Reverse level order" title.
+One thing at a time: too many options at once lost the user.
+
+Next bug (user's decision, 2026-11-05): answer *levels* of plain integers
+with different ranges follow first appearance, not value. `q1 = 3-5`, `q2 = 1-3` gives `3 4 5 1 2` in plot
+and table with `reverseLikert` off (centre 5), `5 4 3 2 1` with it on: the reversal is right, the off state is
+wrong. Fix idea: a common sorted scale even without reversal; first check the comparison tests still read
+the columns as numeric. Related: `toInteger` without `tidyUp` + reverse can give `3 2 1 5 4` (`tidyUp` is the
+remedy). The reverse test in `test-likertplot.R` doesn't cover this (its q1 holds the low values).
+
 ### Ideas under study (not implemented; findings of 2026-10-29)
 
 Possible global "appearance" options shared by all analyses (font family, overall text size, base

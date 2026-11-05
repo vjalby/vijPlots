@@ -395,6 +395,24 @@ test_that("likertplot: pairwise table shows the group variable over the two grou
     expect_equal(r$comp$pwTable$getColumn("group2")$superTitle, "My group")
 })
 
+test_that("likertplot: tables keep the selection order when the plot is sorted", {
+    sortData <- data.frame(g = factor(rep(c("x", "y"), each = 8)),
+                           q1 = c(1L, 1L, 1L, 2L, 1L, 2L, 1L, 2L, 3L, 4L, 3L, 4L, 5L, 3L, 4L, 4L),
+                           q2 = c(3L, 2L, 3L, 4L, 2L, 3L, 1L, 3L, 3L, 4L, 2L, 3L, 4L, 3L, 2L, 5L),
+                           q3 = c(5L, 4L, 5L, 5L, 4L, 4L, 5L, 3L, 4L, 5L, 5L, 4L, 5L, 3L, 4L, 5L))
+    r <- vijPlots::likertplot(data = sortData, liks = c("q1", "q2", "q3"), group = "g",
+                              sorting = "descending", frequencyTable = TRUE,
+                              showMannU = TRUE, showKW = TRUE, showPostHoc = TRUE,
+                              pValue = "overall", adjustMethod = "bonferroni")
+    expect_equal(unique(as.character(r$frequencies$asDF$.question)), c("q1", "q2", "q3"))
+    # Each adjusted p-value is on the row of its variable
+    u <- r$comp$uTestTable$asDF
+    expect_equal(unname(u$adjusted.p), unname(stats::p.adjust(u$p.value, "bonferroni")))
+    kw <- r$comp$kwTable$asDF
+    expect_equal(unname(kw$adjusted.p), unname(stats::p.adjust(kw$p.value, "bonferroni")))
+    expect_equal(names(r$comp$pwTable$asDF)[3], "q1 stat")
+})
+
 test_that("likertplot: reverseLikert on plain integer variables", {
     intData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, NA), q2 = c(3L, 4L, 5L, 5L, 4L, 3L))
     testPlot <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL,

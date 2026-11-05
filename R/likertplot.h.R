@@ -592,7 +592,6 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "liks",
                     "group",
                     "groupBy",
-                    "sorting",
                     "ignoreNA",
                     "frequencies",
                     "showMean",
@@ -700,7 +699,6 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "tidyUp",
                                 "adjustMethod",
                                 "postHoc",
-                                "sorting",
                                 "pValue",
                                 "descAsVarName")))}))$new(options=options))
             self$add(jmvcore::Image$new(

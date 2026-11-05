@@ -136,11 +136,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 mainData[[groupingVar]] <- droplevels(mainData[[groupingVar]])
             }
 
-            # Data for table
-            # Same question order as the plot: gglikert_data() includes the centre level in the sorting
-            # proportion by default, so all three calls set sort_prop_include_center explicitly
-            ggLikertData <- ggstats::gglikert_data(tibble::as_tibble(mainData), include = self$options$liks, sort = self$options$sorting,
-                                                   sort_prop_include_center = FALSE)
+            # Data for table, in the order of selection (only the plot is sorted)
+            ggLikertData <- ggstats::gglikert_data(tibble::as_tibble(mainData), include = self$options$liks)
             questions <- levels(ggLikertData[['.question']])
             nq <- length(questions)
             if (!is.null(groupingVar)) {

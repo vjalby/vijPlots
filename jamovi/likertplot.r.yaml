@@ -20,7 +20,6 @@ items:
         - liks
         - group
         - groupBy
-        - sorting
         - ignoreNA
         - frequencies
         - showMean
@@ -111,7 +110,6 @@ items:
             - tidyUp
             - adjustMethod
             - postHoc
-            - sorting
             - pValue
             - descAsVarName
 

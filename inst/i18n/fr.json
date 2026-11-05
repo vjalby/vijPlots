@@ -367,6 +367,9 @@
             "Cannot convert text variables to integers": [
                 "Impossible de convertir une variable de type texte en entiers."
             ],
+            "Cannot tidy up levels: the same label is used for different values.": [
+                "Impossible de corriger les niveaux : une même étiquette correspond à des valeurs différentes."
+            ],
             "Cannot tidy up text variables": [
                 "Impossible de corriger les niveaux d'une variable de type texte."
             ],

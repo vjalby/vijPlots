@@ -413,6 +413,20 @@ test_that("likertplot: pairwise table shows the group variable over the two grou
     expect_equal(r$comp$pwTable$getColumn("group2")$superTitle, "My group")
 })
 
+test_that("likertplot: post hoc pairs don't depend on the group labels", {
+    answers <- c(1L, 2L, 1L, 1L, 2L, 2L, 3L, 4L, 2L, 3L, 4L, 3L, 3L, 5L, 4L, 4L, 5L, 5L, 4L, 5L)
+    pairwise <- function(labels, postHoc) {
+        pairData <- data.frame(g = factor(rep(labels, each = 5), levels = labels), q1 = answers)
+        r <- vijPlots::likertplot(data = pairData, liks = "q1", group = "g", showPostHoc = TRUE,
+                                  postHoc = postHoc, pValue = "overall")
+        unname(as.list(r$comp$pwTable$asDF[-(1:2)]))
+    }
+    # "A" + "B - C" and "A - B" + "C" used to share the key "A - B - C"
+    for (postHoc in c("dunn", "conover", "dscf"))
+        expect_equal(pairwise(c("A", "B - C", "A - B", "C"), postHoc),
+                     pairwise(c("G1", "G2", "G3", "G4"), postHoc))
+})
+
 test_that("likertplot: tables keep the selection order when the plot is sorted", {
     sortData <- data.frame(g = factor(rep(c("x", "y"), each = 8)),
                            q1 = c(1L, 1L, 1L, 2L, 1L, 2L, 1L, 2L, 3L, 4L, 3L, 4L, 5L, 3L, 4L, 4L),

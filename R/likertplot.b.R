@@ -569,8 +569,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (i in 1:(ng-1)) {
                 for (j in (i+1):ng) {
                     values <- list("group1" = groups[i], "group2" = groups[j])
-                    compStr1 <- paste(groups[i], "-", groups[j])
-                    compStr2 <- paste(groups[j], "-", groups[i])
+                    compStr1 <- private$.pairKey(groups[i], groups[j])
+                    compStr2 <- private$.pairKey(groups[j], groups[i])
                     for (ques in questions) {
                         # let test both compStr1 and compStr2
                         # because conover.test and dunn.test don't keep the factor order
@@ -694,7 +694,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             statistics <- list()
             for(i in 1:(k-1)) {
                 for(j in i:(k-1)) {
-                    gname <- paste(colnames(PSTAT)[i],"-",rownames(PSTAT)[j])
+                    gname <- private$.pairKey(colnames(PSTAT)[i], rownames(PSTAT)[j])
                     p.values[gname] <- PVAL[j,i]
                     statistics[gname] <- - PSTAT[j,i] # i - j
                 }
@@ -774,7 +774,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             statistics <- list()
             for(i in 1:(k-1)) {
                 for(j in i:(k-1)) {
-                    gname <- paste(colnames(PSTAT)[i],"-",rownames(PSTAT)[j])
+                    gname <- private$.pairKey(colnames(PSTAT)[i], rownames(PSTAT)[j])
                     p.values[gname] <- PVAL[j,i]
                     statistics[gname] <- - PSTAT[j,i] # i - j
                 }
@@ -833,13 +833,18 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             statistics <- list()
             for(i in 1:(k-1)) {
                 for(j in i:(k-1)) {
-                    gname <- paste(colnames(PSTAT)[i],"-",rownames(PSTAT)[j])
+                    gname <- private$.pairKey(colnames(PSTAT)[i], rownames(PSTAT)[j])
                     p.values[gname] <- PVAL[j,i]
                     statistics[gname] <- - PSTAT[j,i] # i - j
                 }
             }
 
             return( list(p.values = p.values, statistics = statistics) )
+        },
+        .pairKey = function(group1, group2) {
+            # Key of a pair of groups in the post hoc results. The length of group1 says where it ends,
+            # so "A" + "B - C" and "A - B" + "C" give different keys
+            paste0(nchar(group1), ":", group1, "-", group2)
         },
         .showHelpMessage = function() {
             helpMsg <- .('<h3>Data & Sorting</h3>

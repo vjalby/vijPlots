@@ -1,4 +1,4 @@
-# vijPlots 1.4.0 (2026-11-03)
+# vijPlots 1.4.0 (2026-11-05)
 
 * Bar Plot / Pie Chart: optional frequency table
 * Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values
@@ -9,6 +9,12 @@
 * Error Bar Chart: option to show the individual observations over the bars
 * Bar Plot / Multiple Response Crosstabs: option to hide % labels below 5%
 * Likert Plot: the frequency table follows the "Group By" option; 0.01 % accuracy
+* Likert Plot: fixed the adjusted p-values of the Mann-Whitney and Kruskal-Wallis tests, shown on the wrong variables when variables were sorted
+* Likert Plot: sorting now applies to the plot only; the frequency table and pairwise comparisons keep the selection order
+* Likert Plot: fixed "Reverse level order" with plain integer variables
+* Likert Plot: "Tidy up levels" now also applies to integer variables
+* Likert Plot: variables or groups without any answer no longer cause an error; groups without any answer are left out
+* Likert Plot: the pairwise comparisons table shows the group variable above its two group columns
 * Line Chart: fixed the missing group not drawn with several variables
 * Scatter Plot: "Points with missing group/label" replaced by "Ignore missing groups"; points with a missing label are now kept
 * Missing values kept as a category are now labelled "(Missing)" instead of "NA"

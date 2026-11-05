@@ -74,6 +74,7 @@ The module is available in the **Plots** tab.
 * Mosaic Plot: fixed the facet of missing values (when "Ignore missing values" is unchecked)
 * Box Plot: whisker options (1.5 × IQR, 3 × IQR, min-max)
 * Error Bar Chart: option to show the individual observations over the bars
+* Likert Plot: "Tidy up levels" now also applies to integer variables
 * Grid lines option for numeric axes
 * The fixed-length color palettes are now extended by interpolation
 * Code optimization

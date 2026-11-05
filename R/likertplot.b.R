@@ -44,8 +44,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
             # Check if variables are of the same type when "convert to integer" is not selected
+            commonClass <- NULL
             if (!self$options$toInteger) {
-                commonClass <- NULL
                 for (ques in self$options$liks) {
                     varClass <- class(mainData[[ques]])
                     if (!is.null(commonClass) && varClass[1] != commonClass) {
@@ -68,7 +68,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 vijErrorMessage(self, .("Cannot tidy up text variables"))
 
             #### Convert to integer ####
-            if (self$options$toInteger) {
+            # Integer variables too: factors, so that "Tidy up levels" can put them on one scale
+            if (self$options$toInteger || commonClass == "integer") {
                 for (var in self$options$liks) {
                     mainData[[var]] <- factor(jmvcore::toNumeric(mainData[[var]]))
                     attr(mainData[[var]], "values") <- as.integer(levels(mainData[[var]]))
@@ -77,8 +78,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Tidy up levels ####
-            # Appied to factors only
-            if (self$options$tidyUp && length(self$options$liks) >1 && is.factor(mainData[[self$options$liks[1]]])) {
+            if (self$options$tidyUp && length(self$options$liks) >1) {
                 all_values <- c()
                 level_value <- list()
                 # Save all levels and values from the variables
@@ -139,7 +139,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Data for table, in the order of selection (only the plot is sorted)
             ggLikertData <- ggstats::gglikert_data(tibble::as_tibble(mainData), include = self$options$liks)
             questions <- levels(ggLikertData[['.question']])
-            nq <- length(questions)
             if (!is.null(groupingVar)) {
                 groups <- levels(ggLikertData[[groupingVar]])
                 ng <- length(groups)
@@ -178,7 +177,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         mainData = mainData,
                         groupingVar = groupingVar,
                         questions = questions,
-                        nq = nq,
                         groups = if (!is.null(groupingVar)) groups else NULL,
                         ng = ng,
                         adjustMethod = adjustMethod,
@@ -210,12 +208,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             mainData <- image$state$mainData
 
             if (self$options$reverseLikert ) {
-                # Plain integers have no levels to reverse: factors on one common scale first
-                if (!is.factor(mainData[[self$options$liks[1]]])) {
-                    allValues <- sort(unique(unlist(mainData[self$options$liks])))
-                    for (var in self$options$liks)
-                        mainData[[var]] <- factor(mainData[[var]], levels = allValues)
-                }
                 for (var in self$options$liks)
                     mainData[[var]] <- forcats::fct_rev(mainData[[var]])
             }
@@ -429,7 +421,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .mannWhitneyTest = function(ctx) {
             ng <- ctx$ng
             questions <- ctx$questions
-            nq <- ctx$nq
             groupingVar <- ctx$groupingVar
             mainData <- ctx$mainData
             adjustMethod <- ctx$adjustMethod
@@ -452,8 +443,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$pValue == "overall") {
                     self$results$comp$uTestTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
                     adjustedp <- stats::p.adjust(p, method = adjustMethod)
-                    for (i in 1:nq) {
-                        self$results$comp$uTestTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
+                    for (i in seq_along(questions)) {
+                        self$results$comp$uTestTable$setCell(rowKey = questions[i], col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
                     }
                     self$results$comp$uTestTable$setNote("adj",
                                                          jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))
@@ -462,7 +453,6 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .kruskalWallisTest = function(ctx) {
             questions <- ctx$questions
-            nq <- ctx$nq
             groupingVar <- ctx$groupingVar
             mainData <- ctx$mainData
             adjustMethod <- ctx$adjustMethod
@@ -478,8 +468,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$pValue == "overall") {
                 self$results$comp$kwTable$addColumn(name = "adjusted.p", title = .("Adj. p"), type = 'number', format = 'zto,pvalue')
                 adjustedp <- stats::p.adjust(p, method = adjustMethod)
-                for (i in 1:nq) {
-                    self$results$comp$kwTable$setCell(rowNo = i, col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
+                for (i in seq_along(questions)) {
+                    self$results$comp$kwTable$setCell(rowKey = questions[i], col = "adjusted.p", ifelse(is.finite(adjustedp[i]),adjustedp[i],NA))
                 }
                 self$results$comp$kwTable$setNote("adj",
                                                   jmvcore::format(.("p-values are adjusted using {method} method."), method = adjustMethodStr))

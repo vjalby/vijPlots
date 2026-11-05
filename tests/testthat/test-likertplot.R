@@ -356,16 +356,17 @@ test_that("likertplot: tidyUp alone does not bypass the same-type check", {
     )
 })
 
-test_that("likertplot: tidyUp leaves plain integer variables unchanged", {
-    intData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, 1L), q2 = c(3L, 4L, 5L, 5L, 4L, 3L))
+test_that("likertplot: tidyUp puts integer variables on one sorted scale", {
+    intData <- data.frame(q1 = c(3L, 4L, 5L, 5L, 4L, 3L), q2 = c(1L, 2L, 3L, 3L, 2L, 1L))
     r <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL,
                               tidyUp = TRUE, frequencyTable = TRUE, frequencies = "counts")
-    expect_equal(r$plot$state$mainData$q1, intData$q1)
-    expect_equal(r$plot$state$mainData$q2, intData$q2)
+    expect_equal(jmvcore::toNumeric(r$plot$state$mainData$q1), intData$q1, ignore_attr = TRUE)
+    expect_equal(jmvcore::toNumeric(r$plot$state$mainData$q2), intData$q2, ignore_attr = TRUE)
     freq <- r$frequencies$asDF
+    expect_equal(grep("^[0-9]+$", names(freq), value = TRUE), as.character(1:5))
     expect_equal(unname(freq$.SUM), c(6L, 6L))
     expect_equal(unname(freq$`3`), c(2L, 2L))
-    expect_equal(unname(freq$`5`), c(0L, 2L))
+    expect_equal(unname(freq$`5`), c(2L, 0L))
 })
 
 test_that("likertplot: no answer in any variable stops the analysis", {
@@ -416,7 +417,7 @@ test_that("likertplot: tables keep the selection order when the plot is sorted",
 test_that("likertplot: reverseLikert on plain integer variables", {
     intData <- data.frame(q1 = c(1L, 2L, 3L, 3L, 2L, NA), q2 = c(3L, 4L, 5L, 5L, 4L, 3L))
     testPlot <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL,
-                                     reverseLikert = TRUE)$plot
+                                     reverseLikert = TRUE, tidyUp = TRUE)$plot
     expect_plot_snapshot("likertplot-integer-reverse", testPlot)
 })
 

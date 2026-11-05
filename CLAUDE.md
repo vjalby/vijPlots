@@ -443,18 +443,16 @@ the adjusted p-values of Mann-Whitney/Kruskal-Wallis on the wrong variable (rows
 p-values in sorted order), and gave a table/plot mismatch with `reverseLikert`. Rejected as too complex: a
 `.reverseLevels` helper; reversing the table columns.
 
-### Pending: likertplot (temporary note, 2026-11-05; remove once settled)
+### `likertplot`: integer variables are treated as ordinal factors (user's decision, 2026-11-05)
 
-To do: typo "Appied" (`likertplot.b.R`), `NEWS.md`. To check in jamovi: tables not recomputed when changing
-the sort while the plot follows, pairwise super-title rendering, the French "Reverse level order" title.
-One thing at a time: too many options at once lost the user.
-
-Next bug (user's decision, 2026-11-05): answer *levels* of plain integers
-with different ranges follow first appearance, not value. `q1 = 3-5`, `q2 = 1-3` gives `3 4 5 1 2` in plot
-and table with `reverseLikert` off (centre 5), `5 4 3 2 1` with it on: the reversal is right, the off state is
-wrong. Fix idea: a common sorted scale even without reversal; first check the comparison tests still read
-the columns as numeric. Related: `toInteger` without `tidyUp` + reverse can give `3 2 1 5 4` (`tidyUp` is the
-remedy). The reverse test in `test-likertplot.R` doesn't cover this (its q1 holds the low values).
+`ggstats` merges the levels of several variables in order of first appearance: `q1 = 3-5`, `q2 = 1-3` gives
+`3 4 5 1 2` (wrong centre too). "Tidy up levels" is the remedy, for every type: integer variables
+(`commonClass == "integer"`, jamovi "Continuous, Integer") now go through the "Convert to integer" block
+(ordered factor + `"values"` attribute, per variable), so `tidyUp` puts them on one sorted scale, and
+`reverseLikert` needs no special case. Without `tidyUp` (unchecked by default), partial levels keep the
+first-appearance order, as ordinal factors always did: accepted by the user, not a bug to fix again.
+`tests/testthat/test-likertlevels.R` (kept, user's decision; 704 tests, order checks skipped without `tidyUp`) covers
+partial, non-continuous, negative and zero-less levels, as integers and as labelled ordinal factors.
 
 ### Ideas under study (not implemented; findings of 2026-10-29)
 

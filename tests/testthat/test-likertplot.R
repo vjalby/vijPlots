@@ -427,6 +427,20 @@ test_that("likertplot: post hoc pairs don't depend on the group labels", {
                      pairwise(c("G1", "G2", "G3", "G4"), postHoc))
 })
 
+test_that("likertplot: DSCF reads the values, not the order of the levels", {
+    answers <- c(1L, 2L, 1L, 5L, 2L, 2L, 3L, 4L, 5L, 3L, 4L, 3L, 3L, 5L, 4L, 1L, 5L, 5L, 4L, 5L)
+    groups <- factor(rep(c("x", "y", "z", "w"), each = 5))
+    # Same answers, levels listed in another order than their values
+    shuffled <- factor(answers, levels = c(5L, 1L, 2L, 3L, 4L), ordered = TRUE)
+    attr(shuffled, "values") <- c(5L, 1L, 2L, 3L, 4L)
+    pairwise <- function(q1) {
+        r <- vijPlots::likertplot(data = data.frame(g = groups, q1 = q1), liks = "q1", group = "g",
+                                  showPostHoc = TRUE, postHoc = "dscf")
+        unname(as.list(r$comp$pwTable$asDF[-(1:2)]))
+    }
+    expect_equal(pairwise(shuffled), pairwise(answers))
+})
+
 test_that("likertplot: tables keep the selection order when the plot is sorted", {
     sortData <- data.frame(g = factor(rep(c("x", "y"), each = 8)),
                            q1 = c(1L, 1L, 1L, 2L, 1L, 2L, 1L, 2L, 3L, 4L, 3L, 4L, 5L, 3L, 4L, 4L),

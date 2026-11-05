@@ -454,6 +454,13 @@ first-appearance order, as ordinal factors always did: accepted by the user, not
 `tests/testthat/test-likertlevels.R` (kept, user's decision; 704 tests, order checks skipped without `tidyUp`) covers
 partial, non-continuous, negative and zero-less levels, as integers and as labelled ordinal factors.
 
+Two review findings left as they are (user's decisions, 2026-11-05), not bugs to fix again:
+- With "Ignore missing groups", levels answered only by the excluded rows stay in the plot and table (empty),
+  for integers as for ordinal factors: the scale belongs to the question, not to the rows kept.
+- The Likert palettes (`scale_fill_brewer()`) have 11 colours at most: a 12th level gets no colour. Not
+  interpolated with `vijExtendPalette()` as in the other analyses: a Likert scale with more than 11 levels
+  makes no sense.
+
 ### Ideas under study (not implemented; findings of 2026-10-29)
 
 Possible global "appearance" options shared by all analyses (font family, overall text size, base

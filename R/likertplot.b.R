@@ -511,7 +511,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 } else if (self$options$postHoc == "dunn") {
                     testRes <- private$.dunn(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
                 } else if (self$options$postHoc == "dscf") {
-                    testRes <- private$.dscfAllPairs(mainData[[ques]], mainData[[groupingVar]])
+                    testRes <- private$.dscfAllPairs(jmvcore::toNumeric(mainData[[ques]]), mainData[[groupingVar]])
                 }
                 # Degenerate data (all answers identical; for Conover, one answer per group) gives NaN:
                 # shown as empty cells instead

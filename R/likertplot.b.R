@@ -94,6 +94,10 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # Sort the value and the corresponding levels
                 tidyValues <- sort(unique(all_values))
                 tidyLevels <- unlist(level_value[as.character(tidyValues)], use.names=FALSE)
+                # One label for two values (B = 2 in a variable, B = 3 in another) would merge them
+                # and shift the numeric values
+                if (anyDuplicated(tidyLevels))
+                    vijErrorMessage(self, .("Cannot tidy up levels: the same label is used for different values."))
                 # Set the variable again as factors with tidy levels/values
                 for (ques in self$options$liks) {
                     mainData[[ques]] <- factor(jmvcore::toNumeric(mainData[[ques]]), levels = tidyValues, labels = tidyLevels)

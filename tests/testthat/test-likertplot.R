@@ -356,6 +356,23 @@ test_that("likertplot: tidyUp alone does not bypass the same-type check", {
     )
 })
 
+test_that("likertplot: tidyUp refuses one label for different values", {
+    labelled <- function(x, values, labels) {
+        f <- factor(x, levels = values, labels = labels, ordered = TRUE)
+        attr(f, "values") <- values
+        f
+    }
+    dupData <- data.frame(q1 = labelled(c(1L, 2L, 1L, 2L), 1:2, c("A", "B")),
+                          q2 = labelled(c(3L, 4L, 3L, 4L), 3:4, c("B", "C")))
+    expect_error(
+        vijPlots::likertplot(data = dupData, liks = c("q1", "q2"), group = NULL, tidyUp = TRUE),
+        "Cannot tidy up levels: the same label is used for different values."
+    )
+    r <- vijPlots::likertplot(data = dupData, liks = c("q1", "q2"), group = NULL,
+                              frequencyTable = TRUE, showMean = TRUE)
+    expect_equal(unname(r$frequencies$asDF$.MEAN), c(1.5, 3.5))
+})
+
 test_that("likertplot: tidyUp puts integer variables on one sorted scale", {
     intData <- data.frame(q1 = c(3L, 4L, 5L, 5L, 4L, 3L), q2 = c(1L, 2L, 3L, 3L, 2L, 1L))
     r <- vijPlots::likertplot(data = intData, liks = c("q1", "q2"), group = NULL,

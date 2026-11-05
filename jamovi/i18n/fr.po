@@ -1396,6 +1396,10 @@ msgid "Cannot convert text variables to integers"
 msgstr "Impossible de convertir une variable de type texte en entiers."
 
 #: R/likertplot.b.R
+msgid "Cannot tidy up levels: the same label is used for different values."
+msgstr "Impossible de corriger les niveaux : une même étiquette correspond à des valeurs différentes."
+
+#: R/likertplot.b.R
 msgid "Cannot tidy up text variables"
 msgstr "Impossible de corriger les niveaux d'une variable de type texte."
 

@@ -13,6 +13,7 @@
 * Likert Plot: sorting now applies to the plot only; the frequency table and pairwise comparisons keep the selection order
 * Likert Plot: fixed "Reverse level order" with plain integer variables
 * Likert Plot: "Tidy up levels" now also applies to integer variables
+* Likert Plot: "Tidy up levels" now refuses a label used for different values (it shifted the numeric values)
 * Likert Plot: variables or groups without any answer no longer cause an error; groups without any answer are left out
 * Likert Plot: the pairwise comparisons table shows the group variable above its two group columns
 * Line Chart: fixed the missing group not drawn with several variables

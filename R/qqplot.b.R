@@ -332,6 +332,9 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             m <- mean(aVar)
             s <- stats::sd(aVar)
             if (distName == "beta") {
+                # The moments only fit a Beta distribution when s² < m(1-m): otherwise both shapes are ≤ 0
+                if (s**2 >= m*(1-m))
+                    return(NULL)
                 shape1 <- m*(m*(1-m)/s**2 - 1)
                 shape2 <- (1-m)*(m*(1-m)/s**2 - 1)
                 params <- list(shape1 = shape1, shape2 = shape2)

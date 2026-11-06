@@ -148,3 +148,10 @@ test_that("qqplot: a single observation is rejected with a clear message", {
     expect_error(vijPlots::qqplot(data = data.frame(x = c(3, NA, NA)), dep = "x", group = NULL),
                  "At least two observations")
 })
+
+test_that("qqplot: Beta MME rejects data the moments cannot fit", {
+    # s² >= m(1-m): the moment estimates of both shapes would be negative
+    expect_error(vijPlots::qqplot(data = data.frame(x = c(0.01, 0.99)), dep = "x", group = NULL,
+                                  distrib = "beta", paramEstMethod = "mme"),
+                 "Unable to estimate the distribution parameters using MME")
+})

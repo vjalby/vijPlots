@@ -41,6 +41,8 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             data <- jmvcore::naOmit(data)
             if (nrow(data) == 0)
                 return(FALSE)
+            if (nrow(data) < 2)
+                vijErrorMessage(self, .("At least two observations are required."))
 
             #### Data transformation ####
 

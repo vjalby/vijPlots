@@ -883,6 +883,10 @@ msgstr "Vecteurs"
 msgid "Ascending"
 msgstr "Croissant"
 
+#: R/qqplot.b.R
+msgid "At least two observations are required."
+msgstr "Au moins deux observations sont nécessaires."
+
 #: R/areachart.b.R
 #: R/linechart.b.R
 msgid "Aug"

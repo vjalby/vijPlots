@@ -140,3 +140,11 @@ test_that("qqplot: grid lines", {
     )$plot
     expect_plot_snapshot("qqplot-gridlines", testPlot)
 })
+
+test_that("qqplot: a single observation is rejected with a clear message", {
+    expect_error(vijPlots::qqplot(data = data.frame(x = 3), dep = "x", group = NULL),
+                 "At least two observations")
+    # also when only one value is left after removing missing values
+    expect_error(vijPlots::qqplot(data = data.frame(x = c(3, NA, NA)), dep = "x", group = NULL),
+                 "At least two observations")
+})

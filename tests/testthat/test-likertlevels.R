@@ -60,20 +60,22 @@ for (caseName in names(levelCases)) {
             label <- sprintf("%s | %s | tidyUp=%d toInteger=%d reverse=%d", caseName, type, tidyUp, toInteger, reverseLikert)
             res <- runLikertLevels(data, tidyUp, toInteger, reverseLikert)
 
-            test_that(paste(label, "| plot order"), {
-                skip_if(!tidyUp)
-                expected <- if (reverseLikert) rev(allLevels) else allLevels
-                expect_equal(levels(res$plot$data$.answer), as.character(expected))
+            test_that(paste(label, "| plot"), {
+                if (tidyUp) {
+                    expected <- if (reverseLikert) rev(allLevels) else allLevels
+                    expect_equal(levels(res$plot$data$.answer), as.character(expected))
+                }
                 expect_no_error(suppressWarnings(suppressMessages(ggplot2::ggplot_build(res$plot))))
             })
 
             frequencies <- res$results$frequencies$asDF
             levelColumns <- grep("^-?[0-9]+$", names(frequencies), value = TRUE)
 
-            test_that(paste(label, "| table order"), {
-                skip_if(!tidyUp)
-                expect_equal(levelColumns, as.character(allLevels))
-            })
+            if (tidyUp) {
+                test_that(paste(label, "| table order"), {
+                    expect_equal(levelColumns, as.character(allLevels))
+                })
+            }
 
             test_that(paste(label, "| answers kept"), {
                 counts <- as.matrix(frequencies[levelColumns])

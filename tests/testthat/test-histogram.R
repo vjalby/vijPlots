@@ -197,6 +197,24 @@ test_that("histogram: mean line snapshot, grouped, with label", {
     expect_plot_snapshot("histogram-mean-grouped-label", testPlot)
 })
 
+test_that("histogram: constant data with automatic bin width draws one bin", {
+    # A zero range gave a zero bin width: stat_bin() failed and the plot was empty
+    constData <- data.frame(x = rep(5, 10))
+    testPlot <- vijPlots::histogram(data = constData, aVar = "x", group = NULL, facet = NULL,
+                                    showLines = TRUE, density = TRUE)$plot
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(testPlot)
+    expect_no_warning(built <- ggplot2::ggplot_build(ggplot2::last_plot()))
+    layerData <- function(geom)
+        built$data[[which(vapply(built$plot$layers, function(l) inherits(l$geom, geom), logical(1)))]]
+    bins <- layerData("GeomBar")
+    expect_equal(nrow(bins), 1)
+    expect_equal(bins$count, 10)
+    expect_gt(nrow(layerData("GeomPath")), 0)
+    expect_true(any(layerData("GeomDensity")$y > 0))
+})
+
 test_that("histogram: grid lines", {
     testPlot <- vijPlots::histogram(data = testData, aVar = "Petal.Width", group = NULL, facet = NULL,
                                     xGridLines = TRUE, yGridLines = TRUE)$plot

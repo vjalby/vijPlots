@@ -77,6 +77,8 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 x_vals <- plotData[[xVar]]
                 x_range <- range(x_vals, na.rm = TRUE)
                 binWidth <- (x_range[2] - x_range[1]) / 30
+                if (binWidth == 0) # constant data (or a single value): ggplot2's own fallback
+                    binWidth <- 0.1
             } else {
             	binWidth <- self$options$binWidth
             }

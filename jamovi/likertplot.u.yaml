@@ -45,27 +45,6 @@ children:
                 name: descAsVarName
       - type: LayoutBox
         cell:
-          column: 2
-          row: 0
-        stretchFactor: 1
-        children:
-          - type: Label
-            label: Sort Variables
-            children:
-              - type: RadioButton
-                name: sorting_none
-                optionName: sorting
-                optionPart: none
-              - type: RadioButton
-                name: sorting_descending
-                optionName: sorting
-                optionPart: descending
-              - type: RadioButton
-                name: sorting_ascending
-                optionName: sorting
-                optionPart: ascending
-      - type: LayoutBox
-        cell:
           column: 1
           row: 0
         stretchFactor: 1
@@ -239,6 +218,31 @@ children:
             stretchFactor: 1
             children:
               - type: Label
+                label: Sort Variables
+                children:
+                  - type: RadioButton
+                    name: sorting_none
+                    optionName: sorting
+                    optionPart: none
+                  - type: RadioButton
+                    name: sorting_descending
+                    optionName: sorting
+                    optionPart: descending
+                  - type: RadioButton
+                    name: sorting_ascending
+                    optionName: sorting
+                    optionPart: ascending
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
                 label: Options
                 children:
                   - type: CheckBox
@@ -246,6 +250,25 @@ children:
                     enable: (type_stacked)
                   - type: CheckBox
                     name: reverseLikert
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Label Size
+                children:
+                  - type: ComboBox
+                    name: hLabelWrap
+                  - type: ComboBox
+                    name: vLabelWrap
+                    enable: (!(!group))
+  - type: CollapseBox
+    label: Labels
+    collapsed: true
+    stretchFactor: 1
+    children:
       - type: LayoutBox
         margin: large
         stretchFactor: 1
@@ -289,40 +312,8 @@ children:
                     name: accuracy_001
                     optionName: accuracy
                     optionPart: '0.01'
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        children:
-          - type: LayoutBox
-            cell:
-              column: 0
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Label Size
-                children:
-                  - type: ComboBox
-                    name: hLabelWrap
-                  - type: ComboBox
-                    name: vLabelWrap
-                    enable: (!(!group))
-          - type: LayoutBox
-            cell:
-              column: 1
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Plot Color
-                children:
-                  - type: ComboBox
-                    name: plotColor
-                  - type: ComboBox
-                    name: labelColor
-                    enable: (addLabels)
   - type: CollapseBox
-    label: Text Size
+    label: Text Size & Colors
     collapsed: true
     stretchFactor: 1
     children:
@@ -347,6 +338,20 @@ children:
                     name: groupSize
                     format: number
                     enable: (!(!group))
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Plot Color
+                children:
+                  - type: ComboBox
+                    name: plotColor
+                  - type: ComboBox
+                    name: labelColor
+                    enable: (addLabels)
   - type: CollapseBox
     label: Axes
     collapsed: true

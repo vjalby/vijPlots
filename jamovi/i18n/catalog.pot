@@ -94,7 +94,7 @@ msgstr ""
 #: barplot/options/accuracy.title
 #: barplot/ui[2][0][2][0].label
 #: likertplot/options/accuracy.title
-#: likertplot/ui[4][1][1][0].label
+#: likertplot/ui[5][0][1][0].label
 #: mrcrosstabs/options/accuracy.title
 #: mrcrosstabs/ui[2][0][2][0].label
 #: mrfrequencies/options/accuracy.title
@@ -114,7 +114,7 @@ msgstr ""
 msgid "% Inertia"
 msgstr ""
 
-#: likertplot/ui[4][1][0][0].label
+#: likertplot/ui[5][0][0][0].label
 msgid "% Labels"
 msgstr ""
 
@@ -657,6 +657,10 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
+#: R/qqplot.b.R
+msgid "At least two observations are required."
+msgstr ""
+
 #: R/areachart.b.R
 #: R/linechart.b.R
 msgid "Aug"
@@ -708,7 +712,7 @@ msgstr ""
 #: barplot/ui[5].label
 #: boxplot/ui[4].label
 #: histogram/ui[5].label
-#: likertplot/ui[6].label
+#: likertplot/ui[7].label
 #: linechart/ui[2].label
 #: lollipop/ui[5].label
 #: mosaic/ui[5].label
@@ -1170,6 +1174,10 @@ msgid "Cannot convert text variables to integers"
 msgstr ""
 
 #: R/likertplot.b.R
+msgid "Cannot tidy up levels: the same label is used for different values."
+msgstr ""
+
+#: R/likertplot.b.R
 msgid "Cannot tidy up text variables"
 msgstr ""
 
@@ -1178,7 +1186,7 @@ msgstr ""
 #: barplot/ui[7][2].label
 #: boxplot/ui[6][2].label
 #: histogram/ui[7][2].label
-#: likertplot/ui[8][2].label
+#: likertplot/ui[9][2].label
 #: linechart/ui[4][2].label
 #: lollipop/ui[7][2].label
 #: mosaic/ui[7][2].label
@@ -2588,7 +2596,7 @@ msgid "Group 2"
 msgstr ""
 
 #: likertplot/options/groupBy.title
-#: likertplot/ui[1][2][0].label
+#: likertplot/ui[1][1][0].label
 msgid "Group By"
 msgstr ""
 
@@ -2645,6 +2653,11 @@ msgstr ""
 
 #: mosaic/options/hideAxes.title
 msgid "Hide axes"
+msgstr ""
+
+#: barplot/options/xHideAxis.title
+#: barplot/options/yHideAxis.title
+msgid "Hide axis"
 msgstr ""
 
 #: piechart/options/hideLabelsBelow.title
@@ -3059,7 +3072,7 @@ msgstr ""
 msgid "Label rotation"
 msgstr ""
 
-#: likertplot/ui[4][2][0][0].label
+#: likertplot/ui[4][1][1][0].label
 msgid "Label Size"
 msgstr ""
 
@@ -3068,6 +3081,7 @@ msgstr ""
 msgid "Label Type"
 msgstr ""
 
+#: likertplot/ui[5].label
 #: piechart/options/labels.title
 #: piechart/ui[1][3][0].label
 #: piechart/ui[2].label
@@ -3176,7 +3190,7 @@ msgstr ""
 #: barplot/ui[6][0].label
 #: boxplot/ui[5][0].label
 #: histogram/ui[6][0].label
-#: likertplot/ui[7][0].label
+#: likertplot/ui[8][0].label
 #: linechart/ui[3][0].label
 #: mosaic/options/showOpacityLegend.title
 #: mosaic/ui[6][0].label
@@ -3208,7 +3222,7 @@ msgstr ""
 msgid "Legend & Axis Titles"
 msgstr ""
 
-#: likertplot/ui[7].label
+#: likertplot/ui[8].label
 msgid "Legend Title"
 msgstr ""
 
@@ -4016,7 +4030,7 @@ msgstr ""
 
 #: barplot/ui[1][0][0].label
 #: histogram/ui[2].label
-#: likertplot/ui[4][0][1][0].label
+#: likertplot/ui[4][1][0][0].label
 #: mrcrosstabs/options/optionname.default
 #: mrcrosstabs/results/crosstab.columns.title
 #: mrfrequencies/options/optionname.default
@@ -4336,7 +4350,7 @@ msgstr ""
 msgid "Plot"
 msgstr ""
 
-#: likertplot/ui[4][2][1][0].label
+#: likertplot/ui[6][0][1][0].label
 #: multcorresp/ui[7][0][0][0].label
 msgid "Plot Color"
 msgstr ""
@@ -4374,7 +4388,7 @@ msgstr ""
 #: barplot/ui[7].label
 #: boxplot/ui[6].label
 #: histogram/ui[7].label
-#: likertplot/ui[8].label
+#: likertplot/ui[9].label
 #: linechart/ui[4].label
 #: lollipop/ui[7].label
 #: mosaic/ui[7].label
@@ -5319,7 +5333,7 @@ msgid "Some values are missing from the contingency table."
 msgstr ""
 
 #: likertplot/options/sorting.title
-#: likertplot/ui[1][1][0].label
+#: likertplot/ui[4][0][1][0].label
 msgid "Sort Variables"
 msgstr ""
 
@@ -5472,7 +5486,7 @@ msgstr ""
 #: barplot/ui[7][1].label
 #: boxplot/ui[6][1].label
 #: histogram/ui[7][1].label
-#: likertplot/ui[8][1].label
+#: likertplot/ui[9][1].label
 #: linechart/ui[4][1].label
 #: lollipop/ui[7][1].label
 #: mosaic/ui[7][1].label
@@ -5606,8 +5620,7 @@ msgstr ""
 #: barplot/ui[2][0][1][1].label
 #: boxplot/ui[2][0][0][1].label
 #: corresp/ui[6][0][0][0].label
-#: likertplot/ui[5].label
-#: likertplot/ui[5][0][0][0].label
+#: likertplot/ui[6][0][0][0].label
 #: mrcrosstabs/ui[2][0][2][1].label
 #: mrfrequencies/ui[2][0][0][1].label
 #: multcorresp/ui[7][0][0][1].label
@@ -5617,6 +5630,7 @@ msgid "Text Size"
 msgstr ""
 
 #: corresp/ui[6].label
+#: likertplot/ui[6].label
 msgid "Text Size & Colors"
 msgstr ""
 
@@ -5871,7 +5885,7 @@ msgstr ""
 #: barplot/ui[7][0].label
 #: boxplot/ui[6][0].label
 #: histogram/ui[7][0].label
-#: likertplot/ui[8][0].label
+#: likertplot/ui[9][0].label
 #: linechart/ui[4][0].label
 #: lollipop/ui[7][0].label
 #: mosaic/ui[7][0].label
@@ -6321,7 +6335,7 @@ msgstr ""
 #: corresp/ui[7][0].label
 #: histogram/ui[5][0][0][0].label
 #: histogram/ui[6][1].label
-#: likertplot/ui[6][0][0][0].label
+#: likertplot/ui[7][0][0][0].label
 #: linechart/options/timeVar.title
 #: linechart/ui[0][0].label
 #: linechart/ui[1][1][0].label
@@ -6402,7 +6416,7 @@ msgstr ""
 #: histogram/ui[1][0][0].label
 #: histogram/ui[5][0][1][0].label
 #: histogram/ui[6][2].label
-#: likertplot/ui[6][0][1][0].label
+#: likertplot/ui[7][0][1][0].label
 #: linechart/ui[2][0][1][0].label
 #: linechart/ui[3][2].label
 #: lollipop/options/yaxis.title

@@ -298,6 +298,19 @@ vijGridLines = function(themeName, x = FALSE, y = FALSE) {
     return(gridTheme)
 }
 
+# Theme hiding the line and the ticks of the displayed x and/or y axis (with
+# coord_flip(), theme elements follow the displayed axes). The axis text is kept.
+vijHideAxis = function(x = FALSE, y = FALSE) {
+    axisTheme <- ggplot2::theme()
+    if (x)
+        axisTheme <- axisTheme + ggplot2::theme(axis.line.x = ggplot2::element_blank(),
+                                                axis.ticks.x = ggplot2::element_blank())
+    if (y)
+        axisTheme <- axisTheme + ggplot2::theme(axis.line.y = ggplot2::element_blank(),
+                                                axis.ticks.y = ggplot2::element_blank())
+    return(axisTheme)
+}
+
 vijHelpMessage = function(self, htmlText) {
     # Hide other results
     for (resName in names(self$results)) {

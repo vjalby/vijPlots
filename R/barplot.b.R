@@ -315,6 +315,10 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else if (!self$options$horizontal  && self$options$yAxisRangeType == "auto")
                     expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
             }
+            # Bars start at the baseline when the category axis is hidden
+            categoryAxisHidden <- if (self$options$horizontal) self$options$yHideAxis else self$options$xHideAxis
+            if (categoryAxisHidden)
+                expand_arg <- ggplot2::expansion(mult = c(0, 0.1))
 
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
@@ -342,6 +346,9 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
+
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
 
             # Titles & Labels
             defaults <- list(y = yLab, x = categoryVar, legend = groupVar)

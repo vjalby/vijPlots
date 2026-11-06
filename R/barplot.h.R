@@ -68,7 +68,9 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xTicks = 0,
             yTicks = 0,
             xGridLines = FALSE,
-            yGridLines = FALSE, ...) {
+            yGridLines = FALSE,
+            xHideAxis = FALSE,
+            yHideAxis = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -563,6 +565,14 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "yGridLines",
                 yGridLines,
                 default=FALSE)
+            private$..xHideAxis <- jmvcore::OptionBool$new(
+                "xHideAxis",
+                xHideAxis,
+                default=FALSE)
+            private$..yHideAxis <- jmvcore::OptionBool$new(
+                "yHideAxis",
+                yHideAxis,
+                default=FALSE)
 
             self$.addOption(private$..rows)
             self$.addOption(private$..columns)
@@ -627,6 +637,8 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yTicks)
             self$.addOption(private$..xGridLines)
             self$.addOption(private$..yGridLines)
+            self$.addOption(private$..xHideAxis)
+            self$.addOption(private$..yHideAxis)
         }),
     active = list(
         rows = function() private$..rows$value,
@@ -691,7 +703,9 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xTicks = function() private$..xTicks$value,
         yTicks = function() private$..yTicks$value,
         xGridLines = function() private$..xGridLines$value,
-        yGridLines = function() private$..yGridLines$value),
+        yGridLines = function() private$..yGridLines$value,
+        xHideAxis = function() private$..xHideAxis$value,
+        yHideAxis = function() private$..yHideAxis$value),
     private = list(
         ..rows = NA,
         ..columns = NA,
@@ -755,7 +769,9 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xTicks = NA,
         ..yTicks = NA,
         ..xGridLines = NA,
-        ..yGridLines = NA)
+        ..yGridLines = NA,
+        ..xHideAxis = NA,
+        ..yHideAxis = NA)
 )
 
 barplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -913,6 +929,8 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yTicks .
 #' @param xGridLines .
 #' @param yGridLines .
+#' @param xHideAxis .
+#' @param yHideAxis .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$frequencies} \tab \tab \tab \tab \tab a table \cr
@@ -990,7 +1008,9 @@ barplot <- function(
     xTicks = 0,
     yTicks = 0,
     xGridLines = FALSE,
-    yGridLines = FALSE) {
+    yGridLines = FALSE,
+    xHideAxis = FALSE,
+    yHideAxis = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("barplot requires jmvcore to be installed (restart may be required)")
@@ -1074,7 +1094,9 @@ barplot <- function(
         xTicks = xTicks,
         yTicks = yTicks,
         xGridLines = xGridLines,
-        yGridLines = yGridLines)
+        yGridLines = yGridLines,
+        xHideAxis = xHideAxis,
+        yHideAxis = yHideAxis)
 
     analysis <- barplotClass$new(
         options = options,

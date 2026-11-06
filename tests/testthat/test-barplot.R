@@ -71,6 +71,43 @@ test_that("barplot: horizontal", {
     expect_plot_snapshot("barplot-horizontal", testPlot)
 })
 
+test_that("barplot: hidden y axis", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = NULL,
+        facet = NULL,
+        counts = NULL,
+        yHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("barplot-hideAxis-y", testPlot)
+})
+
+test_that("barplot: hidden category axis, bars start at the baseline", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = NULL,
+        facet = NULL,
+        counts = NULL,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("barplot-hideAxis-x", testPlot)
+})
+
+test_that("barplot: hidden x axis follows the displayed axis when horizontal", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = NULL,
+        facet = NULL,
+        counts = NULL,
+        horizontal = TRUE,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("barplot-hideAxis-x-horizontal", testPlot)
+})
+
 test_that("barplot: percent within group", {
     testPlot <- vijPlots::barplot(
         data = testData,

@@ -538,8 +538,9 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   the panel; it now stays blank there. Checked on the 4 jamovi themes (default, minimal, hadley,
   iheartspss); `test-utils.R` covers it with `calc_element()`. jmvcore's `theme_*()` return a list
   (theme + scales): add it to a plot, as `.plot()` does, not to a theme (`theme + list` adds nothing).
-- **Expansion** (analyses whose marks start at 0; `boxplot`, `raincloud` and `linechart` have the
-  hiding alone, nothing there starts at 0): when the *category* axis is hidden (`xHideAxis` vertical,
+- **Expansion** (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `lollipop`: a discrete
+  category axis, no vertical grid lines under the bars; the other analyses have the hiding alone,
+  see `histogram`/`areachart` below): when the *category* axis is hidden (`xHideAxis` vertical,
   `yHideAxis` horizontal), the value axis gets no lower expansion, so the bars start at the baseline:
   `expansion(mult = c(expandLow, expandHigh))`, `expandLow` 0 or 0.05, `expandHigh` 0.1 with labels
   at the top (never when stacked) else 0.05. **Automatic range only:** a manual range keeps
@@ -550,11 +551,11 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   and the lowest element would touch its edge. The lower margin of negative bars' labels (`expandLow =
   expandHigh`) still comes first. All-negative bars (baseline at the top) are not handled: the 5%
   margin stays. A numeric test (`ggplot_build()` value range) covers each case.
-- **`histogram`** (no horizontal mode): nothing is ever drawn below 0, so `xHideAxis` alone sets the
-  lower expansion of y to 0, automatic y range only. Unlike the others, a manual y range still gets
-  `expansion(mult = c(0.05, 0.1))` with the summary lines' labels: that was the behaviour before the
-  option, kept as is. With the normal curve alone (no bins, lines or density), nothing reaches 0: the
-  panel then starts at the curve's lowest point, accepted (rare, no baseline to reach anyway).
+- **`histogram` keeps its lower margin, like `areachart` (user's decision, 2026-11-07):** its x-axis
+  is continuous, and with no margin the bins hid the vertical grid lines down to the panel's edge.
+  A no-margin rule (`xHideAxis`, automatic y range) was applied, then removed; the expansion code is
+  back to what it was before the option. A test checks that hiding the axes leaves the y range
+  unchanged, with and without the summary line's label.
 - **`lollipop`:** `baseline` = category axis hidden, automatic range, not "Min-Max" (its segments go
   from the minimum to the maximum, not from 0), and every `.Y` **above** 0 (`!any(.Y <= 0)`): a dot
   on 0 (frequent in "Values" mode) would lie on the panel's edge, cut in half, or with `clip = "off"`
@@ -563,10 +564,11 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   close to 0 can still be cut by the bottom edge, as without the option (5% margin): not handled.
   Numeric test as for `barchart`.
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
-- **`areachart`** (no horizontal mode): no lower y expansion when `xHideAxis`, automatic y range, and
-  no value below 0 (`plotData[[rlang::as_string(depVar)]]`, not a symbol index), in every position
-  (stack, fill, identity). A 0 value puts the area's upper outline on the panel's edge, half cut
-  (accepted: no dot here, unlike `lollipop`). Numeric test as for `barchart`.
+- **`areachart` keeps its lower margin (user's decision, 2026-11-07):** with no margin, the areas
+  hid the vertical grid lines down to the panel's edge, whereas over a 5% margin they show under
+  the areas, as on `linechart`. A no-margin rule (x-axis hidden, automatic range, no value below 0)
+  was applied, then removed; 2% was also shown and not kept. A test checks that hiding the axes
+  leaves the y range unchanged, in the 3 positions.
 - **Not yet extended:** `scatterplot` (first decide how it goes with its `plotBorder` option, which
   already replaces the axis lines by a frame) and `qqplot`; hiding only would do, as in `linechart`
   (first classed "little use", 2026-11-07, then added: the axis text stays readable). `mosaic` keeps

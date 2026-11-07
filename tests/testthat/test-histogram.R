@@ -227,7 +227,7 @@ test_that("histogram: hidden axes", {
     expect_plot_snapshot("histogram-hideaxis", testPlot)
 })
 
-test_that("histogram: hidden x-axis, the bins start at the baseline (automatic y range only)", {
+test_that("histogram: hidden axes, the lower margin is kept (the vertical grid lines show under the bins)", {
     yRange <- function(...) {
         r <- vijPlots::histogram(data = testData, aVar = "Petal.Width", group = NULL, facet = NULL, ...)
         grDevices::pdf(NULL)
@@ -235,12 +235,7 @@ test_that("histogram: hidden x-axis, the bins start at the baseline (automatic y
         print(r$plot)
         ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]]$y$continuous_range
     }
-    expect_equal(yRange(xHideAxis = TRUE)[1], 0)
-    expect_equal(yRange(xHideAxis = TRUE, meanLine = TRUE, summaryLineLabel = TRUE)[1], 0)
-    # y-axis hidden, or nothing hidden: the usual 5% margin
-    expect_lt(yRange(yHideAxis = TRUE)[1], 0)
-    expect_lt(yRange()[1], 0)
-    # a manual range is left as is
-    manual <- list(yAxisRangeType = "manual", yAxisRangeMin = 0, yAxisRangeMax = 20)
-    expect_equal(do.call(yRange, c(list(xHideAxis = TRUE), manual)), do.call(yRange, manual))
+    expect_equal(yRange(xHideAxis = TRUE, yHideAxis = TRUE), yRange())
+    expect_equal(yRange(xHideAxis = TRUE, meanLine = TRUE, summaryLineLabel = TRUE),
+                 yRange(meanLine = TRUE, summaryLineLabel = TRUE))
 })

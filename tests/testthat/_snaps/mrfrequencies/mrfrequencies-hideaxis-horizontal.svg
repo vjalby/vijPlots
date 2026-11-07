@@ -19,20 +19,25 @@
 </defs>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <rect x='0.000000000000064' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.55; stroke: none;' />
-<rect x='110.90' y='14.94' width='594.15' height='506.09' style='stroke-width: 1.55; stroke: none;' />
-<rect x='137.91' y='394.51' width='540.14' height='108.45' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<rect x='137.91' y='274.01' width='415.49' height='108.45' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<rect x='137.91' y='153.52' width='249.29' height='108.45' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<rect x='137.91' y='33.02' width='207.75' height='108.45' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
-<polyline points='110.90,521.03 110.90,14.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<text x='70.59' y='452.86' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='27.35px' lengthAdjust='spacingAndGlyphs'>VISA</text>
-<text x='70.59' y='332.36' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='60.03px' lengthAdjust='spacingAndGlyphs'>Mastercard</text>
-<text x='70.59' y='211.87' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='62.70px' lengthAdjust='spacingAndGlyphs'>Diners Club</text>
-<text x='70.59' y='91.37' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Amex</text>
-<polyline points='106.92,448.73 110.90,448.73 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='106.92,328.24 110.90,328.24 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='106.92,207.74 110.90,207.74 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='106.92,87.24 110.90,87.24 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<rect x='110.90' y='14.94' width='594.15' height='502.10' style='stroke-width: 1.55; stroke: none;' />
+<rect x='137.91' y='391.52' width='540.14' height='107.59' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='137.91' y='271.97' width='415.49' height='107.59' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='137.91' y='152.42' width='249.29' height='107.59' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<rect x='137.91' y='32.88' width='207.75' height='107.59' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A6C4F1;' />
+<polyline points='110.90,517.04 110.90,14.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='70.59' y='449.45' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='27.35px' lengthAdjust='spacingAndGlyphs'>VISA</text>
+<text x='70.59' y='329.90' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='60.03px' lengthAdjust='spacingAndGlyphs'>Mastercard</text>
+<text x='70.59' y='210.35' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='62.70px' lengthAdjust='spacingAndGlyphs'>Diners Club</text>
+<text x='70.59' y='90.80' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Amex</text>
+<polyline points='106.92,445.32 110.90,445.32 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='106.92,325.77 110.90,325.77 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='106.92,206.22 110.90,206.22 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='106.92,86.67 110.90,86.67 ' style='stroke-width: 1.55; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='137.91,521.03 137.91,517.04 ' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt;' />
+<polyline points='279.18,521.03 279.18,517.04 ' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt;' />
+<polyline points='420.44,521.03 420.44,517.04 ' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt;' />
+<polyline points='561.71,521.03 561.71,517.04 ' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt;' />
+<polyline points='702.98,521.03 702.98,517.04 ' style='stroke-width: 1.55; stroke: none; stroke-linecap: butt;' />
 <text x='137.91' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='19.75px' lengthAdjust='spacingAndGlyphs'>0 %</text>
 <text x='279.18' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='26.42px' lengthAdjust='spacingAndGlyphs'>20 %</text>
 <text x='420.44' y='535.51' text-anchor='middle' style='font-size: 12.00px; fill: #333333; font-family: sans;' textLength='26.42px' lengthAdjust='spacingAndGlyphs'>40 %</text>

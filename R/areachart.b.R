@@ -161,6 +161,9 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
+
             if (self$options$position == "fill")
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
             else
@@ -195,10 +198,15 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (timeVarIsNumeric && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
             }
+            # lower expansion is set to 0 when the x-axis is hidden and no value is below 0 (the areas start
+            # at the baseline), with an automatic y range only
+            baseline <- self$options$xHideAxis && self$options$yAxisRangeType == "auto" &&
+                            !any(plotData[[rlang::as_string(depVar)]] < 0, na.rm = TRUE)
+            expand_arg <- if (baseline) ggplot2::expansion(mult = c(0, 0.05)) else ggplot2::waiver()
             if (self$options$yTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct)
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
             } else {
-                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct)
+                plot <- plot  + ggplot2::scale_y_continuous(labels = labelFnct, expand = expand_arg)
             }
 
             # Axis ranges

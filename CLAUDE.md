@@ -522,7 +522,7 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `lollipop`, `boxplot`, `raincloud`, 2026-11-07)
+### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `lollipop`, `areachart`, `boxplot`, `raincloud`, 2026-11-07)
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -563,8 +563,11 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   close to 0 can still be cut by the bottom edge, as without the option (5% margin): not handled.
   Numeric test as for `barchart`.
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
-- **Not yet extended** (survey of 2026-11-07): `areachart` needs a rule for the baseline (values can be
-  negative). Little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global
+- **`areachart`** (no horizontal mode): no lower y expansion when `xHideAxis`, automatic y range, and
+  no value below 0 (`plotData[[rlang::as_string(depVar)]]`, not a symbol index), in every position
+  (stack, fill, identity). A 0 value puts the area's upper outline on the panel's edge, half cut
+  (accepted: no dot here, unlike `lollipop`). Numeric test as for `barchart`.
+- **Not yet extended** (survey of 2026-11-07): little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global
   `hideAxes` (both axes, plus no expansion): replacing it by the per-axis options would drop the
   setting from old `.omv` files.
 

@@ -2883,6 +2883,8 @@ msgstr "Masquer les % inférieurs à 5 %"
 msgid "Hide axes"
 msgstr "Masquer les axes"
 
+#: areachart/options/xHideAxis.title
+#: areachart/options/yHideAxis.title
 #: barchart/options/xHideAxis.title
 #: barchart/options/yHideAxis.title
 #: barplot/options/xHideAxis.title

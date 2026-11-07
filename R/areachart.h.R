@@ -55,7 +55,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xTicks = 0,
             yTicks = 0,
             xGridLines = FALSE,
-            yGridLines = FALSE, ...) {
+            yGridLines = FALSE,
+            xHideAxis = FALSE,
+            yHideAxis = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -482,6 +484,14 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "yGridLines",
                 yGridLines,
                 default=FALSE)
+            private$..xHideAxis <- jmvcore::OptionBool$new(
+                "xHideAxis",
+                xHideAxis,
+                default=FALSE)
+            private$..yHideAxis <- jmvcore::OptionBool$new(
+                "yHideAxis",
+                yHideAxis,
+                default=FALSE)
 
             self$.addOption(private$..mode)
             self$.addOption(private$..timeVar)
@@ -533,6 +543,8 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yTicks)
             self$.addOption(private$..xGridLines)
             self$.addOption(private$..yGridLines)
+            self$.addOption(private$..xHideAxis)
+            self$.addOption(private$..yHideAxis)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -584,7 +596,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xTicks = function() private$..xTicks$value,
         yTicks = function() private$..yTicks$value,
         xGridLines = function() private$..xGridLines$value,
-        yGridLines = function() private$..yGridLines$value),
+        yGridLines = function() private$..yGridLines$value,
+        xHideAxis = function() private$..xHideAxis$value,
+        yHideAxis = function() private$..yHideAxis$value),
     private = list(
         ..mode = NA,
         ..timeVar = NA,
@@ -635,7 +649,9 @@ areachartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xTicks = NA,
         ..yTicks = NA,
         ..xGridLines = NA,
-        ..yGridLines = NA)
+        ..yGridLines = NA,
+        ..xHideAxis = NA,
+        ..yHideAxis = NA)
 )
 
 areachartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -733,6 +749,8 @@ areachartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yTicks .
 #' @param xGridLines .
 #' @param yGridLines .
+#' @param xHideAxis .
+#' @param yHideAxis .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -790,7 +808,9 @@ areachart <- function(
     xTicks = 0,
     yTicks = 0,
     xGridLines = FALSE,
-    yGridLines = FALSE) {
+    yGridLines = FALSE,
+    xHideAxis = FALSE,
+    yHideAxis = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("areachart requires jmvcore to be installed (restart may be required)")
@@ -861,7 +881,9 @@ areachart <- function(
         xTicks = xTicks,
         yTicks = yTicks,
         xGridLines = xGridLines,
-        yGridLines = yGridLines)
+        yGridLines = yGridLines,
+        xHideAxis = xHideAxis,
+        yHideAxis = yHideAxis)
 
     analysis <- areachartClass$new(
         options = options,

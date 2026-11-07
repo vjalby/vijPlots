@@ -203,6 +203,44 @@ test_that("areachart: grid lines, date axis", {
     expect_plot_snapshot("areachart-gridlines-date", testPlot)
 })
 
+test_that("areachart: hidden axes, date axis", {
+    testPlot <- vijPlots::areachart(
+        mode = "severalVariables",
+        data = testData,
+        timeVar = NULL,
+        timeVar1 = "dateUS1",
+        vars = c("Var3", "Var4"),
+        var = NULL,
+        group = NULL,
+        isDate = TRUE,
+        position = "stack",
+        xHideAxis = TRUE,
+        yHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("areachart-hideaxis-date", testPlot)
+})
+
+test_that("areachart: hidden x-axis, the areas start at the baseline unless a value is below 0", {
+    yRange <- function(y, ...) {
+        r <- vijPlots::areachart(mode = "oneVariable", data = data.frame(t = c(1, 2, 3, 1, 2, 3), g = factor(rep(c("a", "b"), each = 3)), y = y),
+                                 timeVar = "t", timeVar1 = NULL, vars = NULL, var = "y", group = "g", ...)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]]$y$continuous_range
+    }
+    positive <- c(1, 3, 2, 2, 1, 4)
+    for (position in c("stack", "fill", "identity"))
+        expect_equal(yRange(positive, position = position, xHideAxis = TRUE)[1], 0)
+    # y-axis hidden, nothing hidden, a value below 0: the usual 5% margin
+    expect_lt(yRange(positive, yHideAxis = TRUE)[1], 0)
+    expect_lt(yRange(positive)[1], 0)
+    expect_lt(yRange(c(1, -3, 2, 2, 1, 4), position = "identity", xHideAxis = TRUE)[1], -3)
+    # a manual range is left as is
+    manual <- list(yAxisRangeType = "manual", yAxisRangeMin = 0, yAxisRangeMax = 10)
+    expect_equal(do.call(yRange, c(list(positive, xHideAxis = TRUE), manual)), do.call(yRange, c(list(positive), manual)))
+})
+
 test_that("areachart: missing group labelled (Missing) and drawn in gray (ignoreNA = FALSE)", {
     naData <- testData
     naData$Group[1:3] <- NA

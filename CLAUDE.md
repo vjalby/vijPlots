@@ -522,7 +522,7 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `lollipop`, `areachart`, `boxplot`, `raincloud`, 2026-11-07)
+### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `lollipop`, `areachart`, `boxplot`, `raincloud`, `linechart`, 2026-11-07)
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -538,8 +538,8 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   the panel; it now stays blank there. Checked on the 4 jamovi themes (default, minimal, hadley,
   iheartspss); `test-utils.R` covers it with `calc_element()`. jmvcore's `theme_*()` return a list
   (theme + scales): add it to a plot, as `.plot()` does, not to a theme (`theme + list` adds nothing).
-- **Expansion** (bar analyses only; `boxplot` and `raincloud` have the hiding alone, their
-  distributions don't start at 0): when the *category* axis is hidden (`xHideAxis` vertical,
+- **Expansion** (analyses whose marks start at 0; `boxplot`, `raincloud` and `linechart` have the
+  hiding alone, nothing there starts at 0): when the *category* axis is hidden (`xHideAxis` vertical,
   `yHideAxis` horizontal), the value axis gets no lower expansion, so the bars start at the baseline:
   `expansion(mult = c(expandLow, expandHigh))`, `expandLow` 0 or 0.05, `expandHigh` 0.1 with labels
   at the top (never when stacked) else 0.05. **Automatic range only:** a manual range keeps
@@ -567,9 +567,11 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   no value below 0 (`plotData[[rlang::as_string(depVar)]]`, not a symbol index), in every position
   (stack, fill, identity). A 0 value puts the area's upper outline on the panel's edge, half cut
   (accepted: no dot here, unlike `lollipop`). Numeric test as for `barchart`.
-- **Not yet extended** (survey of 2026-11-07): little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global
-  `hideAxes` (both axes, plus no expansion): replacing it by the per-axis options would drop the
-  setting from old `.omv` files.
+- **Not yet extended:** `scatterplot` (first decide how it goes with its `plotBorder` option, which
+  already replaces the axis lines by a frame) and `qqplot`; hiding only would do, as in `linechart`
+  (first classed "little use", 2026-11-07, then added: the axis text stays readable). `mosaic` keeps
+  its own global `hideAxes` (both axes, plus no expansion): replacing it by the per-axis options would
+  drop the setting from old `.omv` files.
 
 ## Testing
 

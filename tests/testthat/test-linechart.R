@@ -192,6 +192,18 @@ test_that("linechart: grid lines, categorical axis", {
     expect_plot_snapshot("linechart-gridlines-categorical", testPlot)
 })
 
+test_that("linechart: hidden axes, categorical axis", {
+    testPlot <- vijPlots::linechart(
+        data = testData,
+        timeVar = "Month2",
+        vars = "VarA",
+        group = "Group",
+        xHideAxis = TRUE,
+        yHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("linechart-hideaxis-categorical", testPlot)
+})
+
 test_that("linechart: missing group labelled (Missing) and drawn (ignoreNA = FALSE)", {
     naData <- testData
     naData$Group[1:3] <- NA

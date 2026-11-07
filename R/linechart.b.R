@@ -153,6 +153,9 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
+
             if (length(depVars) > 1 ){
                 plot <- plot + ggplot2::guides(color = ggplot2::guide_legend(order = 1), linetype = ggplot2::guide_legend(order = 2))
                 yLab <- .("Values")

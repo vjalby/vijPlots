@@ -95,6 +95,21 @@ test_that("barplot: hidden category axis, bars start at the baseline", {
     expect_plot_snapshot("barplot-hideAxis-x", testPlot)
 })
 
+test_that("barplot: hidden category axis keeps a manual value range", {
+    testPlot <- vijPlots::barplot(
+        data = testData,
+        rows = "species",
+        columns = NULL,
+        facet = NULL,
+        counts = NULL,
+        xHideAxis = TRUE,
+        yAxisRangeType = "manual",
+        yAxisRangeMin = 0,
+        yAxisRangeMax = 200
+    )$plot
+    expect_plot_snapshot("barplot-hideAxis-x-manual", testPlot)
+})
+
 test_that("barplot: hidden x axis follows the displayed axis when horizontal", {
     testPlot <- vijPlots::barplot(
         data = testData,

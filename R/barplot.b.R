@@ -308,17 +308,14 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Ticks & Axis Expansion ####
-            expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if (self$options$showLabels && labelPosition == "top") {   # effective position: middle when stacked
-                if (self$options$horizontal  && self$options$xAxisRangeType == "auto")
-                    expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
-                else if (!self$options$horizontal  && self$options$yAxisRangeType == "auto")
-                    expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
-            }
-            # Bars start at the baseline when the category axis is hidden
             categoryAxisHidden <- if (self$options$horizontal) self$options$yHideAxis else self$options$xHideAxis
-            if (categoryAxisHidden)
-                expand_arg <- ggplot2::expansion(mult = c(0, 0.1))
+            # lower expansion is set to 0 when the category axis is hidden
+            expandLow <- if (categoryAxisHidden) 0 else 0.05
+            # upper expansion is increased when labels are at top
+            expandHigh <- if (self$options$showLabels && labelPosition == "top") 0.1 else 0.05
+            # Value axis expansion is changed with automatic range only
+            valueRangeAuto <- if (self$options$horizontal) self$options$xAxisRangeType == "auto" else self$options$yAxisRangeType == "auto"
+            expand_arg <- if (valueRangeAuto) ggplot2::expansion(mult = c(expandLow, expandHigh)) else ggplot2::waiver()
 
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)

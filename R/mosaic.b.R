@@ -294,10 +294,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Hide axes
             if (self$options$hideAxes) {
-                plot <- plot + ggplot2::theme(
-                    axis.line = ggplot2::element_blank(),
-                    axis.ticks = ggplot2::element_blank()
-                )
+                plot <- plot + vijHideAxis(x = TRUE, y = TRUE)
             }
             if (self$options$yAxis == "none") {
                 if (self$options$horizontal)

@@ -522,11 +522,12 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (every visible analysis with axes except `mosaic`, 2026-11-07)
+### Hide axis (every visible analysis with axes, 2026-11-07)
 
 `barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `lollipop` (hiding + baseline expansion);
-`histogram`, `areachart`, `boxplot`, `raincloud`, `linechart`, `scatterplot`, `qqplot` (hiding only).
-Not concerned: `piechart` (no axes), `likertplot` (its own `ggstats` theme).
+`histogram`, `areachart`, `boxplot`, `raincloud`, `linechart`, `scatterplot`, `qqplot` (hiding only);
+`mosaic` through its own global `hideAxes` (see below). Not concerned: `piechart` (no axes),
+`likertplot` (its own `ggstats` theme).
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -579,8 +580,12 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   stays, the hidden axis loses its ticks, its text stays (snapshot `scatterplot-hideaxis-border`).
 - `linechart`, `scatterplot` and `qqplot` were first classed "little use" (2026-11-07), then added:
   the axis text stays readable.
-- **`mosaic` keeps its own global `hideAxes`** (both axes, plus no expansion): replacing it by the
-  per-axis options would drop the setting from old `.omv` files. Undecided.
+- **`mosaic` keeps its own global `hideAxes` (user's decision, 2026-11-07)**, in its main options,
+  not the Axes panel: it hides both axes *and* sets the expansion to 0 on both, so that the tiles fill
+  the panel, a whole look with no meaning per axis (the tiles touch all four edges; no grid lines
+  there). Replacing it by `xHideAxis`/`yHideAxis` would also drop the setting from old `.omv` files.
+  It now goes through `vijHideAxis(x = TRUE, y = TRUE)` (it had blank ticks: the category labels
+  were ~4 px closer to the tiles); its panel is now that of `mosaic-basic`.
 
 ## Testing
 

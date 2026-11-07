@@ -178,32 +178,29 @@ test_that("lollipop: hidden value axis (horizontal)", {
     expect_plot_snapshot("lollipop-hideaxis-horizontal", testPlot)
 })
 
-test_that("lollipop: hidden category axis, no lower margin only when the segments start at 0", {
-    # Value axis range (data units) and clipping of the built plot
-    built <- function(y, horizontal = FALSE, ...) {
+test_that("lollipop: hidden category axis, no lower margin only when every value is above 0", {
+    # Value axis range (data units) of the built plot
+    valueRange <- function(y, horizontal = FALSE, ...) {
         r <- vijPlots::lollipop(data = data.frame(g = factor(c("A", "B", "C")), y = y), aVar = "y", group = "g",
                                 facet = NULL, horizontal = horizontal, ...)
         grDevices::pdf(NULL)
         on.exit(grDevices::dev.off())
         print(r$plot)
-        p <- ggplot2::last_plot()
-        list(range = ggplot2::ggplot_build(p)$layout$panel_params[[1]][[if (horizontal) "x" else "y"]]$continuous_range,
-             clip = p$coordinates$clip)
+        ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]][[if (horizontal) "x" else "y"]]$continuous_range
     }
     positive <- c(1, 2, 3)
-    # category axis hidden (x when vertical, y when horizontal): from 0, the dots on 0 not clipped
-    v <- built(positive, xHideAxis = TRUE)
-    expect_equal(v$range[1], 0)
-    expect_equal(v$clip, "off")
-    expect_equal(built(positive, horizontal = TRUE, yHideAxis = TRUE)$range[1], 0)
-    expect_equal(built(c(0, 2, 3), xHideAxis = TRUE, yaxis = "identity")$range[1], 0)
-    # value axis hidden, nothing hidden, min-max ranges, a negative value: the usual 5% margin
-    expect_lt(built(positive, yHideAxis = TRUE)$range[1], 0)
-    expect_equal(built(positive)$clip, "on")
-    expect_lt(built(positive, xHideAxis = TRUE, yaxis = "minmax")$range[1], 1)
-    expect_lt(built(c(1, -2, 3), xHideAxis = TRUE)$range[1], -2)
+    # category axis hidden (x when vertical, y when horizontal): from 0
+    expect_equal(valueRange(positive, xHideAxis = TRUE)[1], 0)
+    expect_equal(valueRange(positive, horizontal = TRUE, yHideAxis = TRUE)[1], 0)
+    expect_equal(valueRange(positive, xHideAxis = TRUE, yaxis = "identity")[1], 0)
+    # value axis hidden, min-max ranges, a dot on 0 (it would lie over its category's label),
+    # a negative value: the usual 5% margin
+    expect_lt(valueRange(positive, yHideAxis = TRUE)[1], 0)
+    expect_lt(valueRange(positive, xHideAxis = TRUE, yaxis = "minmax")[1], 1)
+    expect_lt(valueRange(c(0, 2, 3), xHideAxis = TRUE, yaxis = "identity")[1], 0)
+    expect_lt(valueRange(c(1, -2, 3), xHideAxis = TRUE)[1], -2)
     # a manual range is left as is
     manual <- list(yAxisRangeType = "manual", yAxisRangeMin = 0, yAxisRangeMax = 5)
-    expect_equal(do.call(built, c(list(positive, xHideAxis = TRUE), manual))$range,
-                 do.call(built, c(list(positive), manual))$range)
+    expect_equal(do.call(valueRange, c(list(positive, xHideAxis = TRUE), manual)),
+                 do.call(valueRange, c(list(positive), manual)))
 })

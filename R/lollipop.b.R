@@ -119,22 +119,21 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Bars start at the baseline when the category axis is hidden: segments from 0 (not the min-max
-            # ranges), nothing below 0, automatic range only. The dots on 0 then lie on the panel's edge: not clipped
+            # ranges), every value above 0 (a dot on 0 would lie on the panel's edge, over its category's
+            # label), automatic range only
             categoryAxisHidden <- if (self$options$horizontal) self$options$yHideAxis else self$options$xHideAxis
             valueRangeAuto <- if (self$options$horizontal) self$options$xAxisRangeType == "auto" else self$options$yAxisRangeType == "auto"
-            baseline <- categoryAxisHidden && valueRangeAuto && self$options$yaxis != "minmax" && !any(plotData$.Y < 0, na.rm = TRUE)
+            baseline <- categoryAxisHidden && valueRangeAuto && self$options$yaxis != "minmax" && !any(plotData$.Y <= 0, na.rm = TRUE)
 
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
                     plot <- plot + ggplot2::coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
                 } else {
-                    plot <- plot + ggplot2::coord_flip(clip = if (baseline) "off" else "on")
+                    plot <- plot + ggplot2::coord_flip()
                 }
             } else if (self$options$yAxisRangeType == "manual") { # Vertical and manual
                 plot <- plot + ggplot2::coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
-            } else if (baseline) {
-                plot <- plot + ggplot2::coord_cartesian(clip = "off")
             }
 
             # Ticks & expansion (no lower expansion at the baseline)

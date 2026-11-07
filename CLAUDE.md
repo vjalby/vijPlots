@@ -556,10 +556,12 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   option, kept as is. With the normal curve alone (no bins, lines or density), nothing reaches 0: the
   panel then starts at the curve's lowest point, accepted (rare, no baseline to reach anyway).
 - **`lollipop`:** `baseline` = category axis hidden, automatic range, not "Min-Max" (its segments go
-  from the minimum to the maximum, not from 0), and no `.Y` below 0. Only then: no lower expansion
-  and `clip = "off"`, so that a dot on 0 (frequent in "Values" mode) isn't cut in half by the panel's
-  edge. Clip is switched off only in that case: always switching it off changes the SVG of every
-  snapshot. Numeric test as for `barchart`, plus the coord's `clip`.
+  from the minimum to the maximum, not from 0), and every `.Y` **above** 0 (`!any(.Y <= 0)`): a dot
+  on 0 (frequent in "Values" mode) would lie on the panel's edge, cut in half, or with `clip = "off"`
+  over its category's label (seen by the user with `dotSize = 20`, 2026-11-07). The first version
+  switched clipping off instead; no longer needed, the coords are back to what they were. A big dot
+  close to 0 can still be cut by the bottom edge, as without the option (5% margin): not handled.
+  Numeric test as for `barchart`.
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
 - **Not yet extended** (survey of 2026-11-07): `areachart` needs a rule for the baseline (values can be
   negative). Little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global

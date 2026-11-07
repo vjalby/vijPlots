@@ -151,7 +151,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                 oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
                 plot <- plot + ggplot2::geom_col(fill = oneColorOfPalette, color = borderColor)
             } else {
-                plot <- plot + ggplot2::geom_col(ggplot2::aes(fill = Option), color = borderColor) + ggplot2::guides(fill = "none")
+                plot <- plot + ggplot2::aes(fill = Option) + ggplot2::geom_col(color = borderColor) + ggplot2::guides(fill = "none")
             }
 
             if (self$options$labelPosition == "top")
@@ -179,7 +179,7 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             if (self$options$showLabels) {
                 if (self$options$textColor == "auto" && self$options$labelPosition == "middle" && !self$options$singleColor) {
-                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = Option, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                              position = ggplot2::position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
                              fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 } else {

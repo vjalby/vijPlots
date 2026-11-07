@@ -209,8 +209,8 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xLab <- optionName
                 gLab <- groupVar
             }
-            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = .data[[".COUNT"]], label = valueLabel(.data[[".COUNT"]])))
-            plot <- plot + ggplot2::geom_col(ggplot2::aes(fill=!!zVarName), position = bartype, color = borderColor)
+            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x=!!xVarName, y = .data[[".COUNT"]], fill = !!zVarName, label = valueLabel(.data[[".COUNT"]])))
+            plot <- plot + ggplot2::geom_col(position = bartype, color = borderColor)
 
             #### Labels ####
             if( self$options$showLabels ) {
@@ -244,11 +244,11 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
                 if (self$options$textColor == "auto" && !labelTop) { # using hex_bw
-                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = .data[[".COUNT"]] / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(y = .data[[".COUNT"]] / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
                                                         fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 } else {
-                    plot <- plot + ggplot2::geom_text(ggplot2::aes(fill = !!zVarName, y = .data[[".COUNT"]] / vfactor), color = textColor,
+                    plot <- plot + ggplot2::geom_text(ggplot2::aes(y = .data[[".COUNT"]] / vfactor), color = textColor,
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
                                                         fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 }

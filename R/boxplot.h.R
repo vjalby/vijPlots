@@ -64,7 +64,9 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xTicks = 0,
             yTicks = 0,
             xGridLines = FALSE,
-            yGridLines = FALSE, ...) {
+            yGridLines = FALSE,
+            xHideAxis = FALSE,
+            yHideAxis = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -526,6 +528,14 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "yGridLines",
                 yGridLines,
                 default=FALSE)
+            private$..xHideAxis <- jmvcore::OptionBool$new(
+                "xHideAxis",
+                xHideAxis,
+                default=FALSE)
+            private$..yHideAxis <- jmvcore::OptionBool$new(
+                "yHideAxis",
+                yHideAxis,
+                default=FALSE)
 
             self$.addOption(private$..vars)
             self$.addOption(private$..group)
@@ -586,6 +596,8 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yTicks)
             self$.addOption(private$..xGridLines)
             self$.addOption(private$..yGridLines)
+            self$.addOption(private$..xHideAxis)
+            self$.addOption(private$..yHideAxis)
         }),
     active = list(
         vars = function() private$..vars$value,
@@ -646,7 +658,9 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xTicks = function() private$..xTicks$value,
         yTicks = function() private$..yTicks$value,
         xGridLines = function() private$..xGridLines$value,
-        yGridLines = function() private$..yGridLines$value),
+        yGridLines = function() private$..yGridLines$value,
+        xHideAxis = function() private$..xHideAxis$value,
+        yHideAxis = function() private$..yHideAxis$value),
     private = list(
         ..vars = NA,
         ..group = NA,
@@ -706,7 +720,9 @@ boxplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xTicks = NA,
         ..yTicks = NA,
         ..xGridLines = NA,
-        ..yGridLines = NA)
+        ..yGridLines = NA,
+        ..xHideAxis = NA,
+        ..yHideAxis = NA)
 )
 
 boxplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -813,6 +829,8 @@ boxplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yTicks .
 #' @param xGridLines .
 #' @param yGridLines .
+#' @param xHideAxis .
+#' @param yHideAxis .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -879,7 +897,9 @@ boxplot <- function(
     xTicks = 0,
     yTicks = 0,
     xGridLines = FALSE,
-    yGridLines = FALSE) {
+    yGridLines = FALSE,
+    xHideAxis = FALSE,
+    yHideAxis = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("boxplot requires jmvcore to be installed (restart may be required)")
@@ -958,7 +978,9 @@ boxplot <- function(
         xTicks = xTicks,
         yTicks = yTicks,
         xGridLines = xGridLines,
-        yGridLines = yGridLines)
+        yGridLines = yGridLines,
+        xHideAxis = xHideAxis,
+        yHideAxis = yHideAxis)
 
     analysis <- boxplotClass$new(
         options = options,

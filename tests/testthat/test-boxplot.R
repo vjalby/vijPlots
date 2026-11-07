@@ -196,6 +196,31 @@ test_that("boxplot: grid lines (horizontal)", {
     expect_plot_snapshot("boxplot-gridlines-horizontal", testPlot)
 })
 
+test_that("boxplot: hidden category axis (vertical)", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = NULL,
+        facet = NULL,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("boxplot-hideaxis-vertical", testPlot)
+})
+
+test_that("boxplot: hidden value axis (horizontal)", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width"),
+        group = "Species",
+        label = NULL,
+        facet = NULL,
+        horizontal = TRUE,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("boxplot-hideaxis-horizontal", testPlot)
+})
+
 test_that("boxplot: missing group level kept (ignoreNA = FALSE)", {
     testPlot <- vijPlots::boxplot(
         data = testData,

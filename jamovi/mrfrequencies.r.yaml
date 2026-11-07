@@ -96,5 +96,7 @@ items:
         - yTicks
         - xGridLines
         - yGridLines
+        - xHideAxis
+        - yHideAxis
 
 ...

@@ -2885,6 +2885,10 @@ msgstr "Masquer les axes"
 
 #: barplot/options/xHideAxis.title
 #: barplot/options/yHideAxis.title
+#: mrcrosstabs/options/xHideAxis.title
+#: mrcrosstabs/options/yHideAxis.title
+#: mrfrequencies/options/xHideAxis.title
+#: mrfrequencies/options/yHideAxis.title
 msgid "Hide axis"
 msgstr "Masquer l'axe"
 

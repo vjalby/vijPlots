@@ -60,7 +60,9 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
             xTicks = 0,
             yTicks = 0,
             xGridLines = FALSE,
-            yGridLines = FALSE, ...) {
+            yGridLines = FALSE,
+            xHideAxis = FALSE,
+            yHideAxis = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -473,6 +475,14 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
                 "yGridLines",
                 yGridLines,
                 default=FALSE)
+            private$..xHideAxis <- jmvcore::OptionBool$new(
+                "xHideAxis",
+                xHideAxis,
+                default=FALSE)
+            private$..yHideAxis <- jmvcore::OptionBool$new(
+                "yHideAxis",
+                yHideAxis,
+                default=FALSE)
 
             self$.addOption(private$..mode)
             self$.addOption(private$..repVar)
@@ -529,6 +539,8 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
             self$.addOption(private$..yTicks)
             self$.addOption(private$..xGridLines)
             self$.addOption(private$..yGridLines)
+            self$.addOption(private$..xHideAxis)
+            self$.addOption(private$..yHideAxis)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -585,7 +597,9 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
         xTicks = function() private$..xTicks$value,
         yTicks = function() private$..yTicks$value,
         xGridLines = function() private$..xGridLines$value,
-        yGridLines = function() private$..yGridLines$value),
+        yGridLines = function() private$..yGridLines$value,
+        xHideAxis = function() private$..xHideAxis$value,
+        yHideAxis = function() private$..yHideAxis$value),
     private = list(
         ..mode = NA,
         ..repVar = NA,
@@ -641,7 +655,9 @@ mrfrequenciesOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
         ..xTicks = NA,
         ..yTicks = NA,
         ..xGridLines = NA,
-        ..yGridLines = NA)
+        ..yGridLines = NA,
+        ..xHideAxis = NA,
+        ..yHideAxis = NA)
 )
 
 mrfrequenciesResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -752,7 +768,9 @@ mrfrequenciesResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Cla
                     "xTicks",
                     "yTicks",
                     "xGridLines",
-                    "yGridLines")))}))
+                    "yGridLines",
+                    "xHideAxis",
+                    "yHideAxis")))}))
 
 mrfrequenciesBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mrfrequenciesBase",
@@ -834,6 +852,8 @@ mrfrequenciesBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yTicks .
 #' @param xGridLines .
 #' @param yGridLines .
+#' @param xHideAxis .
+#' @param yHideAxis .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$responses} \tab \tab \tab \tab \tab a table \cr
@@ -903,7 +923,9 @@ mrfrequencies <- function(
     xTicks = 0,
     yTicks = 0,
     xGridLines = FALSE,
-    yGridLines = FALSE) {
+    yGridLines = FALSE,
+    xHideAxis = FALSE,
+    yHideAxis = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mrfrequencies requires jmvcore to be installed (restart may be required)")
@@ -974,7 +996,9 @@ mrfrequencies <- function(
         xTicks = xTicks,
         yTicks = yTicks,
         xGridLines = xGridLines,
-        yGridLines = yGridLines)
+        yGridLines = yGridLines,
+        xHideAxis = xHideAxis,
+        yHideAxis = yHideAxis)
 
     analysis <- mrfrequenciesClass$new(
         options = options,

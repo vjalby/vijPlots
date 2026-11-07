@@ -343,6 +343,33 @@ test_that("mrcrosstabs: grid lines (horizontal)", {
     expect_plot_snapshot("mrcrosstabs-gridlines-horizontal", testPlot)
 })
 
+test_that("mrcrosstabs: hidden category axis (vertical), bars start at the baseline", {
+    testPlot <- vijPlots::mrcrosstabs(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        group = "Age",
+        group2 = NULL,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("mrcrosstabs-hideaxis-vertical", testPlot)
+})
+
+test_that("mrcrosstabs: hidden value axis (horizontal)", {
+    testPlot <- vijPlots::mrcrosstabs(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        group = "Age",
+        group2 = NULL,
+        horizontal = TRUE,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("mrcrosstabs-hideaxis-horizontal", testPlot)
+})
+
 test_that("mrcrosstabs: table blocks marked as in jmv::conttables", {
     r <- vijPlots::mrcrosstabs(data = testData, mode = "morevar", repVar = NULL,
                                resps = c("Mastercard", "Amex", "VISA", "Diners Club"), group = "Age", group2 = NULL)

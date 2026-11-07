@@ -298,6 +298,29 @@ test_that("mrfrequencies: grid lines (horizontal)", {
     expect_plot_snapshot("mrfrequencies-gridlines-horizontal", testPlot)
 })
 
+test_that("mrfrequencies: hidden category axis (vertical), bars start at the baseline", {
+    testPlot <- vijPlots::mrfrequencies(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("mrfrequencies-hideaxis-vertical", testPlot)
+})
+
+test_that("mrfrequencies: hidden value axis (horizontal)", {
+    testPlot <- vijPlots::mrfrequencies(
+        data = testData,
+        mode = "morevar",
+        repVar = NULL,
+        resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+        horizontal = TRUE,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("mrfrequencies-hideaxis-horizontal", testPlot)
+})
+
 test_that("mrfrequencies: table blocks marked as in jmv::conttables", {
     r <- vijPlots::mrfrequencies(data = testData, mode = "morevar", repVar = NULL,
                                  resps = c("Mastercard", "Amex", "VISA", "Diners Club"))

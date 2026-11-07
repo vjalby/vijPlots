@@ -262,6 +262,9 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
+
             # Y scale and lab
             if (self$options$computedValues == "responses") {
                 labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
@@ -297,12 +300,14 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Ticks & Axis Expansion ####
-            expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            # Room for the labels at the bars' end, unless the range of the value axis is set by hand
-            rangeType <- if (self$options$horizontal) self$options$xAxisRangeType else self$options$yAxisRangeType
-            if (self$options$showLabels && labelTop && rangeType == "auto") {
-                expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1)) # same expansion for horizontal and vertical modes.
-            }
+            categoryAxisHidden <- if (self$options$horizontal) self$options$yHideAxis else self$options$xHideAxis
+            # lower expansion is set to 0 when the category axis is hidden
+            expandLow <- if (categoryAxisHidden) 0 else 0.05
+            # upper expansion is increased when labels are at top
+            expandHigh <- if (self$options$showLabels && labelTop) 0.1 else 0.05
+            # Value axis expansion is changed with automatic range only
+            valueRangeAuto <- if (self$options$horizontal) self$options$xAxisRangeType == "auto" else self$options$yAxisRangeType == "auto"
+            expand_arg <- if (valueRangeAuto) ggplot2::expansion(mult = c(expandLow, expandHigh)) else ggplot2::waiver()
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {

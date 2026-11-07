@@ -285,17 +285,22 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Ticks & Axis Expansion ####
-            expand_arg <- ggplot2::waiver() # Default ggplot behavior
-            if (self$options$showLabels && (!stacked || !is.null(image$state$totals))) {
-                # Room for the labels beyond the bars' ends: on the positive side, and on the negative side too
-                # when a bar (or, stacked, a total) is negative: its label is then drawn below/left of it
-                upper <- if (self$options$horizontal) 0.2 else 0.1
-                lower <- if (any((image$state$totals$.TOTAL %||% plotData$.Y) < 0, na.rm = TRUE)) upper else 0.05
-                if (self$options$horizontal && self$options$xAxisRangeType == "auto")
-                    expand_arg <- ggplot2::expansion(mult = c(lower, upper))
-                else if (!self$options$horizontal && self$options$yAxisRangeType == "auto")
-                    expand_arg <- ggplot2::expansion(mult = c(lower, upper))
-            }
+            categoryAxisHidden <- if (self$options$horizontal) self$options$yHideAxis else self$options$xHideAxis
+            # labels beyond the bars' ends (stacked bars: the totals' labels only)
+            outsideLabels <- self$options$showLabels && (!stacked || !is.null(image$state$totals))
+            # the label of a negative bar (or, stacked, total) is drawn below/left of it
+            negativeLabels <- outsideLabels && any((image$state$totals$.TOTAL %||% plotData$.Y) < 0, na.rm = TRUE)
+            # nothing drawn below 0 (bars, error bars, observations): the bars start at the bottom of the panel
+            drawnValues <- c(plotData$.Y, if (errorBars != "none") plotData$.YMIN, image$state$points$.PY)
+            nothingBelowZero <- !any(drawnValues < 0, na.rm = TRUE)
+            # upper expansion is increased for the labels beyond the bars' ends
+            expandHigh <- if (!outsideLabels) 0.05 else if (self$options$horizontal) 0.2 else 0.1
+            # lower expansion: as the upper one for the labels of negative bars, 0 when the category axis
+            # is hidden and the bars start at the baseline
+            expandLow <- if (negativeLabels) expandHigh else if (categoryAxisHidden && nothingBelowZero) 0 else 0.05
+            # Value axis expansion is changed with automatic range only
+            valueRangeAuto <- if (self$options$horizontal) self$options$xAxisRangeType == "auto" else self$options$yAxisRangeType == "auto"
+            expand_arg <- if (valueRangeAuto) ggplot2::expansion(mult = c(expandLow, expandHigh)) else ggplot2::waiver()
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), expand = expand_arg)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
@@ -325,6 +330,9 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
+
+            #### Hide axis line and ticks ####
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
 
             #### Titles & Labels ####
             defaults <- list(y = ylabel, x = xVar, legend = groupVar)

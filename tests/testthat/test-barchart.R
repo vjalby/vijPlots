@@ -169,6 +169,45 @@ testthat::test_that("barchart: grid lines (horizontal)", {
     expect_plot_snapshot("barchart-gridlines-horizontal", testPlot)
 })
 
+testthat::test_that("barchart: hidden category axis (vertical), bars start at the baseline", {
+    testPlot <- vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = NULL, facet = NULL,
+                                   xHideAxis = TRUE)$plot
+    expect_plot_snapshot("barchart-hideaxis-vertical", testPlot)
+})
+
+testthat::test_that("barchart: hidden value axis (horizontal)", {
+    testPlot <- vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = NULL, facet = NULL,
+                                   horizontal = TRUE, xHideAxis = TRUE)$plot
+    expect_plot_snapshot("barchart-hideaxis-horizontal", testPlot)
+})
+
+testthat::test_that("barchart: hidden category axis, no lower margin only when nothing is drawn below 0", {
+    # Range of the value axis (data units), and lowest value drawn (bars from 0, error bars, observations)
+    valueRange <- function(y, horizontal = FALSE, ...) {
+        r <- vijPlots::barchart(data = data.frame(x = factor(rep(c("A", "B"), each = 2)), y = y),
+                                xVar = "x", yVar = "y", group = NULL, facet = NULL, horizontal = horizontal, ...)
+        grDevices::pdf(NULL)
+        on.exit(grDevices::dev.off())
+        print(r$plot)
+        ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]][[if (horizontal) "x" else "y"]]$continuous_range
+    }
+    positive <- c(3, 5, 2, 4)   # means 4 and 3
+    # category axis hidden (x when vertical, y when horizontal): the bars start at the bottom of the panel
+    expect_equal(valueRange(positive, xHideAxis = TRUE)[1], 0)
+    expect_equal(valueRange(positive, horizontal = TRUE, yHideAxis = TRUE)[1], 0)
+    # value axis hidden, or nothing hidden: the usual 5% margin
+    expect_lt(valueRange(positive, yHideAxis = TRUE)[1], 0)
+    expect_lt(valueRange(positive)[1], 0)
+    # something drawn below 0: a negative bar (mean -3), an error bar (mean 2, sd 2.83), an observation (-1)
+    expect_lt(valueRange(c(3, 5, -2, -4), xHideAxis = TRUE)[1], -3)
+    expect_lt(valueRange(c(0, 4, 1, 3), xHideAxis = TRUE, errorBars = "sd")[1], 2 - sd(c(0, 4)))
+    expect_lt(valueRange(c(-1, 5, 2, 4), xHideAxis = TRUE, showPoints = TRUE)[1], -1)
+    # a manual range is left as is
+    manual <- list(yAxisRangeType = "manual", yAxisRangeMin = 0, yAxisRangeMax = 10)
+    expect_equal(do.call(valueRange, c(list(positive, xHideAxis = TRUE), manual)),
+                 do.call(valueRange, c(list(positive), manual)))
+})
+
 testthat::test_that("barchart: missing values are labelled (Missing) on the axis, legend and facets", {
     renderBuilt <- function(...) {
         r <- vijPlots::barchart(data = testData, yVar = "Petal.Width", ignoreNA = FALSE, ...)

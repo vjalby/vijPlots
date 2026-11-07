@@ -2655,6 +2655,8 @@ msgstr ""
 msgid "Hide axes"
 msgstr ""
 
+#: barchart/options/xHideAxis.title
+#: barchart/options/yHideAxis.title
 #: barplot/options/xHideAxis.title
 #: barplot/options/yHideAxis.title
 #: boxplot/options/xHideAxis.title

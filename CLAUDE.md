@@ -522,7 +522,7 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `boxplot`, `raincloud`, 2026-11-07)
+### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `boxplot`, `raincloud`, 2026-11-07)
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -540,9 +540,14 @@ into account (minimal/hadley already draw no axis line: the option then changes 
   at the top (never when stacked) else 0.05. **Automatic range only:** a manual range keeps
   `waiver()`, because `coord_cartesian(ylim = )` expands its limits with the scale's expansion (a
   2-8 range showed 1.7-8.3, then 2-8.6 with the axis hidden, before this was fixed).
+- **`barchart`: no lower expansion only when nothing is drawn below 0** (bars, error bars `.YMIN`
+  when drawn, observations `.PY`): otherwise the bars don't start at the bottom of the panel anyway,
+  and the lowest element would touch its edge. The lower margin of negative bars' labels (`expandLow =
+  expandHigh`) still comes first. All-negative bars (baseline at the top) are not handled: the 5%
+  margin stays. A numeric test (`ggplot_build()` value range) covers each case.
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
-- **Not yet extended** (survey of 2026-11-07): `barchart`, `histogram`, `lollipop`, `areachart` need a
-  rule for the baseline (values can be negative in `barchart`/`lollipop`/`areachart`). Little use in
+- **Not yet extended** (survey of 2026-11-07): `histogram`, `lollipop`, `areachart` need a rule for
+  the baseline (values can be negative in `lollipop`/`areachart`). Little use in
   `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global `hideAxes` (both axes, plus no
   expansion): replacing it by the per-axis options would drop the setting from old `.omv` files.
 

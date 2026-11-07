@@ -182,6 +182,9 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
+
             # Ticks
             if (self$options$horizontal && self$options$xTicks > 0) {
                 plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))

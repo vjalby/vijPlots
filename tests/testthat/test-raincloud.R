@@ -150,6 +150,29 @@ test_that("raincloud: grid lines (horizontal)", {
     expect_plot_snapshot("raincloud-gridlines-horizontal", testPlot)
 })
 
+test_that("raincloud: hidden category axis (vertical)", {
+    testPlot <- vijPlots::raincloud(
+        data = testData,
+        aVar = "Petal.Width",
+        groupOne = "Species",
+        groupTwo = NULL,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("raincloud-hideaxis-vertical", testPlot)
+})
+
+test_that("raincloud: hidden value axis (horizontal)", {
+    testPlot <- vijPlots::raincloud(
+        data = testData,
+        aVar = "Petal.Width",
+        groupOne = "Species",
+        groupTwo = NULL,
+        horizontal = TRUE,
+        xHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("raincloud-hideaxis-horizontal", testPlot)
+})
+
 test_that("raincloud: missing values are labelled (Missing) on the axis and in the legend", {
     r <- vijPlots::raincloud(data = testData, aVar = "Petal.Width", groupOne = "Species",
                              groupTwo = "group2", ignoreNA = FALSE)

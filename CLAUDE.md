@@ -522,7 +522,7 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `boxplot`, 2026-11-07)
+### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `boxplot`, `raincloud`, 2026-11-07)
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -533,19 +533,18 @@ into account (minimal/hadley already draw no axis line: the option then changes 
 - **Ticks are transparent, not `element_blank()`, on purpose:** a blank tick also drops its length,
   which brought the labels ~4 px closer to the bars. A transparent tick keeps the layout of the
   shown axis (same panel rectangle, checked on the snapshots). Don't "simplify" it back.
-- **Expansion** (bar analyses only; `boxplot` has the hiding alone, its boxes don't start at 0):
-  when the *category* axis is hidden (`xHideAxis` vertical, `yHideAxis` horizontal),
-  the value axis gets no lower expansion, so the bars start at the baseline:
+- **Expansion** (bar analyses only; `boxplot` and `raincloud` have the hiding alone, their
+  distributions don't start at 0): when the *category* axis is hidden (`xHideAxis` vertical,
+  `yHideAxis` horizontal), the value axis gets no lower expansion, so the bars start at the baseline:
   `expansion(mult = c(expandLow, expandHigh))`, `expandLow` 0 or 0.05, `expandHigh` 0.1 with labels
   at the top (never when stacked) else 0.05. **Automatic range only:** a manual range keeps
   `waiver()`, because `coord_cartesian(ylim = )` expands its limits with the scale's expansion (a
   2-8 range showed 1.7-8.3, then 2-8.6 with the axis hidden, before this was fixed).
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
 - **Not yet extended** (survey of 2026-11-07): `barchart`, `histogram`, `lollipop`, `areachart` need a
-  rule for the baseline (values can be negative in `barchart`/`lollipop`/`areachart`); `raincloud`
-  would need the hiding only, no expansion change, like `boxplot`. Little use in `scatterplot`, `qqplot`,
-  `linechart`. `mosaic` keeps its own global `hideAxes` (both axes, plus no expansion): replacing it by
-  the per-axis options would drop the setting from old `.omv` files.
+  rule for the baseline (values can be negative in `barchart`/`lollipop`/`areachart`). Little use in
+  `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global `hideAxes` (both axes, plus no
+  expansion): replacing it by the per-axis options would drop the setting from old `.omv` files.
 
 ## Testing
 

@@ -2663,6 +2663,8 @@ msgstr ""
 #: mrcrosstabs/options/yHideAxis.title
 #: mrfrequencies/options/xHideAxis.title
 #: mrfrequencies/options/yHideAxis.title
+#: raincloud/options/xHideAxis.title
+#: raincloud/options/yHideAxis.title
 msgid "Hide axis"
 msgstr ""
 

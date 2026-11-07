@@ -76,6 +76,7 @@ The module is available in the **Plots** tab.
 * Error Bar Chart: option to show the individual observations over the bars
 * Likert Plot: "Tidy up levels" now also applies to integer variables
 * Grid lines option for numeric axes
+* "Hide axis" option for each axis (axis line and ticks)
 * The fixed-length color palettes are now extended by interpolation
 * Code optimization
 

@@ -1,4 +1,4 @@
-# vijPlots 1.4.0 (2026-11-05)
+# vijPlots 1.4.0 (2026-11-07)
 
 * Bar Plot / Pie Chart: optional frequency table
 * Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values
@@ -8,19 +8,18 @@
 * Box Plot: whisker options (1.5 × IQR, 3 × IQR, min-max)
 * Error Bar Chart: option to show the individual observations over the bars
 * Bar Plot / Multiple Response Crosstabs: option to hide % labels below 5%
-* Likert Plot: the frequency table follows the "Group By" option; 0.01 % accuracy
-* Likert Plot: fixed the adjusted p-values of the Mann-Whitney and Kruskal-Wallis tests, shown on the wrong variables when variables were sorted
+* Likert Plot: the frequency table follows the "Group By" option
 * Likert Plot: sorting now applies to the plot only; the frequency table and pairwise comparisons keep the selection order
+* Likert Plot: fixed the adjusted p-values of the Mann-Whitney and Kruskal-Wallis tests, shown on the wrong variables when variables were sorted
 * Likert Plot: fixed "Reverse level order" with plain integer variables
 * Likert Plot: "Tidy up levels" now also applies to integer variables
 * Likert Plot: "Tidy up levels" now refuses a label used for different values (it shifted the numeric values)
-* Likert Plot: fixed post hoc results shown for the wrong pair when group labels contain " - "
-* Likert Plot: variables or groups without any answer no longer cause an error; groups without any answer are left out
 * Likert Plot: the pairwise comparisons table shows the group variable above its two group columns
 * Line Chart: fixed the missing group not drawn with several variables
 * Scatter Plot: "Points with missing group/label" replaced by "Ignore missing groups"; points with a missing label are now kept
 * Missing values kept as a category are now labelled "(Missing)" instead of "NA"
 * Grid lines option for numeric axes
+* "Hide axis" option for each axis (axis line and ticks)
 * The fixed-length color palettes are now extended by interpolation
 * Code optimization (smaller .omv files: summary plots now store aggregated data)
 

@@ -2891,6 +2891,8 @@ msgstr "Masquer les axes"
 #: boxplot/options/yHideAxis.title
 #: histogram/options/xHideAxis.title
 #: histogram/options/yHideAxis.title
+#: lollipop/options/xHideAxis.title
+#: lollipop/options/yHideAxis.title
 #: mrcrosstabs/options/xHideAxis.title
 #: mrcrosstabs/options/yHideAxis.title
 #: mrfrequencies/options/xHideAxis.title

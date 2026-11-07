@@ -118,23 +118,33 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     ggplot2::geom_point(ggplot2::aes(y = .data[[".Y"]]), size = self$options$dotSize, color = self$options$dotColor)
             }
 
+            # Bars start at the baseline when the category axis is hidden: segments from 0 (not the min-max
+            # ranges), nothing below 0, automatic range only. The dots on 0 then lie on the panel's edge: not clipped
+            categoryAxisHidden <- if (self$options$horizontal) self$options$yHideAxis else self$options$xHideAxis
+            valueRangeAuto <- if (self$options$horizontal) self$options$xAxisRangeType == "auto" else self$options$yAxisRangeType == "auto"
+            baseline <- categoryAxisHidden && valueRangeAuto && self$options$yaxis != "minmax" && !any(plotData$.Y < 0, na.rm = TRUE)
+
             # Axis Limits & flip
             if (self$options$horizontal) {
                 if (self$options$xAxisRangeType == "manual") {
                     plot <- plot + ggplot2::coord_flip(ylim = c(self$options$xAxisRangeMin, self$options$xAxisRangeMax))
                 } else {
-                    plot <- plot + ggplot2::coord_flip()
+                    plot <- plot + ggplot2::coord_flip(clip = if (baseline) "off" else "on")
                 }
             } else if (self$options$yAxisRangeType == "manual") { # Vertical and manual
                 plot <- plot + ggplot2::coord_cartesian(ylim = c(self$options$yAxisRangeMin, self$options$yAxisRangeMax))
+            } else if (baseline) {
+                plot <- plot + ggplot2::coord_cartesian(clip = "off")
             }
 
-            # Ticks
+            # Ticks & expansion (no lower expansion at the baseline)
+            expand_arg <- if (baseline) ggplot2::expansion(mult = c(0, 0.05)) else ggplot2::waiver()
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1))
-            }
-            if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1))
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), expand = expand_arg)
+            } else if (!self$options$horizontal && self$options$yTicks > 0) {
+                plot <- plot  + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), expand = expand_arg)
+            } else if (baseline) {
+                plot <- plot  + ggplot2::scale_y_continuous(expand = expand_arg)
             }
 
             plot <- plot + ggplot2::scale_x_discrete(drop = FALSE) # keep unused levels
@@ -166,6 +176,9 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
+
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
 
             # Titles & Labels
             defaults <- list(y = ylabel, x = groupVar)

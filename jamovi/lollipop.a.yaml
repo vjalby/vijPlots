@@ -583,4 +583,14 @@ options:
       title: Grid lines
       type: Bool
       default: false
+
+    - name: xHideAxis
+      title: Hide axis
+      type: Bool
+      default: false
+
+    - name: yHideAxis
+      title: Hide axis
+      type: Bool
+      default: false
 ...

@@ -244,6 +244,8 @@ children:
                   - type: CheckBox
                     name: xGridLines
                     enable: (horizontal)
+                  - type: CheckBox
+                    name: xHideAxis
               - type: Label
                 label: Range
                 children:
@@ -289,6 +291,8 @@ children:
                   - type: CheckBox
                     name: yGridLines
                     enable: (!horizontal)
+                  - type: CheckBox
+                    name: yHideAxis
               - type: Label
                 label: Range
                 children:

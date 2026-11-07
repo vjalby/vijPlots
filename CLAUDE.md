@@ -522,7 +522,7 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `boxplot`, `raincloud`, 2026-11-07)
+### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `lollipop`, `boxplot`, `raincloud`, 2026-11-07)
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -555,10 +555,16 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   `expansion(mult = c(0.05, 0.1))` with the summary lines' labels: that was the behaviour before the
   option, kept as is. With the normal curve alone (no bins, lines or density), nothing reaches 0: the
   panel then starts at the curve's lowest point, accepted (rare, no baseline to reach anyway).
+- **`lollipop`:** `baseline` = category axis hidden, automatic range, not "Min-Max" (its segments go
+  from the minimum to the maximum, not from 0), and no `.Y` below 0. Only then: no lower expansion
+  and `clip = "off"`, so that a dot on 0 (frequent in "Values" mode) isn't cut in half by the panel's
+  edge. Clip is switched off only in that case: always switching it off changes the SVG of every
+  snapshot. Numeric test as for `barchart`, plus the coord's `clip`.
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
-- **Not yet extended** (survey of 2026-11-07): `lollipop`, `areachart` need a rule for the baseline
-  (values can be negative). Little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global `hideAxes` (both axes, plus no
-  expansion): replacing it by the per-axis options would drop the setting from old `.omv` files.
+- **Not yet extended** (survey of 2026-11-07): `areachart` needs a rule for the baseline (values can be
+  negative). Little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global
+  `hideAxes` (both axes, plus no expansion): replacing it by the per-axis options would drop the
+  setting from old `.omv` files.
 
 ## Testing
 

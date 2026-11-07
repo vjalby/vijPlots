@@ -234,11 +234,12 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 xLim <- NULL
             plot <- plot + ggplot2::coord_cartesian(ylim = yLim, xlim = xLim)
 
-            if (self$options$summaryLineLabel && (self$options$meanLine || self$options$medianLine)) {
-                expand_arg <- ggplot2::expansion(mult = c(0.05, 0.1))
-            } else {
-                expand_arg <- ggplot2::waiver()
-            }
+            # lower expansion is set to 0 when the x-axis is hidden (the bins start at the baseline),
+            # with an automatic y range only
+            expandLow <- if (self$options$xHideAxis && self$options$yAxisRangeType == "auto") 0 else 0.05
+            # upper expansion is increased for the summary lines' labels
+            expandHigh <- if (self$options$summaryLineLabel && (self$options$meanLine || self$options$medianLine)) 0.1 else 0.05
+            expand_arg <- ggplot2::expansion(mult = c(expandLow, expandHigh))
 
             # Ticks
             if (self$options$xTicks > 0) {
@@ -267,6 +268,9 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
+
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
 
             # Titles & Labels
             yLab <- ifelse(self$options$histtype == "density", .("Density"), .("Count"))

@@ -522,7 +522,7 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `boxplot`, `raincloud`, 2026-11-07)
+### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `boxplot`, `raincloud`, 2026-11-07)
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -550,10 +550,14 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   and the lowest element would touch its edge. The lower margin of negative bars' labels (`expandLow =
   expandHigh`) still comes first. All-negative bars (baseline at the top) are not handled: the 5%
   margin stays. A numeric test (`ggplot_build()` value range) covers each case.
+- **`histogram`** (no horizontal mode): nothing is ever drawn below 0, so `xHideAxis` alone sets the
+  lower expansion of y to 0, automatic y range only. Unlike the others, a manual y range still gets
+  `expansion(mult = c(0.05, 0.1))` with the summary lines' labels: that was the behaviour before the
+  option, kept as is. With the normal curve alone (no bins, lines or density), nothing reaches 0: the
+  panel then starts at the curve's lowest point, accepted (rare, no baseline to reach anyway).
 - `mrfrequencies`/`mrcrosstabs` list both options in their plot's `clearWith:`.
-- **Not yet extended** (survey of 2026-11-07): `histogram`, `lollipop`, `areachart` need a rule for
-  the baseline (values can be negative in `lollipop`/`areachart`). Little use in
-  `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global `hideAxes` (both axes, plus no
+- **Not yet extended** (survey of 2026-11-07): `lollipop`, `areachart` need a rule for the baseline
+  (values can be negative). Little use in `scatterplot`, `qqplot`, `linechart`. `mosaic` keeps its own global `hideAxes` (both axes, plus no
   expansion): replacing it by the per-axis options would drop the setting from old `.omv` files.
 
 ## Testing

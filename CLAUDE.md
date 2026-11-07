@@ -527,12 +527,17 @@ of much less use, nor to counts.
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
 displayed axes). `vijHideAxis(x, y)` (`utils.R`), added right after `vijGridLines()` (so after
-`ggtheme`), hides the axis line and the ticks but keeps the axis text. Jamovi's themes are not taken
-into account (minimal/hadley already draw no axis line: the option then changes nothing).
+`ggtheme`), hides the axis line and the ticks but keeps the axis text. Minimal and hadley already
+draw no axis line, and minimal no ticks either: the option then changes nothing there.
 
 - **Ticks are transparent, not `element_blank()`, on purpose:** a blank tick also drops its length,
   which brought the labels ~4 px closer to the bars. A transparent tick keeps the layout of the
   shown axis (same panel rectangle, checked on the snapshots). Don't "simplify" it back.
+  **With `inherit.blank = TRUE`** (suggested by the user, 2026-11-07): the minimal theme's ticks are
+  `element_blank()`, and a plain transparent tick overrode them, moving the labels 4 pt *away* from
+  the panel; it now stays blank there. Checked on the 4 jamovi themes (default, minimal, hadley,
+  iheartspss); `test-utils.R` covers it with `calc_element()`. jmvcore's `theme_*()` return a list
+  (theme + scales): add it to a plot, as `.plot()` does, not to a theme (`theme + list` adds nothing).
 - **Expansion** (bar analyses only; `boxplot` and `raincloud` have the hiding alone, their
   distributions don't start at 0): when the *category* axis is hidden (`xHideAxis` vertical,
   `yHideAxis` horizontal), the value axis gets no lower expansion, so the bars start at the baseline:

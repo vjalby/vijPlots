@@ -12,3 +12,13 @@ test_that("fixed-length palettes are interpolated beyond their number of colors"
         expect_equal(anyDuplicated(colors), 0)
     }
 })
+
+test_that("vijHideAxis: transparent ticks, blank when the theme has none", {
+    # jmvcore's themes are lists (a theme and scales): added to a plot, as in .plot()
+    ticks <- function(ggtheme) {
+        p <- ggplot2::ggplot() + ggtheme + vijHideAxis(x = TRUE)
+        ggplot2::calc_element("axis.ticks.x.bottom", ggplot2::theme_grey() + p$theme)
+    }
+    expect_equal(ticks(jmvcore::theme_default())$colour, "transparent")
+    expect_s3_class(ticks(jmvcore::theme_min()), "element_blank")
+})

@@ -301,10 +301,10 @@ vijGridLines = function(themeName, x = FALSE, y = FALSE) {
 # Theme hiding the line and the ticks of the displayed x and/or y axis (with
 # coord_flip(), theme elements follow the displayed axes). The axis text is kept, and the
 # ticks are made transparent rather than blank so that their length still keeps the text
-# away from the panel.
+# away from the panel; unless the theme has no ticks (minimal): they then stay blank, with no length.
 vijHideAxis = function(x = FALSE, y = FALSE) {
     axisTheme <- ggplot2::theme()
-    invisibleTicks <- ggplot2::element_line(colour = "transparent")
+    invisibleTicks <- ggplot2::element_line(colour = "transparent", inherit.blank = TRUE)
     if (x)
         axisTheme <- axisTheme + ggplot2::theme(axis.line.x = ggplot2::element_blank(),
                                                 axis.ticks.x = invisibleTicks)

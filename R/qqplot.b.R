@@ -205,6 +205,9 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 
+            # Hide axis line and ticks
+            plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
+
             # Legend
             if (is.null(groupVar))
                 plot <- plot + ggplot2::guides(fill = "none")

@@ -219,6 +219,37 @@ test_that("scatterplot: grid lines", {
     expect_plot_snapshot("scatterplot-gridlines", testPlot)
 })
 
+test_that("scatterplot: hidden axes", {
+    testPlot <- vijPlots::scatterplot(
+        data = testData,
+        xaxis = "Petal.Length",
+        yaxis = "Petal.Width",
+        group = NULL,
+        labelVar = NULL,
+        ptSize = NULL,
+        facet = NULL,
+        xHideAxis = TRUE,
+        yHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("scatterplot-hideaxis", testPlot)
+})
+
+test_that("scatterplot: hidden axes with the plot frame (the frame stays, without ticks)", {
+    testPlot <- vijPlots::scatterplot(
+        data = testData,
+        xaxis = "Petal.Length",
+        yaxis = "Petal.Width",
+        group = NULL,
+        labelVar = NULL,
+        ptSize = NULL,
+        facet = NULL,
+        plotBorder = TRUE,
+        xHideAxis = TRUE,
+        yHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("scatterplot-hideaxis-border", testPlot)
+})
+
 test_that("scatterplot: missing group and facet labelled (Missing) (ignoreNA = FALSE)", {
     r <- vijPlots::scatterplot(
         data = testData,

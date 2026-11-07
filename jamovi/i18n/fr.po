@@ -2901,8 +2901,12 @@ msgstr "Masquer les axes"
 #: mrcrosstabs/options/yHideAxis.title
 #: mrfrequencies/options/xHideAxis.title
 #: mrfrequencies/options/yHideAxis.title
+#: qqplot/options/xHideAxis.title
+#: qqplot/options/yHideAxis.title
 #: raincloud/options/xHideAxis.title
 #: raincloud/options/yHideAxis.title
+#: scatterplot/options/xHideAxis.title
+#: scatterplot/options/yHideAxis.title
 msgid "Hide axis"
 msgstr "Masquer l'axe"
 

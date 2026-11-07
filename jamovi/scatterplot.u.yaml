@@ -253,6 +253,8 @@ children:
                     format: number
                   - type: CheckBox
                     name: xGridLines
+                  - type: CheckBox
+                    name: xHideAxis
               - type: Label
                 label: Range
                 children:
@@ -294,6 +296,8 @@ children:
                     format: number
                   - type: CheckBox
                     name: yGridLines
+                  - type: CheckBox
+                    name: yHideAxis
               - type: Label
                 label: Range
                 children:

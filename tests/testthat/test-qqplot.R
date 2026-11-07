@@ -141,6 +141,17 @@ test_that("qqplot: grid lines", {
     expect_plot_snapshot("qqplot-gridlines", testPlot)
 })
 
+test_that("qqplot: hidden axes", {
+    testPlot <- vijPlots::qqplot(
+        data = testData,
+        dep = "Petal.Length",
+        group = NULL,
+        xHideAxis = TRUE,
+        yHideAxis = TRUE
+    )$plot
+    expect_plot_snapshot("qqplot-hideaxis", testPlot)
+})
+
 test_that("qqplot: a single observation is rejected with a clear message", {
     expect_error(vijPlots::qqplot(data = data.frame(x = 3), dep = "x", group = NULL),
                  "At least two observations")

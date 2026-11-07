@@ -522,7 +522,11 @@ of much less use, nor to counts.
   renamed "Count labels" -> "Value labels" ("Étiquettes des valeurs"), since it covers counts and
   percentages alike.
 
-### Hide axis (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `histogram`, `lollipop`, `areachart`, `boxplot`, `raincloud`, `linechart`, 2026-11-07)
+### Hide axis (every visible analysis with axes except `mosaic`, 2026-11-07)
+
+`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `lollipop` (hiding + baseline expansion);
+`histogram`, `areachart`, `boxplot`, `raincloud`, `linechart`, `scatterplot`, `qqplot` (hiding only).
+Not concerned: `piechart` (no axes), `likertplot` (its own `ggstats` theme).
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
@@ -569,11 +573,14 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   the areas, as on `linechart`. A no-margin rule (x-axis hidden, automatic range, no value below 0)
   was applied, then removed; 2% was also shown and not kept. A test checks that hiding the axes
   leaves the y range unchanged, in the 3 positions.
-- **Not yet extended:** `scatterplot` (first decide how it goes with its `plotBorder` option, which
-  already replaces the axis lines by a frame) and `qqplot`; hiding only would do, as in `linechart`
-  (first classed "little use", 2026-11-07, then added: the axis text stays readable). `mosaic` keeps
-  its own global `hideAxes` (both axes, plus no expansion): replacing it by the per-axis options would
-  drop the setting from old `.omv` files.
+- **`scatterplot` with "Plot frame" (`plotBorder`):** the two options combine with nothing added.
+  `vijHideAxis()` comes before the frame's `theme(axis.line = element_line(linewidth = 0), panel.border
+  = ...)`, which sets the parent `axis.line` and so leaves our blank `axis.line.x/y` alone: the frame
+  stays, the hidden axis loses its ticks, its text stays (snapshot `scatterplot-hideaxis-border`).
+- `linechart`, `scatterplot` and `qqplot` were first classed "little use" (2026-11-07), then added:
+  the axis text stays readable.
+- **`mosaic` keeps its own global `hideAxes`** (both axes, plus no expansion): replacing it by the
+  per-axis options would drop the setting from old `.omv` files. Undecided.
 
 ## Testing
 

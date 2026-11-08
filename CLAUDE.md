@@ -61,6 +61,12 @@ overwrite them. If you need to keep in-progress edits to a tracked file under `i
 copy it out *before* running `prepare()`/`install()`, since anything lost this way isn't
 recoverable from the working tree afterward.
 
+**Release 1.4.0 in preparation (planned for the week of 2026-11-09): feature freeze, bug fixes only;
+anything else goes to 1.5.** Before releasing, the user is still testing in jamovi and updating the 3
+example files (`data/*.omv`) with the new options; they handle the version/date/README changes
+themself (`DESCRIPTION` must go from `1.4.0.0` to `1.4.0`, then rebuild the `.jmo`). Remove this
+paragraph once 1.4.0 is released.
+
 **Next release (not yet scheduled, requested 2026-10-16): remind the user to create a git tag** for
 the released version, prefixed with `v` like the first one (`v1.3.3`, on the "Version 1.3.3"
 commit). Use a plain lightweight tag, not an annotated one (user's choice, 2026-10-16 — `v1.3.3`
@@ -76,6 +82,21 @@ testthat::test_dir("tests/testthat")
 
 There is no CI workflow in this repo (no `.github/`) and no `renv`/`air.toml` — don't assume
 either is present or run commands that depend on them.
+
+**Building and testing for jamovi 2.7** (2026-11-07). jamovi 2.7.41 is installed next to jamovi 28
+(`/Applications/_Applications/jamovi 2.7.41.app`). The compiler builds with the R of the jamovi given
+as `--home` (2.7.41: R 4.5.0, ggplot2 3.5.2, jmvcore 2.7.35, rlang 1.1.6; ggstats 0.9.0 and ggrepel
+0.9.6 come from jamovi's own `jmv` module, not from the `.jmo`). `jmvtools::install(home = ...)` breaks
+on the space in the path and would overwrite the jamovi 28 `.jmo`, so call the compiler directly:
+`system2(node:::node(), c(jmvtools:::jmcPath(), "--build", ".", "--home", shQuote("/Applications/_Applications/jamovi 2.7.41"), "--jmo", "vijPlots_X.Y.Z-jamovi2.7.jmo"))`
+(dependencies go to `build/R4.5.0-arm64-macos`). The test suite can then run with jamovi 2.7's R
+(`R_HOME=<app>/Contents/Frameworks/R.framework/Versions/Current/Resources`, `.libPaths()` = that
+build dir + `<app>/Contents/Resources/modules/base/R` + `.../jmv/R`, `CI=true` since snapshots
+can't match, `test_dir(package = "vijPlots", load_package = "installed")`). Known differences there,
+not vijPlots bugs: `likertplot`'s Mann-Whitney p-values (R 4.6's `wilcox.test()` computes exact
+p-values with ties, R 4.5 warns and uses the normal approximation; the tests' expected values are
+R 4.6's), `corresp`'s eigenvalues (FactoMineR 2.11 vs 2.16, legacy analysis), and an `is.ggproto()`
+deprecation warning raised by ggh4x 0.3.0's `facetted_pos_scales()` in `mosaic` facets.
 
 ## Architecture
 
@@ -150,8 +171,19 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   variable is set) from `.plot()` into `.run()`, appending those columns to `data` before
   `image$setState(data)` so `.plot()` just reads them back from `plotData` — same rationale as
   `qqplot.b.R`, plus it means every `.plot()` re-render no longer redoes the outlier pass.
-- What goes into `image$setState()` is saved into the user's `.omv`, once per analysis. The
-  summary-shaped plots (`barchart`, `barplot`, `piechart`, `lollipop`) therefore aggregate in
+- What goes into `image$setState()` is saved into the user's `.omv`, once per analysis, as
+  jamovi's docs say (tuts0301-image-state-performance). Checked 2026-11-08 by decoding the committed
+  `data/vijPlots.omv` (protobuf `state` field of each results element, gzip-`memCompress`ed RDS): 18
+  states, e.g. `barplot` 6 rows, `piechart` 10, `barchart` 10 and 5, `lollipop` 5, `mosaic` 10, vs
+  148 rows for `histogram`. A file can also hold none: on jamovi 28.17, an analysis loaded from a
+  file loses its state and gets one again only once it is re-run in the session. Seen 2026-11-08:
+  the demo saved at 09:10 had 18 states; reopened, given the decimal point (plots redrawn) and
+  saved at 09:21, it had 0; a copy where the user re-ran the first 3 analyses had exactly those 3.
+  jamovi 28.17's server drops any state read from a file (`Analysis.drop_state()`, a
+  security measure: R would restore arbitrary code), so on jamovi 28 a reopened analysis re-runs
+  `.run()` before anything needs the state; jamovi 2.7.41's server has no such step. Don't
+  conclude "no state in the file" from small `analysis` entries: compressed states are small
+  (a few hundred bytes for the summary plots). The summary-shaped plots (`barchart`, `barplot`, `piechart`, `lollipop`) therefore aggregate in
   `.run()` and store one row per bar/slice/lollipop, not one row per case (`lollipop`'s "Values"
   mode excepted: it draws each value). The plots that genuinely need the raw rows (`histogram`,
   `scatterplot`, `boxplot`, `raincloud`, `qqplot`) deliberately keep the selected columns in the
@@ -460,6 +492,25 @@ Two review findings left as they are (user's decisions, 2026-11-05), not bugs to
 - The Likert palettes (`scale_fill_brewer()`) have 11 colours at most: a 12th level gets no colour. Not
   interpolated with `vijExtendPalette()` as in the other analyses: a Likert scale with more than 11 levels
   makes no sense.
+
+### Planned for vijPlots 1.5: Pareto curve and lumping in `barplot` (user's decision, 2026-11-08)
+
+Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0):
+
+- **Cumulative curve (Pareto)**: a cumulative-percentage line over the bars, rather than a new
+  analysis (`barplot` already has decreasing sorting, aggregated data via `countsName`, weights and
+  facets). To settle: no group variable only (disabled otherwise); force or require `order:
+  decreasing`; with a count y-axis, a right-hand % axis (`sec_axis()`, available in ggplot2 3.5 for
+  jamovi 2.7), whereas a percent y-axis can share the left one; `yHideAxis` should apply to the
+  secondary axis too; cumulative sums per facet, computed in `.run()` from the aggregated data;
+  optional 80% reference line. "(Missing)" is already last whatever the sorting (`fct_infreq()`
+  leaves `NA` out of the levels, and `fct_na_value_to_level()` runs in `.plot()`, after sorting), so
+  the curve ends on it, as a Pareto should.
+- **Lumping of small categories** ("Group categories below X%", or top n): `forcats::fct_lump_prop()`/
+  `fct_lump_n()` (`fct_lump()` itself is superseded), with `w = .COUNTS` and a translated
+  `other_level`. `NA` is not lumped (stays "(Missing)"). Sorting by `fct_infreq()` would rank the
+  "Other" level by its count: move it last afterwards (`fct_relevel(f, other, after = Inf)`), before
+  "(Missing)". Useful beyond the Pareto (variables with many categories).
 
 ### Ideas under study (not implemented; findings of 2026-10-29)
 

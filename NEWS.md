@@ -1,4 +1,4 @@
-# vijPlots 1.4.0 (2026-11-07)
+# vijPlots 1.4.0 (2026-11-08)
 
 * Bar Plot / Pie Chart: optional frequency table
 * Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values

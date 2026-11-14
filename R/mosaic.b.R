@@ -346,9 +346,6 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                     residDf <- as.data.frame(chisqres$residuals)
                     names(residDf) <- c(categoryName, groupName, ".RESIDUALS")
-                    # xtabs() made NA a level: back to a missing value, as in the plot data, for the join
-                    for (name in c(categoryName, groupName))
-                        residDf[[name]] <- factor(residDf[[name]], levels = levels(subDf[[name]]))
                     residDf
                 }) |>
                 dplyr::ungroup()

@@ -43,4 +43,11 @@
         `year`=2026, 
         `title`="GPArotation: Gradient Projection Factor Rotation", 
         `publisher`="[R package]. Retrieved from https://cran.r-project.org/package=GPArotation", 
-        `url`="https://cran.r-project.org/package=GPArotation"))
+        `url`="https://cran.r-project.org/package=GPArotation"), 
+    `pmcmrplus`=list(
+        `type`="software", 
+        `author`="Pohlert, T.", 
+        `year`=2024, 
+        `title`="PMCMRplus: Calculate Pairwise Multiple Comparisons of Mean Rank Sums Extended", 
+        `publisher`="[R package]. Retrieved from https://cran.r-project.org/package=PMCMRplus", 
+        `url`="https://cran.r-project.org/package=PMCMRplus"))

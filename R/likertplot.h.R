@@ -682,6 +682,8 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Pairwise Comparisons",
                             rows=0,
                             visible="(showPostHoc)",
+                            refs=list(
+                                "pmcmrplus"),
                             columns=list(
                                 list(
                                     `name`="group1", 

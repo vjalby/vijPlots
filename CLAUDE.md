@@ -491,6 +491,15 @@ Two review findings left as they are (user's decisions, 2026-11-05), not bugs to
   interpolated with `vijExtendPalette()` as in the other analyses: a Likert scale with more than 11 levels
   makes no sense.
 
+### `likertplot`: post hoc tests cite PMCMRplus only (user's decision, 2026-11-14)
+
+The Dunn/Conover/DSCF code is adapted from PMCMRplus, so `pwTable` has `refs: - pmcmrplus` (entry in
+`jamovi/00refs.yaml`). The 2026-11-09 audit also suggested citing the three methods' papers (Dunn
+1964, Conover & Iman 1979, Critchlow & Fligner 1991): not done, PMCMRplus' documentation cites them.
+A `refs:` on a table is shown only while that table is visible (checked in jamovi 28: only with the
+post hoc tests checked). jmvcore's `setRefs()` (also in 2.7.35) could set refs from `.run()` if they
+ever need to depend on an option.
+
 ### Planned for vijPlots 1.5: Pareto curve and lumping in `barplot` (user's decision, 2026-11-08)
 
 Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0):

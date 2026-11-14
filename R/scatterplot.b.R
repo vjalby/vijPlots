@@ -164,7 +164,7 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Shapes
             if (self$options$groupShapes && !is.null(groupVar)) {
                 #plot <- plot + ggplot2::scale_shape_manual(values = c(16, 17, 15, 18, 8, 3, 4,16, 17, 15, 18, 8, 3, 4))
-                plot <- plot + ggplot2::scale_shape_manual(values = c(16, 17, 15, 18, 1, 2, 0, 5, 6, 3, 4), na.value = 7, labels = labelNA)
+                plot <- plot + ggplot2::scale_shape_manual(values = c(16, 17, 15, 18, 1, 2, 0, 5, 6, 3, 4, 8, 9, 10, 11, 12, 13 ,14), na.value = 7, labels = labelNA)
             }
 
             # Axis Limits

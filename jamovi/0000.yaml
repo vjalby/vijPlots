@@ -1,12 +1,12 @@
 ---
 title: 'vijPlots: Yet Another jamovi Plotting Module'
 name: vijPlots
-version: 1.4.0
+version: 1.4.1
 jms: '1.0'
 authors:
   - Vincent Jalby
 maintainer: Vincent Jalby <vincent.jalby@unilim.fr>
-date: '2026-11-08'
+date: '2026-11-14'
 category: plots
 type: R
 description: >-

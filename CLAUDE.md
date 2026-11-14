@@ -61,16 +61,14 @@ overwrite them. If you need to keep in-progress edits to a tracked file under `i
 copy it out *before* running `prepare()`/`install()`, since anything lost this way isn't
 recoverable from the working tree afterward.
 
-**Release 1.4.0 in preparation (planned for the week of 2026-11-09): feature freeze, bug fixes only;
-anything else goes to 1.5.** Before releasing, the user is still testing in jamovi and updating the 3
-example files (`data/*.omv`) with the new options; they handle the version/date/README changes
-themself (`DESCRIPTION` must go from `1.4.0.0` to `1.4.0`, then rebuild the `.jmo`). Remove this
-paragraph once 1.4.0 is released.
-
-**Next release (not yet scheduled, requested 2026-10-16): remind the user to create a git tag** for
-the released version, prefixed with `v` like the first one (`v1.3.3`, on the "Version 1.3.3"
-commit). Use a plain lightweight tag, not an annotated one (user's choice, 2026-10-16 — `v1.3.3`
-itself is annotated, but don't redo it): `git tag vX.Y.Z <commit>` then `git push origin vX.Y.Z`.
+**Releases.** The user handles the version/date/README/NEWS changes and the example files
+(`data/*.omv`) themself, then commits "Version X.Y.Z". Before that, `DESCRIPTION` goes from the
+4-part dev version to `X.Y.Z` (in sync with `0000.yaml`'s `version:` and date), and the `.jmo` is
+rebuilt. After the release commit, remind the user to create a git tag, prefixed with `v`
+(`v1.3.3`, `v1.4.0`): a plain lightweight tag, not an annotated one (user's choice, 2026-10-16 —
+`v1.3.3` itself is annotated, but don't redo it): `git tag vX.Y.Z <commit>` then
+`git push origin vX.Y.Z`. vijPlots 1.4.0 was released on 2026-11-08 (tag `v1.4.0`, commit
+`3058449`); development of 1.5 needs `DESCRIPTION` back to a 4-part version (e.g. `1.4.0.1`).
 
 Testing (testthat edition 3, run from the package root after `devtools::load_all(".")`):
 

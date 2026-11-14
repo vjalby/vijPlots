@@ -325,7 +325,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 dplyr::group_modify(function(subDf, ...) {
                     # jmvcore::composeFormula() backtick-quotes variable names as needed (same pattern already used in corresp.b.R).
                     formula <- jmvcore::composeFormula(".FREQ", c(categoryName, groupName))
-                    tab <- stats::xtabs(formula, data = subDf)
+                    # addNA: missing values kept as a category (ignoreNA unchecked) are tiles of the
+                    # plot, so they are part of the table the residuals are computed on
+                    tab <- stats::xtabs(formula, data = subDf, addNA = TRUE)
                     # a 2x2-or-larger table is required: below that, chisq.test() either errors
                     # (fully empty table) or silently returns a 1-D vector instead of a matrix
                     # of residuals (single category or single group), which would break the
@@ -344,6 +346,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
                     residDf <- as.data.frame(chisqres$residuals)
                     names(residDf) <- c(categoryName, groupName, ".RESIDUALS")
+                    # xtabs() made NA a level: back to a missing value, as in the plot data, for the join
+                    for (name in c(categoryName, groupName))
+                        residDf[[name]] <- factor(residDf[[name]], levels = levels(subDf[[name]]))
                     residDf
                 }) |>
                 dplyr::ungroup()

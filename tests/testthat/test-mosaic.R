@@ -322,6 +322,38 @@ test_that("mosaic: proportions and residuals are computed correctly", {
     expect_equal(state$.RESIDUALS, expectedResiduals$residuals, tolerance = 1e-6)
 })
 
+test_that("mosaic: residuals include the missing values kept as a category", {
+    # Missing values in both variables, weighted; every cell of the 3 x 3 table (NA included) has cases
+    naResidualsData <- data.frame(
+        cat = factor(c("A", "A", "A", "B", "B", "B", NA, NA, NA)),
+        grp = factor(c("X", "Y", NA, "X", "Y", NA, "X", "Y", NA)),
+        w = c(30, 10, 5, 20, 40, 8, 6, 12, 3)
+    )
+    key <- function(cat, grp) paste(as.character(cat), as.character(grp))
+    tab <- stats::xtabs(w ~ addNA(cat) + addNA(grp), data = naResidualsData)
+    expected <- as.data.frame(suppressWarnings(stats::chisq.test(tab))$residuals)
+    names(expected) <- c("cat", "grp", "residuals")
+
+    r <- vijPlots::mosaic(data = naResidualsData, category = "cat", group = "grp", counts = "w",
+                          facet = NULL, ignoreNA = FALSE)
+    state <- as.data.frame(r$plot$state)
+    expect_equal(nrow(state), 9)
+    expect_false(anyNA(state$.RESIDUALS))
+    expect_equal(state$.RESIDUALS, expected$residuals[match(key(state$cat, state$grp), key(expected$cat, expected$grp))],
+                 tolerance = 1e-6)
+
+    # Missing values ignored: the residuals of the table without them
+    tab <- stats::xtabs(w ~ cat + grp, data = naResidualsData)
+    expected <- as.data.frame(suppressWarnings(stats::chisq.test(tab))$residuals)
+    names(expected) <- c("cat", "grp", "residuals")
+    r <- vijPlots::mosaic(data = naResidualsData, category = "cat", group = "grp", counts = "w",
+                          facet = NULL, ignoreNA = TRUE)
+    state <- as.data.frame(r$plot$state)
+    expect_equal(nrow(state), 4)
+    expect_equal(state$.RESIDUALS, expected$residuals[match(key(state$cat, state$grp), key(expected$cat, expected$grp))],
+                 tolerance = 1e-6)
+})
+
 test_that("mosaic: weighted by counts variable", {
     r <- vijPlots::mosaic(
         data = weightedData,

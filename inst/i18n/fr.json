@@ -493,6 +493,9 @@
             "Columns (Groups)": [
                 "Colonnes (Groupes)"
             ],
+            "Combine Categories": [
+                "Regrouper les modalités"
+            ],
             "Comparison Tests": [
                 "Tests de comparaison"
             ],
@@ -611,6 +614,9 @@
                 "Sombre 2"
             ],
             "Dark Gray": [
+                "Gris foncé"
+            ],
+            "Dark gray": [
                 "Gris foncé"
             ],
             "Dashed line": [
@@ -1114,6 +1120,9 @@
             "Light Gray": [
                 "Gris clair"
             ],
+            "Light gray": [
+                "Gris clair"
+            ],
             "Light Green": [
                 "Vert clair"
             ],
@@ -1456,6 +1465,12 @@
             "Original Eigenvalues": [
                 "Valeurs propres originales"
             ],
+            "Other": [
+                "Autres"
+            ],
+            "Other Category": [
+                "Modalité regroupée"
+            ],
             "Other Options": [
                 "Autres options"
             ],
@@ -1629,6 +1644,9 @@
             ],
             "Principal normalization": [
                 "Normalisation principale"
+            ],
+            "Proportion less than": [
+                "Proportion inférieure à"
             ],
             "Proportional point size": [
                 "Points proportionnels"
@@ -1881,6 +1899,9 @@
             ],
             "Sizes & Colors": [
                 "Tailles & couleurs"
+            ],
+            "Small Categories": [
+                "Petites modalités"
             ],
             "Smooth": [
                 "Lisse"

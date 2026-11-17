@@ -35,6 +35,9 @@ items:
         - counts
         - ignoreNA
         - order
+        - lump
+        - lumpProp
+        - lumpLabel
 
     - name: plot
       title: ""

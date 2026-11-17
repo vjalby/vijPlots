@@ -2,6 +2,7 @@
 
 * Mosaic Plot: the Pearson residuals now include the missing values kept as a category (when "Ignore missing values" is unchecked)
 * Scatter Plot: "Group shapes" now supports up to 18 groups (instead of 11)
+* Pie Chart: option to combine the small categories into an "Other" category (automatically or below a given proportion), with its own label and color
 
 # vijPlots 1.4.0 (2026-11-08)
 

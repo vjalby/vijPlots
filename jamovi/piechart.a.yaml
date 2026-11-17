@@ -112,6 +112,42 @@ options:
       type: Bool
       default: false
 
+    - name: lump
+      title: Combine Categories
+      type: List
+      options:
+        - title: None
+          name: none
+        - title: Auto
+          name: auto
+        - title: Proportion less than
+          name: prop
+      default: none
+
+    - name: lumpProp
+      title: ""
+      type: Number
+      min: 0.1
+      max: 50
+      default: 5
+
+    - name: lumpLabel
+      title: Label
+      type: String
+      default: ''
+
+    - name: lumpColor
+      title: Color
+      type: List
+      options:
+        - title: Palette
+          name: palette
+        - title: Light gray
+          name: lightgray
+        - title: Dark gray
+          name: darkgray
+      default: lightgray
+
     - name: labOffset
       type: Number
       title: Offset

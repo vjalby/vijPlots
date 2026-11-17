@@ -1,5 +1,12 @@
-vijColorScale = function(pal, type = "fill", theme, drop = TRUE, labels = ggplot2::waiver()) {
+vijColorScale = function(pal, type = "fill", theme, drop = TRUE, labels = ggplot2::waiver(),
+                         lastColor = NULL) {
     palette <- vijColorPalette(pal, type, theme)
+    # lastColor: color of the last level (e.g. lumped "Other"), the others keep the palette colors.
+    # An explicit NA level is not counted in n (drawn with na.value)
+    if (!is.null(lastColor)) {
+        basePalette <- palette
+        palette <- function(n) if (n > 1) c(basePalette(n - 1), lastColor) else lastColor
+    }
     # drop = FALSE to include unused levels in color scales
     return(ggplot2::discrete_scale(aesthetics = type, palette = palette, na.value = "gray", drop = drop,
                                    labels = labels))

@@ -71,16 +71,43 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(weighted))
                 return(FALSE)
 
+            aVarName <- self$options$aVar
+
+            # Lump the small categories into "Other", over all the data (same categories in every facet).
+            # Done before the count below, which then sums the "Other" rows. NA is never lumped.
+            # Only if at least 2 categories are lumped (forcats would rename a single one "Other").
+            # "Auto" lumps the least frequent categories while "Other" stays the smallest one.
+            otherLevel <- trimws(self$options$lumpLabel)
+            if (otherLevel == "")
+                otherLevel <- .("Other")
+            lumped <- FALSE
+            if (self$options$lump != "none") {
+                f <- weighted$data[[aVarName]]
+                w <- weighted$data$.COUNTS
+                g <- switch(self$options$lump,
+                            auto = forcats::fct_lump_lowfreq(f, w = w, other_level = otherLevel),
+                            prop = forcats::fct_lump_prop(f, prop = self$options$lumpProp / 100, w = w,
+                                                          other_level = otherLevel))
+                if (nlevels(g) < nlevels(f)) {
+                    weighted$data[[aVarName]] <- g
+                    lumped <- TRUE
+                }
+            }
+
             # Sum the counts per combination of variables: the state is saved into the .omv,
             # so store one row per bar/slice rather than one row per case
             plotData <- dplyr::count(weighted$data, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
 
             # Sort the categories by overall count (slices, legend and frequency table)
-            aVarName <- self$options$aVar
             if (self$options$order == "decreasing")
                 plotData[[aVarName]] <- forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS)
             else if (self$options$order == "increasing")
                 plotData[[aVarName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS))
+            # "Other" last, whatever the order. The attribute tells .plot() which level it is (color)
+            if (lumped) {
+                plotData[[aVarName]] <- forcats::fct_relevel(plotData[[aVarName]], otherLevel, after = Inf)
+                attr(plotData, "otherLevel") <- otherLevel
+            }
 
             if (self$options$frequencyTable)
                 vijFrequencyTable(self, plotData, inner = aVarName,
@@ -94,6 +121,11 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
 
             plotData <- image$state
+
+            # Color of the "Other" slice (last level), only if categories were lumped in .run()
+            otherColor <- NULL
+            if (!is.null(attr(plotData, "otherLevel")))
+                otherColor <- switch(self$options$lumpColor, lightgray = "#D9D9D9", darkgray = "#666666", NULL)
 
             # Missing values (ignoreNA unchecked) shown as "(Missing)": legend, facet strips, text labels
             labelNA <- vijLabelNA(self)
@@ -204,7 +236,8 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme & colors ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA,
+                                                     lastColor = otherColor)
 
             # Guide
             if (!private$.showLegend())

@@ -19,6 +19,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             labType = "text",
             overlap = FALSE,
             hideLabelsBelow = FALSE,
+            lump = "none",
+            lumpProp = 5,
+            lumpLabel = "",
+            lumpColor = "lightgray",
             labOffset = 0,
             labSize = 12,
             colorPalette = "jmv",
@@ -129,6 +133,32 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "hideLabelsBelow",
                 hideLabelsBelow,
                 default=FALSE)
+            private$..lump <- jmvcore::OptionList$new(
+                "lump",
+                lump,
+                options=list(
+                    "none",
+                    "auto",
+                    "prop"),
+                default="none")
+            private$..lumpProp <- jmvcore::OptionNumber$new(
+                "lumpProp",
+                lumpProp,
+                min=0.1,
+                max=50,
+                default=5)
+            private$..lumpLabel <- jmvcore::OptionString$new(
+                "lumpLabel",
+                lumpLabel,
+                default="")
+            private$..lumpColor <- jmvcore::OptionList$new(
+                "lumpColor",
+                lumpColor,
+                options=list(
+                    "palette",
+                    "lightgray",
+                    "darkgray"),
+                default="lightgray")
             private$..labOffset <- jmvcore::OptionNumber$new(
                 "labOffset",
                 labOffset,
@@ -418,6 +448,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..labType)
             self$.addOption(private$..overlap)
             self$.addOption(private$..hideLabelsBelow)
+            self$.addOption(private$..lump)
+            self$.addOption(private$..lumpProp)
+            self$.addOption(private$..lumpLabel)
+            self$.addOption(private$..lumpColor)
             self$.addOption(private$..labOffset)
             self$.addOption(private$..labSize)
             self$.addOption(private$..colorPalette)
@@ -460,6 +494,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         labType = function() private$..labType$value,
         overlap = function() private$..overlap$value,
         hideLabelsBelow = function() private$..hideLabelsBelow$value,
+        lump = function() private$..lump$value,
+        lumpProp = function() private$..lumpProp$value,
+        lumpLabel = function() private$..lumpLabel$value,
+        lumpColor = function() private$..lumpColor$value,
         labOffset = function() private$..labOffset$value,
         labSize = function() private$..labSize$value,
         colorPalette = function() private$..colorPalette$value,
@@ -501,6 +539,10 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..labType = NA,
         ..overlap = NA,
         ..hideLabelsBelow = NA,
+        ..lump = NA,
+        ..lumpProp = NA,
+        ..lumpLabel = NA,
+        ..lumpColor = NA,
         ..labOffset = NA,
         ..labSize = NA,
         ..colorPalette = NA,
@@ -579,7 +621,10 @@ piechartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "facet",
                     "counts",
                     "ignoreNA",
-                    "order")))
+                    "order",
+                    "lump",
+                    "lumpProp",
+                    "lumpLabel")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -626,6 +671,10 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param labType .
 #' @param overlap .
 #' @param hideLabelsBelow .
+#' @param lump .
+#' @param lumpProp .
+#' @param lumpLabel .
+#' @param lumpColor .
 #' @param labOffset .
 #' @param labSize .
 #' @param colorPalette .
@@ -681,6 +730,10 @@ piechart <- function(
     labType = "text",
     overlap = FALSE,
     hideLabelsBelow = FALSE,
+    lump = "none",
+    lumpProp = 5,
+    lumpLabel = "",
+    lumpColor = "lightgray",
     labOffset = 0,
     labSize = 12,
     colorPalette = "jmv",
@@ -739,6 +792,10 @@ piechart <- function(
         labType = labType,
         overlap = overlap,
         hideLabelsBelow = hideLabelsBelow,
+        lump = lump,
+        lumpProp = lumpProp,
+        lumpLabel = lumpLabel,
+        lumpColor = lumpColor,
         labOffset = labOffset,
         labSize = labSize,
         colorPalette = colorPalette,

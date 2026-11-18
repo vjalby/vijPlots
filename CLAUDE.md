@@ -517,7 +517,35 @@ Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0)
   `fct_lump_n()` (`fct_lump()` itself is superseded), with `w = .COUNTS` and a translated
   `other_level`. `NA` is not lumped (stays "(Missing)"). Sorting by `fct_infreq()` would rank the
   "Other" level by its count: move it last afterwards (`fct_relevel(f, other, after = Inf)`), before
-  "(Missing)". Useful beyond the Pareto (variables with many categories).
+  "(Missing)". Useful beyond the Pareto (variables with many categories). Now done in `piechart`
+  (see below): reuse its approach.
+
+### `piechart`: combining small categories (2026-11-18)
+
+"Small Categories" section (`lump`: none / auto / prop + `lumpProp` %, `lumpLabel`, `lumpColor`).
+In `.run()`, the lumping is done on `weighted$data` (one row per case) **before** the existing
+`dplyr::count()`, which then sums the "Other" rows: no second count (user's choice, simpler).
+`auto` = `fct_lump_lowfreq()` (lumps while "Other" stays the smallest: can take a large category
+too), `prop` = `fct_lump_prop()`, both with `w = .COUNTS`. Over all the data, not per facet (same
+categories in every facet). `NA` is never lumped (forcats leaves it `NA`); the proportions'
+denominator includes the missing values' weights when they are kept, like the slices.
+- **At least 2 categories with cases** must be lumped (`nlevels(droplevels(g)) <
+  nlevels(droplevels(f))`): forcats (`fct_lump_prop`/`_n`/`_lowfreq`, also the superseded
+  `fct_lump`) would otherwise rename a single one "Other".
+- **Empty levels** (an unused level kept by jamovi's "Retain unused levels in analyses", or a
+  category whose counts/weights are all 0: jamovi doesn't trim those, and `vijWeightedData()`
+  drops zero-weight rows) are absorbed into "Other" when lumping happens, and shown in the legend
+  (`drop = FALSE`) when it doesn't, as with "None". Checked by the user in jamovi (2026-11-18):
+  the intended behaviour, don't change it. Rejected: dropping them whenever a mode is chosen (would
+  ignore jamovi's option), and lumping only non-empty levels then re-adding the empty ones (a
+  0-count category would stay outside "Other").
+- "Other" is moved last after sorting, and `attr(plotData, "otherLevel")` tells `.plot()` it was
+  lumped (an attribute keeps the state a data.frame, readable from older `.omv` files). Its color:
+  `vijColorScale(..., lastColor = )` (new optional argument: last level gets that color, the palette
+  is computed for `n - 1`; an explicit `NA` level isn't counted in `n`). With the jmv palette, the
+  other slices' colors may change, since `jmvcore::colorPalette(n)` depends on `n`.
+- Empty `lumpLabel` = translated `.("Other")` ("Autres"), computed in `.run()`: saved in the `.omv`
+  in the run's language (same trade-off as `likertplot`'s missing group).
 
 ### Ideas under study (not implemented; findings of 2026-10-29)
 

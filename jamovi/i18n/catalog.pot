@@ -87,6 +87,7 @@ msgstr ""
 
 #: barchart/ui[3][0][0]/errorBars_ci/ciLevel.suffix
 #: barplot/results/frequencies.columns.title
+#: piechart/ui[3][0][0][0]/lump_prop/lumpProp.suffix
 #: piechart/results/frequencies.columns.title
 msgid "%"
 msgstr ""
@@ -697,6 +698,7 @@ msgstr ""
 #: mrfrequencies/options/textColor/auto.title
 #: mrfrequencies/options/yAxisRangeType/auto.title
 #: mrfrequencies/options/xAxisRangeType/auto.title
+#: piechart/options/lump/auto.title
 #: piechart/options/textColor/auto.title
 #: qqplot/options/yAxisRangeType/auto.title
 #: qqplot/options/xAxisRangeType/auto.title
@@ -1192,7 +1194,7 @@ msgstr ""
 #: mosaic/ui[7][2].label
 #: mrcrosstabs/ui[6][2].label
 #: mrfrequencies/ui[6][2].label
-#: piechart/ui[6][2].label
+#: piechart/ui[7][2].label
 #: qqplot/ui[7][2].label
 #: raincloud/ui[4][2].label
 #: scatterplot/ui[6][2].label
@@ -1421,6 +1423,7 @@ msgid "Clockwise"
 msgstr ""
 
 #: mosaic/options/labelColor.title
+#: piechart/options/lumpColor.title
 msgid "Color"
 msgstr ""
 
@@ -1436,7 +1439,7 @@ msgstr ""
 #: barplot/ui[3][0][1][0].label
 #: mrcrosstabs/ui[3][0][1][0].label
 #: mrfrequencies/ui[3][0][1][0].label
-#: piechart/ui[3][0][1][0].label
+#: piechart/ui[4][0][1][0].label
 #: raincloud/ui[1][1][0].label
 #: scatterplot/ui[2][0][0].label
 msgid "Color Options"
@@ -1450,7 +1453,7 @@ msgstr ""
 #: mosaic/ui[3][0][0][0].label
 #: mrcrosstabs/ui[3][0][0][0].label
 #: mrfrequencies/ui[3][0][0][0].label
-#: piechart/ui[3][0][0][0].label
+#: piechart/ui[4][0][0][0].label
 #: qqplot/ui[4][0][0][0].label
 msgid "Color Palette"
 msgstr ""
@@ -1462,7 +1465,7 @@ msgstr ""
 #: lollipop/ui[3][0][0][0].label
 #: mrcrosstabs/ui[3].label
 #: mrfrequencies/ui[3].label
-#: piechart/ui[3].label
+#: piechart/ui[4].label
 msgid "Colors"
 msgstr ""
 
@@ -1539,6 +1542,11 @@ msgstr ""
 #: mrcrosstabs/options/xaxis/xcols.title
 #: mrcrosstabs/ui[2][0][1][1]/xaxis_xcols.label
 msgid "Columns (Groups)"
+msgstr ""
+
+#: piechart/options/lump.title
+#: piechart/ui[3][0][0][0].label
+msgid "Combine Categories"
 msgstr ""
 
 #: likertplot/ui[3].label
@@ -1769,6 +1777,10 @@ msgstr ""
 
 #: multcorresp/options/obsColor/darkgray.title
 msgid "Dark Gray"
+msgstr ""
+
+#: piechart/options/lumpColor/darkgray.title
+msgid "Dark gray"
 msgstr ""
 
 #: histogram/options/dashedDensity.title
@@ -2102,7 +2114,7 @@ msgstr ""
 #: histogram/ui[4][0][1][0].label
 #: lollipop/ui[4][0][1][0].label
 #: mosaic/ui[4][0][1][0].label
-#: piechart/ui[4][1][0].label
+#: piechart/ui[5][1][0].label
 #: scatterplot/ui[3][0][1][0].label
 msgid "Facet Labels"
 msgstr ""
@@ -2122,8 +2134,8 @@ msgstr ""
 #: mosaic/ui[4].label
 #: mosaic/ui[4][0][0][0].label
 #: piechart/options/facetBy.title
-#: piechart/ui[4].label
-#: piechart/ui[4][0][0].label
+#: piechart/ui[5].label
+#: piechart/ui[5][0][0].label
 #: scatterplot/options/facetBy.title
 #: scatterplot/ui[3].label
 #: scatterplot/ui[3][0][0][0].label
@@ -3000,6 +3012,7 @@ msgstr ""
 #: multcorresp/options/labelSize.title
 #: multcorresp/ui[1][2].label
 #: piechart/options/labType/label.title
+#: piechart/options/lumpLabel.title
 #: piechart/options/labSize.title
 #: piechart/options/textColor.title
 #: principal/options/labelVar.title
@@ -3218,8 +3231,8 @@ msgstr ""
 #: mosaic/ui[6][0].label
 #: mrcrosstabs/ui[5][0].label
 #: multcorresp/ui[8][0].label
-#: piechart/ui[5].label
-#: piechart/ui[5][0].label
+#: piechart/ui[6].label
+#: piechart/ui[6][0].label
 #: principal/ui[6][0].label
 #: qqplot/ui[6][0].label
 #: raincloud/ui[3][0].label
@@ -3294,6 +3307,10 @@ msgstr ""
 #: principal/options/varColor/#F2F2F2.title
 #: principal/options/obsColor/#F2F2F2.title
 msgid "Light Gray"
+msgstr ""
+
+#: piechart/options/lumpColor/lightgray.title
+msgid "Light gray"
 msgstr ""
 
 #: histogram/options/fillColor/#CCEBC5.title
@@ -3790,6 +3807,7 @@ msgstr ""
 #: mrfrequencies/ui[1][1][0]/order_none.label
 #: piechart/options/order/none.title
 #: piechart/options/labels/none.title
+#: piechart/options/lump/none.title
 #: piechart/options/borderColor/none.title
 #: principal/options/rotation/none.title
 #: scatterplot/options/singleColor/none.title
@@ -4131,6 +4149,14 @@ msgstr ""
 msgid "Original Eigenvalues"
 msgstr ""
 
+#: R/piechart.b.R
+msgid "Other"
+msgstr ""
+
+#: piechart/ui[3][0][1][0].label
+msgid "Other Category"
+msgstr ""
+
 #: areachart/ui[1][0][1].label
 msgid "Other Options"
 msgstr ""
@@ -4213,6 +4239,7 @@ msgstr ""
 #: mrcrosstabs/options/colorPalette.title
 #: mrfrequencies/options/colorPalette.title
 #: multcorresp/options/colorPalette.title
+#: piechart/options/lumpColor/palette.title
 #: piechart/options/colorPalette.title
 #: principal/options/colorPalette.title
 #: qqplot/options/colorPalette.title
@@ -4416,7 +4443,7 @@ msgstr ""
 #: mosaic/ui[7].label
 #: mrcrosstabs/ui[6].label
 #: mrfrequencies/ui[6].label
-#: piechart/ui[6].label
+#: piechart/ui[7].label
 #: qqplot/ui[7].label
 #: raincloud/ui[4].label
 #: scatterplot/ui[6].label
@@ -4554,6 +4581,10 @@ msgstr ""
 
 #: R/corresp.b.R
 msgid "Principal normalization"
+msgstr ""
+
+#: piechart/options/lump/prop.title
+msgid "Proportion less than"
 msgstr ""
 
 #: multcorresp/options/propPoint.title
@@ -5336,6 +5367,10 @@ msgstr ""
 msgid "Sizes & Colors"
 msgstr ""
 
+#: piechart/ui[3].label
+msgid "Small Categories"
+msgstr ""
+
 #: scatterplot/options/lineMethod/loess.title
 msgid "Smooth"
 msgstr ""
@@ -5514,7 +5549,7 @@ msgstr ""
 #: mosaic/ui[7][1].label
 #: mrcrosstabs/ui[6][1].label
 #: mrfrequencies/ui[6][1].label
-#: piechart/ui[6][1].label
+#: piechart/ui[7][1].label
 #: qqplot/ui[7][1].label
 #: raincloud/ui[4][1].label
 #: scatterplot/ui[6][1].label
@@ -5913,7 +5948,7 @@ msgstr ""
 #: mosaic/ui[7][0].label
 #: mrcrosstabs/ui[6][0].label
 #: mrfrequencies/ui[6][0].label
-#: piechart/ui[6][0].label
+#: piechart/ui[7][0].label
 #: qqplot/ui[7][0].label
 #: raincloud/ui[4][0].label
 #: scatterplot/ui[6][0].label

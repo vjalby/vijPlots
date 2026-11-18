@@ -151,7 +151,9 @@ rows dropped) and returns `list(data, nMissing)`, or `NULL` when no row is left;
 case (a missing or separator-only value gives an `NA` row when `na`), or returns just the distinct
 responses when `init` (for the tables' `.init()`); it takes no `self`. It fills the data.frame column
 by column on purpose: the former nested `vapply()` came out as a plain vector, not a one-row matrix,
-when the data had a single row (fixed 2026-10-24). Options
+when the data had a single row (fixed 2026-10-24). `vijLumpLevels(f, w, method, prop, otherLevel)`
+lumps the small categories of `piechart` (see "combining small categories" below) and returns the
+factor, or `NULL` when nothing is lumped; it takes no `self` (`otherLevel` is translated by the caller). Options
 are passed explicitly (user's preference), `self` is only used for `self$data`, errors and `.()`.
 
 ### Non-obvious runtime gotchas
@@ -525,6 +527,7 @@ Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0)
 "Small Categories" section (`lump`: none / auto / prop + `lumpProp` %, `lumpLabel`, `lumpColor`).
 In `.run()`, the lumping is done on `weighted$data` (one row per case) **before** the existing
 `dplyr::count()`, which then sums the "Other" rows: no second count (user's choice, simpler).
+The lumping itself is the shared `vijLumpLevels()` (`utilsData.R`), meant for `barplot` too.
 `auto` = `fct_lump_lowfreq()` (lumps while "Other" stays the smallest: can take a large category
 too), `prop` = `fct_lump_prop()`, both with `w = .COUNTS`. Over all the data, not per facet (same
 categories in every facet). `NA` is never lumped (forcats leaves it `NA`); the proportions'

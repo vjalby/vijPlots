@@ -74,26 +74,16 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             aVarName <- self$options$aVar
 
             # Lump the small categories into "Other", over all the data (same categories in every facet).
-            # Done before the count below, which then sums the "Other" rows. NA is never lumped.
-            # Only if at least 2 categories with cases are lumped (forcats would rename a single one
-            # "Other"); droplevels() so that empty levels (also lumped) aren't counted.
-            # "Auto" lumps the least frequent categories while "Other" stays the smallest one.
+            # Done before the count below, which then sums the "Other" rows (see vijLumpLevels())
             otherLevel <- trimws(self$options$lumpLabel)
             if (otherLevel == "")
                 otherLevel <- .("Other")
-            lumped <- FALSE
-            if (self$options$lump != "none") {
-                f <- weighted$data[[aVarName]]
-                w <- weighted$data$.COUNTS
-                g <- switch(self$options$lump,
-                            auto = forcats::fct_lump_lowfreq(f, w = w, other_level = otherLevel),
-                            prop = forcats::fct_lump_prop(f, prop = self$options$lumpProp / 100, w = w,
-                                                          other_level = otherLevel))
-                if (nlevels(droplevels(g)) < nlevels(droplevels(f))) {
-                    weighted$data[[aVarName]] <- g
-                    lumped <- TRUE
-                }
-            }
+            lumpedVar <- vijLumpLevels(weighted$data[[aVarName]], weighted$data$.COUNTS,
+                                       method = self$options$lump, prop = self$options$lumpProp / 100,
+                                       otherLevel = otherLevel)
+            lumped <- !is.null(lumpedVar)
+            if (lumped)
+                weighted$data[[aVarName]] <- lumpedVar
 
             # Sum the counts per combination of variables: the state is saved into the .omv,
             # so store one row per bar/slice rather than one row per case

@@ -134,6 +134,24 @@ vijWeightedData = function(self, varNames, countsName = NULL, ignoreNA = TRUE) {
     list(data = data, nMissing = nMissing)
 }
 
+# Lumping of the small categories of factor f (weights w) into otherLevel (piechart):
+# - method "auto": the least frequent categories, while otherLevel stays the smallest one
+#   (forcats::fct_lump_lowfreq); "prop": the categories whose share is less than prop (fct_lump_prop)
+# - NA is never lumped; empty levels are lumped too
+# - an existing otherLevel category receives the lumped ones
+# Returns the lumped factor, or NULL with method "none" or when fewer than 2 categories with cases
+# would be lumped (forcats would rename a single one otherLevel); droplevels() so that empty levels
+# aren't counted.
+vijLumpLevels = function(f, w, method, prop, otherLevel) {
+    g <- switch(method,
+                auto = forcats::fct_lump_lowfreq(f, w = w, other_level = otherLevel),
+                prop = forcats::fct_lump_prop(f, prop = prop, w = w, other_level = otherLevel),
+                NULL)
+    if (is.null(g) || nlevels(droplevels(g)) >= nlevels(droplevels(f)))
+        return(NULL)
+    g
+}
+
 # One-hot encoding of a multi-valued variable (mrfrequencies, mrcrosstabs): each value of aCol holds
 # several responses separated by `separator` (e.g. "a;b").
 # - init = TRUE: returns only the distinct responses (the columns, for the table's init)

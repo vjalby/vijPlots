@@ -94,16 +94,16 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData[[aVarName]] <- forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS)
             else if (self$options$order == "increasing")
                 plotData[[aVarName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[aVarName]], w = plotData$.COUNTS))
-            # "Other" last, whatever the order. The attribute tells .plot() which level it is (color)
-            if (lumped) {
+            # "Other" last, whatever the order
+            if (lumped)
                 plotData[[aVarName]] <- forcats::fct_relevel(plotData[[aVarName]], otherLevel, after = Inf)
-                attr(plotData, "otherLevel") <- otherLevel
-            }
 
             if (self$options$frequencyTable)
                 vijFrequencyTable(self, plotData, inner = aVarName,
                                   facet = self$options$facet, nMissing = weighted$nMissing)
 
+            # "lumped" attribute passed to plot to set the last slice color.
+            attr(plotData, "lumped") <- lumped
             image <- self$results$plot
             image$setState(plotData)
         },
@@ -113,10 +113,11 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- image$state
 
-            # Color of the "Other" slice (last level), only if categories were lumped in .run()
-            otherColor <- NULL
-            if (!is.null(attr(plotData, "otherLevel")))
+            # "Other" slice color (last level) is set only if categories were lumped in .run()
+            if (isTRUE(attr(plotData, "lumped")))
                 otherColor <- switch(self$options$lumpColor, lightgray = "#D9D9D9", darkgray = "#666666", NULL)
+            else
+                otherColor <- NULL
 
             # Missing values (ignoreNA unchecked) shown as "(Missing)": legend, facet strips, text labels
             labelNA <- vijLabelNA(self)

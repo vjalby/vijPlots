@@ -542,8 +542,12 @@ denominator includes the missing values' weights when they are kept, like the sl
   the intended behaviour, don't change it. Rejected: dropping them whenever a mode is chosen (would
   ignore jamovi's option), and lumping only non-empty levels then re-adding the empty ones (a
   0-count category would stay outside "Other").
-- "Other" is moved last after sorting, and `attr(plotData, "otherLevel")` tells `.plot()` it was
-  lumped (an attribute keeps the state a data.frame, readable from older `.omv` files). Its color:
+- "Other" is moved last after sorting, and `attr(plotData, "lumped")` (TRUE/FALSE) tells `.plot()`
+  it was lumped. Set just before `setState()` and read first thing in `.plot()` (`isTRUE()`: FALSE
+  for older states), so that no data operation can drop it. An attribute rather than a list state
+  (user's decision, 2026-11-18): a list would change the state's shape, and jamovi 2.7 restores the
+  state saved in an `.omv` (a data.frame for vijPlots <= 1.4.1), so it would need compatibility code;
+  a `.OTHER` column was also considered. Its color:
   `vijColorScale(..., lastColor = )` (new optional argument: last level gets that color, the palette
   is computed for `n - 1`; an explicit `NA` level isn't counted in `n`). With the jmv palette, the
   other slices' colors may change, since `jmvcore::colorPalette(n)` depends on `n`.

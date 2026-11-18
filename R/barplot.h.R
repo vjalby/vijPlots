@@ -23,6 +23,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             barType = "dodge2",
             labelPosition = "middle",
             hideLabelsBelow = FALSE,
+            lump = "none",
+            lumpProp = 5,
+            lumpLabel = "",
+            lumpColor = "lightgray",
             accuracy = "0.1",
             colorPalette = "jmv",
             borderColor = "none",
@@ -180,6 +184,32 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "hideLabelsBelow",
                 hideLabelsBelow,
                 default=FALSE)
+            private$..lump <- jmvcore::OptionList$new(
+                "lump",
+                lump,
+                options=list(
+                    "none",
+                    "auto",
+                    "prop"),
+                default="none")
+            private$..lumpProp <- jmvcore::OptionNumber$new(
+                "lumpProp",
+                lumpProp,
+                min=0.1,
+                max=50,
+                default=5)
+            private$..lumpLabel <- jmvcore::OptionString$new(
+                "lumpLabel",
+                lumpLabel,
+                default="")
+            private$..lumpColor <- jmvcore::OptionList$new(
+                "lumpColor",
+                lumpColor,
+                options=list(
+                    "palette",
+                    "lightgray",
+                    "darkgray"),
+                default="lightgray")
             private$..accuracy <- jmvcore::OptionList$new(
                 "accuracy",
                 accuracy,
@@ -591,6 +621,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..barType)
             self$.addOption(private$..labelPosition)
             self$.addOption(private$..hideLabelsBelow)
+            self$.addOption(private$..lump)
+            self$.addOption(private$..lumpProp)
+            self$.addOption(private$..lumpLabel)
+            self$.addOption(private$..lumpColor)
             self$.addOption(private$..accuracy)
             self$.addOption(private$..colorPalette)
             self$.addOption(private$..borderColor)
@@ -658,6 +692,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         barType = function() private$..barType$value,
         labelPosition = function() private$..labelPosition$value,
         hideLabelsBelow = function() private$..hideLabelsBelow$value,
+        lump = function() private$..lump$value,
+        lumpProp = function() private$..lumpProp$value,
+        lumpLabel = function() private$..lumpLabel$value,
+        lumpColor = function() private$..lumpColor$value,
         accuracy = function() private$..accuracy$value,
         colorPalette = function() private$..colorPalette$value,
         borderColor = function() private$..borderColor$value,
@@ -724,6 +762,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..barType = NA,
         ..labelPosition = NA,
         ..hideLabelsBelow = NA,
+        ..lump = NA,
+        ..lumpProp = NA,
+        ..lumpLabel = NA,
+        ..lumpColor = NA,
         ..accuracy = NA,
         ..colorPalette = NA,
         ..borderColor = NA,
@@ -832,7 +874,10 @@ barplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ignoreNA",
                     "order",
                     "yaxis",
-                    "percentWithin")))
+                    "percentWithin",
+                    "lump",
+                    "lumpProp",
+                    "lumpLabel")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -883,6 +928,10 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param barType .
 #' @param labelPosition .
 #' @param hideLabelsBelow .
+#' @param lump .
+#' @param lumpProp .
+#' @param lumpLabel .
+#' @param lumpColor .
 #' @param accuracy .
 #' @param colorPalette .
 #' @param borderColor .
@@ -963,6 +1012,10 @@ barplot <- function(
     barType = "dodge2",
     labelPosition = "middle",
     hideLabelsBelow = FALSE,
+    lump = "none",
+    lumpProp = 5,
+    lumpLabel = "",
+    lumpColor = "lightgray",
     accuracy = "0.1",
     colorPalette = "jmv",
     borderColor = "none",
@@ -1049,6 +1102,10 @@ barplot <- function(
         barType = barType,
         labelPosition = labelPosition,
         hideLabelsBelow = hideLabelsBelow,
+        lump = lump,
+        lumpProp = lumpProp,
+        lumpLabel = lumpLabel,
+        lumpColor = lumpColor,
         accuracy = accuracy,
         colorPalette = colorPalette,
         borderColor = borderColor,

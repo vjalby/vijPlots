@@ -43,6 +43,9 @@ items:
         - order
         - yaxis
         - percentWithin
+        - lump
+        - lumpProp
+        - lumpLabel
 
     - name: plot
       title: ""

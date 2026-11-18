@@ -152,7 +152,7 @@ case (a missing or separator-only value gives an `NA` row when `na`), or returns
 responses when `init` (for the tables' `.init()`); it takes no `self`. It fills the data.frame column
 by column on purpose: the former nested `vapply()` came out as a plain vector, not a one-row matrix,
 when the data had a single row (fixed 2026-10-24). `vijLumpLevels(f, w, method, prop, otherLevel)`
-lumps the small categories of `piechart` (see "combining small categories" below) and returns the
+lumps the small categories of `piechart`/`barplot` (see "combining small categories" below) and returns the
 factor, or `NULL` when nothing is lumped; it takes no `self` (`otherLevel` is translated by the caller). Options
 are passed explicitly (user's preference), `self` is only used for `self$data`, errors and `.()`.
 
@@ -519,15 +519,20 @@ Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0)
   `fct_lump_n()` (`fct_lump()` itself is superseded), with `w = .COUNTS` and a translated
   `other_level`. `NA` is not lumped (stays "(Missing)"). Sorting by `fct_infreq()` would rank the
   "Other" level by its count: move it last afterwards (`fct_relevel(f, other, after = Inf)`), before
-  "(Missing)". Useful beyond the Pareto (variables with many categories). Now done in `piechart`
-  (see below): reuse its approach.
+  "(Missing)". Useful beyond the Pareto (variables with many categories). **Done** (2026-11-18),
+  see below.
 
-### `piechart`: combining small categories (2026-11-18)
+### `piechart`/`barplot`: combining small categories (2026-11-18)
+
+`barplot` (same options, section and code): only the category axis (`rows`) is lumped, over all
+groups and facets. The "Other" color applies only without a group (the fill is the group's,
+`lastColor` would gray the last group) and has no effect with "Single color" (fill fixed in
+`geom_bar`, "Other" included: user's choice); the UI disables it accordingly.
 
 "Small Categories" section (`lump`: none / auto / prop + `lumpProp` %, `lumpLabel`, `lumpColor`).
 In `.run()`, the lumping is done on `weighted$data` (one row per case) **before** the existing
 `dplyr::count()`, which then sums the "Other" rows: no second count (user's choice, simpler).
-The lumping itself is the shared `vijLumpLevels()` (`utilsData.R`), meant for `barplot` too.
+The lumping itself is the shared `vijLumpLevels()` (`utilsData.R`).
 `auto` = `fct_lump_lowfreq()` (lumps while "Other" stays the smallest: can take a large category
 too), `prop` = `fct_lump_prop()`, both with `w = .COUNTS`. Over all the data, not per facet (same
 categories in every facet). `NA` is never lumped (forcats leaves it `NA`); the proportions'

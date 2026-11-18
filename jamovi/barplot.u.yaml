@@ -255,6 +255,63 @@ children:
                     name: textColor
                     enable: (showLabels && (labelPosition_middle || barType_stack))
   - type: CollapseBox
+    label: Small Categories
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Combine Categories
+                children:
+                  - type: RadioButton
+                    name: lump_none
+                    optionName: lump
+                    optionPart: none
+                  - type: RadioButton
+                    name: lump_auto
+                    optionName: lump
+                    optionPart: auto
+                  - type: RadioButton
+                    name: lump_prop
+                    optionName: lump
+                    optionPart: prop
+                    style: inline
+                    verticalAlignment: center
+                    children:
+                      - type: TextBox
+                        name: lumpProp
+                        label: ''
+                        format: number
+                        suffix: '%'
+                        enable: (lump:prop)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Other Category
+                children:
+                  - type: TextBox
+                    name: lumpLabel
+                    format: string
+                    width: large
+                    enable: (!lump:none)
+                  - type: ComboBox
+                    name: lumpColor
+                    enable: (!lump:none && !columns && (barType_stack || !singleColor))
+  - type: CollapseBox
     label: Facets
     collapsed: true
     stretchFactor: 1

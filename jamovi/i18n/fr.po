@@ -91,6 +91,7 @@ msgid "# of rows/columns"
 msgstr "Nbre de lignes/colonnes"
 
 #: barchart/ui[3][0][0]/errorBars_ci/ciLevel.suffix
+#: barplot/ui[4][0][0][0]/lump_prop/lumpProp.suffix
 #: barplot/results/frequencies.columns.title
 #: piechart/ui[4][0][0][0]/lump_prop/lumpProp.suffix
 #: piechart/results/frequencies.columns.title
@@ -904,6 +905,7 @@ msgstr "août"
 #: barchart/options/textColor/auto.title
 #: barchart/options/yAxisRangeType/auto.title
 #: barchart/options/xAxisRangeType/auto.title
+#: barplot/options/lump/auto.title
 #: barplot/options/textColor/auto.title
 #: barplot/options/yAxisRangeType/auto.title
 #: barplot/options/xAxisRangeType/auto.title
@@ -937,7 +939,7 @@ msgstr "Auto"
 
 #: areachart/ui[2].label
 #: barchart/ui[6].label
-#: barplot/ui[5].label
+#: barplot/ui[6].label
 #: boxplot/ui[4].label
 #: histogram/ui[5].label
 #: likertplot/ui[7].label
@@ -1413,7 +1415,7 @@ msgstr "Impossible de corriger les niveaux d'une variable de type texte."
 
 #: areachart/ui[4][2].label
 #: barchart/ui[8][2].label
-#: barplot/ui[7][2].label
+#: barplot/ui[8][2].label
 #: boxplot/ui[6][2].label
 #: histogram/ui[7][2].label
 #: likertplot/ui[9][2].label
@@ -1650,6 +1652,7 @@ msgstr "Cercle"
 msgid "Clockwise"
 msgstr "Modalités dans le sens horaire"
 
+#: barplot/options/lumpColor.title
 #: mosaic/options/labelColor.title
 #: piechart/options/lumpColor.title
 msgid "Color"
@@ -1772,6 +1775,8 @@ msgstr "Colonnes"
 msgid "Columns (Groups)"
 msgstr "Colonnes (Groupes)"
 
+#: barplot/options/lump.title
+#: barplot/ui[4][0][0][0].label
 #: piechart/options/lump.title
 #: piechart/ui[4][0][0][0].label
 msgid "Combine Categories"
@@ -2007,6 +2012,7 @@ msgstr "Sombre 2"
 msgid "Dark Gray"
 msgstr "Gris foncé"
 
+#: barplot/options/lumpColor/darkgray.title
 #: piechart/options/lumpColor/darkgray.title
 msgid "Dark gray"
 msgstr "Gris foncé"
@@ -2337,7 +2343,7 @@ msgid "Facet"
 msgstr "Facette"
 
 #: barchart/ui[5][0][1][0].label
-#: barplot/ui[4][1][0].label
+#: barplot/ui[5][1][0].label
 #: boxplot/ui[3][1][0].label
 #: histogram/ui[4][0][1][0].label
 #: lollipop/ui[4][0][1][0].label
@@ -2349,8 +2355,8 @@ msgstr "Etiquettes des facettes"
 
 #: barchart/ui[5].label
 #: barchart/ui[5][0][0][0].label
-#: barplot/ui[4].label
-#: barplot/ui[4][0][0].label
+#: barplot/ui[5].label
+#: barplot/ui[5][0][0].label
 #: boxplot/options/facetBy.title
 #: boxplot/ui[3].label
 #: boxplot/ui[3][0][0].label
@@ -3226,6 +3232,7 @@ msgid "Kruskal-Wallis Tests"
 msgstr "Tests de Kruskal-Wallis"
 
 #: barchart/options/textColor.title
+#: barplot/options/lumpLabel.title
 #: barplot/options/textColor.title
 #: barplot/options/labelFontSize.title
 #: boxplot/options/label.title
@@ -3450,7 +3457,7 @@ msgstr "Gauche"
 
 #: areachart/ui[3][0].label
 #: barchart/ui[7][0].label
-#: barplot/ui[6][0].label
+#: barplot/ui[7][0].label
 #: boxplot/ui[5][0].label
 #: histogram/ui[6][0].label
 #: likertplot/ui[8][0].label
@@ -3470,7 +3477,7 @@ msgstr "Légende"
 
 #: areachart/ui[3].label
 #: barchart/ui[7].label
-#: barplot/ui[6].label
+#: barplot/ui[7].label
 #: boxplot/ui[5].label
 #: histogram/ui[6].label
 #: linechart/ui[3].label
@@ -3537,6 +3544,7 @@ msgstr "Marron clair"
 msgid "Light Gray"
 msgstr "Gris clair"
 
+#: barplot/options/lumpColor/lightgray.title
 #: piechart/options/lumpColor/lightgray.title
 msgid "Light gray"
 msgstr "Gris clair"
@@ -4016,6 +4024,7 @@ msgstr "Aucune rotation appliquée."
 #: barchart/options/borderColor/none.title
 #: barchart/ui[1][2][0]/order_none.label
 #: barplot/options/order/none.title
+#: barplot/options/lump/none.title
 #: barplot/options/borderColor/none.title
 #: boxplot/options/order/none.title
 #: boxplot/ui[1][1][0]/order_none.label
@@ -4379,10 +4388,12 @@ msgstr "Oranges"
 msgid "Original Eigenvalues"
 msgstr "Valeurs propres originales"
 
+#: R/barplot.b.R
 #: R/piechart.b.R
 msgid "Other"
 msgstr "Autres"
 
+#: barplot/ui[4][0][1][0].label
 #: piechart/ui[4][0][1][0].label
 msgid "Other Category"
 msgstr "Modalité regroupée"
@@ -4465,6 +4476,7 @@ msgstr "Comparaisons par paires"
 
 #: areachart/options/colorPalette.title
 #: barchart/options/colorPalette.title
+#: barplot/options/lumpColor/palette.title
 #: barplot/options/colorPalette.title
 #: boxplot/options/colorPalette.title
 #: likertplot/options/plotColor.title
@@ -4670,7 +4682,7 @@ msgstr "Options du graphique"
 
 #: areachart/ui[4].label
 #: barchart/ui[8].label
-#: barplot/ui[7].label
+#: barplot/ui[8].label
 #: boxplot/ui[6].label
 #: histogram/ui[7].label
 #: likertplot/ui[9].label
@@ -4819,6 +4831,7 @@ msgstr "Coordonnées principales"
 msgid "Principal normalization"
 msgstr "Normalisation principale"
 
+#: barplot/options/lump/prop.title
 #: piechart/options/lump/prop.title
 msgid "Proportion less than"
 msgstr "Proportion inférieure à"
@@ -4972,8 +4985,8 @@ msgstr "Diagramme Raincloud"
 #: areachart/ui[2][0][1][1].label
 #: barchart/ui[6][0][0][1].label
 #: barchart/ui[6][0][1][1].label
-#: barplot/ui[5][0][0][1].label
-#: barplot/ui[5][0][1][1].label
+#: barplot/ui[6][0][0][1].label
+#: barplot/ui[6][0][1][1].label
 #: boxplot/ui[4][0][0][1].label
 #: boxplot/ui[4][0][1][1].label
 #: histogram/ui[5][0][0][1].label
@@ -5605,6 +5618,7 @@ msgstr "Taille"
 msgid "Sizes & Colors"
 msgstr "Tailles & couleurs"
 
+#: barplot/ui[4].label
 #: piechart/ui[4].label
 msgid "Small Categories"
 msgstr "Petites modalités"
@@ -5780,7 +5794,7 @@ msgstr "Style"
 
 #: areachart/ui[4][1].label
 #: barchart/ui[8][1].label
-#: barplot/ui[7][1].label
+#: barplot/ui[8][1].label
 #: boxplot/ui[6][1].label
 #: histogram/ui[7][1].label
 #: likertplot/ui[9][1].label
@@ -6192,7 +6206,7 @@ msgstr "Séries temporelles"
 
 #: areachart/ui[4][0].label
 #: barchart/ui[8][0].label
-#: barplot/ui[7][0].label
+#: barplot/ui[8][0].label
 #: boxplot/ui[6][0].label
 #: histogram/ui[7][0].label
 #: likertplot/ui[9][0].label
@@ -6643,8 +6657,8 @@ msgstr "Paramètres de la distribution incorrects."
 #: barchart/ui[0][1].label
 #: barchart/ui[6][0][0][0].label
 #: barchart/ui[7][1].label
-#: barplot/ui[5][0][0][0].label
-#: barplot/ui[6][1].label
+#: barplot/ui[6][0][0][0].label
+#: barplot/ui[7][1].label
 #: boxplot/ui[4][0][0][0].label
 #: boxplot/ui[5][1].label
 #: corresp/options/xaxis.title
@@ -6723,8 +6737,8 @@ msgstr "Étendue axe X"
 #: barchart/ui[7][2].label
 #: barplot/options/yaxis.title
 #: barplot/ui[1][1][0].label
-#: barplot/ui[5][0][1][0].label
-#: barplot/ui[6][2].label
+#: barplot/ui[6][0][1][0].label
+#: barplot/ui[7][2].label
 #: boxplot/ui[4][0][1][0].label
 #: boxplot/ui[5][2].label
 #: corresp/options/yaxis.title

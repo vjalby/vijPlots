@@ -63,6 +63,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return()
 
             varNames <- c(self$options$rows, self$options$columns, self$options$facet)
+            categoryName <- self$options$rows
 
             # ".COUNTS" is the column name used for the weights
             reservedVar <- intersect(varNames, ".COUNTS")
@@ -74,16 +75,29 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(weighted))
                 return()
 
+            # Lump the small categories into "Other" (see vijLumpLevels())
+            otherLevel <- trimws(self$options$lumpLabel)
+            if (otherLevel == "")
+                otherLevel <- .("Other")
+            lumpedVar <- vijLumpLevels(weighted$data[[categoryName]], weighted$data$.COUNTS,
+                                       method = self$options$lump, prop = self$options$lumpProp / 100,
+                                       otherLevel = otherLevel)
+            lumped <- !is.null(lumpedVar)
+            if (lumped)
+                weighted$data[[categoryName]] <- lumpedVar
+
             # Sum the counts per combination of variables: the state is saved into the .omv,
             # so store one row per bar/slice rather than one row per case
             plotData <- dplyr::count(weighted$data, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
 
             # Sort the categories by overall count
-            categoryName <- self$options$rows
             if (self$options$order == "decreasing")
                 plotData[[categoryName]] <- forcats::fct_infreq(plotData[[categoryName]], w = plotData$.COUNTS)
             else if (self$options$order == "increasing")
                 plotData[[categoryName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryName]], w = plotData$.COUNTS))
+            # "Other" last, whatever the order
+            if (lumped)
+                plotData[[categoryName]] <- forcats::fct_relevel(plotData[[categoryName]], otherLevel, after = Inf)
 
             if (self$options$frequencyTable) {
                 blockNames <- private$.tableBlocks()
@@ -91,6 +105,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                   outer = blockNames$outer, facet = self$options$facet, nMissing = weighted$nMissing)
             }
 
+            # "lumped" attribute passed to plot to set the last bar color
+            attr(plotData, "lumped") <- lumped
             image <- self$results$plot
             image$setState(plotData)
         },
@@ -101,6 +117,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(image$state))
                 return(FALSE)
             plotData <- image$state
+            lumped <- isTRUE(attr(plotData, "lumped"))
 
             #### Variables ####
 
@@ -148,6 +165,12 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if (singleColor)
                 oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
+
+            # "Other" bar color (last level), only if lumped and without group (fill = group)
+            if (lumped && is.null(groupVar))
+                otherColor <- switch(self$options$lumpColor, lightgray = "#D9D9D9", darkgray = "#666666", NULL)
+            else
+                otherColor <- NULL
 
             # Correct labelPosition option
             if (positionStack)
@@ -337,7 +360,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA, # drop to include unused levels in color scales
+                                                     lastColor = otherColor)
 
             # Grid lines (value axis only)
             plot <- plot + vijGridLines(self$options$theme,

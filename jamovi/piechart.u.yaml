@@ -211,6 +211,42 @@ children:
                     optionPart: '0.01'
                     enable: ({ return ['percent','group+percent'].includes(ui['labels'].value()); })
   - type: CollapseBox
+    label: Colors
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Palette
+                children:
+                  - type: ComboBox
+                    name: colorPalette
+                    label: ''
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Color Options
+                children:
+                  - type: ComboBox
+                    name: borderColor
+                  - type: ComboBox
+                    name: textColor
+                    enable: (!labels:none)
+  - type: CollapseBox
     label: Small Categories
     collapsed: true
     stretchFactor: 1
@@ -267,42 +303,6 @@ children:
                   - type: ComboBox
                     name: lumpColor
                     enable: (!lump:none)
-  - type: CollapseBox
-    label: Colors
-    collapsed: true
-    stretchFactor: 1
-    children:
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        style: inline
-        children:
-          - type: LayoutBox
-            cell:
-              column: 0
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Color Palette
-                children:
-                  - type: ComboBox
-                    name: colorPalette
-                    label: ''
-          - type: LayoutBox
-            cell:
-              column: 1
-              row: 0
-            stretchFactor: 1
-            children:
-              - type: Label
-                label: Color Options
-                children:
-                  - type: ComboBox
-                    name: borderColor
-                  - type: ComboBox
-                    name: textColor
-                    enable: (!labels:none)
   - type: CollapseBox
     label: Facets
     collapsed: true

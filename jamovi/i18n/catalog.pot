@@ -87,7 +87,7 @@ msgstr ""
 
 #: barchart/ui[3][0][0]/errorBars_ci/ciLevel.suffix
 #: barplot/results/frequencies.columns.title
-#: piechart/ui[3][0][0][0]/lump_prop/lumpProp.suffix
+#: piechart/ui[4][0][0][0]/lump_prop/lumpProp.suffix
 #: piechart/results/frequencies.columns.title
 msgid "%"
 msgstr ""
@@ -1439,7 +1439,7 @@ msgstr ""
 #: barplot/ui[3][0][1][0].label
 #: mrcrosstabs/ui[3][0][1][0].label
 #: mrfrequencies/ui[3][0][1][0].label
-#: piechart/ui[4][0][1][0].label
+#: piechart/ui[3][0][1][0].label
 #: raincloud/ui[1][1][0].label
 #: scatterplot/ui[2][0][0].label
 msgid "Color Options"
@@ -1453,7 +1453,7 @@ msgstr ""
 #: mosaic/ui[3][0][0][0].label
 #: mrcrosstabs/ui[3][0][0][0].label
 #: mrfrequencies/ui[3][0][0][0].label
-#: piechart/ui[4][0][0][0].label
+#: piechart/ui[3][0][0][0].label
 #: qqplot/ui[4][0][0][0].label
 msgid "Color Palette"
 msgstr ""
@@ -1465,7 +1465,7 @@ msgstr ""
 #: lollipop/ui[3][0][0][0].label
 #: mrcrosstabs/ui[3].label
 #: mrfrequencies/ui[3].label
-#: piechart/ui[4].label
+#: piechart/ui[3].label
 msgid "Colors"
 msgstr ""
 
@@ -1545,7 +1545,7 @@ msgid "Columns (Groups)"
 msgstr ""
 
 #: piechart/options/lump.title
-#: piechart/ui[3][0][0][0].label
+#: piechart/ui[4][0][0][0].label
 msgid "Combine Categories"
 msgstr ""
 
@@ -4153,7 +4153,7 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: piechart/ui[3][0][1][0].label
+#: piechart/ui[4][0][1][0].label
 msgid "Other Category"
 msgstr ""
 
@@ -5367,7 +5367,7 @@ msgstr ""
 msgid "Sizes & Colors"
 msgstr ""
 
-#: piechart/ui[3].label
+#: piechart/ui[4].label
 msgid "Small Categories"
 msgstr ""
 

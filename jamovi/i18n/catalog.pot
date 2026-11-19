@@ -86,7 +86,7 @@ msgid "# of rows/columns"
 msgstr ""
 
 #: barchart/ui[3][0][0]/errorBars_ci/ciLevel.suffix
-#: barplot/ui[4][0][0][0]/lump_prop/lumpProp.suffix
+#: barplot/ui[4][0][0][1]/lump_prop/lumpProp.suffix
 #: barplot/results/frequencies.columns.title
 #: piechart/ui[4][0][0][0]/lump_prop/lumpProp.suffix
 #: piechart/results/frequencies.columns.title
@@ -1272,6 +1272,7 @@ msgid "Category %"
 msgstr ""
 
 #: barplot/options/rows.title
+#: barplot/options/lumpRows.title
 #: barplot/ui[0][0].label
 #: mosaic/options/category.title
 #: mosaic/ui[0][0].label
@@ -2567,6 +2568,7 @@ msgstr ""
 #: barchart/options/group.title
 #: barchart/ui[0][2].label
 #: barplot/options/columns.title
+#: barplot/options/lumpColumns.title
 #: barplot/ui[0][1].label
 #: boxplot/options/group.title
 #: boxplot/ui[0][1].label
@@ -3635,6 +3637,7 @@ msgctxt "menu"
 msgid "October"
 msgstr ""
 
+#: barplot/ui[4][0][0][1].label
 #: likertplot/options/adjustMethod.title
 #: multcorresp/options/method.title
 #: multcorresp/ui[4][0].label
@@ -3794,7 +3797,6 @@ msgstr ""
 #: barchart/options/borderColor/none.title
 #: barchart/ui[1][2][0]/order_none.label
 #: barplot/options/order/none.title
-#: barplot/options/lump/none.title
 #: barplot/options/borderColor/none.title
 #: boxplot/options/order/none.title
 #: boxplot/ui[1][1][0]/order_none.label

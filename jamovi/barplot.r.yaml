@@ -46,6 +46,8 @@ items:
         - lump
         - lumpProp
         - lumpLabel
+        - lumpRows
+        - lumpColumns
 
     - name: plot
       title: ""

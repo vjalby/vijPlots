@@ -79,12 +79,17 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             otherLevel <- trimws(self$options$lumpLabel)
             if (otherLevel == "")
                 otherLevel <- .("Other")
-            lumpedVar <- vijLumpLevels(weighted$data[[categoryName]], weighted$data$.COUNTS,
-                                       method = self$options$lump, prop = self$options$lumpProp / 100,
-                                       otherLevel = otherLevel)
-            lumped <- !is.null(lumpedVar)
-            if (lumped)
-                weighted$data[[categoryName]] <- lumpedVar
+            lumpNames <- c(if (self$options$lumpRows) categoryName, if (self$options$lumpColumns) self$options$columns)
+            lumpedNames <- character(0)
+            for (varName in lumpNames) {
+                lumpedVar <- vijLumpLevels(weighted$data[[varName]], weighted$data$.COUNTS,
+                                           method = self$options$lump, prop = self$options$lumpProp / 100,
+                                           otherLevel = otherLevel)
+                if (!is.null(lumpedVar)) {
+                    weighted$data[[varName]] <- lumpedVar
+                    lumpedNames <- c(lumpedNames, varName)
+                }
+            }
 
             # Sum the counts per combination of variables: the state is saved into the .omv,
             # so store one row per bar/slice rather than one row per case
@@ -96,8 +101,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else if (self$options$order == "increasing")
                 plotData[[categoryName]] <- forcats::fct_rev(forcats::fct_infreq(plotData[[categoryName]], w = plotData$.COUNTS))
             # "Other" last, whatever the order
-            if (lumped)
-                plotData[[categoryName]] <- forcats::fct_relevel(plotData[[categoryName]], otherLevel, after = Inf)
+            for (varName in lumpedNames)
+                plotData[[varName]] <- forcats::fct_relevel(plotData[[varName]], otherLevel, after = Inf)
 
             if (self$options$frequencyTable) {
                 blockNames <- private$.tableBlocks()
@@ -105,8 +110,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                   outer = blockNames$outer, facet = self$options$facet, nMissing = weighted$nMissing)
             }
 
-            # "lumped" attribute passed to plot to set the last bar color
-            attr(plotData, "lumped") <- lumped
+            # "lumped" attribute (names of the lumped variables) passed to plot to set the "Other" color
+            attr(plotData, "lumped") <- lumpedNames
             image <- self$results$plot
             image$setState(plotData)
         },
@@ -117,7 +122,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(image$state))
                 return(FALSE)
             plotData <- image$state
-            lumped <- isTRUE(attr(plotData, "lumped"))
+            lumpedNames <- attr(plotData, "lumped")
 
             #### Variables ####
 
@@ -166,8 +171,9 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (singleColor)
                 oneColorOfPalette <- vijOneColorOfPalette(self$options$colorPalette, "fill", theme, self$options$colorNo)
 
-            # "Other" bar color (last level), only if lumped and without group (fill = group)
-            if (lumped && is.null(groupVar))
+            # "Other" color (last level), only if the fill variable (category or group) was lumped
+            fillName <- if (is.null(groupVar)) self$options$rows else self$options$columns
+            if (fillName %in% lumpedNames)
                 otherColor <- switch(self$options$lumpColor, lightgray = "#D9D9D9", darkgray = "#666666", NULL)
             else
                 otherColor <- NULL

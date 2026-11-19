@@ -23,8 +23,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             barType = "dodge2",
             labelPosition = "middle",
             hideLabelsBelow = FALSE,
-            lump = "none",
+            lump = "prop",
             lumpProp = 5,
+            lumpRows = FALSE,
+            lumpColumns = FALSE,
             lumpLabel = "",
             lumpColor = "lightgray",
             accuracy = "0.1",
@@ -188,16 +190,23 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "lump",
                 lump,
                 options=list(
-                    "none",
                     "auto",
                     "prop"),
-                default="none")
+                default="prop")
             private$..lumpProp <- jmvcore::OptionNumber$new(
                 "lumpProp",
                 lumpProp,
                 min=0.1,
                 max=50,
                 default=5)
+            private$..lumpRows <- jmvcore::OptionBool$new(
+                "lumpRows",
+                lumpRows,
+                default=FALSE)
+            private$..lumpColumns <- jmvcore::OptionBool$new(
+                "lumpColumns",
+                lumpColumns,
+                default=FALSE)
             private$..lumpLabel <- jmvcore::OptionString$new(
                 "lumpLabel",
                 lumpLabel,
@@ -623,6 +632,8 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..hideLabelsBelow)
             self$.addOption(private$..lump)
             self$.addOption(private$..lumpProp)
+            self$.addOption(private$..lumpRows)
+            self$.addOption(private$..lumpColumns)
             self$.addOption(private$..lumpLabel)
             self$.addOption(private$..lumpColor)
             self$.addOption(private$..accuracy)
@@ -694,6 +705,8 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         hideLabelsBelow = function() private$..hideLabelsBelow$value,
         lump = function() private$..lump$value,
         lumpProp = function() private$..lumpProp$value,
+        lumpRows = function() private$..lumpRows$value,
+        lumpColumns = function() private$..lumpColumns$value,
         lumpLabel = function() private$..lumpLabel$value,
         lumpColor = function() private$..lumpColor$value,
         accuracy = function() private$..accuracy$value,
@@ -764,6 +777,8 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..hideLabelsBelow = NA,
         ..lump = NA,
         ..lumpProp = NA,
+        ..lumpRows = NA,
+        ..lumpColumns = NA,
         ..lumpLabel = NA,
         ..lumpColor = NA,
         ..accuracy = NA,
@@ -877,7 +892,9 @@ barplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "percentWithin",
                     "lump",
                     "lumpProp",
-                    "lumpLabel")))
+                    "lumpLabel",
+                    "lumpRows",
+                    "lumpColumns")))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -930,6 +947,8 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param hideLabelsBelow .
 #' @param lump .
 #' @param lumpProp .
+#' @param lumpRows .
+#' @param lumpColumns .
 #' @param lumpLabel .
 #' @param lumpColor .
 #' @param accuracy .
@@ -1012,8 +1031,10 @@ barplot <- function(
     barType = "dodge2",
     labelPosition = "middle",
     hideLabelsBelow = FALSE,
-    lump = "none",
+    lump = "prop",
     lumpProp = 5,
+    lumpRows = FALSE,
+    lumpColumns = FALSE,
     lumpLabel = "",
     lumpColor = "lightgray",
     accuracy = "0.1",
@@ -1104,6 +1125,8 @@ barplot <- function(
         hideLabelsBelow = hideLabelsBelow,
         lump = lump,
         lumpProp = lumpProp,
+        lumpRows = lumpRows,
+        lumpColumns = lumpColumns,
         lumpLabel = lumpLabel,
         lumpColor = lumpColor,
         accuracy = accuracy,

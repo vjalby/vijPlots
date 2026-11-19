@@ -273,18 +273,24 @@ children:
               - type: Label
                 label: Combine Categories
                 children:
-                  - type: RadioButton
-                    name: lump_none
-                    optionName: lump
-                    optionPart: none
+                  - type: CheckBox
+                    name: lumpRows
+                  - type: CheckBox
+                    name: lumpColumns
+                    enable: (!(!columns))
+              - type: Label
+                label: Method
+                children:
                   - type: RadioButton
                     name: lump_auto
                     optionName: lump
                     optionPart: auto
+                    enable: (lumpRows || (!(!columns) && lumpColumns))
                   - type: RadioButton
                     name: lump_prop
                     optionName: lump
                     optionPart: prop
+                    enable: (lumpRows || (!(!columns) && lumpColumns))
                     style: inline
                     verticalAlignment: center
                     children:
@@ -293,7 +299,7 @@ children:
                         label: ''
                         format: number
                         suffix: '%'
-                        enable: (lump:prop)
+                        enable: (lump:prop && (lumpRows || (!(!columns) && lumpColumns)))
           - type: LayoutBox
             cell:
               column: 1
@@ -307,10 +313,10 @@ children:
                     name: lumpLabel
                     format: string
                     width: large
-                    enable: (!lump:none)
+                    enable: (lumpRows || (!(!columns) && lumpColumns))
                   - type: ComboBox
                     name: lumpColor
-                    enable: (!lump:none && !columns && (barType_stack || !singleColor))
+                    enable: ((!columns && lumpRows && (barType_stack || !singleColor)) || (!(!columns) && lumpColumns))
   - type: CollapseBox
     label: Facets
     collapsed: true

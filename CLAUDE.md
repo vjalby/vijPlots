@@ -385,6 +385,9 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   unchanged. Tests don't catch this: they render once with the option already set, so the snapshot
   looks right (bit the `xGridLines`/`yGridLines` options, 2026-10-20). Images without `clearWith:`
   (all the other analyses) are redrawn on any option change.
+- In a `.u.yaml` `enable:`, a Variable option (`columns`, `facet`, `group`...) can't be tested
+  positively: `(columns)` or `columns && x` doesn't work (jamovi bug, all analyses). Write
+  `!(!columns)`; the negative `!columns` works.
 - `barchart`'s observations (`showPoints`, added 2026-10-28) draw the raw values over the bars.
   `.run()` keeps them in the state (`points`: `.X`, group, facet, `.PY`) only when `.showPoints()`
   allows it (mean or median, not stacked with a group); the points layer comes right after
@@ -524,10 +527,15 @@ Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0)
 
 ### `piechart`/`barplot`: combining small categories (2026-11-18)
 
-`barplot` (same options, section and code): only the category axis (`rows`) is lumped, over all
-groups and facets. The "Other" color applies only without a group (the fill is the group's,
-`lastColor` would gray the last group) and has no effect with "Single color" (fill fixed in
-`geom_bar`, "Other" included: user's choice); the UI disables it accordingly.
+`barplot` (same options, section and code) also lets the user choose the variables: `lumpRows`
+(category axis) and `lumpColumns` (group), both unchecked by default (user's choice, 2026-11-19),
+each lumped over all the data with the same settings. The checkboxes turn lumping on, so `lump` has
+no "None" in `barplot` (`auto`/`prop`, default `prop`; the UI puts them under the checkboxes, as
+"Method"); `piechart` keeps "None". Its `"lumped"` attribute holds the *names* of
+the lumped variables (piechart's is TRUE/FALSE). The "Other" color applies to the fill variable
+(category without a group, group otherwise) when it was lumped: a lumped category with a group is
+just an axis tick. It has no effect with "Single color" (fill fixed in `geom_bar`, "Other"
+included: user's choice); the UI's `enable:` follows the same rule.
 
 "Small Categories" section (`lump`: none / auto / prop + `lumpProp` %, `lumpLabel`, `lumpColor`).
 In `.run()`, the lumping is done on `weighted$data` (one row per case) **before** the existing

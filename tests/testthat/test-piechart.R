@@ -541,3 +541,73 @@ test_that("piechart: the missing values note keeps the decimals of weighted coun
     r <- vijPlots::piechart(data = decData, aVar = "cat", facet = NULL, counts = "w", frequencyTable = TRUE)
     expect_equal(r$frequencies$notes$missing$note, "Missing values: 1.25")
 })
+
+# Small categories: c, d, e (15%) below 10%, f empty level
+lumpData <- data.frame(
+    x = factor(c(rep("a", 50), rep("b", 30), rep("c", 6), rep("d", 5), rep("e", 4), rep(NA, 5)),
+               levels = c("a", "b", "c", "d", "e", "f")),
+    g = factor(rep(c("F", "H"), 50))
+)
+
+lumpFills <- function(r) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    ld <- ggplot2::layer_data(ggplot2::last_plot(), 1)
+    as.vector(tapply(ld$fill, ld$group, unique))
+}
+
+test_that("piechart: small categories lumped into Other, last whatever the order", {
+    for (order in c("none", "decreasing", "increasing")) {
+        r <- vijPlots::piechart(data = lumpData, aVar = "x", facet = "g", counts = NULL, ignoreNA = FALSE,
+                                lump = "prop", lumpProp = 10, order = order)
+        state <- r$plot$state
+        expect_equal(tail(levels(state$x), 1), "Other")
+        expect_setequal(levels(state$x), c("a", "b", "Other"))
+        expect_true(attr(state, "lumped"))
+        # one row per facet for Other, NA kept apart
+        expect_equal(sum(state$.COUNTS[state$x %in% "Other"]), 15)
+        expect_equal(sum(state$.COUNTS[is.na(state$x)]), 5)
+    }
+    r <- vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL, ignoreNA = FALSE, lump = "auto")
+    expect_equal(levels(r$plot$state$x), c("a", "Other"))
+})
+
+test_that("piechart: no lumping with None, nor for a single small category", {
+    r <- vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL, lump = "none")
+    expect_equal(levels(r$plot$state$x), c("a", "b", "c", "d", "e", "f"))
+    expect_false(attr(r$plot$state, "lumped"))
+    # only e (4%) below 5%, the empty level f not counted
+    r <- vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL, lump = "prop", lumpProp = 5)
+    expect_equal(levels(r$plot$state$x), c("a", "b", "c", "d", "e", "f"))
+    expect_false(attr(r$plot$state, "lumped"))
+})
+
+test_that("piechart: label of the Other category and frequency table", {
+    r <- vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL, ignoreNA = FALSE,
+                            lump = "prop", lumpProp = 10, lumpLabel = " Others ", frequencyTable = TRUE)
+    expect_equal(levels(r$plot$state$x), c("a", "b", "Others"))
+    df <- r$frequencies$asDF
+    expect_equal(df$inner, c("a", "b", "Others", "(Missing)", "Total"))
+    expect_equal(df$counts, c(50, 30, 15, 5, 100))
+})
+
+test_that("piechart: color of the Other slice", {
+    lumpPie <- function(...) vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL,
+                                                ignoreNA = FALSE, labels = "percent", lump = "prop", lumpProp = 10, ...)
+    fills <- lumpFills(lumpPie(lumpColor = "lightgray"))
+    expect_equal(fills[3:4], c("#D9D9D9", "gray"))  # Other, then (Missing)
+    expect_equal(lumpFills(lumpPie(lumpColor = "darkgray"))[3], "#666666")
+    paletteFills <- lumpFills(lumpPie(lumpColor = "palette"))
+    expect_false(any(paletteFills[1:3] %in% c("#D9D9D9", "#666666")))
+    # not lumped: no gray for the last category
+    fills <- lumpFills(vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL,
+                                          lump = "prop", lumpProp = 5, lumpColor = "lightgray"))
+    expect_false("#D9D9D9" %in% fills)
+})
+
+test_that("piechart: lumped categories plot", {
+    testPlot <- vijPlots::piechart(data = lumpData, aVar = "x", facet = NULL, counts = NULL, ignoreNA = FALSE,
+                                   labels = "group+percent", lump = "prop", lumpProp = 10)$plot
+    expect_plot_snapshot("piechart-lump", testPlot)
+})

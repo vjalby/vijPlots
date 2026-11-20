@@ -566,6 +566,9 @@ denominator includes the missing values' weights when they are kept, like the sl
   other slices' colors may change, since `jmvcore::colorPalette(n)` depends on `n`.
 - Empty `lumpLabel` = translated `.("Other")` ("Autres"), computed in `.run()`: saved in the `.omv`
   in the run's language (same trade-off as `likertplot`'s missing group).
+- Tests: `test-utilsData.R` (`vijLumpLevels()`), and the "lump" tests at the end of
+  `test-piechart.R`/`test-barplot.R` (state, table, "Other" color read from `layer_data()`, one
+  snapshot each).
 
 ### Ideas under study (not implemented; findings of 2026-10-29)
 
@@ -592,6 +595,24 @@ theme, alpha, line width, ...). Only the font and the background were investigat
   `update_geom_defaults()`: global state in jamovi's long-lived R session, and it can't be reset in
   an `on.exit()` of `.plot()` since the plot is rendered after it returns. Add a check that no
   text layer is missing `family`.
+- **Theme and font options: proposal (2026-11-19, not decided, `barplot` first).**
+  - UI: a new "Theme" section, **last** (after "Plot Titles"): global, little used, and at the same
+    place in every analysis. Two columns: "Theme" (ComboBox) and "Font" (Default / Sans / Serif /
+    Mono; a global text size could come later).
+  - Option names `plotTheme`/`fontFamily`, **not** `theme`: `self$options$theme` is a jmvcore binding
+    (jamovi's global theme), like `decSymbol`.
+  - Proposed themes: "jamovi" (default: `ggtheme` as received, current behaviour); jamovi's 4 for
+    this plot only (`jmvcore::theme_default()`/`theme_min()`/`theme_hadley()`/`theme_spss()`; could be
+    dropped as redundant with the preferences); ggplot2's `theme_classic()`, `theme_bw()`,
+    `theme_light()`, `theme_linedraw()`. Left out: `theme_gray()`/`theme_minimal()` (≈ Hadley/Minimal),
+    `theme_dark()` (unreadable), `theme_void()` (no axes, against the axis options), `theme_test()`.
+  - ggplot2 themes must get `base_size = 16`, jamovi's size (ggplot2's default is 11: text would
+    shrink).
+  - `vijGridLines()`/`vijHideAxis()` decide from the theme name (`self$options$theme`): pass them the
+    theme actually applied, and check the 4 ggplot2 themes (e.g. Classic has no grid).
+  - Calling the `jmvcore::theme_*()` functions directly (jmvcore installed here) gave "The `size`
+    argument of `element_rect()` is deprecated" (theme not identified): check it doesn't show in
+    jamovi 28.
 - **Transparent background: impossible from the module.** The white comes from jamovi's graphics
   device, not from ggplot2: the exported SVG starts with a `<rect>` larger than the `viewBox`
   filled in white, identical with and without a transparent `plot.background` (tested on

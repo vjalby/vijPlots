@@ -663,3 +663,68 @@ test_that("barplot: stacked percentages, small labels hidden", {
     )$plot
     expect_plot_snapshot("barplot-hideLabels-percent", testPlot)
 })
+
+# Small categories: c, d, e below 15% on the category axis; G3, G4 (10% each) in the groups
+lumpData <- data.frame(
+    x = factor(c(rep("a", 50), rep("b", 30), rep("c", 6), rep("d", 5), rep("e", 4), rep(NA, 5))),
+    g = factor(rep(c(rep("G1", 5), rep("G2", 3), "G3", "G4"), 10))
+)
+
+lumpBarplot <- function(..., singleColor = FALSE) vijPlots::barplot(data = lumpData, rows = "x", facet = NULL, counts = NULL,
+                                               ignoreNA = FALSE, singleColor = singleColor, lumpProp = 15, ...)
+
+lumpBarFills <- function(r) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    print(r$plot)
+    unique(ggplot2::layer_data(ggplot2::last_plot(), 1)$fill)
+}
+
+test_that("barplot: the checked variables are lumped", {
+    r <- lumpBarplot(columns = NULL)
+    expect_equal(levels(r$plot$state$x), c("a", "b", "c", "d", "e"))
+    expect_length(attr(r$plot$state, "lumped"), 0)
+
+    r <- lumpBarplot(columns = NULL, lumpRows = TRUE, order = "decreasing")
+    expect_equal(levels(r$plot$state$x), c("a", "b", "Other"))
+    expect_equal(attr(r$plot$state, "lumped"), "x")
+
+    # "Group" checked without a group variable: no effect
+    r <- lumpBarplot(columns = NULL, lumpColumns = TRUE)
+    expect_length(attr(r$plot$state, "lumped"), 0)
+
+    r <- lumpBarplot(columns = "g", lumpColumns = TRUE)
+    expect_equal(levels(r$plot$state$x), c("a", "b", "c", "d", "e"))
+    expect_equal(levels(r$plot$state$g), c("G1", "G2", "Other"))
+    expect_equal(attr(r$plot$state, "lumped"), "g")
+
+    r <- lumpBarplot(columns = "g", lumpRows = TRUE, lumpColumns = TRUE, lump = "auto")
+    expect_equal(attr(r$plot$state, "lumped"), c("x", "g"))
+    expect_equal(tail(levels(r$plot$state$x), 1), "Other")
+    expect_equal(tail(levels(r$plot$state$g), 1), "Other")
+})
+
+test_that("barplot: frequency table with lumped categories", {
+    r <- lumpBarplot(columns = NULL, lumpRows = TRUE, frequencyTable = TRUE)
+    df <- r$frequencies$asDF
+    expect_equal(df$inner, c("a", "b", "Other", "(Missing)", "Total"))
+    expect_equal(df$counts, c(50, 30, 15, 5, 100))
+})
+
+test_that("barplot: Other gets its color only when it is the fill variable", {
+    # no group: the fill is the category
+    expect_true("#D9D9D9" %in% lumpBarFills(lumpBarplot(columns = NULL, lumpRows = TRUE)))
+    expect_true("#666666" %in% lumpBarFills(lumpBarplot(columns = NULL, lumpRows = TRUE, lumpColor = "darkgray")))
+    expect_true("#D9D9D9" %in% lumpBarFills(lumpBarplot(columns = NULL, lumpRows = TRUE, barType = "stack")))
+    expect_false("#D9D9D9" %in% lumpBarFills(lumpBarplot(columns = NULL, lumpRows = TRUE, lumpColor = "palette")))
+    # single color: Other too
+    expect_length(lumpBarFills(lumpBarplot(columns = NULL, lumpRows = TRUE, singleColor = TRUE)), 1)
+    # with a group, the fill is the group: lumped category axis only, no gray
+    expect_false("#D9D9D9" %in% lumpBarFills(lumpBarplot(columns = "g", lumpRows = TRUE)))
+    expect_true("#D9D9D9" %in% lumpBarFills(lumpBarplot(columns = "g", lumpColumns = TRUE)))
+})
+
+test_that("barplot: lumped categories and groups plot", {
+    testPlot <- lumpBarplot(columns = "g", lumpRows = TRUE, lumpColumns = TRUE)$plot
+    expect_plot_snapshot("barplot-lump", testPlot)
+})

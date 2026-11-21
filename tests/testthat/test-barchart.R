@@ -458,3 +458,12 @@ testthat::test_that("barchart: observations with options, no group", {
                                    pointShape = "opencircle", pointSize = 3, errorBarColor = "gray")$plot
     expect_plot_snapshot("barchart-points-options", testPlot)
 })
+
+testthat::test_that("barchart: theme and font family, value and total labels included", {
+    p <- renderedPlot(vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = NULL, facet = NULL,
+                                         plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p, nText = 1)
+    p <- renderedPlot(vijPlots::barchart(data = testData, xVar = "Species", yVar = "Petal.Width", group = "group2", facet = NULL,
+                                         barType = "stack", yaxis = "sum", plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p, nText = 2)
+})

@@ -198,10 +198,10 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE)
 
             # Grid lines
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 

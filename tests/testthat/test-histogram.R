@@ -239,3 +239,12 @@ test_that("histogram: hidden axes, the lower margin is kept (the vertical grid l
     expect_equal(yRange(xHideAxis = TRUE, meanLine = TRUE, summaryLineLabel = TRUE),
                  yRange(meanLine = TRUE, summaryLineLabel = TRUE))
 })
+
+test_that("histogram: theme and font family, line labels included", {
+    p <- renderedPlot(vijPlots::histogram(data = testData, aVar = "Petal.Width", group = NULL, facet = NULL,
+                                          meanLine = TRUE, summaryLineLabel = TRUE, plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p, nText = 1)
+    p <- renderedPlot(vijPlots::histogram(data = testData, aVar = "Petal.Width", group = "Species", facet = NULL,
+                                          meanLine = TRUE, summaryLineLabel = TRUE, plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p, nText = 1)
+})

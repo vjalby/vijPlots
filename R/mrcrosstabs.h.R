@@ -68,7 +68,9 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             xGridLines = FALSE,
             yGridLines = FALSE,
             xHideAxis = FALSE,
-            yHideAxis = FALSE, ...) {
+            yHideAxis = FALSE,
+            plotTheme = "default",
+            fontFamily = "default", ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -539,6 +541,29 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 "yHideAxis",
                 yHideAxis,
                 default=FALSE)
+            private$..plotTheme <- jmvcore::OptionList$new(
+                "plotTheme",
+                plotTheme,
+                options=list(
+                    "default",
+                    "jmvDefault",
+                    "jmvMinimal",
+                    "jmvHadley",
+                    "jmvSpss",
+                    "ggBw",
+                    "ggLight",
+                    "ggLinedraw",
+                    "ggDark"),
+                default="default")
+            private$..fontFamily <- jmvcore::OptionList$new(
+                "fontFamily",
+                fontFamily,
+                options=list(
+                    "default",
+                    "sans",
+                    "serif",
+                    "mono"),
+                default="default")
 
             self$.addOption(private$..mode)
             self$.addOption(private$..repVar)
@@ -603,6 +628,8 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..yGridLines)
             self$.addOption(private$..xHideAxis)
             self$.addOption(private$..yHideAxis)
+            self$.addOption(private$..plotTheme)
+            self$.addOption(private$..fontFamily)
         }),
     active = list(
         mode = function() private$..mode$value,
@@ -667,7 +694,9 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         xGridLines = function() private$..xGridLines$value,
         yGridLines = function() private$..yGridLines$value,
         xHideAxis = function() private$..xHideAxis$value,
-        yHideAxis = function() private$..yHideAxis$value),
+        yHideAxis = function() private$..yHideAxis$value,
+        plotTheme = function() private$..plotTheme$value,
+        fontFamily = function() private$..fontFamily$value),
     private = list(
         ..mode = NA,
         ..repVar = NA,
@@ -731,7 +760,9 @@ mrcrosstabsOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..xGridLines = NA,
         ..yGridLines = NA,
         ..xHideAxis = NA,
-        ..yHideAxis = NA)
+        ..yHideAxis = NA,
+        ..plotTheme = NA,
+        ..fontFamily = NA)
 )
 
 mrcrosstabsResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -838,7 +869,9 @@ mrcrosstabsResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                     "xGridLines",
                     "yGridLines",
                     "xHideAxis",
-                    "yHideAxis")))}))
+                    "yHideAxis",
+                    "plotTheme",
+                    "fontFamily")))}))
 
 mrcrosstabsBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "mrcrosstabsBase",
@@ -928,6 +961,8 @@ mrcrosstabsBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yGridLines .
 #' @param xHideAxis .
 #' @param yHideAxis .
+#' @param plotTheme .
+#' @param fontFamily .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$crosstab} \tab \tab \tab \tab \tab a table \cr
@@ -1005,7 +1040,9 @@ mrcrosstabs <- function(
     xGridLines = FALSE,
     yGridLines = FALSE,
     xHideAxis = FALSE,
-    yHideAxis = FALSE) {
+    yHideAxis = FALSE,
+    plotTheme = "default",
+    fontFamily = "default") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mrcrosstabs requires jmvcore to be installed (restart may be required)")
@@ -1090,7 +1127,9 @@ mrcrosstabs <- function(
         xGridLines = xGridLines,
         yGridLines = yGridLines,
         xHideAxis = xHideAxis,
-        yHideAxis = yHideAxis)
+        yHideAxis = yHideAxis,
+        plotTheme = plotTheme,
+        fontFamily = fontFamily)
 
     analysis <- mrcrosstabsClass$new(
         options = options,

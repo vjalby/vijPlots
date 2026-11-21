@@ -503,4 +503,43 @@ options:
       default: 0
       min: 0
       max: 360
+
+    - name: plotTheme
+      title: Theme
+      type: List
+      options:
+        - name: default
+          title: Default
+        - name: jmvDefault
+          title: jamovi
+        - name: jmvMinimal
+          title: Minimal (jamovi)
+        - name: jmvHadley
+          title: Hadley (jamovi)
+        - name: jmvSpss
+          title: SPSS (jamovi)
+        - name: ggBw
+          title: Black and white (ggplot2)
+        - name: ggLight
+          title: Light (ggplot2)
+        - name: ggLinedraw
+          title: Line draw (ggplot2)
+        - name: ggDark
+          title: Dark (ggplot2)
+      default: default
+
+    - name: fontFamily
+      title: Font family
+      type: List
+      options:
+        - name: default
+          title: Default
+        - name: sans
+          title: Sans serif
+        - name: serif
+          title: Serif
+        - name: mono
+          title: Monospace
+      default: default
+
 ...

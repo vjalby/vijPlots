@@ -154,6 +154,9 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(image$state))
                 return(FALSE)
 
+            # Font family of the text layers
+            fontFamily <- vijFontFamily(self$options)
+
             if (self$options$mode == "morevar") {
                 groupVar <- self$options$group
                 optionName <- self$options$optionname
@@ -246,19 +249,19 @@ mrcrosstabsClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (self$options$textColor == "auto" && !labelTop) { # using hex_bw
                     plot <- plot + ggplot2::geom_text(ggplot2::aes(y = .data[[".COUNT"]] / vfactor, color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
-                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
+                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, family = fontFamily, na.rm = TRUE)
                 } else {
                     plot <- plot + ggplot2::geom_text(ggplot2::aes(y = .data[[".COUNT"]] / vfactor), color = textColor,
                                                         position = labelPosition, vjust = vjust2, hjust = hjust2,
-                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
+                                                        fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, family = fontFamily, na.rm = TRUE)
                 }
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme)
 
             # Grid lines (value axis only)
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

@@ -173,12 +173,12 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Colors and axes ####
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE, labels = labelNA) +
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE, labels = labelNA) +
                                     vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) +
                                     vijColorScale(self$options$colorPalette, "slab_color", theme, drop = FALSE, labels = labelNA)
 
             # Grid lines (value axis only)
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

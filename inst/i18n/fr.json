@@ -310,6 +310,9 @@
             "Black": [
                 "Noir"
             ],
+            "Black and white (ggplot2)": [
+                "Noir et blanc (ggplot2)"
+            ],
             "Black border": [
                 "Bordure noire"
             ],
@@ -610,6 +613,9 @@
             "Cumulative %": [
                 "% cumulés"
             ],
+            "Dark (ggplot2)": [
+                "Sombre (ggplot2)"
+            ],
             "Dark 2": [
                 "Sombre 2"
             ],
@@ -805,6 +811,9 @@
             "Font face": [
                 "Style de police"
             ],
+            "Font family": [
+                "Police"
+            ],
             "Font size": [
                 "Taille de police"
             ],
@@ -934,6 +943,9 @@
             "Groupwise": [
                 "Par groupe"
             ],
+            "Hadley (jamovi)": [
+                "Hadley (jamovi)"
+            ],
             "hidden": [
                 ""
             ],
@@ -1005,6 +1017,9 @@
             ],
             "Italic": [
                 "Italique"
+            ],
+            "jamovi": [
+                "jamovi"
             ],
             "Jan": [
                 "janv."
@@ -1111,6 +1126,9 @@
             "Level": [
                 "Niveau"
             ],
+            "Light (ggplot2)": [
+                "Clair (ggplot2)"
+            ],
             "Light Blue": [
                 "Bleu clair"
             ],
@@ -1161,6 +1179,9 @@
             ],
             "Line Chart": [
                 "Graphique en courbes"
+            ],
+            "Line draw (ggplot2)": [
+                "Traits (ggplot2)"
             ],
             "Line size": [
                 "Épaisseur"
@@ -1282,6 +1303,9 @@
             "Min–max": [
                 "Min–max"
             ],
+            "Minimal (jamovi)": [
+                "Minimal (jamovi)"
+            ],
             "Minimum entropy": [
                 "Entropie minimale"
             ],
@@ -1290,6 +1314,9 @@
             ],
             "Missing values: {n}": [
                 "Valeurs manquantes : {n}"
+            ],
+            "Monospace": [
+                "Chasse fixe"
             ],
             "Mosaic Plot": [
                 "Diagramme en mosaïque"
@@ -1804,6 +1831,9 @@
             "Sample Quantiles Deviation": [
                 "Écarts des quantiles observés"
             ],
+            "Sans serif": [
+                "Sans empattement"
+            ],
             "Save": [
                 "Enregistrer"
             ],
@@ -1836,6 +1866,9 @@
             ],
             "September": [
                 "septembre"
+            ],
+            "Serif": [
+                "Avec empattement"
             ],
             "Set 1": [
                 "Ensemble 1"
@@ -1926,6 +1959,9 @@
             ],
             "Spectral": [
                 "Spectral"
+            ],
+            "SPSS (jamovi)": [
+                "SPSS (jamovi)"
             ],
             "Square": [
                 "Carré"
@@ -2100,6 +2136,9 @@
             ],
             "The χ2 statistic is equal to zero.": [
                 "La statistique du χ2 est égale à zéro."
+            ],
+            "Theme": [
+                "Thème"
             ],
             "Theoretical Probabilities": [
                 "Probabilités théoriques"

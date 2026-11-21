@@ -395,3 +395,13 @@ test_that("mrfrequencies: vertical, labels at the top and manual y range: no ext
     range <- ggplot2::ggplot_build(ggplot2::last_plot())$layout$panel_params[[1]]$y$continuous_range
     expect_equal(range, c(-0.5, 10.5))   # the default expansion (5 %) only
 })
+
+test_that("mrfrequencies: theme and font family, value labels included", {
+    for (singleColor in c(FALSE, TRUE)) {
+        p <- renderedPlot(vijPlots::mrfrequencies(data = testData, mode = "morevar", repVar = NULL,
+                                                  resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
+                                                  showLabels = TRUE, singleColor = singleColor,
+                                                  plotTheme = "ggBw", fontFamily = "serif"))
+        expectBwSerif(p, nText = 1)
+    }
+})

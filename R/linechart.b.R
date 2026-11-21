@@ -143,13 +143,13 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::geom_point(size = dotSize)
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, labels = labelNA)
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "color", theme, labels = labelNA)
             # Group as linetype (several variables): NA would otherwise get no line at all
             if (length(depVars) > 1 && !is.null(groupVar))
                 plot <- plot + ggplot2::scale_linetype_discrete(labels = labelNA, na.value = "dotted")
 
             # Grid lines
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 

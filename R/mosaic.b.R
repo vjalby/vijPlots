@@ -83,6 +83,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             plotData <- image$state
 
+            # Font family of the text layers
+            fontFamily <- vijFontFamily(self$options)
+
             #### Build plot ####
 
             category <- rlang::sym(self$options$category)
@@ -132,14 +135,14 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                     x = .X_CENTER, y = .Y_CENTER, label = .LABEL_TEXT, fill = !!group,
                                     color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))
                                     ),
-                        size = self$options$labelFontSize / ggplot2::.pt,
+                        size = self$options$labelFontSize / ggplot2::.pt, family = fontFamily,
                         fontface = "bold"
                     )
                 } else {
                     plot <- plot + ggplot2::geom_text(
                         data = dplyr::filter(plotData, .PERCENTAGE > 0.05 & .XWIDTH > 0.05),
                         mapping = ggplot2::aes(x = .X_CENTER, y = .Y_CENTER, label = .LABEL_TEXT),
-                        size = self$options$labelFontSize / ggplot2::.pt,
+                        size = self$options$labelFontSize / ggplot2::.pt, family = fontFamily,
                         fontface = "bold",
                         color = self$options$labelColor
                     )
@@ -268,7 +271,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme, Legend & Axes ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
 
             # Titles & Labels
             defaults <- list(y = self$options$group, x = self$options$category, legend = self$options$group)

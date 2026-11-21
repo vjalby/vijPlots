@@ -58,7 +58,9 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xAxisLabelFontSize = 12,
             xAxisLabelRotation = 0,
             xTicks = 0,
-            yTicks = 0, ...) {
+            yTicks = 0,
+            plotTheme = "default",
+            fontFamily = "default", ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -498,6 +500,29 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0,
                 min=0,
                 max=99)
+            private$..plotTheme <- jmvcore::OptionList$new(
+                "plotTheme",
+                plotTheme,
+                options=list(
+                    "default",
+                    "jmvDefault",
+                    "jmvMinimal",
+                    "jmvHadley",
+                    "jmvSpss",
+                    "ggBw",
+                    "ggLight",
+                    "ggLinedraw",
+                    "ggDark"),
+                default="default")
+            private$..fontFamily <- jmvcore::OptionList$new(
+                "fontFamily",
+                fontFamily,
+                options=list(
+                    "default",
+                    "sans",
+                    "serif",
+                    "mono"),
+                default="default")
 
             self$.addOption(private$..category)
             self$.addOption(private$..group)
@@ -552,6 +577,8 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..xAxisLabelRotation)
             self$.addOption(private$..xTicks)
             self$.addOption(private$..yTicks)
+            self$.addOption(private$..plotTheme)
+            self$.addOption(private$..fontFamily)
         }),
     active = list(
         category = function() private$..category$value,
@@ -606,7 +633,9 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xAxisLabelFontSize = function() private$..xAxisLabelFontSize$value,
         xAxisLabelRotation = function() private$..xAxisLabelRotation$value,
         xTicks = function() private$..xTicks$value,
-        yTicks = function() private$..yTicks$value),
+        yTicks = function() private$..yTicks$value,
+        plotTheme = function() private$..plotTheme$value,
+        fontFamily = function() private$..fontFamily$value),
     private = list(
         ..category = NA,
         ..group = NA,
@@ -660,7 +689,9 @@ mosaicOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xAxisLabelFontSize = NA,
         ..xAxisLabelRotation = NA,
         ..xTicks = NA,
-        ..yTicks = NA)
+        ..yTicks = NA,
+        ..plotTheme = NA,
+        ..fontFamily = NA)
 )
 
 mosaicResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -761,6 +792,8 @@ mosaicBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param xAxisLabelRotation .
 #' @param xTicks .
 #' @param yTicks .
+#' @param plotTheme .
+#' @param fontFamily .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -821,7 +854,9 @@ mosaic <- function(
     xAxisLabelFontSize = 12,
     xAxisLabelRotation = 0,
     xTicks = 0,
-    yTicks = 0) {
+    yTicks = 0,
+    plotTheme = "default",
+    fontFamily = "default") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("mosaic requires jmvcore to be installed (restart may be required)")
@@ -895,7 +930,9 @@ mosaic <- function(
         xAxisLabelFontSize = xAxisLabelFontSize,
         xAxisLabelRotation = xAxisLabelRotation,
         xTicks = xTicks,
-        yTicks = yTicks)
+        yTicks = yTicks,
+        plotTheme = plotTheme,
+        fontFamily = fontFamily)
 
     analysis <- mosaicClass$new(
         options = options,

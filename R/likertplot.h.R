@@ -55,7 +55,9 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             yAxisLabelFontSize = 11,
             yAxisLabelRotation = 0,
             xAxisLabelFontSize = 11,
-            xAxisLabelRotation = 0, ...) {
+            xAxisLabelRotation = 0,
+            plotTheme = "default",
+            fontFamily = "default", ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -404,6 +406,29 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default=0,
                 min=0,
                 max=360)
+            private$..plotTheme <- jmvcore::OptionList$new(
+                "plotTheme",
+                plotTheme,
+                options=list(
+                    "default",
+                    "jmvDefault",
+                    "jmvMinimal",
+                    "jmvHadley",
+                    "jmvSpss",
+                    "ggBw",
+                    "ggLight",
+                    "ggLinedraw",
+                    "ggDark"),
+                default="default")
+            private$..fontFamily <- jmvcore::OptionList$new(
+                "fontFamily",
+                fontFamily,
+                options=list(
+                    "default",
+                    "sans",
+                    "serif",
+                    "mono"),
+                default="default")
 
             self$.addOption(private$..liks)
             self$.addOption(private$..group)
@@ -455,6 +480,8 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yAxisLabelRotation)
             self$.addOption(private$..xAxisLabelFontSize)
             self$.addOption(private$..xAxisLabelRotation)
+            self$.addOption(private$..plotTheme)
+            self$.addOption(private$..fontFamily)
         }),
     active = list(
         liks = function() private$..liks$value,
@@ -506,7 +533,9 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         yAxisLabelFontSize = function() private$..yAxisLabelFontSize$value,
         yAxisLabelRotation = function() private$..yAxisLabelRotation$value,
         xAxisLabelFontSize = function() private$..xAxisLabelFontSize$value,
-        xAxisLabelRotation = function() private$..xAxisLabelRotation$value),
+        xAxisLabelRotation = function() private$..xAxisLabelRotation$value,
+        plotTheme = function() private$..plotTheme$value,
+        fontFamily = function() private$..fontFamily$value),
     private = list(
         ..liks = NA,
         ..group = NA,
@@ -557,7 +586,9 @@ likertplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..yAxisLabelFontSize = NA,
         ..yAxisLabelRotation = NA,
         ..xAxisLabelFontSize = NA,
-        ..xAxisLabelRotation = NA)
+        ..xAxisLabelRotation = NA,
+        ..plotTheme = NA,
+        ..fontFamily = NA)
 )
 
 likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -750,7 +781,9 @@ likertplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "yAxisLabelFontSize",
                     "yAxisLabelRotation",
                     "xAxisLabelFontSize",
-                    "xAxisLabelRotation")))}))
+                    "xAxisLabelRotation",
+                    "plotTheme",
+                    "fontFamily")))}))
 
 likertplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "likertplotBase",
@@ -827,6 +860,8 @@ likertplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yAxisLabelRotation .
 #' @param xAxisLabelFontSize .
 #' @param xAxisLabelRotation .
+#' @param plotTheme .
+#' @param fontFamily .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$frequencies} \tab \tab \tab \tab \tab a table \cr
@@ -894,7 +929,9 @@ likertplot <- function(
     yAxisLabelFontSize = 11,
     yAxisLabelRotation = 0,
     xAxisLabelFontSize = 11,
-    xAxisLabelRotation = 0) {
+    xAxisLabelRotation = 0,
+    plotTheme = "default",
+    fontFamily = "default") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("likertplot requires jmvcore to be installed (restart may be required)")
@@ -959,7 +996,9 @@ likertplot <- function(
         yAxisLabelFontSize = yAxisLabelFontSize,
         yAxisLabelRotation = yAxisLabelRotation,
         xAxisLabelFontSize = xAxisLabelFontSize,
-        xAxisLabelRotation = xAxisLabelRotation)
+        xAxisLabelRotation = xAxisLabelRotation,
+        plotTheme = plotTheme,
+        fontFamily = fontFamily)
 
     analysis <- likertplotClass$new(
         options = options,

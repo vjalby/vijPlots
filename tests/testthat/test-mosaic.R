@@ -498,3 +498,12 @@ test_that("mosaic: count labels keep the decimals of weighted counts", {
     labels <- ggplot2::layer_data(ggplot2::last_plot(), 2)$label
     expect_setequal(labels, c("1.5", "2", "0.25", "3"))
 })
+
+test_that("mosaic: theme and font family, cell labels included", {
+    for (labelColor in c("auto", "black")) {
+        p <- renderedPlot(vijPlots::mosaic(data = testData, category = "species", group = "sex", counts = NULL, facet = NULL,
+                                           labelType = "count", labelColor = labelColor,
+                                           plotTheme = "ggBw", fontFamily = "serif"))
+        expectBwSerif(p, nText = 1)
+    }
+})

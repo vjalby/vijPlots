@@ -479,3 +479,28 @@ children:
                 children:
                   - type: ComboBox
                     name: captionAlign
+  - type: CollapseBox
+    label: Theme
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: ComboBox
+                name: plotTheme
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: ComboBox
+                name: fontFamily

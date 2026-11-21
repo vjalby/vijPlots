@@ -1076,6 +1076,24 @@ msgstr "Type de graphique double"
 msgid "Black"
 msgstr "Noir"
 
+#: areachart/options/plotTheme/ggBw.title
+#: barchart/options/plotTheme/ggBw.title
+#: barplot/options/plotTheme/ggBw.title
+#: boxplot/options/plotTheme/ggBw.title
+#: histogram/options/plotTheme/ggBw.title
+#: likertplot/options/plotTheme/ggBw.title
+#: linechart/options/plotTheme/ggBw.title
+#: lollipop/options/plotTheme/ggBw.title
+#: mosaic/options/plotTheme/ggBw.title
+#: mrcrosstabs/options/plotTheme/ggBw.title
+#: mrfrequencies/options/plotTheme/ggBw.title
+#: piechart/options/plotTheme/ggBw.title
+#: qqplot/options/plotTheme/ggBw.title
+#: raincloud/options/plotTheme/ggBw.title
+#: scatterplot/options/plotTheme/ggBw.title
+msgid "Black and white (ggplot2)"
+msgstr "Noir et blanc (ggplot2)"
+
 #: barchart/options/facetStyle/border.title
 #: barplot/options/facetStyle/border.title
 #: boxplot/options/facetStyle/border.title
@@ -1991,6 +2009,24 @@ msgstr "Tableau croisé (% des réponses)"
 msgid "Cumulative %"
 msgstr "% cumulés"
 
+#: areachart/options/plotTheme/ggDark.title
+#: barchart/options/plotTheme/ggDark.title
+#: barplot/options/plotTheme/ggDark.title
+#: boxplot/options/plotTheme/ggDark.title
+#: histogram/options/plotTheme/ggDark.title
+#: likertplot/options/plotTheme/ggDark.title
+#: linechart/options/plotTheme/ggDark.title
+#: lollipop/options/plotTheme/ggDark.title
+#: mosaic/options/plotTheme/ggDark.title
+#: mrcrosstabs/options/plotTheme/ggDark.title
+#: mrfrequencies/options/plotTheme/ggDark.title
+#: piechart/options/plotTheme/ggDark.title
+#: qqplot/options/plotTheme/ggDark.title
+#: raincloud/options/plotTheme/ggDark.title
+#: scatterplot/options/plotTheme/ggDark.title
+msgid "Dark (ggplot2)"
+msgstr "Sombre (ggplot2)"
+
 #: areachart/options/colorPalette/Dark2.title
 #: barchart/options/colorPalette/Dark2.title
 #: barplot/options/colorPalette/Dark2.title
@@ -2093,14 +2129,44 @@ msgstr "Décroissant"
 msgid "default"
 msgstr "par défaut"
 
+#: areachart/options/plotTheme/default.title
+#: areachart/options/fontFamily/default.title
 #: barchart/options/facetStyle/default.title
+#: barchart/options/plotTheme/default.title
+#: barchart/options/fontFamily/default.title
 #: barplot/options/facetStyle/default.title
+#: barplot/options/plotTheme/default.title
+#: barplot/options/fontFamily/default.title
 #: boxplot/options/facetStyle/default.title
+#: boxplot/options/plotTheme/default.title
+#: boxplot/options/fontFamily/default.title
 #: histogram/options/facetStyle/default.title
+#: histogram/options/plotTheme/default.title
+#: histogram/options/fontFamily/default.title
+#: likertplot/options/plotTheme/default.title
+#: likertplot/options/fontFamily/default.title
+#: linechart/options/plotTheme/default.title
+#: linechart/options/fontFamily/default.title
 #: lollipop/options/facetStyle/default.title
+#: lollipop/options/plotTheme/default.title
+#: lollipop/options/fontFamily/default.title
 #: mosaic/options/facetStyle/default.title
+#: mosaic/options/plotTheme/default.title
+#: mosaic/options/fontFamily/default.title
+#: mrcrosstabs/options/plotTheme/default.title
+#: mrcrosstabs/options/fontFamily/default.title
+#: mrfrequencies/options/plotTheme/default.title
+#: mrfrequencies/options/fontFamily/default.title
 #: piechart/options/facetStyle/default.title
+#: piechart/options/plotTheme/default.title
+#: piechart/options/fontFamily/default.title
+#: qqplot/options/plotTheme/default.title
+#: qqplot/options/fontFamily/default.title
+#: raincloud/options/plotTheme/default.title
+#: raincloud/options/fontFamily/default.title
 #: scatterplot/options/facetStyle/default.title
+#: scatterplot/options/plotTheme/default.title
+#: scatterplot/options/fontFamily/default.title
 msgid "Default"
 msgstr "Par défaut"
 
@@ -2462,6 +2528,24 @@ msgstr "Style"
 #: principal/options/captionFontFace.title
 msgid "Font face"
 msgstr "Style de police"
+
+#: areachart/options/fontFamily.title
+#: barchart/options/fontFamily.title
+#: barplot/options/fontFamily.title
+#: boxplot/options/fontFamily.title
+#: histogram/options/fontFamily.title
+#: likertplot/options/fontFamily.title
+#: linechart/options/fontFamily.title
+#: lollipop/options/fontFamily.title
+#: mosaic/options/fontFamily.title
+#: mrcrosstabs/options/fontFamily.title
+#: mrfrequencies/options/fontFamily.title
+#: piechart/options/fontFamily.title
+#: qqplot/options/fontFamily.title
+#: raincloud/options/fontFamily.title
+#: scatterplot/options/fontFamily.title
+msgid "Font family"
+msgstr "Police"
 
 #: corresp/options/titleFontSize.title
 #: corresp/options/subtitleFontSize.title
@@ -2884,6 +2968,24 @@ msgstr "Grouper par"
 msgid "Groupwise"
 msgstr "Par groupe"
 
+#: areachart/options/plotTheme/jmvHadley.title
+#: barchart/options/plotTheme/jmvHadley.title
+#: barplot/options/plotTheme/jmvHadley.title
+#: boxplot/options/plotTheme/jmvHadley.title
+#: histogram/options/plotTheme/jmvHadley.title
+#: likertplot/options/plotTheme/jmvHadley.title
+#: linechart/options/plotTheme/jmvHadley.title
+#: lollipop/options/plotTheme/jmvHadley.title
+#: mosaic/options/plotTheme/jmvHadley.title
+#: mrcrosstabs/options/plotTheme/jmvHadley.title
+#: mrfrequencies/options/plotTheme/jmvHadley.title
+#: piechart/options/plotTheme/jmvHadley.title
+#: qqplot/options/plotTheme/jmvHadley.title
+#: raincloud/options/plotTheme/jmvHadley.title
+#: scatterplot/options/plotTheme/jmvHadley.title
+msgid "Hadley (jamovi)"
+msgstr "Hadley (jamovi)"
+
 #: package/analyses/principal.menuGroup
 #: package/analyses/corresp.menuGroup
 #: package/analyses/multcorresp.menuGroup
@@ -3111,6 +3213,24 @@ msgstr "ISO (A-M-J)"
 #: scatterplot/options/facetFontFace/italic.title
 msgid "Italic"
 msgstr "Italique"
+
+#: areachart/options/plotTheme/jmvDefault.title
+#: barchart/options/plotTheme/jmvDefault.title
+#: barplot/options/plotTheme/jmvDefault.title
+#: boxplot/options/plotTheme/jmvDefault.title
+#: histogram/options/plotTheme/jmvDefault.title
+#: likertplot/options/plotTheme/jmvDefault.title
+#: linechart/options/plotTheme/jmvDefault.title
+#: lollipop/options/plotTheme/jmvDefault.title
+#: mosaic/options/plotTheme/jmvDefault.title
+#: mrcrosstabs/options/plotTheme/jmvDefault.title
+#: mrfrequencies/options/plotTheme/jmvDefault.title
+#: piechart/options/plotTheme/jmvDefault.title
+#: qqplot/options/plotTheme/jmvDefault.title
+#: raincloud/options/plotTheme/jmvDefault.title
+#: scatterplot/options/plotTheme/jmvDefault.title
+msgid "jamovi"
+msgstr "jamovi"
 
 #: R/areachart.b.R
 #: R/linechart.b.R
@@ -3521,6 +3641,24 @@ msgstr "Lémovice"
 msgid "Level"
 msgstr "Niveau"
 
+#: areachart/options/plotTheme/ggLight.title
+#: barchart/options/plotTheme/ggLight.title
+#: barplot/options/plotTheme/ggLight.title
+#: boxplot/options/plotTheme/ggLight.title
+#: histogram/options/plotTheme/ggLight.title
+#: likertplot/options/plotTheme/ggLight.title
+#: linechart/options/plotTheme/ggLight.title
+#: lollipop/options/plotTheme/ggLight.title
+#: mosaic/options/plotTheme/ggLight.title
+#: mrcrosstabs/options/plotTheme/ggLight.title
+#: mrfrequencies/options/plotTheme/ggLight.title
+#: piechart/options/plotTheme/ggLight.title
+#: qqplot/options/plotTheme/ggLight.title
+#: raincloud/options/plotTheme/ggLight.title
+#: scatterplot/options/plotTheme/ggLight.title
+msgid "Light (ggplot2)"
+msgstr "Clair (ggplot2)"
+
 #: histogram/options/fillColor/#B3CDE3.title
 #: lollipop/options/dotColor/#B3CDE3.title
 #: lollipop/options/lineColor/#B3CDE3.title
@@ -3639,6 +3777,24 @@ msgstr "Ligne"
 #: linechart/results.title
 msgid "Line Chart"
 msgstr "Graphique en courbes"
+
+#: areachart/options/plotTheme/ggLinedraw.title
+#: barchart/options/plotTheme/ggLinedraw.title
+#: barplot/options/plotTheme/ggLinedraw.title
+#: boxplot/options/plotTheme/ggLinedraw.title
+#: histogram/options/plotTheme/ggLinedraw.title
+#: likertplot/options/plotTheme/ggLinedraw.title
+#: linechart/options/plotTheme/ggLinedraw.title
+#: lollipop/options/plotTheme/ggLinedraw.title
+#: mosaic/options/plotTheme/ggLinedraw.title
+#: mrcrosstabs/options/plotTheme/ggLinedraw.title
+#: mrfrequencies/options/plotTheme/ggLinedraw.title
+#: piechart/options/plotTheme/ggLinedraw.title
+#: qqplot/options/plotTheme/ggLinedraw.title
+#: raincloud/options/plotTheme/ggLinedraw.title
+#: scatterplot/options/plotTheme/ggLinedraw.title
+msgid "Line draw (ggplot2)"
+msgstr "Traits (ggplot2)"
 
 #: barchart/options/errorBarLineSize.title
 #: histogram/options/lineLineSize.title
@@ -3932,6 +4088,24 @@ msgstr "Min / Max"
 msgid "Min–max"
 msgstr "Min–max"
 
+#: areachart/options/plotTheme/jmvMinimal.title
+#: barchart/options/plotTheme/jmvMinimal.title
+#: barplot/options/plotTheme/jmvMinimal.title
+#: boxplot/options/plotTheme/jmvMinimal.title
+#: histogram/options/plotTheme/jmvMinimal.title
+#: likertplot/options/plotTheme/jmvMinimal.title
+#: linechart/options/plotTheme/jmvMinimal.title
+#: lollipop/options/plotTheme/jmvMinimal.title
+#: mosaic/options/plotTheme/jmvMinimal.title
+#: mrcrosstabs/options/plotTheme/jmvMinimal.title
+#: mrfrequencies/options/plotTheme/jmvMinimal.title
+#: piechart/options/plotTheme/jmvMinimal.title
+#: qqplot/options/plotTheme/jmvMinimal.title
+#: raincloud/options/plotTheme/jmvMinimal.title
+#: scatterplot/options/plotTheme/jmvMinimal.title
+msgid "Minimal (jamovi)"
+msgstr "Minimal (jamovi)"
+
 #: principal/options/rotation/entropy.title
 msgid "Minimum entropy"
 msgstr "Entropie minimale"
@@ -3944,6 +4118,24 @@ msgstr "Minimum de {var}"
 #: R/utilsData.R
 msgid "Missing values: {n}"
 msgstr "Valeurs manquantes : {n}"
+
+#: areachart/options/fontFamily/mono.title
+#: barchart/options/fontFamily/mono.title
+#: barplot/options/fontFamily/mono.title
+#: boxplot/options/fontFamily/mono.title
+#: histogram/options/fontFamily/mono.title
+#: likertplot/options/fontFamily/mono.title
+#: linechart/options/fontFamily/mono.title
+#: lollipop/options/fontFamily/mono.title
+#: mosaic/options/fontFamily/mono.title
+#: mrcrosstabs/options/fontFamily/mono.title
+#: mrfrequencies/options/fontFamily/mono.title
+#: piechart/options/fontFamily/mono.title
+#: qqplot/options/fontFamily/mono.title
+#: raincloud/options/fontFamily/mono.title
+#: scatterplot/options/fontFamily/mono.title
+msgid "Monospace"
+msgstr "Chasse fixe"
 
 #: package/analyses/mosaic.title
 #: package/analyses/mosaic.menuTitle
@@ -5374,6 +5566,24 @@ msgstr "Quantiles observés"
 msgid "Sample Quantiles Deviation"
 msgstr "Écarts des quantiles observés"
 
+#: areachart/options/fontFamily/sans.title
+#: barchart/options/fontFamily/sans.title
+#: barplot/options/fontFamily/sans.title
+#: boxplot/options/fontFamily/sans.title
+#: histogram/options/fontFamily/sans.title
+#: likertplot/options/fontFamily/sans.title
+#: linechart/options/fontFamily/sans.title
+#: lollipop/options/fontFamily/sans.title
+#: mosaic/options/fontFamily/sans.title
+#: mrcrosstabs/options/fontFamily/sans.title
+#: mrfrequencies/options/fontFamily/sans.title
+#: piechart/options/fontFamily/sans.title
+#: qqplot/options/fontFamily/sans.title
+#: raincloud/options/fontFamily/sans.title
+#: scatterplot/options/fontFamily/sans.title
+msgid "Sans serif"
+msgstr "Sans empattement"
+
 #: multcorresp/ui[10].label
 #: principal/ui[9].label
 msgid "Save"
@@ -5435,6 +5645,24 @@ msgstr "Le séparateur ne peut pas être une chaine vide."
 #: R/linechart.b.R
 msgid "September"
 msgstr "septembre"
+
+#: areachart/options/fontFamily/serif.title
+#: barchart/options/fontFamily/serif.title
+#: barplot/options/fontFamily/serif.title
+#: boxplot/options/fontFamily/serif.title
+#: histogram/options/fontFamily/serif.title
+#: likertplot/options/fontFamily/serif.title
+#: linechart/options/fontFamily/serif.title
+#: lollipop/options/fontFamily/serif.title
+#: mosaic/options/fontFamily/serif.title
+#: mrcrosstabs/options/fontFamily/serif.title
+#: mrfrequencies/options/fontFamily/serif.title
+#: piechart/options/fontFamily/serif.title
+#: qqplot/options/fontFamily/serif.title
+#: raincloud/options/fontFamily/serif.title
+#: scatterplot/options/fontFamily/serif.title
+msgid "Serif"
+msgstr "Avec empattement"
 
 #: areachart/options/colorPalette/Set1.title
 #: barchart/options/colorPalette/Set1.title
@@ -5686,6 +5914,24 @@ msgstr "Tri (selon médiane)"
 #: scatterplot/options/colorPalette/Spectral.title
 msgid "Spectral"
 msgstr "Spectral"
+
+#: areachart/options/plotTheme/jmvSpss.title
+#: barchart/options/plotTheme/jmvSpss.title
+#: barplot/options/plotTheme/jmvSpss.title
+#: boxplot/options/plotTheme/jmvSpss.title
+#: histogram/options/plotTheme/jmvSpss.title
+#: likertplot/options/plotTheme/jmvSpss.title
+#: linechart/options/plotTheme/jmvSpss.title
+#: lollipop/options/plotTheme/jmvSpss.title
+#: mosaic/options/plotTheme/jmvSpss.title
+#: mrcrosstabs/options/plotTheme/jmvSpss.title
+#: mrfrequencies/options/plotTheme/jmvSpss.title
+#: piechart/options/plotTheme/jmvSpss.title
+#: qqplot/options/plotTheme/jmvSpss.title
+#: raincloud/options/plotTheme/jmvSpss.title
+#: scatterplot/options/plotTheme/jmvSpss.title
+msgid "SPSS (jamovi)"
+msgstr "SPSS (jamovi)"
 
 #: barchart/options/pointShape/square.title
 msgid "Square"
@@ -5992,6 +6238,39 @@ msgstr "La variance de la variable est égale à zéro."
 #: R/corresp.b.R
 msgid "The χ2 statistic is equal to zero."
 msgstr "La statistique du χ2 est égale à zéro."
+
+#: areachart/options/plotTheme.title
+#: areachart/ui[5].label
+#: barchart/options/plotTheme.title
+#: barchart/ui[9].label
+#: barplot/options/plotTheme.title
+#: barplot/ui[9].label
+#: boxplot/options/plotTheme.title
+#: boxplot/ui[7].label
+#: histogram/options/plotTheme.title
+#: histogram/ui[8].label
+#: likertplot/options/plotTheme.title
+#: likertplot/ui[10].label
+#: linechart/options/plotTheme.title
+#: linechart/ui[5].label
+#: lollipop/options/plotTheme.title
+#: lollipop/ui[8].label
+#: mosaic/options/plotTheme.title
+#: mosaic/ui[8].label
+#: mrcrosstabs/options/plotTheme.title
+#: mrcrosstabs/ui[7].label
+#: mrfrequencies/options/plotTheme.title
+#: mrfrequencies/ui[7].label
+#: piechart/options/plotTheme.title
+#: piechart/ui[8].label
+#: qqplot/options/plotTheme.title
+#: qqplot/ui[8].label
+#: raincloud/options/plotTheme.title
+#: raincloud/ui[5].label
+#: scatterplot/options/plotTheme.title
+#: scatterplot/ui[7].label
+msgid "Theme"
+msgstr "Thème"
 
 #: R/qqplot.b.R
 msgid "Theoretical Probabilities"

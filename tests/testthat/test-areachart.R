@@ -255,3 +255,10 @@ test_that("areachart: missing group labelled (Missing) and drawn in gray (ignore
     expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("One", "Two", "(Missing)"))
     expect_true("gray" %in% built$data[[1]]$fill)
 })
+
+test_that("areachart: theme and font family", {
+    p <- renderedPlot(vijPlots::areachart(mode = "oneVariable", data = testData, timeVar = "Month2", timeVar1 = NULL,
+                                          vars = NULL, var = "VarA", group = "Group", position = "stack",
+                                          plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p)
+})

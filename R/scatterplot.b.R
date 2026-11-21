@@ -78,6 +78,9 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- image$state
 
+            # Font family of the text layers
+            fontFamily <- vijFontFamily(self$options)
+
             #### Set variables ####
 
             xaxis <- rlang::sym(self$options$xaxis)
@@ -133,7 +136,7 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(labelVar)) {
                 x_scale <- max(plotData[[xaxis]], na.rm=TRUE) - min(plotData[[xaxis]], na.rm = TRUE)
                 plot <- plot + ggplot2::geom_text(ggplot2::aes(label = !!labelVar), color = "black",
-                                         na.rm = TRUE, size = self$options$labelTextSize / ggplot2::.pt, hjust = 0, nudge_x = 0.02*x_scale,
+                                         na.rm = TRUE, size = self$options$labelTextSize / ggplot2::.pt, family = fontFamily, hjust = 0, nudge_x = 0.02*x_scale,
                                          check_overlap = self$options$overlap)
                 # Enlarge graphic by 10% at right (for labels)
                 maxx <- max(plotData[[xaxis]], na.rm=T) + 0.1*x_scale
@@ -150,11 +153,11 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Colors and axes ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE, labels = labelNA) +
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE, labels = labelNA) +
                                     vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
 
             # Grid lines
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 

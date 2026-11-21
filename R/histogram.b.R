@@ -260,11 +260,11 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE) +
                                     vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE)
 
             # Grid lines
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$xGridLines,
                                         y = self$options$yGridLines)
 
@@ -307,6 +307,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(vline)
 
             lineData$.label <- paste(symbol, "=", scales::label_number(accuracy = 0.01, decimal.mark = self$options[['decSymbol']])(lineData$.value))
+            fontFamily <- vijFontFamily(self$options)
 
             if (is.null(groupVar)) {
                 # when both mean and median lines are shown, offset the label away
@@ -323,13 +324,13 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 label <- ggplot2::geom_text(
                     data = lineData,
                     mapping = ggplot2::aes(x = .value, y = Inf, label = .label),
-                    color = "black", vjust = 1.5, size = 4, hjust = hjust
+                    color = "black", vjust = 1.5, size = 4, hjust = hjust, family = fontFamily
                 )
             } else {
                 label <- ggrepel::geom_text_repel(
                     data = lineData,
                     mapping = ggplot2::aes(x = .value, y = Inf, label = .label, color = !!groupVar),
-                    vjust = 1.5, size = 4, show.legend = FALSE,
+                    vjust = 1.5, size = 4, family = fontFamily, show.legend = FALSE,
                     direction = "x", seed = 123, min.segment.length = 100, point.padding = 1
                 )
             }

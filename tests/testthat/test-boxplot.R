@@ -286,3 +286,12 @@ test_that("boxplot: missing values are labelled (Missing) on the axis, legend an
     expect_true("(Missing)" %in% strips)
     expect_false("NA" %in% strips)
 })
+
+test_that("boxplot: theme and font family, outlier labels included", {
+    p <- renderedPlot(vijPlots::boxplot(data = testData, vars = c("Petal.Width"), group = "Species", label = "group2",
+                                        facet = NULL, plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p, nText = 1)
+    p <- renderedPlot(vijPlots::boxplot(data = testData, vars = c("Petal.Width", "Sepal.Width"), group = "Species",
+                                        label = "group2", facet = NULL, plotTheme = "ggBw", fontFamily = "serif"))
+    expectBwSerif(p, nText = 1)
+})

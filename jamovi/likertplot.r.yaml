@@ -162,5 +162,7 @@ items:
         - yAxisLabelRotation
         - xAxisLabelFontSize
         - xAxisLabelRotation
+        - plotTheme
+        - fontFamily
 
 ...

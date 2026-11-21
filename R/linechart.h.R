@@ -54,7 +54,9 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xGridLines = FALSE,
             yGridLines = FALSE,
             xHideAxis = FALSE,
-            yHideAxis = FALSE, ...) {
+            yHideAxis = FALSE,
+            plotTheme = "default",
+            fontFamily = "default", ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -467,6 +469,29 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "yHideAxis",
                 yHideAxis,
                 default=FALSE)
+            private$..plotTheme <- jmvcore::OptionList$new(
+                "plotTheme",
+                plotTheme,
+                options=list(
+                    "default",
+                    "jmvDefault",
+                    "jmvMinimal",
+                    "jmvHadley",
+                    "jmvSpss",
+                    "ggBw",
+                    "ggLight",
+                    "ggLinedraw",
+                    "ggDark"),
+                default="default")
+            private$..fontFamily <- jmvcore::OptionList$new(
+                "fontFamily",
+                fontFamily,
+                options=list(
+                    "default",
+                    "sans",
+                    "serif",
+                    "mono"),
+                default="default")
 
             self$.addOption(private$..timeVar)
             self$.addOption(private$..vars)
@@ -517,6 +542,8 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yGridLines)
             self$.addOption(private$..xHideAxis)
             self$.addOption(private$..yHideAxis)
+            self$.addOption(private$..plotTheme)
+            self$.addOption(private$..fontFamily)
         }),
     active = list(
         timeVar = function() private$..timeVar$value,
@@ -567,7 +594,9 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xGridLines = function() private$..xGridLines$value,
         yGridLines = function() private$..yGridLines$value,
         xHideAxis = function() private$..xHideAxis$value,
-        yHideAxis = function() private$..yHideAxis$value),
+        yHideAxis = function() private$..yHideAxis$value,
+        plotTheme = function() private$..plotTheme$value,
+        fontFamily = function() private$..fontFamily$value),
     private = list(
         ..timeVar = NA,
         ..vars = NA,
@@ -617,7 +646,9 @@ linechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xGridLines = NA,
         ..yGridLines = NA,
         ..xHideAxis = NA,
-        ..yHideAxis = NA)
+        ..yHideAxis = NA,
+        ..plotTheme = NA,
+        ..fontFamily = NA)
 )
 
 linechartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -714,6 +745,8 @@ linechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yGridLines .
 #' @param xHideAxis .
 #' @param yHideAxis .
+#' @param plotTheme .
+#' @param fontFamily .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -770,7 +803,9 @@ linechart <- function(
     xGridLines = FALSE,
     yGridLines = FALSE,
     xHideAxis = FALSE,
-    yHideAxis = FALSE) {
+    yHideAxis = FALSE,
+    plotTheme = "default",
+    fontFamily = "default") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("linechart requires jmvcore to be installed (restart may be required)")
@@ -836,7 +871,9 @@ linechart <- function(
         xGridLines = xGridLines,
         yGridLines = yGridLines,
         xHideAxis = xHideAxis,
-        yHideAxis = yHideAxis)
+        yHideAxis = yHideAxis,
+        plotTheme = plotTheme,
+        fontFamily = fontFamily)
 
     analysis <- linechartClass$new(
         options = options,

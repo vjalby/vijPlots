@@ -290,12 +290,46 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     ))
 }
 
+# Theme added after jamovi's ggtheme: a jamovi or ggplot2 theme with the font, or the font alone ("default")
+vijPlotTheme = function(options) {
+    family <- vijFontFamily(options)
+    fontTheme <- ggplot2::theme(text = ggplot2::element_text(family = family))
+    themeName <- options[["plotTheme"]] %||% "default"
+    if (themeName == "default")
+        return(fontTheme)
+    if (startsWith(themeName, "jmv")) {
+        # jmvcore's theme_*() return a list (theme only, no scale); theme_spss() still calls element_rect(size =)
+        jmvTheme <- switch(themeName,
+            jmvDefault = jmvcore::theme_default(16),
+            jmvMinimal = jmvcore::theme_min(16),
+            jmvHadley = jmvcore::theme_hadley(16),
+            jmvSpss = suppressWarnings(jmvcore::theme_spss(16)))
+        return(jmvTheme[[1]] + fontTheme)
+    }
+    themeFunction <- switch(themeName,
+        ggBw = ggplot2::theme_bw,
+        ggLight = ggplot2::theme_light,
+        ggLinedraw = ggplot2::theme_linedraw,
+        ggDark = ggplot2::theme_dark)
+    return(themeFunction(base_size = 16, base_family = family) +
+           ggplot2::theme(plot.margin = ggplot2::margin(15, 15, 15, 15)))
+}
+
+# Font family of the text layers ("" = device default, also when the option is absent)
+vijFontFamily = function(options) {
+    family <- options[["fontFamily"]] %||% "default"
+    if (family == "default") "" else family
+}
+
 # Theme adding major grid lines on the displayed x and/or y axis (with coord_flip(),
-# theme elements follow the displayed axes). Nothing is added with the jamovi themes
-# that already draw a grid (hadley, minimal).
-vijGridLines = function(themeName, x = FALSE, y = FALSE) {
+# theme elements follow the displayed axes). Nothing is added with the themes
+# that already draw a grid (jamovi's hadley and minimal, all of ggplot2's), module's or global.
+vijGridLines = function(options, x = FALSE, y = FALSE) {
     gridTheme <- ggplot2::theme()
-    if (themeName %in% c("hadley", "minimal"))
+    plotTheme <- options[["plotTheme"]] %||% "default"
+    if (plotTheme == "default")
+        plotTheme <- options$theme
+    if (plotTheme %in% c("hadley", "minimal", "jmvHadley", "jmvMinimal", "ggBw", "ggLight", "ggLinedraw", "ggDark"))
         return(gridTheme)
     gridLine <- ggplot2::element_line(colour = "#E8E8E8", linewidth = 0.73)
     if (x)

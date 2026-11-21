@@ -283,6 +283,15 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 plot <- plot + ggplot2::scale_fill_brewer(palette = self$options$plotColor)
 
+            #### Theme and font ####
+            # ggstats' own theme (theme_light) unless the module's replaces it; its hidden y grid is kept
+            plot <- plot + vijPlotTheme(self$options) + ggplot2::theme(panel.grid.major.y = ggplot2::element_blank())
+            # ggstats' text layers (labels, totals) take no family argument: set it on the built layers
+            fontFamily <- vijFontFamily(self$options)
+            for (layer in plot$layers)
+                if (inherits(layer$geom, "GeomText"))
+                    layer$aes_params$family <- fontFamily
+
             #### Title & subtitle ####
             plot <- plot + vijTitlesAndLabels(self$options, plot = plot) + vijTitleAndLabelFormat(self$options, showLegend = TRUE)
 

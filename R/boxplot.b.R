@@ -97,6 +97,9 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             plotData <- image$state
 
+            # Font family of the text layers
+            fontFamily <- vijFontFamily(self$options)
+
             #### Set variables ####
             depVarNames <- self$options$vars
 
@@ -194,14 +197,14 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     if (multiGroup) {
                         plot <- plot + ggplot2::geom_text(
                             ggplot2::aes(x = !!xVar, y = !!yVar, label = !!outlierVar, group = !!groupVar),
-                            na.rm = TRUE, hjust = 0, angle = labAngle, size = self$options$labSize / ggplot2::.pt,
+                            na.rm = TRUE, hjust = 0, angle = labAngle, size = self$options$labSize / ggplot2::.pt, family = fontFamily,
                             position = ggpp::position_dodgenudge(x = nudgeX, width = .75)
                         )
                     } else {
                         plot <- plot + ggplot2::geom_text(
                             ggplot2::aes(x = !!xVar, y = !!yVar, label = !!outlierVar),
                             na.rm = TRUE, hjust = 0, nudge_x = nudgeX, angle = labAngle,
-                            size = self$options$labSize / ggplot2::.pt
+                            size = self$options$labSize / ggplot2::.pt, family = fontFamily
                         )
                     }
                 }
@@ -249,10 +252,10 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Theme and colors ####
-            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
+            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
 
             #### Grid lines (value axis only) ####
-            plot <- plot + vijGridLines(self$options$theme,
+            plot <- plot + vijGridLines(self$options,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

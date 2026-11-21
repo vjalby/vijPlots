@@ -611,3 +611,20 @@ test_that("piechart: lumped categories plot", {
                                    labels = "group+percent", lump = "prop", lumpProp = 10)$plot
     expect_plot_snapshot("piechart-lump", testPlot)
 })
+
+test_that("piechart: theme and font family, no frame around the pie, every label type", {
+    for (labType in c("text", "label")) {
+        for (overlap in c(FALSE, TRUE)) {
+            p <- renderedPlot(vijPlots::piechart(data = testData, aVar = "species", facet = NULL, counts = NULL,
+                                                 labType = labType, labels = "count", overlap = overlap,
+                                                 plotTheme = "ggBw", fontFamily = "serif"))
+            expectBwSerif(p, nText = 1, frame = FALSE)
+        }
+    }
+})
+
+test_that("piechart: black and white theme", {
+    testPlot <- vijPlots::piechart(data = testData, aVar = "species", facet = NULL, counts = NULL, labType = "text",
+                                   labels = "percent", plotTheme = "ggBw")$plot
+    expect_plot_snapshot("piechart-theme-bw", testPlot)
+})

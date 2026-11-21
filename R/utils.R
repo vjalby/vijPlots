@@ -355,6 +355,17 @@ vijHideAxis = function(x = FALSE, y = FALSE) {
     return(axisTheme)
 }
 
+# Position nudged horizontally by x after the given position (e.g. position_jitter()) placed the data
+vijNudgePosition = function(position, x) {
+    force(x)
+    ggplot2::ggproto(NULL, position,
+        compute_layer = function(self, data, params, layout) {
+            data <- ggplot2::ggproto_parent(position, self)$compute_layer(data, params, layout)
+            ggplot2::transform_position(data, function(xx) xx + x)
+        }
+    )
+}
+
 vijHelpMessage = function(self, htmlText) {
     # Hide other results
     for (resName in names(self$results)) {

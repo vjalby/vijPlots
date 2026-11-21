@@ -198,7 +198,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         plot <- plot + ggplot2::geom_text(
                             ggplot2::aes(x = !!xVar, y = !!yVar, label = !!outlierVar, group = !!groupVar),
                             na.rm = TRUE, hjust = 0, angle = labAngle, size = self$options$labSize / ggplot2::.pt, family = fontFamily,
-                            position = ggpp::position_dodgenudge(x = nudgeX, width = .75)
+                            position = vijNudgePosition(ggplot2::position_dodge(width = .75), x = nudgeX)
                         )
                     } else {
                         plot <- plot + ggplot2::geom_text(

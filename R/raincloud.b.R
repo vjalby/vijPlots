@@ -113,9 +113,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(groupOne)) {
                 if (is.null(groupTwo)) {
                     # A: No group at all
-                    jitter_nudge <- ggpp::position_jitternudge(width = 0.03, height = 0,
-                                                         seed = 42, x = ifrev(0.08,-0.08),
-                                                         nudge.from = "jittered")
+                    jitter_nudge <- vijNudgePosition(ggplot2::position_jitter(width = 0.03, height = 0, seed = 42),
+                                                     x = ifrev(0.08,-0.08))
                     plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 1, y = !!aVar))
                     plot <- plot + ggplot2::geom_boxplot(width = 0.05, outlier.shape = NA, fill = oneColorOfPalette)
                     plot <- plot + ggplot2::geom_point(position = jitter_nudge, size=1.2)
@@ -125,9 +124,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 } else {
                     # B: GroupTwo only (overlapped)
                     # show.legend needed to display unused colors, guide size & slab_color needed to hide extra legends
-                    jitter_nudge <- ggpp::position_jitternudge(width = 0.02, height = 0,
-                                                         seed = 42, x = ifrev(+0.05,-0.05),
-                                                         nudge.from = "jittered")
+                    jitter_nudge <- vijNudgePosition(ggplot2::position_jitter(width = 0.02, height = 0, seed = 42),
+                                                     x = ifrev(+0.05,-0.05))
                     plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 1, y = !!aVar, fill = !!groupTwo, color = !!groupTwo, slab_color = !!groupTwo))
                     plot <- plot + ggplot2::geom_boxplot(position = boxplotPosition, width = boxplotWidth, outlier.shape = NA, color="black", alpha = boxplotAlpha, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                     plot <- plot + ggplot2::geom_point(ggplot2::aes(color = !!groupTwo), position = jitter_nudge, size=1.2, show.legend = FALSE)
@@ -139,9 +137,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 if (is.null(groupTwo)) {
                     # C: GroupOne only (side-by-side)
-                    jitter_nudge <- ggpp::position_jitternudge(width = 0.02, height = 0,
-                                                         seed = 42, x = ifrev(+0.12,-0.12),
-                                                         nudge.from = "jittered")
+                    jitter_nudge <- vijNudgePosition(ggplot2::position_jitter(width = 0.02, height = 0, seed = 42),
+                                                     x = ifrev(+0.12,-0.12))
                     if (self$options$singleColor) {
                         plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupOne, y = !!aVar))
                         plot <- plot + ggplot2::geom_boxplot(position = ggplot2::position_nudge(), width = 0.09, outlier.shape = NA, fill = oneColorOfPalette)
@@ -158,9 +155,8 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 } else {
                     # D: GroupOne and GroupTwo (side-by-side and overlapped)
-                    jitter_nudge <- ggpp::position_jitternudge(width = 0.05, height = 0,
-                                                         seed = 42, x = ifrev(+0.15,-0.15),
-                                                         nudge.from = "jittered")
+                    jitter_nudge <- vijNudgePosition(ggplot2::position_jitter(width = 0.05, height = 0, seed = 42),
+                                                     x = ifrev(+0.15,-0.15))
                     plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupOne, y = !!aVar, fill =  !!groupTwo, color = !!groupTwo, slab_color = !!groupTwo))
                     plot <- plot + ggplot2::geom_boxplot(position = boxplotPosition, width = boxplotWidth2, outlier.shape = NA, color = "black", alpha = boxplotAlpha, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                     plot <- plot + ggplot2::geom_point(ggplot2::aes(color = !!groupTwo), position = jitter_nudge, size=1.2, show.legend = FALSE)

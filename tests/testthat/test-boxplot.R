@@ -50,6 +50,17 @@ test_that("boxplot: several variables with a group (dodged, multi-group legend)"
     expect_plot_snapshot("boxplot-severalVars-Groups", testPlot)
 })
 
+test_that("boxplot: several variables with a group and outlier labels (dodged and nudged)", {
+    testPlot <- vijPlots::boxplot(
+        data = testData,
+        vars = c("Petal.Width", "Sepal.Width"),
+        group = "Species",
+        label = "group2",
+        facet = NULL
+    )$plot
+    expect_plot_snapshot("boxplot-severalVars-Groups-labels", testPlot)
+})
+
 test_that("boxplot: faceted", {
     testPlot <- vijPlots::boxplot(
         data = testData,

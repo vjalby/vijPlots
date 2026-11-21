@@ -281,9 +281,12 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::geom_segment(data = varData, ggplot2::aes(x = 0, y = 0, xend = !!c1, yend = !!c2),
                                             arrow = grid::arrow(length = grid::unit(0.05, "inches"), type = "closed"),
                                             color = self$options$varColor, linewidth = 0.8)
+                # Labels nudged away from the origin, as ggpp::position_nudge_center() did
+                dist <- pmax(sqrt(varData[[names(varData)[self$options$xaxis]]]^2 + varData[[names(varData)[self$options$yaxis]]]^2), 1e-5)
                 plot <- plot + ggrepel::geom_text_repel(data = varData, ggplot2::aes(x = !!c1, y = !!c2, label = Label),
                                                         check_overlap = TRUE, min.segment.length = 2,
-                                                        position = ggpp::position_nudge_center(x = 0.2, y = 0.01, center_x = 0, center_y = 0),
+                                                        nudge_x = 0.2 * varData[[names(varData)[self$options$xaxis]]] / dist,
+                                                        nudge_y = 0.01 * varData[[names(varData)[self$options$yaxis]]] / dist,
                                                         size = self$options$varLabelSize/ggplot2::.pt, color = labelColor, fontface="bold", seed = 123)
              }
 

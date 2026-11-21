@@ -127,7 +127,8 @@ build `labs()` and axis/legend theme from the title/subtitle/caption/axis option
 exposes; `vijHelpMessage()`/`vijErrorMessage()`/`vijWarningMessage()`/`vijDebugMessage()` write to
 `self$results$todo`; `vijDebugPlot(self, plot)` — called at the end of every `.plot()` — forces an
 eager build to surface any ggplot2 warning/message as a Notice instead of letting jmvcore silently
-swallow it (see gotcha below).
+swallow it (see gotcha below). `vijNudgePosition(position, x)` returns a ggplot2 position (e.g.
+`position_jitter()`, `position_dodge()`) followed by a horizontal nudge `x` (see "Module size").
 
 ### Data helpers (`R/utilsData.R`)
 
@@ -439,6 +440,39 @@ as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports
 `colorspace` was dropped (2026-10-04) in favour of `scales::col_mix()` (needs `scales >= 1.4.0`)
 in `lollipop.b.R` — note it's still installed transitively via `FactoMineR` (→ car → pbkrtest →
 doBy → forecast) for as long as `FactoMineR` stays an Import.
+
+### Module size (findings of 2026-11-21; `ggpp` dropped)
+
+The 1.4.1 `.jmo` is 26.3 MiB compressed, 80 % bundled packages (jamovi's own `jmv` already provides
+`ca`, `psych`, `GPArotation`, `car`, `emmeans`: those aren't bundled). Main groups: `FactoMineR` and
+its closure (`DT`, `crosstalk`...) 5.8 MiB, legacy CA/MCA only; `qqplotr` 6.2 MiB, of which 4.5 MiB
+is `opdisDownsampling` and its closure (`pracma`, `foreach`...), called only with `down.sample`, which
+`qqplot` never passes (`qqconf`: "ell" bands, `robustbase`: "ts" bands, both needed); `labelled` 2.8
+MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::gglikert_data()`; `ggpp`
+2.2 MiB (with `xts`, `lubridate`, `timechange`, `polynom`), now dropped; `ggforce` 1.2 MiB, legacy PCA only.
+- **`ggpp` dropped (2026-11-21):** its positions were only a ggplot2 position plus a horizontal nudge.
+  `raincloud`'s `position_jitternudge(nudge.from = "jittered")` and `boxplot`'s `position_dodgenudge()`
+  (outlier labels, several variables + group) are now `vijNudgePosition(ggplot2::position_jitter(...) /
+  position_dodge(...), x)`: a child of the given position whose `compute_layer()` calls the parent's
+  (`ggproto_parent()`) then adds `x` (`transform_position()`); `force(x)` reads the nudge when the
+  position is created, not at rendering. `layer_data()` identical to ggpp on ggplot2 4.x and 3.5.2
+  (ggpp 0.6.0 and 0.5.8-1), no snapshot moved (`boxplot-severalVars-Groups-labels` was recorded with
+  ggpp first). The legacy PCA's `position_nudge_center()` (radial nudge from the origin) became
+  ggrepel's per-label `nudge_x = 0.2 * x / r`, `nudge_y = 0.01 * y / r` (`r` floored at 1e-5): same
+  positions, except that a variable exactly at the origin is no longer nudged. Checked visually by the
+  user in jamovi 28 (2026-11-21). The rebuilt `.jmo` went from 26.58 to 24.37 MiB.
+- **Not done (user's decisions, 2026-11-21):** porting the legacy CA/MCA to `ca` like vijMulti (options
+  and results have diverged, old documents re-run on jamovi 28); vendoring the used part of `qqplotr`
+  into vijPlots (a 248-line draft matched `qqplotr` exactly on 480 cases, but too much code to maintain
+  for the gain). An upstream fix wouldn't help soon: jamovi freezes package versions per major release
+  (2.7 bundles qqplotr 0.0.6, 28 bundles 0.0.7).
+- **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
+  `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
+  every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed
+  as binaries (macOS/Windows), so `opdisDownsampling/data/` (3.5 MB) ships too. A bug report was
+  drafted for the user (not posted by Claude). The compiler also copies the whole
+  `build/R*-arm64-macos` folder into the module: delete it before rebuilding after dropping an Import,
+  or the old packages stay in the `.jmo`.
 
 ### Avoid `do.call()`
 

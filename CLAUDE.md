@@ -834,6 +834,9 @@ Each test file (`tests/testthat/test-<name>.R`) exercises two levels:
 reproducible across OS/font/graphics-device combinations; the full visual diff only runs locally.
 Locally, `vdiffr`/snapshot-based checks also no-op unless `NOT_CRAN` is set truthy — call
 `Sys.setenv(NOT_CRAN = "true")` before running tests interactively, or they'll silently skip.
+`vdiffr` is deliberately not in `Suggests` (removed 2026-11-21): the jamovi compiler installs
+`Suggests` into the `.jmo` like `Imports` (0.24 MiB for nothing at runtime). Install it in the local
+R library on each machine (`install.packages("vdiffr")`) to run the visual snapshots.
 Review new/changed snapshots with `testthat::snapshot_review("<name>")`, or accept blind with
 `testthat::snapshot_accept("<name>")` (or by renaming the generated `*.new.svg` over the
 reference file under `tests/testthat/_snaps/<name>/`).

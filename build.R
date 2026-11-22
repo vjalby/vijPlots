@@ -29,6 +29,11 @@ jmvtools::addAnalysis(name='principal', title='Principal Component Analysis')
 jmvtools::addAnalysis(name='multcorresp', title='Multiple Correspondence Analysis')
 jmvtools::addAnalysis(name='mosaic', title='Mosaic Plot')
 
+# utils.R and test-utils.R are shared with vijMulti: both must be TRUE (else copy the newer one over)
+identical(readLines("R/utils.R"), readLines("../vijMulti/R/utils.R"))
+identical(readLines("tests/testthat/test-utils.R"), readLines("../vijMulti/tests/testthat/test-utils.R"))
+# file.copy("R/utils.R", "../vijMulti/R/utils.R", overwrite = TRUE)
+
 # Install module
 
 jmvtools::install()

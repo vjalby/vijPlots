@@ -4,6 +4,7 @@ title: Q-Q & P-P Plots
 jrs:   '1.1'
 refs:
     - qqplotr
+    - qqconf
 
 items:
     - name: plot

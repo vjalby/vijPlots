@@ -115,19 +115,22 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$paramTable$setTitle(.("Parameter Values"))
             }
 
-            plotData <- list(data = data, params = params)
+            #### Points, reference line and band ####
+
+            if (self$options$type == "QQ" && self$options$band && self$options$methodQQ == "ts" && distrib != "norm")
+                vijWarningMessage(self, .("Tail-sensitive confidence bands are only valid for the Normal distribution."))
 
             image <- self$results$plot
-            image$setState(plotData)
+            image$setState(list(qq = private$.qqPlotData(data, params)))
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
                 return(FALSE)
 
-            plotData <- image$state$data
-            params <- image$state$params
+            qq <- image$state$qq
+            if (is.null(qq)) # State saved by vijPlots <= 1.4.1 (restored by jamovi 2.7)
+                qq <- private$.qqPlotData(image$state$data, image$state$params)
 
-            depVar <- rlang::sym(self$options$dep)
             groupVar <- vijVar(self$options$group)
 
             distrib <- self$options$distrib
@@ -141,29 +144,34 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Do the plot
             if (is.null(groupVar))
-                plot <- ggplot2::ggplot(data = plotData, mapping = ggplot2::aes(sample = !!depVar))
+                plot <- ggplot2::ggplot()
             else
-                plot <- ggplot2::ggplot(data = plotData, mapping = ggplot2::aes(sample = !!depVar, color = !!groupVar, fill = !!groupVar))
+                plot <- ggplot2::ggplot(mapping = ggplot2::aes(color = !!groupVar, fill = !!groupVar))
+
+            xy <- ggplot2::aes(x = .data$x, y = .data$y)
+            band <- ggplot2::aes(x = .data$x, ymin = .data$lower, ymax = .data$upper)
+            if (self$options$band) {
+                # Outline (drawn with groups only): 0.1 for the Q-Q band, as qqplotr's geom; default width for the P-P band
+                if (is.null(groupVar) && self$options$type == "QQ")
+                    plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5, linewidth = 0.1, fill = "darkgrey")
+                else if (is.null(groupVar))
+                    plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5, fill = "darkgrey")
+                else if (self$options$type == "QQ")
+                    plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5, linewidth = 0.1)
+                else
+                    plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5)
+            }
+            if (self$options$refLine) {
+                if (self$options$type == "PP")
+                    plot <- plot + ggplot2::annotate("segment", x = 0, y = 0, xend = 1, yend = ifelse(detrend, 0, 1), color = "darkgrey")
+                else if (is.null(groupVar) || identity)
+                    plot <- plot + ggplot2::geom_path(data = qq$line, xy, linewidth = 0.8, color = "darkgrey")
+                else
+                    plot <- plot + ggplot2::geom_path(data = qq$line, xy, linewidth = 0.8)
+            }
+            plot <- plot + ggplot2::geom_point(data = qq$points, xy, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
 
             if (self$options$type == "QQ") {
-                if (self$options$band) {
-                    if (is.null(groupVar))
-                        plot <- plot + qqplotr::geom_qq_band(distribution = distrib, dparams = params, bandType = self$options$methodQQ,
-                                                         identity = identity, detrend = detrend, alpha=0.5, fill = "darkgrey")
-                    else
-                        plot <- plot + qqplotr::geom_qq_band(distribution = distrib, dparams = params, bandType = self$options$methodQQ,
-                                                             identity = identity, detrend = detrend, alpha=0.5)
-                }
-                if (self$options$refLine) {
-                    if (is.null(groupVar) || identity)
-                        plot <- plot + qqplotr::stat_qq_line(distribution = distrib, dparams = params, identity = identity,
-                                                             detrend = detrend, color = "darkgrey")
-                    else
-                        plot <- plot + qqplotr::stat_qq_line(distribution = distrib, dparams = params, identity = identity,
-                                                             detrend = detrend)
-                }
-                plot <- plot + qqplotr::stat_qq_point(distribution = distrib, identity = identity, dparams = params,
-                                                      detrend = detrend, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                 if (detrend) {
                     if (self$options$standardize)
                         yLab <- .("Standardized Sample Quantiles Deviation")
@@ -177,22 +185,6 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
                 xLab <- .("Theoretical Quantiles")
             } else { # PP
-                if (self$options$band) {
-                    if (is.null(groupVar))
-                        plot <- plot + qqplotr::stat_pp_band(distribution = distrib, dparams = params, bandType = self$options$methodPP,
-                                                             identity = identity, detrend = detrend, alpha=0.5, fill = "darkgrey")
-                    else
-                        plot <- plot + qqplotr::stat_pp_band(distribution = distrib, dparams = params, bandType = self$options$methodPP,
-                                                             identity = identity, detrend = detrend, alpha=0.5)
-                }
-                if (self$options$refLine) {
-                    if (detrend)
-                        plot <- plot + ggplot2::geom_segment(ggplot2::aes(x = 0, y = 0, xend = 1, yend = 0), color = "darkgrey")
-                    else
-                        plot <- plot + ggplot2::geom_segment(ggplot2::aes(x = 0, y = 0, xend = 1, yend = 1), color = "darkgrey")
-                }
-                plot <- plot + qqplotr::stat_pp_point(distribution = distrib, dparams = params,  detrend = detrend,
-                                                      key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                 xLab <- .("Theoretical Probabilities")
                 yLab <-  ifelse(detrend, .("Sample Probability Deviation"), .("Sample Probabilities"))
             }
@@ -365,15 +357,154 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             return(params)
         },
+        # Points, reference line and band from the selected data (fixed seed for the bootstrap and ts bands)
+        .qqPlotData = function(data, params) {
+            if (!self$options$band)
+                bandType <- NULL
+            else if (self$options$type == "QQ")
+                bandType <- self$options$methodQQ
+            else
+                bandType <- self$options$methodPP
+            groupVar <- self$options$group
+            withr::with_seed(42, private$.qqData(data[[self$options$dep]], if (is.null(groupVar)) NULL else data[[groupVar]], groupVar,
+                                                 self$options$distrib, params, self$options$type, self$options$detrend,
+                                                 self$options$refType == "identity", bandType))
+        },
+        # Points, reference line and band of each group: adapted from qqplotr 0.0.7 (A. Almeida, A. Loy, H. Hofmann; GPL-3), ELL band from qqconf
+        .qqData = function(smp, group, groupName, distName, params, type, detrend, identity, bandType) {
+            if (is.null(group))
+                return(private$.qqGroup(smp, distName, params, type, detrend, identity, bandType))
+            parts <- list()
+            for (level in levels(group)) {
+                inGroup <- group == level
+                if (!any(inGroup))
+                    next
+                part <- private$.qqGroup(smp[inGroup], distName, params, type, detrend, identity, bandType)
+                for (k in names(part))
+                    if (!is.null(part[[k]]))
+                        part[[k]][[groupName]] <- factor(level, levels = levels(group))
+                parts[[level]] <- part
+            }
+            list(points = do.call(rbind, lapply(parts, `[[`, "points")),
+                 line = do.call(rbind, lapply(parts, `[[`, "line")),
+                 band = do.call(rbind, lapply(parts, `[[`, "band")))
+        },
+        .qqGroup = function(smp, distName, params, type, detrend, identity, bandType, B = 1000, conf = 0.95) {
+            smp <- sort(smp)
+            n <- length(smp)
+            probs <- stats::ppoints(n)
+            pFunc <- private$.distFun("p", distName)
+            qFunc <- private$.distFun("q", distName)
+            rFunc <- private$.distFun("r", distName)
+            band <- NULL
+            if (type == "QQ") {
+                theoretical <- do.call(qFunc, c(list(p = probs), params))
+                if (identity) {
+                    slope <- 1
+                    intercept <- 0
+                } else { # Line through the first and third quartiles
+                    xq <- do.call(qFunc, c(list(p = c(0.25, 0.75)), params))
+                    yq <- stats::quantile(smp, probs = c(0.25, 0.75), type = 7)
+                    slope <- diff(yq) / diff(xq)
+                    intercept <- yq[1] - slope * xq[1]
+                }
+                fitted <- slope * theoretical + intercept
+                points <- data.frame(x = theoretical, y = if (detrend) smp - fitted else smp)
+                xLine <- range(theoretical)
+                line <- data.frame(x = xLine, y = if (detrend) 0 else slope * xLine + intercept)
+                if (!is.null(bandType)) {
+                    if (bandType == "pointwise") { # Normal confidence intervals
+                        dens <- do.call(private$.distFun("d", distName), c(list(x = theoretical), params))
+                        stdErr <- (slope / dens) * sqrt(probs * (1 - probs) / n)
+                        zCrit <- stats::qnorm(1 - (1 - conf) / 2)
+                        lower <- fitted - stdErr * zCrit
+                        upper <- fitted + stdErr * zCrit
+                    } else if (bandType == "boot") { # Parametric bootstrap
+                        bs <- apply(matrix(do.call(rFunc, c(list(n = n * B), as.list(params))), n, B), 2, sort)
+                        upper <- apply(bs, 1, stats::quantile, probs = (1 + conf) / 2)
+                        lower <- apply(bs, 1, stats::quantile, probs = (1 - conf) / 2)
+                    } else if (bandType == "ks") { # Dvoretzky-Kiefer-Wolfowitz inequality
+                        epsilon <- sqrt((1 / (2 * n)) * log(2 / (1 - conf)))
+                        lower <- intercept + slope * do.call(qFunc, c(list(p = pmax(probs - epsilon, 0)), params))
+                        upper <- intercept + slope * do.call(qFunc, c(list(p = pmin(probs + epsilon, 1)), params))
+                    } else if (bandType == "ts") { # Tail-sensitive (Normal distribution only)
+                        center <- function(x) robustbase::s_Qn(x, mu.too = TRUE)[[1]]
+                        scale <- function(x) robustbase::Qn(x, finite.corr = FALSE)
+                        sim <- NULL
+                        for (i in 1:B)
+                            sim <- cbind(sim, sort(stats::rnorm(n)))
+                        sim <- sweep(sweep(sim, 2, apply(sim, 2, center), FUN = "-"), 2, apply(sim, 2, scale), FUN = "/")
+                        sim <- t(apply(sim, 1, stats::pnorm))
+                        pValue <- matrix(NA, nrow = n, ncol = B)
+                        for (i in 1:n) {
+                            tmp <- stats::pbeta(sim[i, ], shape1 = i, shape2 = n + 1 - i)
+                            pValue[i, ] <- apply(cbind(tmp, 1 - tmp), 1, min)
+                        }
+                        critical <- stats::quantile(apply(pValue, 2, min), prob = 1 - conf)
+                        upper <- stats::qnorm(stats::qbeta(1 - critical, 1:n, n + 1 - (1:n))) * scale(smp) + center(smp)
+                        lower <- stats::qnorm(stats::qbeta(critical, 1:n, n + 1 - (1:n))) * scale(smp) + center(smp)
+                    } else { # ell: Equal Local Levels
+                        ell <- qqconf::get_qq_band(n = n, alpha = 1 - conf, distribution = qFunc, dparams = params, prob_pts_method = "normal")
+                        lower <- ell$lower_bound
+                        upper <- ell$upper_bound
+                    }
+                    band <- data.frame(x = theoretical, lower = lower, upper = upper)
+                    if (detrend) {
+                        band$lower <- band$lower - fitted
+                        band$upper <- band$upper - fitted
+                    }
+                }
+            } else { # PP
+                y <- do.call(pFunc, c(list(q = smp), params))
+                points <- data.frame(x = probs, y = if (detrend) y - probs else y)
+                line <- data.frame(x = c(0, 1), y = if (detrend) c(0, 0) else c(0, 1))
+                if (!is.null(bandType)) {
+                    x <- probs
+                    if (bandType == "boot") { # Parametric bootstrap
+                        bs <- matrix(do.call(rFunc, c(list(n = n * B), params)), n, B)
+                        sim <- apply(bs, 2, function(s) do.call(pFunc, c(list(q = sort(s)), params)))
+                        upper <- apply(sim, 1, stats::quantile, prob = (1 + conf) / 2)
+                        lower <- apply(sim, 1, stats::quantile, prob = (1 - conf) / 2)
+                    } else { # ell: Equal Local Levels, back to probabilities
+                        ell <- qqconf::get_qq_band(n = n, alpha = 1 - conf, distribution = qFunc, dparams = params, prob_pts_method = "normal")
+                        x <- do.call(pFunc, c(list(q = ell$expected_value), params))
+                        lower <- do.call(pFunc, c(list(q = ell$lower_bound), params))
+                        upper <- do.call(pFunc, c(list(q = ell$upper_bound), params))
+                    }
+                    band <- data.frame(x = x, lower = lower, upper = upper)
+                    if (detrend) {
+                        band$lower <- band$lower - x
+                        band$upper <- band$upper - x
+                    }
+                }
+            }
+            list(points = points, line = line, band = band)
+        },
+        .distFun = function(prefix, distName) {
+            funs <- switch(distName,
+                beta    = list(d = stats::dbeta,    p = stats::pbeta,    q = stats::qbeta,    r = stats::rbeta),
+                cauchy  = list(d = stats::dcauchy,  p = stats::pcauchy,  q = stats::qcauchy,  r = stats::rcauchy),
+                chisq   = list(d = stats::dchisq,   p = stats::pchisq,   q = stats::qchisq,   r = stats::rchisq),
+                exp     = list(d = stats::dexp,     p = stats::pexp,     q = stats::qexp,     r = stats::rexp),
+                f       = list(d = stats::df,       p = stats::pf,       q = stats::qf,       r = stats::rf),
+                gamma   = list(d = stats::dgamma,   p = stats::pgamma,   q = stats::qgamma,   r = stats::rgamma),
+                lnorm   = list(d = stats::dlnorm,   p = stats::plnorm,   q = stats::qlnorm,   r = stats::rlnorm),
+                logis   = list(d = stats::dlogis,   p = stats::plogis,   q = stats::qlogis,   r = stats::rlogis),
+                norm    = list(d = stats::dnorm,    p = stats::pnorm,    q = stats::qnorm,    r = stats::rnorm),
+                t       = list(d = stats::dt,       p = stats::pt,       q = stats::qt,       r = stats::rt),
+                unif    = list(d = stats::dunif,    p = stats::punif,    q = stats::qunif,    r = stats::runif),
+                weibull = list(d = stats::dweibull, p = stats::pweibull, q = stats::qweibull, r = stats::rweibull))
+            funs[[prefix]]
+        },
         .showHelpMessage = function() {
-            helpMsg <- .('<p>This module uses <a href = "https://CRAN.R-project.org/package=qqplotr" target="_blank">qqplotr R package</a> by Alexandre Almeida, Adam Loy and Heike Hofmann. In-depth information can be found in the package documentation on CRAN site.</p>
+            helpMsg <- .('<p>The points, reference lines and confidence bands are computed with the methods of the <a href = "https://CRAN.R-project.org/package=qqplotr" target="_blank">qqplotr R package</a> by Alexandre Almeida, Adam Loy and Heike Hofmann, the ELL bands with the <a href = "https://CRAN.R-project.org/package=qqconf" target="_blank">qqconf R package</a>. In-depth information can be found in the documentation of these packages on CRAN site.</p>
 <p><strong>Reference line:</strong> Draws either the <em>identity line</em> (y = x) or the commonly-used <em>Q-Q line</em> that intercepts two data quantiles (Q<sub>0.25</sub> and Q<sub>0.75</sub>). P-P plot only supports identity line.</p>
-<p><strong>Confidence band:</strong> Draws a confidence band around the reference line. qqplotr package provides several methods to compute the confidence band:</p>
+<p><strong>Confidence band:</strong> Draws a confidence band around the reference line. Several methods are available to compute the confidence band:</p>
 <ul>
 <li><strong><em>Pointwise</em></strong> constructs pointwise confidence bands based on Normal confidence intervals;</li>
 <li><strong><em>Bootstrap</em></strong> creates pointwise confidence bands based on a parametric bootstrap;</li>
 <li><strong><em>Kolmogorov-Smirnov</em></strong> band is based on the Kolmogorov-Smirnov test;</li>
-<li><strong><em>Tail-Sensitive</em></strong> constructs a tail-sensitive confidence bands but is only implemented for Normal Q-Q plots;</li>
+<li><strong><em>Tail-Sensitive</em></strong> constructs a tail-sensitive confidence bands but is only valid for Normal Q-Q plots;</li>
 <li><strong><em>Equal Local Levels (ELL)</em></strong> constructs simultaneous bands using the equal local levels.</li>
 </ul>
 <p>P-P plots only support "ELL" and "Bootstrap" methods.</p>

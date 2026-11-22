@@ -16,6 +16,13 @@
         `title`="qqplotr: Quantile-Quantile Plot Extensions for 'ggplot2'", 
         `publisher`="[R package]. Retrieved from https://CRAN.R-project.org/package=qqplotr", 
         `url`="https://CRAN.R-project.org/package=qqplotr"), 
+    `qqconf`=list(
+        `type`="article", 
+        `author`="Weine, E., McPeek, M. S., Abney, M.", 
+        `year`=2023, 
+        `title`="Application of Equal Local Levels to Improve Q-Q Plot Testing Bands with R Package qqconf", 
+        `publisher`="Journal of Statistical Software, 106(10), 1-31", 
+        `url`="https://doi.org/10.18637/jss.v106.i10"), 
     `factominer`=list(
         `type`="software", 
         `author`="Husson, F., Josse, J., Le, S., Mazet, J.", 

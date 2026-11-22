@@ -15,7 +15,7 @@ LazyData: true
 ### labelled, fitdistrplus: not called directly, but required at runtime by ggstats/ggh4x respectively
 Imports: jmvcore (>= 0.8.5), R6, utils, stats, grDevices, psych, MASS, tidyr, 
          dplyr (>= 1.1.0), tibble, tidyselect,  forcats, grid, rlang, ggplot2, scales (>= 1.4.0),
-         ggstats, ggh4x, ggdist, ggrepel, ggforce, qqplotr,
+         ggstats, ggh4x, ggdist, ggrepel, ggforce, qqconf, robustbase,
          GPArotation, FactoMineR, labelled, fitdistrplus, withr
 Suggests:
     testthat (>= 3.0.0)

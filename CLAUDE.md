@@ -119,10 +119,18 @@ All 18 analyses are additionally registered in `jamovi/0000.yaml` (title, menu p
 vijPlots`). To scaffold a new analysis, see `build.R` for the `jmvtools::addAnalysis(name=...,
 title=...)` pattern used for the existing ones.
 
-### Shared utilities (`R/utils.R`)
+### Shared utilities (`R/utils.R`, `R/utilsPlots.R`)
 
-All prefixed `vij*` for easy grepping: `vijScale()`/`vijPalette()`/`vijPaletteNlevels()` build
-palette scales from the `colorPalette` option; `vijTitlesAndLabels()`/`vijTitleAndLabelFormat()`
+`R/utils.R` and `tests/testthat/test-utils.R` are **identical in vijPlots and vijMulti** (split
+2026-11-22): edit them here, then copy them to `../vijMulti/` and check with the two
+`identical(readLines(...))` lines of `build.R`. They hold the generic presentation helpers, some
+unused by vijMulti (`vijVar()`, `vijOneColorOfPalette()`, `vijFormatCount()`, `lastColor` of
+`vijColorScale()`). Helpers tied to vijPlots' own features go to `R/utilsPlots.R` (tests in
+`test-utilsPlots.R`): `vijGridLines()`, `vijHideAxis()`, `vijNudgePosition()`. A new helper goes to
+`utils.R` if it is generic, to `utilsPlots.R` if it depends on vijPlots-only options or plots.
+
+All prefixed `vij*` for easy grepping: `vijColorScale()`/`vijColorPalette()`/`vijColorPaletteNlevels()`
+build palette scales from the `colorPalette` option; `vijTitlesAndLabels()`/`vijTitleAndLabelFormat()`
 build `labs()` and axis/legend theme from the title/subtitle/caption/axis options every module
 exposes; `vijHelpMessage()`/`vijErrorMessage()`/`vijWarningMessage()`/`vijDebugMessage()` write to
 `self$results$todo`; `vijDebugPlot(self, plot)` — called at the end of every `.plot()` — forces an
@@ -370,8 +378,7 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   run's language (accepted: harmless, the group never drives the colour). Fixed along the way:
   `linechart` with several variables drew no line at all for a missing group (ggplot2's NA
   linetype is blank): now `na.value = "dotted"`, and `addNA()` in its `interaction()` grouping so
-  the variables' NA lines aren't merged into one. "(Missing)" is translated in `fr.po` ("(Manquant)"). Not yet done:
-  copying `utils.R` to vijMulti.
+  the variables' NA lines aren't merged into one. "(Missing)" is translated in `fr.po` ("(Manquant)").
 - Percent labels and axes use a **thin space** (U+2009) before `%`, not a regular space:
   `scales::label_percent(suffix = "\u2009%", ...)` — the source files hold the character itself — in every analysis
   that formats percentages (`areachart`, `barplot`, `mosaic`, `piechart`, `mrfrequencies`,
@@ -441,13 +448,13 @@ as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports
 in `lollipop.b.R` — note it's still installed transitively via `FactoMineR` (→ car → pbkrtest →
 doBy → forecast) for as long as `FactoMineR` stays an Import.
 
-### Module size (findings of 2026-11-21; `ggpp` dropped)
+### Module size (findings of 2026-11-21; `ggpp` and `qqplotr` dropped)
 
 The 1.4.1 `.jmo` is 26.3 MiB compressed, 80 % bundled packages (jamovi's own `jmv` already provides
 `ca`, `psych`, `GPArotation`, `car`, `emmeans`: those aren't bundled). Main groups: `FactoMineR` and
 its closure (`DT`, `crosstalk`...) 5.8 MiB, legacy CA/MCA only; `qqplotr` 6.2 MiB, of which 4.5 MiB
 is `opdisDownsampling` and its closure (`pracma`, `foreach`...), called only with `down.sample`, which
-`qqplot` never passes (`qqconf`: "ell" bands, `robustbase`: "ts" bands, both needed); `labelled` 2.8
+`qqplot` never passes (`qqconf`: "ell" bands, `robustbase`: "ts" bands, both needed), now dropped; `labelled` 2.8
 MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::gglikert_data()`; `ggpp`
 2.2 MiB (with `xts`, `lubridate`, `timechange`, `polynom`), now dropped; `ggforce` 1.2 MiB, legacy PCA only.
 - **`ggpp` dropped (2026-11-21):** its positions were only a ggplot2 position plus a horizontal nudge.
@@ -464,8 +471,25 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
 - **Not done (user's decisions, 2026-11-21):** porting the legacy CA/MCA to `ca` like vijMulti (options
   and results have diverged, old documents re-run on jamovi 28); vendoring the used part of `qqplotr`
   into vijPlots (a 248-line draft matched `qqplotr` exactly on 480 cases, but too much code to maintain
-  for the gain). An upstream fix wouldn't help soon: jamovi freezes package versions per major release
+  for the gain; superseded by the lighter replacement below). An upstream fix wouldn't help soon: jamovi freezes package versions per major release
   (2.7 bundles qqplotr 0.0.6, 28 bundles 0.0.7).
+- **`qqplotr` replaced (2026-11-22; user's decision):** no ggproto, no `qqplotr` in `Imports`. `.run()`
+  computes each group's points, reference line and band (`private$.qqData()`/`.qqGroup()`/`.distFun()`:
+  pure, adapted from qqplotr 0.0.7's stats, ELL band from `qqconf::get_qq_band()`, "ts" with
+  `robustbase`) through `.qqPlotData()` (reads the options, `withr::with_seed(42, ...)` for the "boot"/"ts"
+  draws), and stores `list(qq = ...)`; `.plot()` draws it with `geom_ribbon()`/`geom_path(linewidth =
+  0.8)`/`geom_point()`, the P-P reference line with one `annotate("segment")`. Same data as qqplotr
+  (≤ 2e-15); checked by the user in jamovi 28 and, before qqplotr was removed, by a test comparing both
+  SVGs in 76 cases (group, detrend, Q-Q line, every band, 6 distributions). Only differences: the line's
+  legend key drawn at 0.8 (qqplotr: the theme's width), `stroke-linejoin` in the band's key, and the P-P
+  reference line drawn once instead of once per point (`qqplot-pp`, `qqplot-pp-band*`,
+  `qqplot-band-grouped-qqline` were re-recorded for that, identical once these are normalised). **Old
+  states:** a state without `qq` (`list(data, params)`, vijPlots <= 1.4.1, restored by jamovi 2.7.41, which
+  has no `drop_state()`) is recomputed in `.plot()` by `.qqPlotData()` (tested). A note warns when "ts" is
+  used with a non-Normal distribution (qqplotr computed it silently). `qqplotr` stays cited (`refs:`, help
+  message), with `qqconf` (`00refs.yaml`: its JSS article). The rebuilt `.jmo` went from 24.37 to 19.43
+  MiB (`opdisDownsampling` and its closure gone). Tests with jamovi 2.7.41's R: only the known
+  differences listed under "Building and testing for jamovi 2.7".
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed
@@ -761,7 +785,7 @@ of much less use, nor to counts.
 
 A "Hide axis" checkbox per axis (`xHideAxis`/`yHideAxis`, under "Grid lines" in the Axes panel), on
 the displayed axis like the other Axes options (with `coord_flip()`, theme elements follow the
-displayed axes). `vijHideAxis(x, y)` (`utils.R`), added right after `vijGridLines()` (so after
+displayed axes). `vijHideAxis(x, y)` (`utilsPlots.R`), added right after `vijGridLines()` (so after
 `ggtheme`), hides the axis line and the ticks but keeps the axis text. Minimal and hadley already
 draw no axis line, and minimal no ticks either: the option then changes nothing there.
 
@@ -771,7 +795,7 @@ draw no axis line, and minimal no ticks either: the option then changes nothing 
   **With `inherit.blank = TRUE`** (suggested by the user, 2026-11-07): the minimal theme's ticks are
   `element_blank()`, and a plain transparent tick overrode them, moving the labels 4 pt *away* from
   the panel; it now stays blank there. Checked on the 4 jamovi themes (default, minimal, hadley,
-  iheartspss); `test-utils.R` covers it with `calc_element()`. jmvcore's `theme_*()` return a list
+  iheartspss); `test-utilsPlots.R` covers it with `calc_element()`. jmvcore's `theme_*()` return a list
   (theme + scales): add it to a plot, as `.plot()` does, not to a theme (`theme + list` adds nothing).
 - **Expansion** (`barplot`, `mrfrequencies`, `mrcrosstabs`, `barchart`, `lollipop`: a discrete
   category axis, no vertical grid lines under the bars; the other analyses have the hiding alone,

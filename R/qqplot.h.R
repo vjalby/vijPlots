@@ -715,7 +715,8 @@ qqplotResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="var", 
                         `title`="", 
-                        `type`="text")),
+                        `type`="text", 
+                        `combineBelow`=TRUE)),
                 clearWith=list(
                     "dep",
                     "group",

@@ -153,6 +153,70 @@ test_that("qqplot: a state saved by vijPlots <= 1.4.1 (data and parameters) is s
         expect_identical(ggplot2::layer_data(p, i), ggplot2::layer_data(expected, i))
 })
 
+test_that("qqplot: each group gives that group's own plot", {
+    data <- jmvcore::naOmit(testData[c("Petal.Length", "Species")])
+    cases <- list(
+        list(),
+        list(standardize = TRUE),
+        list(standardize = TRUE, paramMethod = "paraValue", param1 = 0, param2 = 1, band = TRUE, methodQQ = "ell"),
+        list(band = TRUE, methodQQ = "boot"),
+        list(band = TRUE, methodQQ = "ts"),
+        list(band = TRUE, methodQQ = "ell", refType = "qqline", detrend = TRUE),
+        list(distrib = "gamma", paramEstMethod = "mme", band = TRUE, methodQQ = "ks"),
+        list(distrib = "lnorm", type = "PP", band = TRUE, methodPP = "boot"),
+        list(distrib = "exp", type = "PP", band = TRUE, methodPP = "ell"))
+    for (case in cases) {
+        qq <- rlang::inject(vijPlots::qqplot(data = data, dep = "Petal.Length", group = "Species",
+                                             !!!case))$plot$state$qq
+        for (level in levels(data$Species)) {
+            single <- rlang::inject(vijPlots::qqplot(data = data[data$Species == level, ], dep = "Petal.Length",
+                                                     group = NULL, !!!case))$plot$state$qq
+            for (k in c("points", "line", "band")) {
+                if (is.null(single[[k]])) {
+                    expect_null(qq[[k]])
+                    next
+                }
+                part <- qq[[k]][qq[[k]]$Species == level, names(single[[k]])]
+                rownames(part) <- NULL
+                expect_equal(part, single[[k]], label = paste(level, k, deparse(case)))
+            }
+        }
+    }
+})
+
+test_that("qqplot: parameters table with one row per group", {
+    table <- vijPlots::qqplot(data = testData, dep = "Petal.Length", group = "Species")$paramTable$asDF
+    expect_equal(nrow(table), 3)
+    expect_equal(table$group, levels(testData$Species))
+    expect_equal(table$mean, as.vector(tapply(testData$Petal.Length, testData$Species, mean, na.rm = TRUE)))
+})
+
+test_that("qqplot: given parameters are common to all groups", {
+    results <- vijPlots::qqplot(data = testData, dep = "Petal.Length", group = "Species", band = TRUE,
+                                paramMethod = "paraValue", param1 = 3.75, param2 = 1.75)
+    table <- results$paramTable$asDF
+    expect_equal(nrow(table), 1)
+    expect_null(table$group)
+    expect_equal(c(table$mean, table$sd), c(3.75, 1.75))
+})
+
+test_that("qqplot: names the group that cannot be estimated or standardized", {
+    data <- data.frame(x = c(1, 2, 3, 4, 5, 6, 6), g = factor(c("a", "a", "a", "b", "c", "c", "c")))
+    expect_error(vijPlots::qqplot(data = data, dep = "x", group = "g"),
+                 "At least two observations are required in group b")
+    data$g <- factor(c("a", "a", "a", "b", "b", "c", "c"))
+    expect_error(vijPlots::qqplot(data = data, dep = "x", group = "g"),
+                 "equal to zero in group c")
+    expect_error(vijPlots::qqplot(data = data, dep = "x", group = "g", standardize = TRUE,
+                                  paramMethod = "paraValue", param1 = 0, param2 = 1),
+                 "equal to zero in group c")
+    expect_no_error(vijPlots::qqplot(data = data, dep = "x", group = "g",
+                                     paramMethod = "paraValue", param1 = 0, param2 = 1))
+    data <- data.frame(x = c(0.4, 0.5, 0.6, 0.01, 0.99, 0.02, 0.98), g = factor(c("a", "a", "a", "b", "b", "b", "b")))
+    expect_error(vijPlots::qqplot(data = data, dep = "x", group = "g", distrib = "beta", paramEstMethod = "mme"),
+                 "Unable to estimate the distribution parameters of group b using MME method")
+})
+
 test_that("qqplot: user-specified distribution parameters", {
     testPlot <- vijPlots::qqplot(
         data = testData,

@@ -65,22 +65,13 @@ The module is available in the **Plots** tab.
 
 ![](img/areachart.jpg)
 
-## Last changes: vijPlots 1.4.0 (2026-11-08)
+## Last changes: vijPlots 1.5.0 (2026-11-23)
 
-- Bar Plot / Pie Chart: optional frequency table
-- Pie Chart: sorting option (increasing/decreasing counts), option to hide % labels below 5% and option to keep missing values
-- Bar Plot: missing values are now kept in percent mode when "Ignore missing values" is unchecked
-- Bar Plot / Pie Chart / Mosaic Plot: missing, negative or infinite weights are now always rejected
-- Mosaic Plot: fixed the facet of missing values (when "Ignore missing values" is unchecked)
-- Box Plot: whisker options (1.5 × IQR, 3 × IQR, min-max)
-- Error Bar Chart: option to show the individual observations over the bars
-- Bar Plot / Multiple Response Crosstabs: option to hide % labels below 5%
-- Likert Plot: "Tidy up levels" now also applies to integer variables
-- Missing values kept as a category are now labelled "(Missing)" instead of "NA"
-- Grid lines option for numeric axes
-- "Hide axis" option for each axis (axis line and ticks)
-- The fixed-length color palettes are now extended by interpolation
-- Code optimization
+- Mosaic Plot: the Pearson residuals now include the missing values kept as a category (when "Ignore missing values" is unchecked)
+- Scatter Plot: "Group shapes" now supports up to 18 groups (instead of 11)
+- Pie Chart: option to combine the small categories into an "Other" category (automatically or below a given proportion), with its own label and color
+- Bar Plot: option to combine the small categories of the category axis and/or the group into an "Other" category (automatically or below a given proportion), with its own label and color
+- Q-Q & P-P Plots: with a grouping variable, the data are now standardized and the distribution parameters estimated within each group (they were computed on all the data, so groups were compared to a pooled distribution)
 
 ## References
 

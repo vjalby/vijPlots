@@ -22,6 +22,7 @@ items:
         - name: var
           title: ''
           type: text
+          combineBelow: true
       clearWith:
         - dep
         - group

@@ -305,7 +305,11 @@ msgid ""
 "<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 "
 "(Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma), scale (Weibull) and "
 "max (Uniform).</li>\n"
-"</ul>"
+"</ul>\n"
+"<p><strong>Grouping variable:</strong> the plot superimposes the plots of "
+"the groups. The data are standardized and the parameters estimated within "
+"each group; parameter values entered by the user are common to all "
+"groups.</p>"
 msgstr ""
 "<p>Les points, les droites de référence et les bandes de confiance sont "
 "calculés selon les méthodes de l'extension R <a href = "
@@ -360,7 +364,11 @@ msgstr ""
 "<li><strong>Paramètre 2 :</strong> écart-type (normale), écart-type "
 "logarithmique (log-normale), forme 2 (bêta), échelle (Cauchy, logistique), "
 "ddl 2 (F), taux (gamma), échelle (Weibull) et max (uniforme).</li>\n"
-"</ul>"
+"</ul>\n"
+"<p><strong>Variable de groupe :</strong> le graphique superpose les "
+"graphiques des groupes. Les données sont standardisées et les paramètres "
+"estimés dans chaque groupe ; les valeurs des paramètres saisies par "
+"l'utilisateur sont communes à tous les groupes.</p>"
 
 #: R/corresp.b.R
 msgid ""
@@ -889,6 +897,10 @@ msgstr "Vecteurs"
 #: likertplot/options/sorting/ascending.title
 msgid "Ascending"
 msgstr "Croissant"
+
+#: R/qqplot.b.R
+msgid "At least two observations are required in group {group}."
+msgstr "Au moins deux observations sont nécessaires dans le groupe {group}."
 
 #: R/qqplot.b.R
 msgid "At least two observations are required."
@@ -6174,7 +6186,9 @@ msgstr "Tail-Sensitive (Normal)"
 
 #: R/qqplot.b.R
 msgid "Tail-sensitive confidence bands are only valid for the Normal distribution."
-msgstr "Les bandes de confiance sensibles aux queues de distribution ne sont valables que pour la loi normale."
+msgstr ""
+"Les bandes de confiance sensibles aux queues de distribution ne sont "
+"valables que pour la loi normale."
 
 #: likertplot/ui[3][0][0][0].label
 msgid "Tests"
@@ -6239,6 +6253,10 @@ msgid ""
 msgstr ""
 "La valeur singulière pour la dimension {n} est proche de zéro. Les "
 "graphiques peuvent être approximatifs."
+
+#: R/qqplot.b.R
+msgid "The variance of the variable is equal to zero in group {group}."
+msgstr "La variance de la variable est nulle dans le groupe {group}."
 
 #: R/qqplot.b.R
 msgid "The variance of the variable is equal to zero."
@@ -6615,6 +6633,14 @@ msgid "Unable to compute the χ2 statistic."
 msgstr "Impossible de calculer la statistique du χ2."
 
 #: R/qqplot.b.R
+msgid ""
+"Unable to estimate the distribution parameters of group {group} using "
+"{method} method."
+msgstr ""
+"Impossible d'estimer les paramètres de la distribution du groupe {group} "
+"avec la méthode {method}."
+
+#: R/qqplot.b.R
 msgid "Unable to estimate the distribution parameters using {method} method."
 msgstr ""
 "Impossible d'estimer les paramètres de la distribution avec la méthode "
@@ -6683,6 +6709,10 @@ msgstr "Étiquettes des valeurs"
 #: mrcrosstabs/ui[1][1][0].label
 msgid "Values"
 msgstr "Valeurs"
+
+#: R/qqplot.b.R
+msgid "Values standardized within each group"
+msgstr "Valeurs standardisées dans chaque groupe"
 
 #: areachart/options/var.title
 #: areachart/ui/mode/oneVariable[0][0][1].label

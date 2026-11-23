@@ -58,9 +58,21 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 vijErrorMessage(self, .("The variance of the variable is equal to zero."))
             }
 
-            if (self$options$standardize) {
-                data[[depVar]] <- (data[[depVar]] - mean(data[[depVar]]))/stats::sd(data[[depVar]])
+            byGroup <- !is.null(groupVar) && self$options$paramMethod == "paraEstimate"
+            standardizeByGroup <- !is.null(groupVar) && self$options$standardize
+            levels <- if (byGroup || standardizeByGroup) levels(droplevels(data[[groupVar]])) else NULL
+            for (level in levels) {
+                x <- data[[depVar]][data[[groupVar]] == level]
+                if (length(x) < 2)
+                    vijErrorMessage(self, jmvcore::format(.("At least two observations are required in group {group}."), group = level))
+                if (stats::sd(x) == 0)
+                    vijErrorMessage(self, jmvcore::format(.("The variance of the variable is equal to zero in group {group}."), group = level))
             }
+
+            if (standardizeByGroup)
+                data[[depVar]] <- stats::ave(data[[depVar]], data[[groupVar]], FUN = function(x) (x - mean(x)) / stats::sd(x))
+            else if (self$options$standardize)
+                data[[depVar]] <- (data[[depVar]] - mean(data[[depVar]]))/stats::sd(data[[depVar]])
 
             #### Data/distribution compatibility ####
 
@@ -81,14 +93,10 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Parameter estimations ####
 
             if (self$options$paramMethod == "paraEstimate") {
-                if (self$options$paramEstMethod == "mle") {
-                    params <- private$.mleParameters(distrib, data[[depVar]])
-                } else { # paramEstMethod == "mme"
-                    params <- private$.mmeParameters(distrib, data[[depVar]])
-                }
-                if (is.null(params)) {
-                    vijErrorMessage(self, jmvcore::format(.("Unable to estimate the distribution parameters using {method} method."), method = toupper(self$options$paramEstMethod)))
-                }
+                if (byGroup)
+                    params <- sapply(levels, function(level) private$.estimateParameters(distrib, data[[depVar]][data[[groupVar]] == level], level), simplify = FALSE)
+                else
+                    params <- private$.estimateParameters(distrib, data[[depVar]])
             } else {
                 params <- private$.userParameters(distrib, self$options$param1, self$options$param2)
                 if (is.null(params)) {
@@ -98,14 +106,23 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Populate the Parameters table ####
 
-            self$results$paramTable$getColumn('var')$setTitle(private$.distTitleName(distrib))
-            for(i in seq_along(params)) {
-                self$results$paramTable$addColumn(names(params[i]), type = 'number', format = 'zto')
+            table <- self$results$paramTable
+            table$getColumn('var')$setTitle(private$.distTitleName(distrib))
+            paramSets <- if (byGroup) params else list(params)
+            if (byGroup)
+                table$addColumn('group', title = groupVar, type = 'text')
+            for (name in names(paramSets[[1]]))
+                table$addColumn(name, type = 'number', format = 'zto')
+            varName <- ifelse(self$options$transLog, paste0("LN(", depVar, ")"), depVar)
+            for (i in seq_along(paramSets)) {
+                values <- c(list(var = varName), if (byGroup) list(group = names(paramSets)[i]), as.list(paramSets[[i]]))
+                if (i == 1)
+                    table$setRow(rowNo = 1, values)
+                else
+                    table$addRow(rowKey = i, values = values)
             }
-            self$results$paramTable$setRow(rowNo=1, params)
-            self$results$paramTable$setCell(rowNo=1, col = 1, ifelse(self$options$transLog, paste0("LN(",self$options$dep,")"), self$options$dep))
             if (self$options$standardize)
-                self$results$paramTable$setNote("1", .("Standardized values"), init = TRUE)
+                table$setNote("1", if (standardizeByGroup) .("Values standardized within each group") else .("Standardized values"), init = TRUE)
             if (self$options$paramMethod == "paraEstimate"){
                 if (self$options$paramEstMethod == "mle")
                     self$results$paramTable$setTitle(.("Parameter Estimates (MLE)"))
@@ -121,7 +138,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 vijWarningMessage(self, .("Tail-sensitive confidence bands are only valid for the Normal distribution."))
 
             image <- self$results$plot
-            image$setState(list(qq = private$.qqPlotData(data, params)))
+            image$setState(list(qq = private$.qqPlotData(data, params, byGroup)))
         },
         .plot = function(image, ggtheme, theme, ...) {
             if (is.null(image$state))
@@ -357,8 +374,18 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             return(params)
         },
-        # Points, reference line and band from the selected data (fixed seed for the bootstrap and ts bands)
-        .qqPlotData = function(data, params) {
+        # Parameters estimated by the chosen method (error naming the group, if any, when it fails)
+        .estimateParameters = function(distName, x, level = NULL) {
+            method <- self$options$paramEstMethod
+            params <- if (method == "mle") private$.mleParameters(distName, x) else private$.mmeParameters(distName, x)
+            if (is.null(params) && is.null(level))
+                vijErrorMessage(self, jmvcore::format(.("Unable to estimate the distribution parameters using {method} method."), method = toupper(method)))
+            if (is.null(params))
+                vijErrorMessage(self, jmvcore::format(.("Unable to estimate the distribution parameters of group {group} using {method} method."), group = level, method = toupper(method)))
+            params
+        },
+        # Points, reference line and band from the selected data
+        .qqPlotData = function(data, params, byGroup = FALSE) {
             if (!self$options$band)
                 bandType <- NULL
             else if (self$options$type == "QQ")
@@ -366,20 +393,21 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 bandType <- self$options$methodPP
             groupVar <- self$options$group
-            withr::with_seed(42, private$.qqData(data[[self$options$dep]], if (is.null(groupVar)) NULL else data[[groupVar]], groupVar,
-                                                 self$options$distrib, params, self$options$type, self$options$detrend,
-                                                 self$options$refType == "identity", bandType))
+            private$.qqData(data[[self$options$dep]], if (is.null(groupVar)) NULL else data[[groupVar]], groupVar,
+                            self$options$distrib, params, byGroup, self$options$type, self$options$detrend,
+                            self$options$refType == "identity", bandType)
         },
-        # Points, reference line and band of each group: adapted from qqplotr 0.0.7 (A. Almeida, A. Loy, H. Hofmann; GPL-3), ELL band from qqconf
-        .qqData = function(smp, group, groupName, distName, params, type, detrend, identity, bandType) {
+        # Points, reference line and band of each group (params: one set, or one per level when byGroup), seed 42 for each group's random draws
+        .qqData = function(smp, group, groupName, distName, params, byGroup, type, detrend, identity, bandType) {
             if (is.null(group))
-                return(private$.qqGroup(smp, distName, params, type, detrend, identity, bandType))
+                return(withr::with_seed(42, private$.qqGroup(smp, distName, params, type, detrend, identity, bandType)))
             parts <- list()
             for (level in levels(group)) {
                 inGroup <- group == level
                 if (!any(inGroup))
                     next
-                part <- private$.qqGroup(smp[inGroup], distName, params, type, detrend, identity, bandType)
+                part <- withr::with_seed(42, private$.qqGroup(smp[inGroup], distName, if (byGroup) params[[level]] else params,
+                                                               type, detrend, identity, bandType))
                 for (k in names(part))
                     if (!is.null(part[[k]]))
                         part[[k]][[groupName]] <- factor(level, levels = levels(group))
@@ -389,6 +417,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                  line = do.call(rbind, lapply(parts, `[[`, "line")),
                  band = do.call(rbind, lapply(parts, `[[`, "band")))
         },
+        # Adapted from qqplotr 0.0.7 (A. Almeida, A. Loy, H. Hofmann; GPL-3), ELL band from qqconf
         .qqGroup = function(smp, distName, params, type, detrend, identity, bandType, B = 1000, conf = 0.95) {
             smp <- sort(smp)
             n <- length(smp)
@@ -518,7 +547,8 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <ul>
 <li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 (F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>
 <li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 (Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma), scale (Weibull) and max (Uniform).</li>
-</ul>')
+</ul>
+<p><strong>Grouping variable:</strong> the plot superimposes the plots of the groups. The data are standardized and the parameters estimated within each group; parameter values entered by the user are common to all groups.</p>')
             vijHelpMessage(self, helpMsg)
         }
     )

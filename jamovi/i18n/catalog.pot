@@ -255,7 +255,11 @@ msgid ""
 "<li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 "
 "(Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma), scale (Weibull) and "
 "max (Uniform).</li>\n"
-"</ul>"
+"</ul>\n"
+"<p><strong>Grouping variable:</strong> the plot superimposes the plots of "
+"the groups. The data are standardized and the parameters estimated within "
+"each group; parameter values entered by the user are common to all "
+"groups.</p>"
 msgstr ""
 
 #: R/corresp.b.R
@@ -660,6 +664,10 @@ msgstr ""
 
 #: likertplot/options/sorting/ascending.title
 msgid "Ascending"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "At least two observations are required in group {group}."
 msgstr ""
 
 #: R/qqplot.b.R
@@ -5989,6 +5997,10 @@ msgid ""
 msgstr ""
 
 #: R/qqplot.b.R
+msgid "The variance of the variable is equal to zero in group {group}."
+msgstr ""
+
+#: R/qqplot.b.R
 msgid "The variance of the variable is equal to zero."
 msgstr ""
 
@@ -6356,6 +6368,12 @@ msgid "Unable to compute the χ2 statistic."
 msgstr ""
 
 #: R/qqplot.b.R
+msgid ""
+"Unable to estimate the distribution parameters of group {group} using "
+"{method} method."
+msgstr ""
+
+#: R/qqplot.b.R
 msgid "Unable to estimate the distribution parameters using {method} method."
 msgstr ""
 
@@ -6421,6 +6439,10 @@ msgstr ""
 #: mrcrosstabs/options/computedValues.title
 #: mrcrosstabs/ui[1][1][0].label
 msgid "Values"
+msgstr ""
+
+#: R/qqplot.b.R
+msgid "Values standardized within each group"
 msgstr ""
 
 #: areachart/options/var.title

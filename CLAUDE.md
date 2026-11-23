@@ -498,6 +498,45 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   `build/R*-arm64-macos` folder into the module: delete it before rebuilding after dropping an Import,
   or the old packages stay in the `.jmo`.
 
+### `qqplot`: with a group, everything is computed per group (2026-11-23; user's decision, a bug fix)
+
+With a group, the points, the Q-Q line and every band were computed per group (ggplot2's `compute_group()`
+did it for qqplotr, and `.qqData()` loops the same way), but the parameters were estimated, and the data
+standardized, once on all the data (vijPlots passed `dparams`; qqplotr alone would estimate per group). Each
+group was thus compared to the pooled law, and some bands contradicted the reference line: with the Q-Q line,
+the bootstrap/ELL bands stayed on the pooled law while each line followed its group; with the identity line,
+the "ts" band followed each group (it always uses the sample's robust centre/scale, `params` ignored).
+- **Rule now:** with a group, the data are standardized and the parameters estimated **within each group**;
+  only parameters entered by the user are common. No option: an "Estimate for each group" checkbox
+  (`paramByGroup`, 2026-11-22) was tried and removed the next day, the user preferring one meaning (the
+  superposition of the groups' own plots) announced as a bug fix. Old documents with a group and estimated
+  parameters (or standardized data) change when re-run. In `.run()`: `byGroup` (group + estimated) gives
+  `params` as a list named by non-empty level; `standardizeByGroup` (group + standardize) uses `stats::ave()`;
+  per-group checks (n ≥ 2, non-zero variance, estimation) name the group, so a one-case group now errors
+  (not with given parameters and no standardization); one table row per group (`group` column added in
+  `.run()`, `combineBelow` on `var`).
+- Each group is **exactly the plot of that group alone**: a test compares every group's part of `state$qq`
+  with `qqplot()` run on the subset, in 9 cases (including given parameters + standardize). That needs the
+  seed per group (`withr::with_seed(42, ...)` around each `.qqGroup()` call in `.qqData()`), so that the
+  boot/"ts" draws don't depend on the other groups.
+- **vs qqplotr** (checked 2026-11-23, iris, 29 cases, qqplotr 0.0.7 called with the same `dparams`): points
+  and every band identical (≤ 4e-15), except boot/"ts" with a group, whose draws differ (seed per group;
+  identical to qqplotr run on each group alone with `set.seed(42)`). vijPlots <= 1.4.1 set no seed: its
+  boot/"ts" bands changed at every redraw.
+- **Bands, discussed and left as qqplotr does them (user's decisions, 2026-11-23):** qqconf only knows the
+  identity line (its `qq_conf_plot()` draws no Q-Q line); with the Q-Q line, the bootstrap/ELL bands stay
+  around the law of `params`, not the line (small gap now that parameters fit each group). Possible fix not
+  applied: `lower/upper <- intercept + slope * lower/upper` for boot/ELL (what pointwise/KS do, and
+  `car::qqPlot()`'s envelope); a "Q-Q line" bootstrap (each replicate's own quartile line) would be the
+  exact version. The "ts" band uses median/Qn, not `params`: no help sentence added (user's choice). Every
+  band but "ts" assumes known parameters (conservative when estimated). qqconf's `"pointwise"` band (exact,
+  beta order statistics) differs from qqplotr's (normal approximation, wider in the tails); its `"ks"` is
+  the same. References: Loy, Follett & Hofmann (2016), Almeida, Loy & Hofmann (2018), Aldor-Noiman et al.
+  (2013).
+- `MASS::fitdistr()`'s MLE (logistic, Weibull, gamma) raises "NaNs produced" warnings while `optim()`
+  explores invalid values, more often on small groups (pre-existing; whether jamovi shows them not
+  checked), avoided in the tests.
+
 ### Avoid `do.call()`
 
 Prefer a `switch()` (or direct `pkg::fun()` calls) over `do.call(getFromNamespace(x, "pkg"), args)`
@@ -629,6 +668,13 @@ denominator includes the missing values' weights when they are kept, like the sl
   snapshot each).
 
 ### Appearance options (findings of 2026-10-29; theme and font done, 2026-11-20/21)
+
+**To do, later (user's decision, 2026-11-23): remove the `plotTheme` and `fontFamily` options** from every
+analysis: jamovi's developers don't like them. Not announced in `NEWS.md`/README for that reason (1.5.0
+section). When doing it, undo what the notes below describe (options, "Theme" UI section, `vijPlotTheme()`,
+`vijFontFamily()` and the `family = fontFamily` of every text layer, `clearWith:` entries, "theme and font
+family" tests, `helper-theme.R`, `piechart-theme-bw` snapshot, translations), and check `vijGridLines()`,
+which reads `plotTheme` before jamovi's global theme.
 
 Possible global "appearance" options shared by all analyses (font family, overall text size, base
 theme, alpha, line width, ...). Only the font and the background were investigated:

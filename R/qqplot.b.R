@@ -3,14 +3,28 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     inherit = qqplotBase,
     private = list(
         .init = function() {
-            # Stretchable dimensions
-            width <- 450
-            height <- 450
+            # Stretchable dimensions (one plot per group: grid from facetBy and facetNumber)
+            separate <- !is.null(self$options$group) && self$options$plotPerGroup
+            if (separate) {
+                nbOfFacet <- nlevels(self$data[[self$options$group]])
+                if (self$options$facetBy == "column") {
+                    nbOfColumn <- self$options$facetNumber
+                    nbOfRow <- ceiling(nbOfFacet / nbOfColumn)
+                } else {
+                    nbOfRow <- self$options$facetNumber
+                    nbOfColumn <- ceiling(nbOfFacet / nbOfRow)
+                }
+                width <- max(450, 350 * nbOfColumn)
+                height <- max(450, 350 * nbOfRow)
+            } else {
+                width <- 450
+                height <- 450
+            }
             # Fixed dimensions
             fixed_height <- 50 # X-Axis legend
             fixed_width <- 75 # Y-Axis legend
             # Legend
-            if (!is.null(self$options$group)) {
+            if (!is.null(self$options$group) && !separate) {
                 if (self$options$legendPosition %in% c('top','bottom'))
                     fixed_height <- fixed_height + 50
                 else
@@ -149,6 +163,8 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 qq <- private$.qqPlotData(image$state$data, image$state$params)
 
             groupVar <- vijVar(self$options$group)
+            # One plot per group: no color per group, one panel per group
+            colorVar <- if (self$options$plotPerGroup) NULL else groupVar
 
             distrib <- self$options$distrib
 
@@ -160,18 +176,18 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             identity <- (self$options$refType == "identity")
 
             # Do the plot
-            if (is.null(groupVar))
+            if (is.null(colorVar))
                 plot <- ggplot2::ggplot()
             else
-                plot <- ggplot2::ggplot(mapping = ggplot2::aes(color = !!groupVar, fill = !!groupVar))
+                plot <- ggplot2::ggplot(mapping = ggplot2::aes(color = !!colorVar, fill = !!colorVar))
 
             xy <- ggplot2::aes(x = .data$x, y = .data$y)
             band <- ggplot2::aes(x = .data$x, ymin = .data$lower, ymax = .data$upper)
             if (self$options$band) {
                 # Outline (drawn with groups only): 0.1 for the Q-Q band, as qqplotr's geom; default width for the P-P band
-                if (is.null(groupVar) && self$options$type == "QQ")
+                if (is.null(colorVar) && self$options$type == "QQ")
                     plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5, linewidth = 0.1, fill = "darkgrey")
-                else if (is.null(groupVar))
+                else if (is.null(colorVar))
                     plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5, fill = "darkgrey")
                 else if (self$options$type == "QQ")
                     plot <- plot + ggplot2::geom_ribbon(data = qq$band, band, alpha = 0.5, linewidth = 0.1)
@@ -181,12 +197,19 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$refLine) {
                 if (self$options$type == "PP")
                     plot <- plot + ggplot2::annotate("segment", x = 0, y = 0, xend = 1, yend = ifelse(detrend, 0, 1), color = "darkgrey")
-                else if (is.null(groupVar) || identity)
+                else if (is.null(colorVar) || identity)
                     plot <- plot + ggplot2::geom_path(data = qq$line, xy, linewidth = 0.8, color = "darkgrey")
                 else
                     plot <- plot + ggplot2::geom_path(data = qq$line, xy, linewidth = 0.8)
             }
             plot <- plot + ggplot2::geom_point(data = qq$points, xy, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
+            if (!is.null(groupVar) && is.null(colorVar)) {
+                scales <- if (self$options$facetFreeScales) "free" else "fixed"
+                if (self$options$facetBy == "column")
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!groupVar), ncol = as.numeric(self$options$facetNumber), scales = scales)
+                else
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!groupVar), nrow = as.numeric(self$options$facetNumber), scales = scales)
+            }
 
             if (self$options$type == "QQ") {
                 if (detrend) {
@@ -218,7 +241,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + vijHideAxis(x = self$options$xHideAxis, y = self$options$yHideAxis)
 
             # Legend
-            if (is.null(groupVar))
+            if (is.null(colorVar))
                 plot <- plot + ggplot2::guides(fill = "none")
             else
                 plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)))
@@ -548,7 +571,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 <li><strong>Parameter 1:</strong> mean (Normal), meanlog (Log-normal), shape1 (Beta), location (Cauchy, Logistic), df (Chi-squared, Student), df1 (F), rate (Exponential), shape (Gamma, Weibull) and min (Uniform);</li>
 <li><strong>Parameter 2:</strong> sd (normal), sdlog (Log-normal), shape2 (Beta), scale (Cauchy, Logistic), df2 (F), rate (Gamma), scale (Weibull) and max (Uniform).</li>
 </ul>
-<p><strong>Grouping variable:</strong> the plot superimposes the plots of the groups. The data are standardized and the parameters estimated within each group; parameter values entered by the user are common to all groups.</p>')
+<p><strong>Grouping variable:</strong> The data are standardized and the parameters estimated within each group; parameter values entered by the user are common to all groups.</p>')
             vijHelpMessage(self, helpMsg)
         }
     )

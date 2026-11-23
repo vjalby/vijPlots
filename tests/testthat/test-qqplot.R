@@ -191,6 +191,28 @@ test_that("qqplot: parameters table with one row per group", {
     expect_equal(table$mean, as.vector(tapply(testData$Petal.Length, testData$Species, mean, na.rm = TRUE)))
 })
 
+test_that("qqplot: one plot per group", {
+    run <- function(perGroup, ...) vijPlots::qqplot(data = testData, dep = "Petal.Length", group = "Species",
+                                                    band = TRUE, plotPerGroup = perGroup, ...)
+    expect_identical(run(TRUE, methodQQ = "boot", standardize = TRUE)$plot$state,
+                     run(FALSE, methodQQ = "boot", standardize = TRUE)$plot$state)
+    p <- renderedPlot(run(TRUE))
+    expect_s3_class(p$facet, "FacetWrap")
+    expect_false(any(c("colour", "fill") %in% c(names(p$mapping), unlist(lapply(p$layers, function(l) names(l$mapping))))))
+    expect_equal(renderedPlot(run(TRUE, facetBy = "column", facetNumber = 2))$facet$params$ncol, 2)
+    expect_equal(renderedPlot(run(TRUE, facetBy = "row", facetNumber = 2))$facet$params$nrow, 2)
+    expect_plot_snapshot("qqplot-one-plot-per-group", run(TRUE, methodQQ = "ell", facetBy = "row", facetNumber = 1,
+                                                          facetStyle = "background", facetFontFace = "bold")$plot)
+    expect_false(any(unlist(renderedPlot(run(TRUE))$facet$params$free)))
+    expect_true(all(unlist(renderedPlot(run(TRUE, facetFreeScales = TRUE))$facet$params$free)))
+    built <- ggplot2::ggplot_build(renderedPlot(run(TRUE, facetFreeScales = TRUE, xAxisRangeType = "manual",
+                                                     xAxisRangeMin = 0, xAxisRangeMax = 8)))
+    expect_equal(unique(lapply(built$layout$panel_params, `[[`, "x.range")), list(c(0, 8) + c(-0.4, 0.4)))
+    expect_length(unique(lapply(built$layout$panel_params, `[[`, "y.range")), 3)
+    expect_plot_snapshot("qqplot-one-plot-per-group-free", run(TRUE, methodQQ = "ell", facetBy = "row",
+                                                               facetNumber = 1, facetFreeScales = TRUE)$plot)
+})
+
 test_that("qqplot: given parameters are common to all groups", {
     results <- vijPlots::qqplot(data = testData, dep = "Petal.Length", group = "Species", band = TRUE,
                                 paramMethod = "paraValue", param1 = 3.75, param2 = 1.75)

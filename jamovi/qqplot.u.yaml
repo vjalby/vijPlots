@@ -91,6 +91,9 @@ children:
                 name: band
               - type: CheckBox
                 name: detrend
+              - type: CheckBox
+                name: plotPerGroup
+                enable: (!(!group))
   - type: CollapseBox
     label: Parameter Values
     collapsed: true
@@ -167,7 +170,7 @@ children:
                   - type: ComboBox
                     name: colorPalette
                     label: ''
-                    enable: (!(!group))
+                    enable: (!(!group) && !plotPerGroup)
           - type: LayoutBox
             cell:
               column: 1
@@ -183,6 +186,73 @@ children:
                   - type: ComboBox
                     name: methodPP
                     enable: (type:PP&& band)
+  - type: CollapseBox
+    label: Facets
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: LayoutBox
+            cell:
+              column: 0
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facets
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: RadioButton
+                        name: facetBy_row
+                        optionName: facetBy
+                        optionPart: row
+                        label: Row
+                        enable: (!(!group) && plotPerGroup)
+                      - type: RadioButton
+                        name: facetBy_column
+                        optionName: facetBy
+                        optionPart: column
+                        label: Column
+                        enable: (!(!group) && plotPerGroup)
+                  - type: TextBox
+                    name: facetNumber
+                    format: number
+                    enable: (!(!group) && plotPerGroup)
+                  - type: CheckBox
+                    name: facetFreeScales
+                    enable: (!(!group) && plotPerGroup)
+          - type: LayoutBox
+            cell:
+              column: 1
+              row: 0
+            stretchFactor: 1
+            children:
+              - type: Label
+                label: Facet Labels
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: ComboBox
+                        name: facetFontFace
+                        enable: (!(!group) && plotPerGroup)
+                      - type: ComboBox
+                        name: facetFontSize
+                        enable: (!(!group) && plotPerGroup)
+                  - type: LayoutBox
+                    children:
+                      - type: ComboBox
+                        name: facetAlign
+                        enable: (!(!group) && plotPerGroup)
+                      - type: ComboBox
+                        name: facetStyle
+                        enable: (!(!group) && plotPerGroup)
   - type: CollapseBox
     label: Axes
     collapsed: true

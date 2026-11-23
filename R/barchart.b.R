@@ -128,9 +128,6 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
             plotData <- image$state$data
 
-            # Font family of the text layers
-            fontFamily <- vijFontFamily(self$options)
-
             yVar <- rlang::sym(".Y")
             xVar <- rlang::sym(self$options$xVar)
             groupVar <- vijVar(self$options$group)
@@ -239,7 +236,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 if (!stacked && textColor == "auto")
                     textColor <- "black"
 
-                geomText <- function(...) ggplot2::geom_text(..., size = labelSize, family = fontFamily, fontface = if (stacked) "bold" else "plain",
+                geomText <- function(...) ggplot2::geom_text(..., size = labelSize, fontface = if (stacked) "bold" else "plain",
                                                              position = labPosition)
                 if (textColor == "auto")
                     plot <- plot + geomText(ggplot2::aes(label = labelText(!!yVar), vjust = labelVjust(!!yVar), hjust = labelHjust(!!yVar),
@@ -258,7 +255,7 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                                    label = outsideText(.data[[".TOTAL"]]),
                                                                    vjust = outsideVjust(.data[[".TOTAL"]]),
                                                                    hjust = outsideHjust(.data[[".TOTAL"]])),
-                                                      size = labelSize, family = fontFamily, color = textColor2)
+                                                      size = labelSize, color = textColor2)
                 }
             }
 
@@ -327,10 +324,10 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             #### Theme and colors ####
-            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) # drop to include unused levels in color scales
 
             #### Grid lines (value axis only) ####
-            plot <- plot + vijGridLines(self$options,
+            plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

@@ -672,15 +672,3 @@ test_that("likertplot: frequency table without group, with answers named Sum, Me
     expect_equal(unname(freq$Other), c(4L, 0L))
     expect_equal(unname(freq$.MEDIAN), c(3, 2))
 })
-
-test_that("likertplot: theme and font family, ggstats labels and totals included", {
-    for (type in c("centered", "stacked")) {
-        p <- renderedPlot(vijPlots::likertplot(data = testData, liks = c("Question 1", "Question 2", "Question 3"),
-                                               group = NULL, type = type, plotTheme = "ggBw", fontFamily = "serif"))
-        expectBwSerif(p, nText = 1)
-        expect_true(inherits(ggplot2::calc_element("panel.grid.major.y", p$theme), "element_blank"))
-    }
-    p <- renderedPlot(vijPlots::likertplot(data = testData, liks = c("Question 1", "Question 2", "Question 3"),
-                                           group = NULL, type = "centered", plotTheme = "ggBw", fontFamily = "serif"))
-    expect_gte(length(textLayers(p)), 2)
-})

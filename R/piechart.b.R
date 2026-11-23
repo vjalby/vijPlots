@@ -113,9 +113,6 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- image$state
 
-            # Font family of the text layers
-            fontFamily <- vijFontFamily(self$options)
-
             # "Other" slice color (last level) is set only if categories were lumped in .run()
             if (isTRUE(attr(plotData, "lumped")))
                 otherColor <- switch(self$options$lumpColor, lightgray = "#D9D9D9", darkgray = "#666666", NULL)
@@ -179,9 +176,9 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 # label color
                 if (self$options$textColor != "auto") {
-                    geomLab <- function(...) baseGeomLab(..., family = fontFamily, color = self$options$textColor)
+                    geomLab <- function(...) baseGeomLab(..., color = self$options$textColor)
                 } else {
-                    geomLab <- function(...) baseGeomLab(..., family = fontFamily)
+                    geomLab <- baseGeomLab
                 }
 
                 # label format
@@ -231,7 +228,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Theme & colors ####
 
             # Theme and colors
-            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA,
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA,
                                                      lastColor = otherColor)
 
             # Guide
@@ -249,8 +246,7 @@ piechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plot <- plot + ggplot2::theme(axis.ticks = ggplot2::element_blank(),
                                  axis.line.x = ggplot2::element_blank(), axis.line.y = ggplot2::element_blank(),
                                  axis.text.x = ggplot2::element_blank(),axis.text.y = ggplot2::element_blank(),
-                                 panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                                 panel.border = ggplot2::element_blank())
+                                 panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank())
 
             vijDebugPlot(self, plot)
 

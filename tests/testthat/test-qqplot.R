@@ -311,9 +311,3 @@ test_that("qqplot: Beta MME rejects data the moments cannot fit", {
                                   distrib = "beta", paramEstMethod = "mme"),
                  "Unable to estimate the distribution parameters using MME")
 })
-
-test_that("qqplot: theme and font family", {
-    p <- renderedPlot(vijPlots::qqplot(data = testData, dep = "Petal.Length", group = NULL,
-                                       plotTheme = "ggBw", fontFamily = "serif"))
-    expectBwSerif(p)
-})

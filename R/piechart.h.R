@@ -49,9 +49,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             facetStyle = "default",
             legendText = "",
             legendFontSize = "14",
-            legendPosition = "right",
-            plotTheme = "default",
-            fontFamily = "default", ...) {
+            legendPosition = "right", ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -436,29 +434,6 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "left",
                     "top"),
                 default="right")
-            private$..plotTheme <- jmvcore::OptionList$new(
-                "plotTheme",
-                plotTheme,
-                options=list(
-                    "default",
-                    "jmvDefault",
-                    "jmvMinimal",
-                    "jmvHadley",
-                    "jmvSpss",
-                    "ggBw",
-                    "ggLight",
-                    "ggLinedraw",
-                    "ggDark"),
-                default="default")
-            private$..fontFamily <- jmvcore::OptionList$new(
-                "fontFamily",
-                fontFamily,
-                options=list(
-                    "default",
-                    "sans",
-                    "serif",
-                    "mono"),
-                default="default")
 
             self$.addOption(private$..aVar)
             self$.addOption(private$..facet)
@@ -504,8 +479,6 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..legendText)
             self$.addOption(private$..legendFontSize)
             self$.addOption(private$..legendPosition)
-            self$.addOption(private$..plotTheme)
-            self$.addOption(private$..fontFamily)
         }),
     active = list(
         aVar = function() private$..aVar$value,
@@ -551,9 +524,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         facetStyle = function() private$..facetStyle$value,
         legendText = function() private$..legendText$value,
         legendFontSize = function() private$..legendFontSize$value,
-        legendPosition = function() private$..legendPosition$value,
-        plotTheme = function() private$..plotTheme$value,
-        fontFamily = function() private$..fontFamily$value),
+        legendPosition = function() private$..legendPosition$value),
     private = list(
         ..aVar = NA,
         ..facet = NA,
@@ -598,9 +569,7 @@ piechartOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..facetStyle = NA,
         ..legendText = NA,
         ..legendFontSize = NA,
-        ..legendPosition = NA,
-        ..plotTheme = NA,
-        ..fontFamily = NA)
+        ..legendPosition = NA)
 )
 
 piechartResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -733,8 +702,6 @@ piechartBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param legendText .
 #' @param legendFontSize .
 #' @param legendPosition .
-#' @param plotTheme .
-#' @param fontFamily .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$frequencies} \tab \tab \tab \tab \tab a table \cr
@@ -793,9 +760,7 @@ piechart <- function(
     facetStyle = "default",
     legendText = "",
     legendFontSize = "14",
-    legendPosition = "right",
-    plotTheme = "default",
-    fontFamily = "default") {
+    legendPosition = "right") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("piechart requires jmvcore to be installed (restart may be required)")
@@ -857,9 +822,7 @@ piechart <- function(
         facetStyle = facetStyle,
         legendText = legendText,
         legendFontSize = legendFontSize,
-        legendPosition = legendPosition,
-        plotTheme = plotTheme,
-        fontFamily = fontFamily)
+        legendPosition = legendPosition)
 
     analysis <- piechartClass$new(
         options = options,

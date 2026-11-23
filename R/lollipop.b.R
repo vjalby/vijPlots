@@ -169,10 +169,10 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijPlotTheme(self$options)
+            plot <- plot + ggtheme
 
             # Grid lines (value axis only)
-            plot <- plot + vijGridLines(self$options,
+            plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

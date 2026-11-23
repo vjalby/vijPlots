@@ -55,9 +55,7 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             xGridLines = FALSE,
             yGridLines = FALSE,
             xHideAxis = FALSE,
-            yHideAxis = FALSE,
-            plotTheme = "default",
-            fontFamily = "default", ...) {
+            yHideAxis = FALSE, ...) {
 
             super$initialize(
                 package="vijPlots",
@@ -456,29 +454,6 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "yHideAxis",
                 yHideAxis,
                 default=FALSE)
-            private$..plotTheme <- jmvcore::OptionList$new(
-                "plotTheme",
-                plotTheme,
-                options=list(
-                    "default",
-                    "jmvDefault",
-                    "jmvMinimal",
-                    "jmvHadley",
-                    "jmvSpss",
-                    "ggBw",
-                    "ggLight",
-                    "ggLinedraw",
-                    "ggDark"),
-                default="default")
-            private$..fontFamily <- jmvcore::OptionList$new(
-                "fontFamily",
-                fontFamily,
-                options=list(
-                    "default",
-                    "sans",
-                    "serif",
-                    "mono"),
-                default="default")
 
             self$.addOption(private$..aVar)
             self$.addOption(private$..group)
@@ -530,8 +505,6 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..yGridLines)
             self$.addOption(private$..xHideAxis)
             self$.addOption(private$..yHideAxis)
-            self$.addOption(private$..plotTheme)
-            self$.addOption(private$..fontFamily)
         }),
     active = list(
         aVar = function() private$..aVar$value,
@@ -583,9 +556,7 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         xGridLines = function() private$..xGridLines$value,
         yGridLines = function() private$..yGridLines$value,
         xHideAxis = function() private$..xHideAxis$value,
-        yHideAxis = function() private$..yHideAxis$value,
-        plotTheme = function() private$..plotTheme$value,
-        fontFamily = function() private$..fontFamily$value),
+        yHideAxis = function() private$..yHideAxis$value),
     private = list(
         ..aVar = NA,
         ..group = NA,
@@ -636,9 +607,7 @@ lollipopOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..xGridLines = NA,
         ..yGridLines = NA,
         ..xHideAxis = NA,
-        ..yHideAxis = NA,
-        ..plotTheme = NA,
-        ..fontFamily = NA)
+        ..yHideAxis = NA)
 )
 
 lollipopResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -736,8 +705,6 @@ lollipopBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param yGridLines .
 #' @param xHideAxis .
 #' @param yHideAxis .
-#' @param plotTheme .
-#' @param fontFamily .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
@@ -795,9 +762,7 @@ lollipop <- function(
     xGridLines = FALSE,
     yGridLines = FALSE,
     xHideAxis = FALSE,
-    yHideAxis = FALSE,
-    plotTheme = "default",
-    fontFamily = "default") {
+    yHideAxis = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("lollipop requires jmvcore to be installed (restart may be required)")
@@ -865,9 +830,7 @@ lollipop <- function(
         xGridLines = xGridLines,
         yGridLines = yGridLines,
         xHideAxis = xHideAxis,
-        yHideAxis = yHideAxis,
-        plotTheme = plotTheme,
-        fontFamily = fontFamily)
+        yHideAxis = yHideAxis)
 
     analysis <- lollipopClass$new(
         options = options,

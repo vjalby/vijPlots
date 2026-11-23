@@ -95,7 +95,5 @@ items:
         - yGridLines
         - xHideAxis
         - yHideAxis
-        - plotTheme
-        - fontFamily
 
 ...

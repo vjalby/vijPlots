@@ -227,9 +227,3 @@ test_that("linechart: missing group labelled (Missing) and drawn (ignoreNA = FAL
     expect_equal(length(unique(dotted$group)), 2)
     expect_equal(length(unique(dotted$colour)), 2)
 })
-
-test_that("linechart: theme and font family", {
-    p <- renderedPlot(vijPlots::linechart(data = testData, timeVar = "Month2", vars = "VarA", group = "Group",
-                                          plotTheme = "ggBw", fontFamily = "serif"))
-    expectBwSerif(p)
-})

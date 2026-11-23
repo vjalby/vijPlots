@@ -193,9 +193,3 @@ test_that("raincloud: missing values are labelled (Missing) on the axis and in t
     guideBox <- gt$grobs[[which(gt$layout$name == "guide-box-right")]]
     expect_equal(sum(grepl("^guides", guideBox$layout$name)), 1)
 })
-
-test_that("raincloud: theme and font family", {
-    p <- renderedPlot(vijPlots::raincloud(data = testData, aVar = "Petal.Width", groupOne = NULL, groupTwo = NULL,
-                                          plotTheme = "ggBw", fontFamily = "serif"))
-    expectBwSerif(p)
-})

@@ -109,9 +109,6 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
 
             plotData <- image$state
 
-            # Font family of the text layers
-            fontFamily <- vijFontFamily(self$options)
-
             # to be sure the factor ordering is kept
             plotData$Option <- factor(plotData$Option, levels = plotData$Option)
 
@@ -184,19 +181,19 @@ mrfrequenciesClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class
                 if (self$options$textColor == "auto" && self$options$labelPosition == "middle" && !self$options$singleColor) {
                     plot <- plot + ggplot2::geom_text(ggplot2::aes(color = ggplot2::after_scale(ggstats::hex_bw(.data$fill))),
                              position = ggplot2::position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
-                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, family = fontFamily, na.rm = TRUE)
+                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 } else {
                     plot <- plot + ggplot2::geom_text(color = textColor,
                                              position = ggplot2::position_stack(vjust = vjust1), vjust = vjust2, hjust = hjust2,
-                                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, family = fontFamily, na.rm = TRUE)
+                                             fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt, na.rm = TRUE)
                 }
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijPlotTheme(self$options) + vijColorScale(self$options$colorPalette, "fill", theme)
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme)
 
             # Grid lines (value axis only)
-            plot <- plot + vijGridLines(self$options,
+            plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

@@ -204,9 +204,3 @@ test_that("lollipop: hidden category axis, no lower margin only when every value
     expect_equal(do.call(valueRange, c(list(positive, xHideAxis = TRUE), manual)),
                  do.call(valueRange, c(list(positive), manual)))
 })
-
-test_that("lollipop: theme and font family", {
-    p <- renderedPlot(vijPlots::lollipop(data = testData, aVar = "Petal.Width", group = "Species", facet = NULL,
-                                         plotTheme = "ggBw", fontFamily = "serif"))
-    expectBwSerif(p)
-})

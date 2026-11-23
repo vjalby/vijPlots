@@ -290,37 +290,6 @@ vijTitleAndLabelFormat = function(options, showLegend = TRUE) {
     ))
 }
 
-# Theme added after jamovi's ggtheme: a jamovi or ggplot2 theme with the font, or the font alone ("default")
-vijPlotTheme = function(options) {
-    family <- vijFontFamily(options)
-    fontTheme <- ggplot2::theme(text = ggplot2::element_text(family = family))
-    themeName <- options[["plotTheme"]] %||% "default"
-    if (themeName == "default")
-        return(fontTheme)
-    if (startsWith(themeName, "jmv")) {
-        # jmvcore's theme_*() return a list (theme only, no scale); theme_spss() still calls element_rect(size =)
-        jmvTheme <- switch(themeName,
-            jmvDefault = jmvcore::theme_default(16),
-            jmvMinimal = jmvcore::theme_min(16),
-            jmvHadley = jmvcore::theme_hadley(16),
-            jmvSpss = suppressWarnings(jmvcore::theme_spss(16)))
-        return(jmvTheme[[1]] + fontTheme)
-    }
-    themeFunction <- switch(themeName,
-        ggBw = ggplot2::theme_bw,
-        ggLight = ggplot2::theme_light,
-        ggLinedraw = ggplot2::theme_linedraw,
-        ggDark = ggplot2::theme_dark)
-    return(themeFunction(base_size = 16, base_family = family) +
-           ggplot2::theme(plot.margin = ggplot2::margin(15, 15, 15, 15)))
-}
-
-# Font family of the text layers ("" = device default, also when the option is absent)
-vijFontFamily = function(options) {
-    family <- options[["fontFamily"]] %||% "default"
-    if (family == "default") "" else family
-}
-
 vijHelpMessage = function(self, htmlText) {
     # Hide other results
     for (resName in names(self$results)) {

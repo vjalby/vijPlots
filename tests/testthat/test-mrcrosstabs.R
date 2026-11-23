@@ -593,13 +593,3 @@ test_that("mrcrosstabs: plot, stacked percentages, small labels hidden", {
     )$plot
     expect_plot_snapshot("mrcrosstabs-hideLabels", testPlot)
 })
-
-test_that("mrcrosstabs: theme and font family, value labels included", {
-    for (textColor in c("auto", "black")) {
-        p <- renderedPlot(vijPlots::mrcrosstabs(data = testData, mode = "morevar", repVar = NULL,
-                                                resps = c("Mastercard", "Amex", "VISA", "Diners Club"),
-                                                group = "Age", group2 = NULL, showLabels = TRUE, textColor = textColor,
-                                                plotTheme = "ggBw", fontFamily = "serif"))
-        expectBwSerif(p, nText = 1)
-    }
-})

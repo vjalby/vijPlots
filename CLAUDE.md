@@ -674,112 +674,39 @@ denominator includes the missing values' weights when they are kept, like the sl
   `test-piechart.R`/`test-barplot.R` (state, table, "Other" color read from `layer_data()`, one
   snapshot each).
 
-### Appearance options (findings of 2026-10-29; theme and font done, 2026-11-20/21)
+### Appearance options (findings of 2026-10-29 to 2026-11-21)
 
-**To do, later (user's decision, 2026-11-23): remove the `plotTheme` and `fontFamily` options** from every
-analysis: jamovi's developers don't like them. Not announced in `NEWS.md`/README for that reason (1.5.0
-section). When doing it, undo what the notes below describe (options, "Theme" UI section, `vijPlotTheme()`,
-`vijFontFamily()` and the `family = fontFamily` of every text layer, `clearWith:` entries, "theme and font
-family" tests, `helper-theme.R`, `piechart-theme-bw` snapshot, translations), and check `vijGridLines()`,
-which reads `plotTheme` before jamovi's global theme.
+**Theme and font options: added, then removed (user's decision, 2026-11-23).** A per-analysis `plotTheme`
+(jamovi's 4 themes + ggplot2's Bw/Light/Linedraw/Dark) and `fontFamily` (default/sans/serif/mono) were
+added to the 15 visible analyses (commit `d164f3d`, 2026-11-20/21), then removed because jamovi's
+developers don't want per-analysis appearance options. Never released, so no `.omv` holds them. Removed
+along: `vijPlotTheme()`/`vijFontFamily()` (`utils.R`, copied to vijMulti), the `family =` of the text
+layers, `piechart`'s `panel.border` blank (with a global SPSS theme the pie has its frame again, as in
+1.4.1), the tests and 3 snapshots; `vijGridLines()` takes the theme name again. `renderedPlot()` stayed,
+in `tests/testthat/helper-render.R` (used by `qqplot`/`scatterplot` tests). Don't propose them again
+unless jamovi's stance changes. What was learnt, should a font or theme ever come back:
 
-Possible global "appearance" options shared by all analyses (font family, overall text size, base
-theme, alpha, line width, ...). Only the font and the background were investigated:
-
-- **Font family: the plan, for vijPlots 1.5 (user's decision, 2026-11-03).** Nothing sets a `family`
-  today; everything comes from jamovi's theme.
-  Start with the generic `"sans"`/`"serif"`/`"mono"` only (safe on every platform; named fonts must
-  exist on the machine running R). A `serif` test in `barplot` (a `family = "serif"` in `geomText`
-  and a `theme(text = ...)` after `vijTitleAndLabelFormat()`) worked in jamovi's display; it was
-  removed afterwards.
-- **Font family: what the theme reaches.** `theme(text = element_text(family = ))` is enough for
-  titles, axes, legend and facet labels (`vijTitleAndLabelFormat()` never sets `family`, so its
-  `element_text`s inherit). It does **not** reach text layers (`geom_text`, `geom_label`,
-  `ggrepel::geom_text_repel`/`geom_label_repel`, nor `ggstats::gglikert()`'s `geom_text` labels/totals).
-  Tested on ggplot2 4.0.3 / ggrepel 0.9.8: `geom_text`/`geom_label` follow only
-  `theme(geom = element_geom(family = ))`, which exists in ggplot2 4.0 only, not in the 3.5 that
-  jamovi 2.7 users run (`minApp: 2.7.1`); ggrepel has `family = ""` hard-coded in its
-  `default_aes` and follows nothing. So every text layer needs an explicit `family =` (16 layers
-  in `barplot`, `barchart`, `boxplot`, `histogram`, `mosaic`, `piechart`, `scatterplot`,
-  `mrfrequencies`, `mrcrosstabs`; `piechart`'s two `geomLab` definitions cover its four
-  `geom_text`/`geom_label`/ggrepel variants), from `fontFamily <- vijFontFamily(self$options)` at the
-  top of `.plot()` (`histogram`: inside `private$.summaryLine()`, where its two labels are built).
-  Avoid `update_geom_defaults()`: global state in jamovi's long-lived R session, and it can't be
-  reset in an `on.exit()` of `.plot()` since the plot is rendered after it returns. A new text
-  layer must get `family = fontFamily` too: each analysis' "theme and font family" test checks every
-  text layer (`expectBwSerif()`, `tests/testthat/helper-theme.R`).
-- **Theme and font options: done in every visible analysis** (`barplot` 2026-11-20, the 14 others
-  2026-11-21; not the legacy `principal`/`corresp`/`multcorresp`). Same options, UI section and code
-  everywhere; `mrfrequencies`/`mrcrosstabs`/`likertplot` list both options in their plot's `clearWith:`.
-  **`likertplot`** never uses `ggtheme`: `ggstats::gglikert()`/`gglikert_stacked()` apply their own
-  `theme_light()` (legend at the bottom, no y major grid). So its "Default" keeps that ggstats look, not
-  jamovi's preferences (following them would change every existing Likert plot; "Light (ggplot2)" is
-  then close to it). `vijPlotTheme()` is added after the ggstats theme, followed by
-  `theme(panel.grid.major.y = element_blank())` to keep ggstats' hidden y grid; the legend position is
-  reapplied by `vijTitleAndLabelFormat()`. ggstats' `geom_text` layers take no family argument: the
-  family is set on the built layers (`layer$aes_params$family <- fontFamily` for each `GeomText`),
-  safe since `gglikert()` builds new layers on every `.plot()`. `piechart` blanks `panel.border`
-  (with axes and grid), so the framed themes draw no square around the pie; the panel background
-  stays (gray with Hadley/Dark, as with a global Hadley). `scatterplot`'s "Plot frame" comes after the
-  theme and replaces its frame. Tests: one "theme and font family" test per analysis (Bw frame, serif
-  in the theme and every text layer, with the options that create text layers), plus the `barplot`
-  tests below and the `piechart-theme-bw` snapshot (no frame).
-  - UI: a "Theme" section, **last** (after "Plot Titles"), with `plotTheme` ("Theme") and `fontFamily`
-    ("Font family", fr "Police": the msgid "Font" is already the `*FontFace` options' title, fr
-    "Style"). Names are not `theme`: `self$options$theme` is a jmvcore binding (jamovi's global theme).
-  - Themes (user's choice, 2026-11-20: jamovi's 4 + ggplot2's, with prefixed values so that
-    `vijGridLines()` can't confuse jamovi's `minimal` with ggplot2's):
-    - `default` "Default" (the default): jamovi's theme as set in its preferences (`ggtheme` as
-      received, only the font added). Same meaning as "Default" in `fontFamily`: the module imposes nothing.
-    - `jmvDefault` "jamovi", `jmvMinimal`/`jmvHadley`/`jmvSpss` "Minimal/Hadley/SPSS (jamovi)": that
-      jamovi theme whatever the preferences (`jmvDefault` = `default` when the preferences say Default).
-      `jmvcore::theme_*(16)[[1]]`: a list holding the theme alone (no scale with `scale = "none"`), a
-      complete theme like `ggtheme`'s. `theme_spss()` still calls `element_rect(size =)` (jmvcore 28.3
-      and GitHub main): wrapped in `suppressWarnings()`, a test checks it with `lifecycle_verbosity =
-      "warning"`. A bug report was drafted for the user (not posted by Claude).
-    - `ggBw`, `ggLight`, `ggLinedraw`, `ggDark` "X (ggplot2)": ggplot2's `theme_*()` unmodified, at
-      `base_size = 16` (jamovi's size; not for the text, whose sizes `vijTitleAndLabelFormat()` all
-      sets, but for what derives from it: line widths `base_size / 22`, tick length, text and strip
-      margins — checked 2026-11-20, 11 vs 16 gives the same text sizes) and jamovi's `plot.margin` of
-      15 pt (ggplot2's 5.5 pt). Dark kept though the pastel palettes and black labels contrast less on
-      its gray50 panel (user's decision, 2026-11-20).
-    - Removed as near-duplicates of jamovi's themes (user's decision, 2026-11-20, element by element
-      at size 16): Classic ≈ jamovi (axis line black 0.73 vs #333333 0.5, framed strip; same ticks),
-      Gray ≈ Hadley (`theme_hadley` is `theme_gray()` with jamovi's margins: panel #EBEBEB vs #E8E8E8,
-      black vs #333333 text), Minimal ≈ Minimal (jamovi) (adds only the minor grid). Light kept though
-      close to Bw: the only framed theme with light lines (gray frame, half-width grid, gray strip).
-      So jamovi's themes give the unframed looks, ggplot2's the framed ones (and Dark).
-    - Not offered: `theme_void()` (no axes, against the axis options), `theme_test()`.
-  - `.plot()` adds `ggtheme + vijPlotTheme(self$options)` (`utils.R`), in that order (user's choice,
-    2026-11-20: explicit in each `.plot()` rather than `ggtheme` passed to the helper).
-    `vijPlotTheme()` returns one theme: for `default`, only `theme(text = element_text(family = family))`;
-    for `jmv*`, the jmvcore theme + that font theme (`jmvcore::theme_*()` take no family); for `gg*`,
-    its `switch()` picks the `ggplot2::theme_*` function, called once with `base_size = 16,
-    base_family = family`, plus `plot.margin` (no theme function has a margin argument). `ggtheme`
-    must stay *before*: it holds jamovi's theme and its palette scales (`fill`, `colour`); a complete
-    theme added after it replaces only the theme, and the scales stay.
-  - Grid: ggplot2's themes keep their own grid (major + minor, both axes), like
-    jamovi's hadley/minimal:
-    `vijGridLines()` adds nothing for them, so the grid options have no effect there (user's choice).
-    `vijGridLines(self$options, x, y)` (all 12 analyses) takes the options and tests the theme in
-    effect: `plotTheme` if set, else jamovi's global `options$theme` (also for the analyses without
-    `plotTheme` yet). Testing both names would be wrong (global Hadley + module jamovi: no grid to
-    keep). Its list holds both spellings (`hadley`/`jmvHadley`, `minimal`/`jmvMinimal`); it
-    replaced a `vijThemeName()` helper (2026-11-21). jamovi's Default and SPSS have no grid: the
-    options add it. "Hide axis" with a framed theme (Bw,
-    Light, Linedraw, Dark, SPSS) hides only the ticks (frame, no axis line).
-  - Font: `default` (the default, also when the option is absent) gives `""`, the device's default
-    font and the value the themes already have, so no snapshot moved. `sans`/`serif`/`mono` are
-    explicit (a sans font even if the device's default font, or a future jamovi setting, were serif):
-    they go to the theme (`base_family` or `theme(text = )`) and to every text layer through
-    `family = vijFontFamily(options)`: `base_family` reaches `geom_text` in ggplot2 4.0 only, not in
-    the 3.5 of jamovi 2.7.
-    vdiffr writes `font-family: sans` whatever the family: the snapshots don't show the font, the unit
-    tests check it (theme elements + `aes_params$family` of every `GeomText` layer).
+- **Font: what reaches what.** `theme(text = element_text(family = ))` reaches titles, axes, legend and
+  strips (`vijTitleAndLabelFormat()` never sets `family`). Not the text layers: `geom_text`/`geom_label`
+  follow only `theme(geom = element_geom(family = ))` (ggplot2 4.0 only, not the 3.5 of jamovi 2.7,
+  `minApp: 2.7.1`), ggrepel has `family = ""` hard-coded, and `ggstats::gglikert()`'s labels/totals take
+  no family argument (settable on the built layers, `layer$aes_params$family`). So every text layer
+  needs an explicit `family =` (16 layers in 9 analyses; `histogram`'s two are built in
+  `private$.summaryLine()`). Avoid `update_geom_defaults()`: global state in jamovi's long-lived R
+  session. Use the generic `"sans"`/`"serif"`/`"mono"` only. vdiffr writes `font-family: sans` whatever
+  the family: snapshots don't show the font.
+- **Themes.** A complete theme added *after* `ggtheme` replaces jamovi's theme and keeps its palette
+  scales. `jmvcore::theme_*(16)[[1]]` gives a jamovi theme regardless of the preferences;
+  `jmvcore::theme_spss()` still calls `element_rect(size =)` (deprecation warning, jmvcore 28.3 and GitHub
+  main; a bug report was drafted for the user, not posted by Claude). ggplot2 themes need `base_size =
+  16` (line widths, ticks and margins derive from it; text sizes are all set by
+  `vijTitleAndLabelFormat()`) and jamovi's 15 pt `plot.margin`. Near-duplicates at size 16: Classic ≈
+  jamovi, Gray ≈ Hadley (`theme_hadley` is `theme_gray()` with jamovi's margins), Minimal ≈ Minimal
+  (jamovi). `likertplot` ignores `ggtheme` (ggstats applies `theme_light()`).
 - **Global text size: rejected (user's decision, 2026-11-20).** A `textScale` factor multiplying every
   size was considered: redundant with the per-element sizes every module already exposes (`barplot`:
   title, subtitle, caption, axis titles and labels, legend, facets, value labels), and the displayed
-  sizes would no longer be the real ones (14 × 120 % = 16.8). Unlike the font, nothing was missing.
+  sizes would no longer be the real ones (14 × 120 % = 16.8).
 - **Background colour, `ink`/`paper` (findings of 2026-11-21, nothing done).** ggplot2 4.0's themes take
   `ink`/`paper`/`accent` (derived colours: grid, panel, strips, layer defaults), absent from ggplot2 3.5
   (jamovi 2.7) and from `jmvcore::theme_*()`. In 3.5 the same can be done element by element
@@ -904,7 +831,8 @@ Each test file (`tests/testthat/test-<name>.R`) exercises two levels:
    to `expect_plot_snapshot(title, fig)`, defined once in `tests/testthat/helper-vdiffr.R`.
    Printing that `Image` object triggers its real `.render()` pipeline (resolving the actual
    global theme/palette), so this exercises the same code path jamovi itself uses rather than a
-   hand-built fake theme.
+   hand-built fake theme. `renderedPlot(results)` (`tests/testthat/helper-render.R`) renders it the
+   same way and returns the ggplot drawn, for tests that inspect its layers or theme.
 
 `expect_plot_snapshot()` skips the real `vdiffr` pixel/SVG diff when `Sys.getenv("CI")` is truthy
 (rendering is still exercised as a smoke test, just not compared), since SVG output isn't

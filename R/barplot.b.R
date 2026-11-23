@@ -131,9 +131,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Missing values (ignoreNA unchecked) shown as "(Missing)": axis, legend, facet strips
             labelNA <- vijLabelNA(self)
 
-            # Font family of the text layers
-            fontFamily <- vijFontFamily(self$options)
-
             if (self$options$borderColor == "none")
                 borderColor <- NA
             else
@@ -279,7 +276,6 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 geomText <- function(...) ggplot2::geom_text(...,
                                                              position = labPosition, vjust = vjust2, hjust = hjust2,
                                                              fontface = "bold", size = self$options$labelFontSize / ggplot2::.pt,
-                                                             family = fontFamily,
                                                              na.rm = TRUE)
 
                 if (yaxis == "count") {
@@ -370,12 +366,11 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Theme and colors
-            plot <- plot + ggtheme + vijPlotTheme(self$options)
-            plot <- plot + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA, # drop to include unused levels in color scales
+            plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA, # drop to include unused levels in color scales
                                                      lastColor = otherColor)
 
             # Grid lines (value axis only)
-            plot <- plot + vijGridLines(self$options,
+            plot <- plot + vijGridLines(self$options$theme,
                                         x = self$options$horizontal && self$options$xGridLines,
                                         y = !self$options$horizontal && self$options$yGridLines)
 

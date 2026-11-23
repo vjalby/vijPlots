@@ -1,14 +1,11 @@
 # Helpers used by vijPlots only (utils.R is shared with vijMulti, keep it identical there)
 
 # Theme adding major grid lines on the displayed x and/or y axis (with coord_flip(),
-# theme elements follow the displayed axes). Nothing is added with the themes
-# that already draw a grid (jamovi's hadley and minimal, all of ggplot2's), module's or global.
-vijGridLines = function(options, x = FALSE, y = FALSE) {
+# theme elements follow the displayed axes). Nothing is added with the jamovi themes
+# that already draw a grid (hadley, minimal).
+vijGridLines = function(themeName, x = FALSE, y = FALSE) {
     gridTheme <- ggplot2::theme()
-    plotTheme <- options[["plotTheme"]] %||% "default"
-    if (plotTheme == "default")
-        plotTheme <- options$theme
-    if (plotTheme %in% c("hadley", "minimal", "jmvHadley", "jmvMinimal", "ggBw", "ggLight", "ggLinedraw", "ggDark"))
+    if (themeName %in% c("hadley", "minimal"))
         return(gridTheme)
     gridLine <- ggplot2::element_line(colour = "#E8E8E8", linewidth = 0.73)
     if (x)

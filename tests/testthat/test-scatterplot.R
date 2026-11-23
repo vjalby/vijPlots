@@ -307,10 +307,3 @@ test_that("scatterplot: the former keepNA option has no effect", {
     expect_equal(do.call(vijPlots::scatterplot, c(args, keepNA = TRUE))$plot$state,
                  do.call(vijPlots::scatterplot, c(args, keepNA = FALSE))$plot$state)
 })
-
-test_that("scatterplot: theme and font family, point labels included", {
-    p <- renderedPlot(vijPlots::scatterplot(data = testData, xaxis = "Petal.Length", yaxis = "Petal.Width", group = NULL,
-                                            labelVar = "Species", ptSize = NULL, facet = NULL,
-                                            plotTheme = "ggBw", fontFamily = "serif"))
-    expectBwSerif(p, nText = 1)
-})

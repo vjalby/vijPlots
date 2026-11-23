@@ -23,6 +23,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             xinter = 0,
             facetBy = "column",
             facetNumber = 1,
+            facetFreeScales = FALSE,
             pointSize = 3,
             lineSize = 1,
             labelTextSize = 12,
@@ -177,6 +178,10 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
                 min=1,
                 max=10,
                 default=1)
+            private$..facetFreeScales <- jmvcore::OptionBool$new(
+                "facetFreeScales",
+                facetFreeScales,
+                default=FALSE)
             private$..pointSize <- jmvcore::OptionNumber$new(
                 "pointSize",
                 pointSize,
@@ -622,6 +627,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
             self$.addOption(private$..xinter)
             self$.addOption(private$..facetBy)
             self$.addOption(private$..facetNumber)
+            self$.addOption(private$..facetFreeScales)
             self$.addOption(private$..pointSize)
             self$.addOption(private$..lineSize)
             self$.addOption(private$..labelTextSize)
@@ -692,6 +698,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         xinter = function() private$..xinter$value,
         facetBy = function() private$..facetBy$value,
         facetNumber = function() private$..facetNumber$value,
+        facetFreeScales = function() private$..facetFreeScales$value,
         pointSize = function() private$..pointSize$value,
         lineSize = function() private$..lineSize$value,
         labelTextSize = function() private$..labelTextSize$value,
@@ -761,6 +768,7 @@ scatterplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class
         ..xinter = NA,
         ..facetBy = NA,
         ..facetNumber = NA,
+        ..facetFreeScales = NA,
         ..pointSize = NA,
         ..lineSize = NA,
         ..labelTextSize = NA,
@@ -876,6 +884,7 @@ scatterplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param xinter .
 #' @param facetBy .
 #' @param facetNumber .
+#' @param facetFreeScales .
 #' @param pointSize .
 #' @param lineSize .
 #' @param labelTextSize .
@@ -952,6 +961,7 @@ scatterplot <- function(
     xinter = 0,
     facetBy = "column",
     facetNumber = 1,
+    facetFreeScales = FALSE,
     pointSize = 3,
     lineSize = 1,
     labelTextSize = 12,
@@ -1044,6 +1054,7 @@ scatterplot <- function(
         xinter = xinter,
         facetBy = facetBy,
         facetNumber = facetNumber,
+        facetFreeScales = facetFreeScales,
         pointSize = pointSize,
         lineSize = lineSize,
         labelTextSize = labelTextSize,

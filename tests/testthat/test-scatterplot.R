@@ -85,6 +85,14 @@ test_that("scatterplot: faceted", {
     expect_plot_snapshot("scatterplot-faceted", testPlot)
 })
 
+test_that("scatterplot: faceted with free scales", {
+    run <- function(...) vijPlots::scatterplot(data = testData, xaxis = "Petal.Length", yaxis = "Petal.Width",
+                                               group = NULL, labelVar = NULL, ptSize = NULL, facet = "Species", ...)
+    expect_false(any(unlist(renderedPlot(run())$facet$params$free)))
+    expect_true(all(unlist(renderedPlot(run(facetFreeScales = TRUE))$facet$params$free)))
+    expect_plot_snapshot("scatterplot-faceted-free", run(facetFreeScales = TRUE, facetBy = "row", facetNumber = 1)$plot)
+})
+
 test_that("scatterplot: linear regression line with confidence interval", {
     testPlot <- vijPlots::scatterplot(
         data = testData,

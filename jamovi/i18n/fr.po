@@ -2608,6 +2608,7 @@ msgid "Form Biplot"
 msgstr "Graphique double (Form)"
 
 #: qqplot/options/facetFreeScales.title
+#: scatterplot/options/facetFreeScales.title
 msgid "Free scales"
 msgstr "Échelles libres"
 

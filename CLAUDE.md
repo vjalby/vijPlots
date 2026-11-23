@@ -533,6 +533,13 @@ the "ts" band followed each group (it always uses the sample's robust centre/sca
   beta order statistics) differs from qqplotr's (normal approximation, wider in the tails); its `"ks"` is
   the same. References: Loy, Follett & Hofmann (2016), Almeida, Loy & Hofmann (2018), Aldor-Noiman et al.
   (2013).
+- **"One plot per group"** (`plotPerGroup`, 2026-11-23): the same state, drawn with `facet_wrap()` on the
+  group instead of colors (`colorVar` NULL in `.plot()`: single color, gray band, no legend, palette
+  disabled). Facets block copied from `histogram` (`facetBy`, `facetNumber`, label options) plus
+  `facetFreeScales` (both axes together: x and y both depend on the group; a manual range keeps its axis
+  common). A separate `facet` variable, exclusive of `group`, was tried first and dropped: the crossed
+  `enable: (!facet)` / `(!group)` on the two `VariablesListBox` targets had no effect in jamovi, so both
+  could be filled.
 - `MASS::fitdistr()`'s MLE (logistic, Weibull, gamma) raises "NaNs produced" warnings while `optim()`
   explores invalid values, more often on small groups (pre-existing; whether jamovi shows them not
   checked), avoided in the tests.

@@ -197,6 +197,9 @@ children:
                     name: facetNumber
                     format: number
                     enable: (!(!facet))
+                  - type: CheckBox
+                    name: facetFreeScales
+                    enable: (!(!facet))
           - type: LayoutBox
             cell:
               column: 1

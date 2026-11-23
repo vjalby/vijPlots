@@ -67,11 +67,12 @@ The module is available in the **Plots** tab.
 
 ## Last changes: vijPlots 1.5.0 (2026-11-23)
 
-- Mosaic Plot: the Pearson residuals now include the missing values kept as a category (when "Ignore missing values" is unchecked)
-- Scatter Plot: "Group shapes" now supports up to 18 groups (instead of 11)
 - Pie Chart: option to combine the small categories into an "Other" category (automatically or below a given proportion), with its own label and color
 - Bar Plot: option to combine the small categories of the category axis and/or the group into an "Other" category (automatically or below a given proportion), with its own label and color
 - Q-Q & P-P Plots: with a grouping variable, the data are now standardized and the distribution parameters estimated within each group (they were computed on all the data, so groups were compared to a pooled distribution)
+- Mosaic Plot: the Pearson residuals now include the missing values kept as a category (when "Ignore missing values" is unchecked)
+- Scatter Plot: "Free scales" option for facets
+- Scatter Plot: "Group shapes" now supports up to 18 groups (instead of 11)
 
 ## References
 

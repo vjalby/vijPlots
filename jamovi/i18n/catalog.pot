@@ -2375,6 +2375,7 @@ msgid "Form Biplot"
 msgstr ""
 
 #: qqplot/options/facetFreeScales.title
+#: scatterplot/options/facetFreeScales.title
 msgid "Free scales"
 msgstr ""
 

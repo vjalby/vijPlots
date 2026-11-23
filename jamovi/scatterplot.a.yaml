@@ -128,6 +128,11 @@ options:
       max: 10
       default: 1
 
+    - name: facetFreeScales
+      title: Free scales
+      type: Bool
+      default: false
+
     - name: pointSize
       title: Point
       type: Number

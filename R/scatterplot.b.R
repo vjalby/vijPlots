@@ -198,12 +198,13 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Facet
             if (!is.null(facetVar)) {
+                scales <- if (self$options$facetFreeScales) "free" else "fixed"
                 if (self$options$facetBy == "column")
                     plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), ncol = as.numeric(self$options$facetNumber),
-                                                       labeller = ggplot2::as_labeller(labelNA))
+                                                       scales = scales, labeller = ggplot2::as_labeller(labelNA))
                 else
                     plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!facetVar), nrow = as.numeric(self$options$facetNumber),
-                                                       labeller = ggplot2::as_labeller(labelNA))
+                                                       scales = scales, labeller = ggplot2::as_labeller(labelNA))
             }
 
             # Titles & Labels

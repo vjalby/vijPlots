@@ -204,3 +204,9 @@ test_that("lollipop: hidden category axis, no lower margin only when every value
     expect_equal(do.call(valueRange, c(list(positive, xHideAxis = TRUE), manual)),
                  do.call(valueRange, c(list(positive), manual)))
 })
+
+test_that("lollipop: a variable named like an internal column is rejected", {
+    data <- testData
+    names(data)[names(data) == "Species"] <- ".X"
+    expect_error(vijPlots::lollipop(data = data, aVar = "Petal.Width", group = ".X", facet = NULL), "reserved name")
+})

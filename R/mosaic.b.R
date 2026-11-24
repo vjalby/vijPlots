@@ -53,10 +53,8 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             facetName <- self$options$facet
 
             # Column names used for the weights (".COUNTS") and for the values computed by .mosaicData()
-            reservedVar <- intersect(c(categoryName, groupName, facetName),
-                                     c(".COUNTS", ".FREQ", ".RESIDUALS", ".GLOBAL_TOTAL", ".X_TOTAL", ".XWIDTH", ".X_CENTER", ".PERCENTAGE", ".Y_CENTER", ".LABEL_TEXT"))
-            if (length(reservedVar) > 0)
-                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+            vijCheckReservedNames(self, c(categoryName, groupName, facetName),
+                                  c(".COUNTS", ".FREQ", ".RESIDUALS", ".GLOBAL_TOTAL", ".X_TOTAL", ".XWIDTH", ".X_CENTER", ".PERCENTAGE", ".Y_CENTER", ".LABEL_TEXT"))
 
             weighted <- vijWeightedData(self, c(categoryName, groupName, facetName), countsName = self$options$counts,
                                         ignoreNA = self$options$ignoreNA)

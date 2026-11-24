@@ -47,10 +47,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             xName <- self$options$xVar
 
             # ".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END" and ".PY" are the column names of the summaries computed below
-            reservedVar <- intersect(c(yName, xName, self$options$group, self$options$facet),
-                                     c(".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END", ".PY"))
-            if (length(reservedVar) > 0)
-                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+            vijCheckReservedNames(self, c(yName, xName, self$options$group, self$options$facet),
+                                  c(".X", ".Y", ".YMIN", ".YMAX", ".TOTAL", ".END", ".PY"))
 
             plotData <- jmvcore::select(self$data, c(yName, xName, self$options$group, self$options$facet))
 

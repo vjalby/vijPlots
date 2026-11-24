@@ -42,8 +42,8 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return()
 
             # ".variable" and ".value" are the column names used by .plot() when pivoting the data
-            if (!oneVariable && timeVar %in% c(".variable", ".value"))
-                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = timeVar))
+            if (!oneVariable)
+                vijCheckReservedNames(self, timeVar, c(".variable", ".value"))
 
             plotData <- jmvcore::select(self$data, varNames)
 

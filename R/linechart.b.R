@@ -33,9 +33,8 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return()
 
             # ".variable" and ".value" are the column names used by .plot() when pivoting the data
-            reservedVar <- intersect(c(timeVar, groupVar), c(".variable", ".value"))
-            if (length(depVars) > 1 && length(reservedVar) > 0)
-                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+            if (length(depVars) > 1)
+                vijCheckReservedNames(self, c(timeVar, groupVar), c(".variable", ".value"))
 
             plotData <- jmvcore::select(self$data, varNames)
 

@@ -193,3 +193,10 @@ vijOneHotEncoding = function(aCol, separator, na = TRUE, init = FALSE) {
     }
     return(onehotDF)
 }
+
+# Rejects the analysis when a selected variable is named like an internal column (self: for .())
+vijCheckReservedNames = function(self, varNames, reserved) {
+    reservedVar <- intersect(varNames, reserved)
+    if (length(reservedVar) > 0)
+        vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+}

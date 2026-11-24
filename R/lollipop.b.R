@@ -54,9 +54,7 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             facetName <- self$options$facet
 
             # .X, .Y, .YMIN and .YMAX are the columns computed below
-            reservedVar <- intersect(c(aName, groupName, facetName), c(".X", ".Y", ".YMIN", ".YMAX"))
-            if (length(reservedVar) > 0)
-                vijErrorMessage(self, jmvcore::format(.("\"{var}\" is a reserved name. Please rename this variable."), var = reservedVar[1]))
+            vijCheckReservedNames(self, c(aName, groupName, facetName), c(".X", ".Y", ".YMIN", ".YMAX"))
 
             plotData <- jmvcore::select(self$data, c(aName, groupName, facetName))
             plotData[[aName]] <- jmvcore::toNumeric(plotData[[aName]])

@@ -255,3 +255,10 @@ test_that("areachart: missing group labelled (Missing) and drawn in gray (ignore
     expect_equal(built$plot$scales$get_scales("fill")$get_labels(), c("One", "Two", "(Missing)"))
     expect_true("gray" %in% built$data[[1]]$fill)
 })
+
+test_that("areachart: a time variable named .variable is rejected with several variables", {
+    data <- testData
+    names(data)[names(data) == "Month"] <- ".variable"
+    expect_error(vijPlots::areachart(mode = "severalVariables", data = data, timeVar = NULL, timeVar1 = ".variable",
+                                     vars = c("Var1", "Var2"), var = NULL, group = NULL), "reserved name")
+})

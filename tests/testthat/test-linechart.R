@@ -227,3 +227,11 @@ test_that("linechart: missing group labelled (Missing) and drawn (ignoreNA = FAL
     expect_equal(length(unique(dotted$group)), 2)
     expect_equal(length(unique(dotted$colour)), 2)
 })
+
+test_that("linechart: a time variable named .value is rejected with several variables only", {
+    data <- testData
+    names(data)[names(data) == "Month"] <- ".value"
+    expect_error(vijPlots::linechart(data = data, timeVar = ".value", vars = c("Var1", "Var2"), group = NULL),
+                 "reserved name")
+    expect_no_error(vijPlots::linechart(data = data, timeVar = ".value", vars = "Var1", group = NULL))
+})

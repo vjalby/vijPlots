@@ -46,6 +46,9 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         		return(FALSE)
 
             varNames <- c(self$options$aVar, self$options$group, self$options$facet)
+            # ".value" and ".label" are the columns of the mean/median lines (.summaryLine())
+            if (self$options$meanLine || self$options$medianLine)
+                vijCheckReservedNames(self, c(self$options$group, self$options$facet), c(".value", ".label"))
             plotData <- jmvcore::select(self$data, varNames)
             plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
 

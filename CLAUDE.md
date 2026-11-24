@@ -368,6 +368,12 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   locals with `!!` (or compute outside the mask); internal columns get a dotted upper-case name. Safe as
   is: the index of `.data[[x]]`, `pick(all_of(x))`, function calls (R skips non-function bindings) and
   `after_stat()` (computed data). Each case has a test renaming a variable to the conflicting name.
+  A dotted internal name that *does* conflict with a selected variable (`.COUNTS`, `.X`, `.variable`/`.value`,
+  histogram's `.value`/`.label` with a mean/median line...) is rejected in `.run()` by
+  `vijCheckReservedNames(self, varNames, reserved)` (`utilsData.R`, used by 8 analyses): an error, not a
+  warning (the plot would be wrong), and only for the names that really conflict, not every name starting
+  with a dot (user's decision, 2026-11-24: e.g. qqplot's `.GROUP` works as a variable name, rejecting it
+  would break documents for nothing).
 - Missing values kept as a category ("Ignore missing values/groups" unchecked) are labelled
   `"(Missing)"` (translated, fr "(Manquant)"), not ggplot2's default `"NA"` (changed 2026-10-21, in
   all 9 analyses that can keep them: `barplot`, `piechart`, `mosaic`, `boxplot`, `barchart`,

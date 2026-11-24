@@ -239,3 +239,14 @@ test_that("histogram: hidden axes, the lower margin is kept (the vertical grid l
     expect_equal(yRange(xHideAxis = TRUE, meanLine = TRUE, summaryLineLabel = TRUE),
                  yRange(meanLine = TRUE, summaryLineLabel = TRUE))
 })
+
+test_that("histogram: a group or facet named like a column of the summary lines is rejected", {
+    data <- datasets::iris
+    names(data)[5] <- ".value"
+    expect_error(vijPlots::histogram(data = data, aVar = "Sepal.Length", group = ".value", facet = NULL,
+                                     meanLine = TRUE), "reserved name")
+    expect_no_error(vijPlots::histogram(data = data, aVar = "Sepal.Length", group = ".value", facet = NULL))
+    names(data)[5] <- ".label"
+    expect_error(vijPlots::histogram(data = data, aVar = "Sepal.Length", group = NULL, facet = ".label",
+                                     medianLine = TRUE), "reserved name")
+})

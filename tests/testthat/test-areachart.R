@@ -256,6 +256,32 @@ test_that("areachart: missing group labelled (Missing) and drawn in gray (ignore
     expect_true("gray" %in% built$data[[1]]$fill)
 })
 
+test_that("areachart: a missing value is left out before plotting, one variable", {
+    data <- testData
+    data$VarA[5] <- NA
+    r <- vijPlots::areachart(mode = "oneVariable", data = data, timeVar = "Month2", timeVar1 = NULL,
+                             vars = NULL, var = "VarA", group = "Group")
+    state <- r$plot$state$data
+    expect_false(anyNA(state$VarA))
+    expect_equal(nrow(state), 23)
+    # no "Removed rows containing missing values" left to ggplot2
+    expect_no_warning(ggplot2::ggplot_build(renderedPlot(r)))
+})
+
+test_that("areachart: a missing value is left out before plotting, several variables", {
+    data <- testData
+    data$Var1[3] <- NA
+    r <- vijPlots::areachart(mode = "severalVariables", data = data, timeVar = NULL, timeVar1 = "Month",
+                             vars = c("Var1", "Var2"), var = NULL, group = NULL)
+    # the row stays in the state: Var2 has a value in March
+    expect_equal(nrow(r$plot$state$data), 12)
+    p <- renderedPlot(r)
+    expect_false(anyNA(p$data$.value))
+    expect_equal(nrow(p$data), 23)
+    expect_equal(as.character(p$data$.variable[p$data$Month == "Mar"]), "Var2")
+    expect_no_warning(ggplot2::ggplot_build(p))
+})
+
 test_that("areachart: a time variable named .variable is rejected with several variables", {
     data <- testData
     names(data)[names(data) == "Month"] <- ".variable"

@@ -134,6 +134,17 @@ vijWeightedData = function(self, varNames, countsName = NULL, ignoreNA = TRUE) {
     list(data = data, nMissing = nMissing)
 }
 
+# Rows with a missing value in one of the columns `names` left out, as jmvcore::naOmit() does on all columns
+vijDropMissing = function(data, names) {
+    if (length(names) == 0)
+        return(data)
+    attrs <- lapply(data, attributes)
+    data <- data[stats::complete.cases(data[names]), , drop = FALSE]
+    for (name in names(data))
+        attributes(data[[name]]) <- attrs[[name]]
+    data
+}
+
 # Lumping of the small categories of factor f (weights w) into otherLevel (piechart):
 # - method "auto": the least frequent categories, while otherLevel stays the smallest one
 #   (forcats::fct_lump_lowfreq); "prop": the categories whose share is less than prop (fct_lump_prop)

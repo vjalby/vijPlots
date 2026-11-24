@@ -63,12 +63,8 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (varName in self$options$vars)
                 data[[varName]] <- jmvcore::toNumeric(data[[varName]])
             # Remove case with missing group
-            if (!is.null(self$options$group) && self$options$ignoreNA) {
-                data <- data[!is.na(data[[self$options$group]]),]
-            }
-            if (!is.null(self$options$facet) && self$options$ignoreNA) {
-                data <- data[!is.na(data[[self$options$facet]]),]
-            }
+            if (self$options$ignoreNA)
+                data <- vijDropMissing(data, c(self$options$group, self$options$facet))
 
             #### Compute the outliers ####
             # Not needed with min-max whiskers: no value is an outlier.

@@ -56,15 +56,8 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # missing data (and infinite values, as stat_summary() used to drop them)
             plotData <- plotData[is.finite(plotData[[yName]]),]
             # Remove case with missing group
-            if (!is.null(self$options$xVar) && self$options$ignoreNA) {
-                plotData <- plotData[!is.na(plotData[[self$options$xVar]]),]
-            }
-            if (!is.null(self$options$group) && self$options$ignoreNA) {
-                plotData <- plotData[!is.na(plotData[[self$options$group]]),]
-            }
-            if (!is.null(self$options$facet) && self$options$ignoreNA) {
-                plotData <- plotData[!is.na(plotData[[self$options$facet]]),]
-            }
+            if (self$options$ignoreNA)
+                plotData <- vijDropMissing(plotData, c(self$options$xVar, self$options$group, self$options$facet))
             if (nrow(plotData) == 0)
                 return()
 

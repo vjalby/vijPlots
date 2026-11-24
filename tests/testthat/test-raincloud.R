@@ -193,3 +193,16 @@ test_that("raincloud: missing values are labelled (Missing) on the axis and in t
     guideBox <- gt$grobs[[which(gt$layout$name == "guide-box-right")]]
     expect_equal(sum(grepl("^guides", guideBox$layout$name)), 1)
 })
+
+test_that("raincloud: cases with a missing value are left out before plotting", {
+    for (ignoreNA in c(TRUE, FALSE)) {
+        r <- vijPlots::raincloud(data = testData, aVar = "Sepal.Length", groupOne = "Species", groupTwo = NULL,
+                                 ignoreNA = ignoreNA)
+        state <- r$plot$state
+        expect_false(anyNA(state$Sepal.Length))
+        kept <- !is.na(testData$Sepal.Length) & (!ignoreNA | !is.na(testData$Species))
+        expect_equal(nrow(state), sum(kept))
+        # no "Removed rows containing missing values" left to ggplot2
+        expect_no_warning(ggplot2::ggplot_build(renderedPlot(r)))
+    }
+})

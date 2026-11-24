@@ -54,3 +54,36 @@ test_that("vijLumpLevels: an existing category with the same label receives the 
     expect_equal(levels(g), c("a", "b", "Other"))
     expect_equal(as.vector(table(g)), c(50, 25, 25))
 })
+
+dropData <- function() {
+    df <- data.frame(g = c("a", NA, "b", "c", NA), h = c(1, 2, NA, 4, 5))
+    df$f <- factor(c("x", "y", NA, "x", "y"))
+    attr(df$f, "values") <- c(10L, 20L)
+    row.names(df) <- c(2L, 5L, 7L, 9L, 12L)
+    df
+}
+
+test_that("vijDropMissing: only the named columns are filtered", {
+    df <- dropData()
+    expect_identical(vijDropMissing(df, NULL), df)
+    expect_equal(vijDropMissing(df, "g")$g, c("a", "b", "c"))
+    expect_equal(vijDropMissing(df, "g")$h, c(1, NA, 4))
+    expect_equal(vijDropMissing(df, c("g", "f"))$g, c("a", "c"))
+    expect_s3_class(vijDropMissing(df, "g"), "data.frame", exact = TRUE)
+})
+
+test_that("vijDropMissing: row names and custom column attributes are kept", {
+    df <- dropData()
+    out <- vijDropMissing(df, "g")
+    expect_identical(attr(out, "row.names"), c(2L, 7L, 9L))
+    expect_equal(attr(out$f, "values"), c(10L, 20L))
+    expect_equal(jmvcore::toNumeric(out$f), c(10L, NA, 10L))
+})
+
+test_that("vijDropMissing: same as jmvcore::naOmit() on all columns", {
+    df <- dropData()
+    expected <- jmvcore::naOmit(df)
+    attr(expected, "na.action") <- NULL
+    attr(expected, "nRowsOmitted") <- NULL
+    expect_identical(vijDropMissing(df, names(df)), expected)
+})

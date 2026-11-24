@@ -42,11 +42,11 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (aVar in depVars)
                 plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
             # Delete row with missing time
-            plotData <- plotData[!is.na(plotData[[timeVar]]),]
+            plotData <- vijDropMissing(plotData, timeVar)
 
             # Ignore NA
-            if (!is.null(groupVar) && self$options$ignoreNA)
-                plotData <- plotData[!is.na(plotData[[groupVar]]),]
+            if (self$options$ignoreNA)
+                plotData <- vijDropMissing(plotData, groupVar)
 
             if (nrow(plotData) == 0)
                 return()

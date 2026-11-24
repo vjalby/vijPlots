@@ -162,7 +162,18 @@ responses when `init` (for the tables' `.init()`); it takes no `self`. It fills 
 by column on purpose: the former nested `vapply()` came out as a plain vector, not a one-row matrix,
 when the data had a single row (fixed 2026-10-24). `vijLumpLevels(f, w, method, prop, otherLevel)`
 lumps the small categories of `piechart`/`barplot` (see "combining small categories" below) and returns the
-factor, or `NULL` when nothing is lumped; it takes no `self` (`otherLevel` is translated by the caller). Options
+factor, or `NULL` when nothing is lumped; it takes no `self` (`otherLevel` is translated by the caller).
+`vijDropMissing(data, names)` leaves out the rows with a missing value in one of the columns `names` (`NULL`
+names skipped: data unchanged), keeping row names and custom column attributes (see the gotcha on
+row-subsetting below); used by `boxplot`, `barchart`, `raincloud`, `linechart`, `areachart`, `scatterplot`.
+Written as successive calls (values, then groups under `if (ignoreNA)`), never with an `if` inside the
+arguments (user's preference, 2026-11-24). Missing *numeric* values are left out in `.run()`, not by
+ggplot2 (whose "Removed rows" warnings `vijDebugPlot()` shows): `naOmit()` in `histogram`/`qqplot`/
+`lollipop`, `is.finite()` in `barchart`, `vijDropMissing()` in `scatterplot`/`raincloud`/`areachart`
+(one variable; several: `values_drop_na` when pivoting in `.plot()`, the row may hold other values).
+Exceptions: `boxplot` keeps them (several variables per row; `na.rm = TRUE` layers), `linechart` too (a
+gap in the line). Since 2026-11-24, `raincloud`'s jittered points move sideways when the variable has
+missing values (the seeded jitter no longer draws for the NA rows); areas unchanged. Options
 are passed explicitly (user's preference), `self` is only used for `self$data`, errors and `.()`.
 
 ### Non-obvious runtime gotchas
@@ -209,13 +220,18 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   its underlying numeric codes, silently falling back to returning the (non-numeric) factor
   unchanged when it's missing — which then surfaces downstream as a confusing
   `stats::median()`/`wilcox.test()` error ("need numeric data" / "'x' must be numeric"), not an
-  error at the subsetting line itself. `dplyr::filter()` does not have this problem — it preserves
-  custom column attributes (and keeps a plain data.frame a data.frame, doesn't coerce to tibble) —
-  so prefer `dplyr::filter(df, !is.na(.data[[colName]]))` over `df[!is.na(df[[colName]]), ]`
-  whenever a surviving column may later go through `toNumeric()` or otherwise relies on a custom
-  attribute. Bit `likertplot.b.R`'s `ignoreNA` handling (2026-08-23) when its NA-row filter was
-  moved from `.plot()` into `.run()`, ahead of the Mann-Whitney/Kruskal-Wallis/pairwise tests that
-  call `toNumeric()` on the filtered columns — fixed by switching to `dplyr::filter()`.
+  error at the subsetting line itself. Bit `likertplot.b.R`'s `ignoreNA` handling (2026-08-23) when
+  its NA-row filter was moved from `.plot()` into `.run()`, ahead of the Mann-Whitney/Kruskal-Wallis/
+  pairwise tests that call `toNumeric()` on the filtered columns — fixed by switching to
+  `dplyr::filter()`. But `dplyr::filter()` has the opposite trap (checked 2026-11-24, dplyr 1.2.1):
+  it keeps custom column attributes, yet replaces *integer* row names by `1..n` (character ones
+  survive). Row names are jamovi's spreadsheet row numbers: `jmvcore::select()` keeps them, and jmv
+  uses them (`descriptives`' extreme values, `setRowNums()` of output variables), so a future
+  "row number" label would be wrong after `dplyr::filter()`. To drop missing values on some columns,
+  use `vijDropMissing()` (`utilsData.R`): base `[` (keeps row names) then each column's attributes
+  restored, exactly what `jmvcore::naOmit()` does on all columns (a test checks they're identical).
+  `naOmit()` also adds `na.action`/`nRowsOmitted` to the data.frame: read by nothing in jmv/jmvcore/
+  vijPlots, so `vijDropMissing()` doesn't (user's decision, 2026-11-24).
 - The generated `<name>(...)` wrapper's `for (v in group) ...` / `for (v in facet) ...` lines are
   **not** guarded by `missing()`. Calling it with `data=` supplied directly (as tests do) and
   omitting `group`/`facet` throws `"argument is missing, with no default"`. Always pass them
@@ -300,14 +316,6 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   When doing it: no visual snapshot may change (any change means a mistake), and check that every
   edited line is actually executed by a test — some sit in option-dependent branches (`boxplot`
   ordering, `mosaic` facets, `scatterplot` range) — rendering by hand those that are not.
-- **To do for vijPlots 1.5 (deferred 2026-10-21, postponed 2026-11-03, robustness only): replace the
-  base-R group filters.** 11 `df[!is.na(df[[col]]), ]` filters drop the missing groups when "Ignore
-  missing groups/values" is checked: `barchart` (3), `boxplot`, `raincloud`, `linechart`, `areachart`
-  (2 each). Use `dplyr::filter(df, !is.na(.data[[col]]))` or a `vijDropMissing(data, names)` helper in
-  `utilsData.R` (skipping `NULL` names). Not a bug today: `jmvcore::toNumeric()` runs before these
-  filters, so the attribute loss described above doesn't bite, but moving it after them would. Leave
-  `jmvcore::naOmit()` alone (`histogram`, `qqplot`, `lollipop`, `scatterplot`, `vijWeightedData()`): it
-  filters on any column, on purpose. No visual snapshot may change.
 - When forcing legend order via `guides(aes = guide_legend(order = N))` on a plot with multiple
   legends, set an explicit `order` on *every* merged aesthetic (e.g. `color`/`fill`/`shape` all
   mapped to the same grouping variable), not just the one you care about positioning — an

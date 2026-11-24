@@ -7,13 +7,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "Language: c\n"
 
-#: R/areachart.b.R
-#: R/barchart.b.R
-#: R/barplot.b.R
-#: R/linechart.b.R
-#: R/lollipop.b.R
-#: R/mosaic.b.R
-#: R/piechart.b.R
+#: R/utilsData.R
 msgid "\"{var}\" is a reserved name. Please rename this variable."
 msgstr ""
 

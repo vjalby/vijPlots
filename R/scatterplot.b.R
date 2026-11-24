@@ -57,14 +57,12 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plotData[[sizeVar]] <- jmvcore::toNumeric(plotData[[sizeVar]])
 
             # Points need x, y (and size): always left out when one is missing
-            for (name in c(xaxis, yaxis, sizeVar))
-                plotData <- dplyr::filter(plotData, !is.na(.data[[name]]))
+            plotData <- vijDropMissing(plotData, c(xaxis, yaxis, sizeVar))
             # Missing groups/facets: left out, or kept as "(Missing)" (ignoreNA unchecked).
             # A missing label never removes the point: it is just not labelled.
             # (keepNA, the former option, is hidden and has no effect)
             if (self$options$ignoreNA)
-                for (name in c(groupVar, self$options$facet))
-                    plotData <- dplyr::filter(plotData, !is.na(.data[[name]]))
+                plotData <- vijDropMissing(plotData, c(groupVar, self$options$facet))
 
             if (nrow(plotData) == 0)
                 return(FALSE)

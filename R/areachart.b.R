@@ -51,11 +51,14 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             for (aVar in depVars)
                 plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
             # Delete row with missing time
-            plotData <- plotData[!is.na(plotData[[timeVar]]),]
+            plotData <- vijDropMissing(plotData, timeVar)
+            # Delete row with missing value (one variable only: several are handled in .plot())
+            if (oneVariable)
+                plotData <- vijDropMissing(plotData, depVars)
 
             # Ignore NA
-            if (!is.null(groupVar) && self$options$ignoreNA)
-                plotData <- plotData[!is.na(plotData[[groupVar]]),]
+            if (self$options$ignoreNA)
+                plotData <- vijDropMissing(plotData, groupVar)
 
             if (nrow(plotData) == 0)
                 return()
@@ -117,7 +120,8 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 timeVar <- rlang::sym(self$options$timeVar1)
                 plotData <- plotData |>
-                    tidyr::pivot_longer(cols = tidyselect::all_of(self$options$vars), names_to = ".variable", values_to = ".value")
+                    tidyr::pivot_longer(cols = tidyselect::all_of(self$options$vars), names_to = ".variable",
+                                        values_to = ".value", values_drop_na = TRUE)
                 # Transform ".variable" as factor to keep the variable order.
                 plotData$.variable <- factor(plotData$.variable, levels = self$options$vars)
                 depVar <- rlang::sym(".value")

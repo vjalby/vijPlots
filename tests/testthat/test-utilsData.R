@@ -55,6 +55,23 @@ test_that("vijLumpLevels: an existing category with the same label receives the 
     expect_equal(as.vector(table(g)), c(50, 25, 25))
 })
 
+test_that("vijToNumeric: infinite values become missing, attributes kept", {
+    x <- c(1.5, -Inf, NaN, NA, Inf, 2)
+    attr(x, "measureType") <- "continuous"
+    out <- vijToNumeric(x)
+    expect_equal(as.vector(out), c(1.5, NA, NaN, NA, NA, 2))
+    expect_equal(attr(out, "measureType"), "continuous")
+    expect_identical(vijToNumeric(c(1L, NA, 3L)), c(1L, NA, 3L))
+})
+
+test_that("vijToNumeric: factors as jmvcore::toNumeric()", {
+    f <- factor(c("x", "y", NA))
+    attr(f, "values") <- c(10L, 20L)
+    expect_equal(vijToNumeric(f), c(10L, 20L, NA))
+    g <- factor(c("x", "y"))
+    expect_identical(vijToNumeric(g), g)
+})
+
 dropData <- function() {
     df <- data.frame(g = c("a", NA, "b", "c", NA), h = c(1, 2, NA, 4, 5))
     df$f <- factor(c("x", "y", NA, "x", "y"))

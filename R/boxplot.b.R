@@ -61,7 +61,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             data <- jmvcore::select(self$data, varNames)
             # Be sure dep var are numeric
             for (varName in self$options$vars)
-                data[[varName]] <- jmvcore::toNumeric(data[[varName]])
+                data[[varName]] <- vijToNumeric(data[[varName]])
             # Remove case with missing group
             if (self$options$ignoreNA)
                 data <- vijDropMissing(data, c(self$options$group, self$options$facet))

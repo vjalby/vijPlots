@@ -51,10 +51,10 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
 
             plotData <- jmvcore::select(self$data, c(xaxis, yaxis, groupVar, labelVar, sizeVar, self$options$facet))
-            plotData[[xaxis]] <- jmvcore::toNumeric(plotData[[xaxis]])
-            plotData[[yaxis]] <- jmvcore::toNumeric(plotData[[yaxis]])
+            plotData[[xaxis]] <- vijToNumeric(plotData[[xaxis]])
+            plotData[[yaxis]] <- vijToNumeric(plotData[[yaxis]])
             if(!is.null(sizeVar))
-                plotData[[sizeVar]] <- jmvcore::toNumeric(plotData[[sizeVar]])
+                plotData[[sizeVar]] <- vijToNumeric(plotData[[sizeVar]])
 
             # Points need x, y (and size): always left out when one is missing
             plotData <- vijDropMissing(plotData, c(xaxis, yaxis, sizeVar))

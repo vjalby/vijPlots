@@ -134,6 +134,13 @@ vijWeightedData = function(self, varNames, countsName = NULL, ignoreNA = TRUE) {
     list(data = data, nMissing = nMissing)
 }
 
+# jmvcore::toNumeric(), with ±Inf as missing values (e.g. jamovi's BOXCOX() of 0 gives -Inf)
+vijToNumeric = function(x) {
+    x <- jmvcore::toNumeric(x)
+    x[is.infinite(x)] <- NA
+    x
+}
+
 # Rows with a missing value in one of the columns `names` left out, as jmvcore::naOmit() does on all columns
 vijDropMissing = function(data, names) {
     if (length(names) == 0)

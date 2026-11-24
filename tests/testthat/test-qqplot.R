@@ -327,3 +327,11 @@ test_that("qqplot: Beta MME rejects data the moments cannot fit", {
                                   distrib = "beta", paramEstMethod = "mme"),
                  "Unable to estimate the distribution parameters using MME")
 })
+
+test_that("qqplot: infinite values are treated as missing", {
+    dataInf <- dataNA <- datasets::iris
+    dataInf$Sepal.Length[c(3, 70)] <- c(-Inf, Inf)
+    dataNA$Sepal.Length[c(3, 70)] <- NA
+    run <- function(data) vijPlots::qqplot(data = data, dep = "Sepal.Length", group = "Species", band = TRUE)
+    expect_identical(run(dataInf)$plot$state, run(dataNA)$plot$state)
+})

@@ -49,7 +49,7 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Be sure dep var are numeric
             for (aVar in depVars)
-                plotData[[aVar]] <- jmvcore::toNumeric(plotData[[aVar]])
+                plotData[[aVar]] <- vijToNumeric(plotData[[aVar]])
             # Delete row with missing time
             plotData <- vijDropMissing(plotData, timeVar)
             # Delete row with missing value (one variable only: several are handled in .plot())

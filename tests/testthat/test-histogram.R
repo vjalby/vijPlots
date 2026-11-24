@@ -250,3 +250,15 @@ test_that("histogram: a group or facet named like a column of the summary lines 
     expect_error(vijPlots::histogram(data = data, aVar = "Sepal.Length", group = NULL, facet = ".label",
                                      medianLine = TRUE), "reserved name")
 })
+
+test_that("histogram: infinite values are treated as missing", {
+    dataInf <- dataNA <- datasets::iris
+    dataInf$Sepal.Length[c(3, 70)] <- c(-Inf, Inf)
+    dataNA$Sepal.Length[c(3, 70)] <- NA
+    run <- function(data) vijPlots::histogram(data = data, aVar = "Sepal.Length", group = "Species", facet = NULL,
+                                              meanLine = TRUE, normalCurve = TRUE)
+    r <- run(dataInf)
+    expect_identical(r$plot$state, run(dataNA)$plot$state)
+    # binwidth no longer infinite: the bins are drawn
+    expect_no_warning(ggplot2::ggplot_build(renderedPlot(r)))
+})

@@ -50,7 +50,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 return(FALSE)
 
             data <- jmvcore::select(self$data, c(depVar,groupVar))
-            data[[depVar]] <- jmvcore::toNumeric(data[[depVar]])
+            data[[depVar]] <- vijToNumeric(data[[depVar]])
 
             data <- jmvcore::naOmit(data)
             if (nrow(data) == 0)

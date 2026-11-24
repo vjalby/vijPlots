@@ -52,9 +52,9 @@ barchartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- jmvcore::select(self$data, c(yName, xName, self$options$group, self$options$facet))
 
-            plotData[[yName]] <- jmvcore::toNumeric(plotData[[yName]])
-            # missing data (and infinite values, as stat_summary() used to drop them)
-            plotData <- plotData[is.finite(plotData[[yName]]),]
+            plotData[[yName]] <- vijToNumeric(plotData[[yName]])
+            # missing data (infinite values are missing too, see vijToNumeric())
+            plotData <- vijDropMissing(plotData, yName)
             # Remove case with missing group
             if (self$options$ignoreNA)
                 plotData <- vijDropMissing(plotData, c(self$options$xVar, self$options$group, self$options$facet))

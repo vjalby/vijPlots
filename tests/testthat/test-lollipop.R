@@ -210,3 +210,13 @@ test_that("lollipop: a variable named like an internal column is rejected", {
     names(data)[names(data) == "Species"] <- ".X"
     expect_error(vijPlots::lollipop(data = data, aVar = "Petal.Width", group = ".X", facet = NULL), "reserved name")
 })
+
+test_that("lollipop: infinite values are treated as missing", {
+    dataInf <- dataNA <- datasets::iris
+    dataInf$Petal.Width[c(3, 70)] <- c(-Inf, Inf)
+    dataNA$Petal.Width[c(3, 70)] <- NA
+    run <- function(data) vijPlots::lollipop(data = data, aVar = "Petal.Width", group = "Species", facet = NULL)
+    state <- run(dataInf)$plot$state
+    expect_true(all(is.finite(state$.Y)))
+    expect_identical(state, run(dataNA)$plot$state)
+})

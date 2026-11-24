@@ -50,7 +50,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$meanLine || self$options$medianLine)
                 vijCheckReservedNames(self, c(self$options$group, self$options$facet), c(".value", ".label"))
             plotData <- jmvcore::select(self$data, varNames)
-            plotData[[self$options$aVar]] <- jmvcore::toNumeric(plotData[[self$options$aVar]])
+            plotData[[self$options$aVar]] <- vijToNumeric(plotData[[self$options$aVar]])
 
             plotData <- jmvcore::naOmit(plotData)
             if (nrow(plotData) == 0)

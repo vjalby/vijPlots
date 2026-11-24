@@ -169,11 +169,21 @@ row-subsetting below); used by `boxplot`, `barchart`, `raincloud`, `linechart`, 
 Written as successive calls (values, then groups under `if (ignoreNA)`), never with an `if` inside the
 arguments (user's preference, 2026-11-24). Missing *numeric* values are left out in `.run()`, not by
 ggplot2 (whose "Removed rows" warnings `vijDebugPlot()` shows): `naOmit()` in `histogram`/`qqplot`/
-`lollipop`, `is.finite()` in `barchart`, `vijDropMissing()` in `scatterplot`/`raincloud`/`areachart`
+`lollipop`, `vijDropMissing()` in `barchart`/`scatterplot`/`raincloud`/`areachart`
 (one variable; several: `values_drop_na` when pivoting in `.plot()`, the row may hold other values).
 Exceptions: `boxplot` keeps them (several variables per row; `na.rm = TRUE` layers), `linechart` too (a
 gap in the line). Since 2026-11-24, `raincloud`'s jittered points move sideways when the variable has
-missing values (the seeded jitter no longer draws for the NA rows); areas unchanged. Options
+missing values (the seeded jitter no longer draws for the NA rows); areas unchanged.
+`vijToNumeric(x)` = `jmvcore::toNumeric()` with `±Inf` turned into `NA`, used for every numeric variable
+of the 9 analyses above (2026-11-24), so infinite values follow the missing-value handling: same plots
+as with `NA` (checked on 10 cases). jamovi can produce them (a computed `BOXCOX(A, -1)` gives `-Inf` where
+`A = 0`; division by zero, `LN(0)`, `EXP(1000)` give a missing value), and before, `histogram` drew no bins
+(binwidth from `range()`), `qqplot` failed, `lollipop`'s mean was `-Inf`, `linechart` plunged to the
+panel's edge. `na.rm = TRUE` is no substitute: geoms with no stat keep `±Inf` (drawn at the edge), and our
+own `mean()`/`sd()`/`range()` give `±Inf`/`NaN`. jmvcore's `rejectInf` (default TRUE for `Variables`, FALSE
+for `Variable`) never fires in jamovi: `Analysis$init()` checks the data then, but jamovi only gives it the
+header (empty columns), and `.run()` reads the rows unchecked; it fires only on an R call with `data =`
+(so tests can't put `±Inf` in `boxplot`/`linechart` `vars`). Weights keep their own error on infinite values. Options
 are passed explicitly (user's preference), `self` is only used for `self$data`, errors and `.()`.
 
 ### Non-obvious runtime gotchas

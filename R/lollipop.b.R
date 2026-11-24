@@ -57,7 +57,7 @@ lollipopClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             vijCheckReservedNames(self, c(aName, groupName, facetName), c(".X", ".Y", ".YMIN", ".YMAX"))
 
             plotData <- jmvcore::select(self$data, c(aName, groupName, facetName))
-            plotData[[aName]] <- jmvcore::toNumeric(plotData[[aName]])
+            plotData[[aName]] <- vijToNumeric(plotData[[aName]])
 
             plotData <- jmvcore::naOmit(plotData)
             if (nrow(plotData) == 0)

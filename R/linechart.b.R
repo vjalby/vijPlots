@@ -106,8 +106,8 @@ linechartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             labelNA <- vijLabelNA(self)
 
             # timeVar format
-            timeVarIsNumeric <- is.numeric(plotData[[timeVar]])
-            timeVarIsDate <- inherits(plotData[[timeVar]], "Date")
+            timeVarIsNumeric <- is.numeric(plotData[[self$options$timeVar]])
+            timeVarIsDate <- inherits(plotData[[self$options$timeVar]], "Date")
 
             dotSize <- self$options$dotSize
             lineWidth <- self$options$lineWidth

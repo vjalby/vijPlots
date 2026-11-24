@@ -129,12 +129,12 @@ scatterplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Labels ####
 
             if (!is.null(labelVar)) {
-                x_scale <- max(plotData[[xaxis]], na.rm=TRUE) - min(plotData[[xaxis]], na.rm = TRUE)
+                x_scale <- max(plotData[[self$options$xaxis]], na.rm=TRUE) - min(plotData[[self$options$xaxis]], na.rm = TRUE)
                 plot <- plot + ggplot2::geom_text(ggplot2::aes(label = !!labelVar), color = "black",
                                          na.rm = TRUE, size = self$options$labelTextSize / ggplot2::.pt, hjust = 0, nudge_x = 0.02*x_scale,
                                          check_overlap = self$options$overlap)
                 # Enlarge graphic by 10% at right (for labels)
-                maxx <- max(plotData[[xaxis]], na.rm=T) + 0.1*x_scale
+                maxx <- max(plotData[[self$options$xaxis]], na.rm=T) + 0.1*x_scale
                 plot <- plot + ggplot2::expand_limits(x = maxx)
             }
 

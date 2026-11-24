@@ -134,7 +134,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if(is.null(groupVar) || length(depVarNames) > 1)
                 nudgeX <- nudgeX * length(depVarNames)
             else
-                nudgeX <- nudgeX * max(1,nlevels(plotData[[groupVar]]))
+                nudgeX <- nudgeX * max(1,nlevels(plotData[[self$options$group]]))
 
             # One color only
             if (self$options$singleColor)
@@ -239,7 +239,7 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             } else if (!is.null(groupVar) && self$options$order != "none") {
                 aVar <- depVarNames # length(depVarNames) = 1
-                orderedLevelsData <- forcats::fct_reorder(plotData[[groupVar]], plotData[[aVar]], .desc = (self$options$order == "decreasing"))
+                orderedLevelsData <- forcats::fct_reorder(plotData[[self$options$group]],plotData[[aVar]], .desc = (self$options$order == "decreasing"))
                 orderedLevels <- levels(addNA(orderedLevelsData, ifany=TRUE))
                 plot <- plot + ggplot2::scale_x_discrete(limits = orderedLevels, drop = FALSE, labels = labelNA)
             } else if (!is.null(groupVar)) {

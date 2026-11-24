@@ -83,8 +83,9 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### Build plot ####
 
-            category <- rlang::sym(self$options$category)
-            group <- rlang::sym(self$options$group)
+            categoryName <- self$options$category
+            groupName <- self$options$group
+            group <- rlang::sym(groupName)
             # Missing values (ignoreNA unchecked) shown as "(Missing)": axes, legend, facet strips
             labelNA <- vijLabelNA(self)
 
@@ -145,11 +146,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             expFactMult <- ifelse(self$options$hideAxes, 0.0, 0.04)
 
             if (is.null(self$options$facet)) {
-                xAxisData <- unique(plotData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
+                xAxisData <- unique(plotData[c(".X_CENTER", categoryName, ".XWIDTH")])
                 if (self$options$showCategoryPercent) {
-                    xAxisLabels <- paste0(labelNA(xAxisData[[category]]), "\n(", doPercent(xAxisData$.XWIDTH), ")")
+                    xAxisLabels <- paste0(labelNA(xAxisData[[categoryName]]), "\n(", doPercent(xAxisData$.XWIDTH), ")")
                 } else {
-                    xAxisLabels <- labelNA(xAxisData[[category]])
+                    xAxisLabels <- labelNA(xAxisData[[categoryName]])
                 }
                 plot <- plot + ggplot2::scale_x_continuous(breaks = xAxisData$.X_CENTER,
                                                            labels = xAxisLabels,
@@ -170,7 +171,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # zero count in the first column is silently missing from the y-axis labels.
                     firstColBreaks <- dplyr::filter(plotData, .X_CENTER == min(.X_CENTER))
                     plot <- plot + ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
-                                                                labels = labelNA(firstColBreaks[[group]]),
+                                                                labels = labelNA(firstColBreaks[[groupName]]),
                                                                 expand = ggplot2::expansion(mult = expFactMult))
                 }
                 # else: per-facet breaks/labels added below via facetted_pos_scales(y = ...)
@@ -225,11 +226,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # %in% rather than ==: it matches the NA panel, and never yields all-NA rows
                 xScales <- lapply(facetValues, function(lv) {
                     subData <- plotData[plotData[[self$options$facet]] %in% lv, ]
-                    xAxisData <- unique(subData[c(".X_CENTER", rlang::as_string(category), ".XWIDTH")])
+                    xAxisData <- unique(subData[c(".X_CENTER", categoryName, ".XWIDTH")])
                     if (self$options$showCategoryPercent) {
-                        xAxisLabels <- paste0(labelNA(xAxisData[[category]]), "\n(", doPercent(xAxisData$.XWIDTH), ")")
+                        xAxisLabels <- paste0(labelNA(xAxisData[[categoryName]]), "\n(", doPercent(xAxisData$.XWIDTH), ")")
                     } else {
-                        xAxisLabels <- labelNA(xAxisData[[category]])
+                        xAxisLabels <- labelNA(xAxisData[[categoryName]])
                     }
                     ggplot2::scale_x_continuous(breaks = xAxisData$.X_CENTER,
                                                 labels = xAxisLabels,
@@ -246,7 +247,7 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         subData <- plotData[plotData[[self$options$facet]] %in% lv, ]
                         firstColBreaks <- dplyr::filter(subData, .X_CENTER == min(.X_CENTER))
                         ggplot2::scale_y_continuous(breaks = firstColBreaks$.Y_CENTER,
-                                                    labels = labelNA(firstColBreaks[[group]]),
+                                                    labels = labelNA(firstColBreaks[[groupName]]),
                                                     expand = ggplot2::expansion(mult = expFactMult))
                     })
                 }

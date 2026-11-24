@@ -313,19 +313,13 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   which is why the fix moved 94 visual snapshots by about a pixel (same text, same elements, same
   colours — only positions, and svglite writing one `<text>` per title instead of one per
   character).
-- **To do for vijPlots 1.5 (decided 2026-10-10, postponed 2026-11-03, cosmetic only): stop indexing with a symbol.**
-  Several `.plot()` functions read (or assign) a column with `plotData[[sym]]`, where `sym` comes
-  from `rlang::sym()`/`vijVar()`. This is *not* a bug: `[[` and `[[<-` accept a symbol on a
-  data.frame, a tibble and a list (checked on R 4.6.1, including non-ASCII names; a missing column
-  returns `NULL` as with a string) — only single-bracket `df[sym]`/`df[, sym]` errors, and there is
-  none in the code. But the idiom is little known and reviewers keep flagging it as an error, so
-  the plan is to keep the column name as a string next to its symbol (`timeVarName` / `timeVar`)
-  and index with the string. 17 occurrences in 7 analyses: `areachart` (2), `linechart` (2),
-  `barplot` (2, one is an assignment), `boxplot` (2), `histogram` (1), `mosaic` (6), `scatterplot`
-  (2). `qqplot` is not concerned (its `[[depVar]]` are in `.run()`, where `depVar` is a string).
-  When doing it: no visual snapshot may change (any change means a mistake), and check that every
-  edited line is actually executed by a test — some sit in option-dependent branches (`boxplot`
-  ordering, `mosaic` facets, `scatterplot` range) — rendering by hand those that are not.
+- **Index columns with a string, never with a symbol** (done 2026-11-24): `plotData[[self$options$x]]`,
+  or a `xName` string kept next to its `x` symbol when the name depends on a branch or is used often
+  (`areachart`'s `timeVarName`, `mosaic`'s `categoryName`/`groupName`). `plotData[[sym]]` works (`[[`
+  accepts a symbol on a data.frame, a tibble and a list; only `df[sym]` errors), but reviewers kept
+  flagging it as an error. The 18 occurrences of `.plot()` (areachart, linechart, boxplot, histogram,
+  mosaic, scatterplot; barplot had none left) were replaced with no snapshot change; the lines no test
+  ran (`boxplot`'s group sorting, `mosaic`'s facets with "Category %") gave identical SVGs by hand.
 - When forcing legend order via `guides(aes = guide_legend(order = N))` on a plot with multiple
   legends, set an explicit `order` on *every* merged aesthetic (e.g. `color`/`fill`/`shape` all
   mapped to the same grouping variable), not just the one you care about positioning — an

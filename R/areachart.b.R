@@ -114,11 +114,11 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Missing group (ignoreNA unchecked) shown as "(Missing)" in the legend
             labelNA <- vijLabelNA(self)
             if (oneVariable) {
-                timeVar <- rlang::sym(self$options$timeVar)
+                timeVarName <- self$options$timeVar
                 depVar <- rlang::sym(self$options$var)
                 groupVar <- vijVar(self$options$group)
             } else {
-                timeVar <- rlang::sym(self$options$timeVar1)
+                timeVarName <- self$options$timeVar1
                 plotData <- plotData |>
                     tidyr::pivot_longer(cols = tidyselect::all_of(self$options$vars), names_to = ".variable",
                                         values_to = ".value", values_drop_na = TRUE)
@@ -127,10 +127,11 @@ areachartClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 depVar <- rlang::sym(".value")
                 groupVar <- rlang::sym(".variable")
             }
+            timeVar <- rlang::sym(timeVarName)
 
             # timeVar format
-            timeVarIsNumeric <- is.numeric(plotData[[timeVar]])
-            timeVarIsDate <- inherits(plotData[[timeVar]], "Date")
+            timeVarIsNumeric <- is.numeric(plotData[[timeVarName]])
+            timeVarIsDate <- inherits(plotData[[timeVarName]], "Date")
 
             # Plot options (lines)
             if (self$options$showLine)

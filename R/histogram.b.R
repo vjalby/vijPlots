@@ -77,7 +77,7 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Bin width
 			if (self$options$binWidth == 0) { # ggplot default
-                x_vals <- plotData[[xVar]]
+                x_vals <- plotData[[self$options$aVar]]
                 x_range <- range(x_vals, na.rm = TRUE)
                 binWidth <- (x_range[2] - x_range[1]) / 30
                 if (binWidth == 0) # constant data (or a single value): ggplot2's own fallback
@@ -316,8 +316,8 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # from the other value's line so the two don't collide when close
                 hjust <- -0.1
                 if (self$options$meanLine && self$options$medianLine) {
-                    meanValue <- mean(plotData[[xVar]], na.rm = TRUE)
-                    medianValue <- stats::median(plotData[[xVar]], na.rm = TRUE)
+                    meanValue <- mean(plotData[[self$options$aVar]], na.rm = TRUE)
+                    medianValue <- stats::median(plotData[[self$options$aVar]], na.rm = TRUE)
                     if ((identical(fun, mean) && meanValue <= medianValue) ||
                             (identical(fun,stats::median) && medianValue < meanValue )) {
                         hjust <- 1.1

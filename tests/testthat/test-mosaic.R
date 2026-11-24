@@ -498,3 +498,14 @@ test_that("mosaic: count labels keep the decimals of weighted counts", {
     labels <- ggplot2::layer_data(ggplot2::last_plot(), 2)$label
     expect_setequal(labels, c("1.5", "2", "0.25", "3"))
 })
+
+test_that("mosaic: a variable named self (labels outside the data mask)", {
+    labelsOf <- function(data, category) {
+        r <- do.call(vijPlots::mosaic, list(data = data, category = category, group = "sex", facet = NULL,
+                                            counts = NULL, labelType = "count"))
+        ggplot2::layer_data(renderedPlot(r), 2)$label
+    }
+    data <- testData
+    names(data)[names(data) == "species"] <- "self"
+    expect_identical(labelsOf(data, "self"), labelsOf(testData, "species"))
+})

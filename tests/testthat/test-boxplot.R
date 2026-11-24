@@ -297,3 +297,14 @@ test_that("boxplot: missing values are labelled (Missing) on the axis, legend an
     expect_true("(Missing)" %in% strips)
     expect_false("NA" %in% strips)
 })
+
+test_that("boxplot: a variable named like a local of the outliers' code (private, whiskerCoef)", {
+    run <- function(data, facet) do.call(vijPlots::boxplot, list(data = data, vars = "Sepal.Width", label = "group2",
+                                                                 group = NULL, facet = facet))
+    expected <- run(testData, "Species")$plot$state
+    for (nm in c("private", "whiskerCoef")) {
+        data <- testData
+        names(data)[names(data) == "Species"] <- nm
+        expect_identical(unname(as.list(run(data, nm)$plot$state)), unname(as.list(expected)), label = nm)
+    }
+})

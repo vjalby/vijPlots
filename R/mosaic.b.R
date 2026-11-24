@@ -116,14 +116,11 @@ mosaicClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 decimal.mark = self$options[['decSymbol']])
 
             if (self$options$labelType != "none") {
-                plotData <- plotData |>
-                    dplyr::mutate(
-                        .LABEL_TEXT = switch(self$options$labelType,
-                                             "count"     = doCount(.FREQ),
-                                             "percent"   = doPercent(.PERCENTAGE),
-                                             "residuals" = doNumber(.RESIDUALS)
-                        )
-                    )
+                # Not in a mutate(): a variable may be named self
+                plotData$.LABEL_TEXT <- switch(self$options$labelType,
+                                               "count"     = doCount(plotData$.FREQ),
+                                               "percent"   = doPercent(plotData$.PERCENTAGE),
+                                               "residuals" = doNumber(plotData$.RESIDUALS))
 
                 if (self$options$labelColor == "auto") {
                     plot <- plot + ggplot2::geom_text(

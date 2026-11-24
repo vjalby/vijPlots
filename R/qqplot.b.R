@@ -179,7 +179,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (is.null(colorVar))
                 plot <- ggplot2::ggplot()
             else
-                plot <- ggplot2::ggplot(mapping = ggplot2::aes(color = !!colorVar, fill = !!colorVar))
+                plot <- ggplot2::ggplot(mapping = ggplot2::aes(color = .data$.GROUP, fill = .data$.GROUP))
 
             xy <- ggplot2::aes(x = .data$x, y = .data$y)
             band <- ggplot2::aes(x = .data$x, ymin = .data$lower, ymax = .data$upper)
@@ -206,9 +206,9 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(groupVar) && is.null(colorVar)) {
                 scales <- if (self$options$facetFreeScales) "free" else "fixed"
                 if (self$options$facetBy == "column")
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!groupVar), ncol = as.numeric(self$options$facetNumber), scales = scales)
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(.data$.GROUP), ncol = as.numeric(self$options$facetNumber), scales = scales)
                 else
-                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(!!groupVar), nrow = as.numeric(self$options$facetNumber), scales = scales)
+                    plot <- plot + ggplot2::facet_wrap(ggplot2::vars(.data$.GROUP), nrow = as.numeric(self$options$facetNumber), scales = scales)
             }
 
             if (self$options$type == "QQ") {
@@ -416,12 +416,12 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 bandType <- self$options$methodPP
             groupVar <- self$options$group
-            private$.qqData(data[[self$options$dep]], if (is.null(groupVar)) NULL else data[[groupVar]], groupVar,
+            private$.qqData(data[[self$options$dep]], if (is.null(groupVar)) NULL else data[[groupVar]],
                             self$options$distrib, params, byGroup, self$options$type, self$options$detrend,
                             self$options$refType == "identity", bandType)
         },
-        # Points, reference line and band of each group (params: one set, or one per level when byGroup), seed 42 for each group's random draws
-        .qqData = function(smp, group, groupName, distName, params, byGroup, type, detrend, identity, bandType) {
+        # Points, reference line and band of each group (in .GROUP; params: one set, or one per level when byGroup), seed 42 for each group's random draws
+        .qqData = function(smp, group, distName, params, byGroup, type, detrend, identity, bandType) {
             if (is.null(group))
                 return(withr::with_seed(42, private$.qqGroup(smp, distName, params, type, detrend, identity, bandType)))
             parts <- list()
@@ -433,7 +433,7 @@ qqplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                                                type, detrend, identity, bandType))
                 for (k in names(part))
                     if (!is.null(part[[k]]))
-                        part[[k]][[groupName]] <- factor(level, levels = levels(group))
+                        part[[k]]$.GROUP <- factor(level, levels = levels(group))
                 parts[[level]] <- part
             }
             list(points = do.call(rbind, lapply(parts, `[[`, "points")),

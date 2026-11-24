@@ -728,3 +728,13 @@ test_that("barplot: lumped categories and groups plot", {
     testPlot <- lumpBarplot(columns = "g", lumpRows = TRUE, lumpColumns = TRUE)$plot
     expect_plot_snapshot("barplot-lump", testPlot)
 })
+
+test_that("barplot: frequency table with variables named facetLevel and outerLevel", {
+    run <- function(data, columns, facet) do.call(vijPlots::barplot, list(data = data, rows = "species", columns = columns,
+                                                                          facet = facet, counts = NULL, frequencyTable = TRUE))
+    expected <- run(testData, "sex", "island")$frequencies$asDF
+    data <- testData
+    names(data)[names(data) == "sex"] <- "outerLevel"
+    names(data)[names(data) == "island"] <- "facetLevel"
+    expect_identical(unname(as.list(run(data, "outerLevel", "facetLevel")$frequencies$asDF)), unname(as.list(expected)))
+})

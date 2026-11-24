@@ -176,11 +176,27 @@ test_that("qqplot: each group gives that group's own plot", {
                     expect_null(qq[[k]])
                     next
                 }
-                part <- qq[[k]][qq[[k]]$Species == level, names(single[[k]])]
+                part <- qq[[k]][qq[[k]]$.GROUP == level, names(single[[k]])]
                 rownames(part) <- NULL
                 expect_equal(part, single[[k]], label = paste(level, k, deparse(case)))
             }
         }
+    }
+})
+
+test_that("qqplot: a group variable named like an internal column (x, y, lower, upper)", {
+    run <- function(data, group) do.call(vijPlots::qqplot, list(data = data, dep = "Petal.Length", group = group,
+                                                                band = TRUE, refType = "qqline"))
+    expected <- run(testData, "Species")
+    for (nm in c("x", "y", "lower", "upper")) {
+        data <- testData
+        names(data)[names(data) == "Species"] <- nm
+        results <- run(data, nm)
+        expect_identical(results$plot$state, expected$plot$state, label = nm)
+        p <- renderedPlot(results)
+        expect_equal(p$labels$colour, nm)
+        for (i in seq_along(p$layers))
+            expect_identical(ggplot2::layer_data(p, i), ggplot2::layer_data(renderedPlot(expected), i), label = nm)
     }
 })
 

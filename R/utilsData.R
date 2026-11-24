@@ -37,11 +37,11 @@ vijFrequencyTable = function(self, plotData, inner, outer = NULL, facet = NULL, 
     innerLevels <- levelsOf(inner)
     rowNo <- 0
     for (facetLevel in facetLevels) {
-        # Rows of this facet (may be NA). All rows when no facet
-        facetData <- if (is.null(facetLevel)) plotData else dplyr::filter(plotData, .data[[facet]] %in% facetLevel)
+        # Rows of this facet (may be NA). All rows when no facet. !!: a variable may be named facetLevel/outerLevel
+        facetData <- if (is.null(facetLevel)) plotData else dplyr::filter(plotData, .data[[facet]] %in% !!facetLevel)
         for (outerLevel in outerLevels) {
             # Rows of this block (may be NA). All the facet's rows when no outer variable
-            blockData <- if (is.null(outerLevel)) facetData else dplyr::filter(facetData, .data[[outer]] %in% outerLevel)
+            blockData <- if (is.null(outerLevel)) facetData else dplyr::filter(facetData, .data[[outer]] %in% !!outerLevel)
             counts <- vapply(innerLevels, function(level) sum(blockData$.COUNTS[blockData[[inner]] %in% level]), numeric(1))
             total <- sum(counts)
             # An outer level without data in this facet has no bars: skip it

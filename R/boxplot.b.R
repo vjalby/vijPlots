@@ -77,12 +77,14 @@ boxplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 labelVar <- rlang::sym(self$options$label)
                 groupVar <- vijVar(self$options$group)
                 facetVar <- vijVar(self$options$facet)
+                # Outside the data mask: a variable may be named private or whiskerCoef
+                isOutlier <- private$.isOutlier
                 for (varName in self$options$vars) {
                     outlierVar <- rlang::sym(paste0(".outliers_",varName))
                     aVar <- rlang::sym(varName)
                     data <- data |>
                         dplyr::group_by(!!groupVar, !!facetVar) |>
-                        dplyr::mutate(!!outlierVar := ifelse(private$.isOutlier(!!aVar, whiskerCoef), as.character(!!labelVar), NA)) |>
+                        dplyr::mutate(!!outlierVar := ifelse(isOutlier(!!aVar, !!whiskerCoef), as.character(!!labelVar), NA)) |>
                         dplyr::ungroup()
                 }
             }

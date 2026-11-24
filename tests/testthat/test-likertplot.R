@@ -672,3 +672,14 @@ test_that("likertplot: frequency table without group, with answers named Sum, Me
     expect_equal(unname(freq$Other), c(4L, 0L))
     expect_equal(unname(freq$.MEDIAN), c(3, 2))
 })
+
+test_that("likertplot: answers named ques or group (columns of the frequency data)", {
+    liks <- c("Question 1", "Question 2")
+    run <- function(data, group) do.call(vijPlots::likertplot, list(data = data, liks = liks, group = group,
+                                                                    frequencyTable = TRUE))$frequencies$asDF
+    data <- testData
+    for (v in liks)
+        levels(data[[v]])[1:2] <- c("ques", "group")
+    for (group in list(NULL, "Sex"))
+        expect_identical(unname(as.list(run(data, group))), unname(as.list(run(testData, group))))
+})

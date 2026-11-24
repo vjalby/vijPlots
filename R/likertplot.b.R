@@ -375,7 +375,8 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # Populate the table
             if (ng == 0) { # Freq table without grouping variable
                 for (ques in questions) {
-                    row_data <- dplyr::filter(freq_wide, .question == ques)
+                    # !!: an answer may be named ques or group (a column of freq_wide)
+                    row_data <- dplyr::filter(freq_wide, .question == !!ques)
                     values <- as.list(row_data)
                     values[".question"] <- private$.getVarName(ques)
                     numericData <- jmvcore::toNumeric(mainData[[ques]])
@@ -400,7 +401,7 @@ likertplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     ques <- rows$ques[i]
                     group <- rows$group[i]
                     rowKey <- as.character(i)
-                    row_data <- dplyr::filter(freq_wide, .question == ques & !!group_sym == group)
+                    row_data <- dplyr::filter(freq_wide, .question == !!ques & !!group_sym == !!group)
                     values <- as.list(row_data)
                     values[".question"] <- private$.getVarName(ques)
                     values[[".GROUP"]] <- group

@@ -359,6 +359,15 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
   analyses afterward with a battery of ad hoc (non-testthat) scripts using variable names with
   spaces/`!+?%-`/backticks and with non-ASCII characters (accented Latin, Chinese, Japanese) — all
   passed, so this was an isolated case, not a systemic issue.
+- **Name conflicts with the user's variables** (audit of 2026-11-24). Two kinds, both reproduced and fixed:
+  an internal column named like a user variable (qqplot stored the group under the variable's own name,
+  so a group `x`/`y`/`lower`/`upper` overwrote its point/band columns: now `.GROUP`), and a bare R local
+  inside a data-masking call (`mutate()`/`filter()`/`summarise()`, or `aes()` outside `after_stat()`),
+  shadowed by a column of the same name: boxplot's `private`/`whiskerCoef`, mosaic's `self`, likertplot's
+  `ques`/`group` (answer levels become columns), `vijFrequencyTable()`'s `facetLevel`/`outerLevel`. Inject
+  locals with `!!` (or compute outside the mask); internal columns get a dotted upper-case name. Safe as
+  is: the index of `.data[[x]]`, `pick(all_of(x))`, function calls (R skips non-function bindings) and
+  `after_stat()` (computed data). Each case has a test renaming a variable to the conflicting name.
 - Missing values kept as a category ("Ignore missing values/groups" unchecked) are labelled
   `"(Missing)"` (translated, fr "(Manquant)"), not ggplot2's default `"NA"` (changed 2026-10-21, in
   all 9 analyses that can keep them: `barplot`, `piechart`, `mosaic`, `boxplot`, `barchart`,

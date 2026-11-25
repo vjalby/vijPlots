@@ -14,6 +14,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             horizontal = FALSE,
             showLabels = TRUE,
             order = "none",
+            pareto = FALSE,
             frequencyTable = FALSE,
             reverseStack = FALSE,
             yaxis = "count",
@@ -135,6 +136,10 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "increasing",
                     "none"),
                 default="none")
+            private$..pareto <- jmvcore::OptionBool$new(
+                "pareto",
+                pareto,
+                default=FALSE)
             private$..frequencyTable <- jmvcore::OptionBool$new(
                 "frequencyTable",
                 frequencyTable,
@@ -621,6 +626,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..horizontal)
             self$.addOption(private$..showLabels)
             self$.addOption(private$..order)
+            self$.addOption(private$..pareto)
             self$.addOption(private$..frequencyTable)
             self$.addOption(private$..reverseStack)
             self$.addOption(private$..yaxis)
@@ -694,6 +700,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         horizontal = function() private$..horizontal$value,
         showLabels = function() private$..showLabels$value,
         order = function() private$..order$value,
+        pareto = function() private$..pareto$value,
         frequencyTable = function() private$..frequencyTable$value,
         reverseStack = function() private$..reverseStack$value,
         yaxis = function() private$..yaxis$value,
@@ -766,6 +773,7 @@ barplotOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..horizontal = NA,
         ..showLabels = NA,
         ..order = NA,
+        ..pareto = NA,
         ..frequencyTable = NA,
         ..reverseStack = NA,
         ..yaxis = NA,
@@ -936,6 +944,7 @@ barplotBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param horizontal .
 #' @param showLabels .
 #' @param order .
+#' @param pareto .
 #' @param frequencyTable .
 #' @param reverseStack .
 #' @param yaxis .
@@ -1022,6 +1031,7 @@ barplot <- function(
     horizontal = FALSE,
     showLabels = TRUE,
     order = "none",
+    pareto = FALSE,
     frequencyTable = FALSE,
     reverseStack = FALSE,
     yaxis = "count",
@@ -1114,6 +1124,7 @@ barplot <- function(
         horizontal = horizontal,
         showLabels = showLabels,
         order = order,
+        pareto = pareto,
         frequencyTable = frequencyTable,
         reverseStack = reverseStack,
         yaxis = yaxis,

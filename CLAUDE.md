@@ -579,6 +579,9 @@ explicit set of branches is just as flexible for dispatching on an option value,
 callable function spelled out literally (grep-visible, no need for a defensive whitelist check —
 see the "Dependency graph" note above for the `principal.b.R` rotation example this was fixed in),
 and avoids `do.call`'s NSE/argument-matching quirks entirely.
+Accepted (user's decision, 2026-11-25): `do.call()` on a function *object*, e.g. `qqplot.b.R`'s
+`do.call(qFunc, c(list(p = probs), params))` (taken from qqplotr; `qFunc` comes from `.distFun()`'s
+`switch()`, parameter names vary by distribution) and `do.call(rbind, list_of_dfs)`. Don't "fix" them.
 
 ### Checkbox labels
 
@@ -642,13 +645,72 @@ Two independent `barplot` options, not implemented yet (feature freeze of 1.4.0)
 
 - **Cumulative curve (Pareto)**: a cumulative-percentage line over the bars, rather than a new
   analysis (`barplot` already has decreasing sorting, aggregated data via `countsName`, weights and
-  facets). To settle: no group variable only (disabled otherwise); force or require `order:
-  decreasing`; with a count y-axis, a right-hand % axis (`sec_axis()`, available in ggplot2 3.5 for
-  jamovi 2.7), whereas a percent y-axis can share the left one; `yHideAxis` should apply to the
-  secondary axis too; cumulative sums per facet, computed in `.run()` from the aggregated data;
-  optional 80% reference line. "(Missing)" is already last whatever the sorting (`fct_infreq()`
-  leaves `NA` out of the levels, and `fct_na_value_to_level()` runs in `.plot()`, after sorting), so
-  the curve ends on it, as a Pareto should.
+  facets). **Decided (2026-11-25):** a real Pareto only: the curve needs `order: decreasing` (disabled
+  otherwise). A general "cumulative curve" (also over an unsorted ordinal variable) was decided first,
+  then dropped the same day after a literature search: a Pareto is sorted by definition (Ishikawa,
+  Minitab, JMP, SAS, Excel); the cumulative frequencies of an ordinal variable are standard, but drawn
+  in a separate step plot in textbooks, the overlay on bars having no name or rules outside Pareto;
+  over an unsorted nominal variable the curve means nothing. Could be widened later if users ask.
+  No group variable, not stacked, **no facet** (disabled otherwise). Facets were implemented first, with
+  the global order (Minitab's default for a Pareto "By" variable), then removed the same day (user's
+  decision): a facet's bars didn't decrease, so its curve wasn't a Pareto (hard to read), and they
+  needed exceptions (percent axis only, one N per facet, cumulative sums per facet, a category absent
+  from a facet). A per-facet order (Minitab's "independent" option) would be the right way if ever asked.
+  **Plan for per-facet Pareto curves (2026-11-25, not done: "later", user's decision).** Prototyped outside
+  the module (`mpg`, class by drv, percent axis): each facet becomes a real Pareto, each curve ends at 100%
+  (`StatProp` already computes the percentages per facet), a category keeps its colour across facets.
+  - `.run()`: an axis key `.X` = (facet, category), levels ordered within each facet by decreasing count,
+    "Other" then NA last, ties by the global order; `.CUM` per facet with `stats::ave()`. `.X`/`.CUM` become
+    reserved names.
+  - `.plot()`: bars, labels and curve map `.X` on x; `facet_wrap(scales = "free_x")`;
+    `scale_x_discrete(labels = <named vector key -> category, "(Missing)" for NA>)` with `drop = TRUE`
+    (with `drop = FALSE` every facet would show every key).
+  - Frequency table: its "Cumulative %" must follow the same per-facet order, or it contradicts the curve:
+    `vijFrequencyTable()` (shared with `piechart`) needs a per-facet order. The most delicate part.
+  - UI: drop `!facet` from the option's `enable`. Tests: per-facet order, Other/NA last, `.CUM` reaching 1
+    per facet, axis labels, stable colours, table aligned on the curve, a snapshot.
+  - Decisions to take: (A) what triggers the per-facet order: the Pareto checkbox itself (a "curve" option
+    reordering the bars: surprising) or a new sorting choice "Decreasing (within facets)", useful without
+    the curve; (B) count mode: percent only with a facet (simple), or free y per facet with a secondary % axis
+    per panel via `ggh4x::facetted_pos_scales()` (heights no longer comparable, much more complex: not
+    recommended); (C) categories absent from a facet: dropped (today, with a facet, every category shows in
+    every facet) or kept at 0 at the end.
+  - Limits seen on the prototype: bars of different widths across facets (equal panel widths, different bar
+    counts; `facet_grid(space = "free_x")` isn't usable with our `facet_wrap()`, ggh4x's `facet_wrap2()`/
+    `force_panelsizes()` would be needed); axis labels overlap sooner; a category is harder to compare
+    across facets, as its position changes.
+  - Cost: about 40-50 lines plus tests, and a change to `vijFrequencyTable()`. Modest gain: wait for a
+    user request.
+  **Also decided (2026-11-25):**
+  - With `yaxis: percent`, bars and curve share the left axis. With `yaxis: count`, the curve is drawn
+    in cumulative counts on the left axis (0 to N, the classic Juran/Minitab layout, bars looking small
+    as in the `mpg` prototype: accepted) with a right-hand % axis, `sec_axis(~ . / N)`.
+  - No 80% reference line for now.
+  - Cumulative sums computed in `.run()` (sorting and lumping are already there), in the
+    final bar order: "Other" last, then `NA` ("(Missing)" in `.plot()`, after sorting; `fct_infreq()`
+    leaves `NA` out of the levels), so the curve ends on them, as a Pareto should. Only when the
+    option is checked. No guard for old states: they come from documents without the option (FALSE),
+    and checking it clears the state and re-runs `.run()` (the Image has no `clearWith:`, so any
+    option change does); keep that true if a `clearWith:` is ever added.
+  - An empty level shown on the axis (unused level retained by jamovi, or all weights/counts 0) has no
+    row after `dplyr::count()`: the curve crossed its slot rising, when missing values followed. So
+    with the curve, `count(.drop = FALSE)` gives it a 0 row in `.run()`, and `.plot()` keeps the 0 rows
+    for the curve only (`ggplot()` gets `plotData[plotData$.COUNTS > 0, ]`, the curve layers `data = plotData`),
+    not for the bars and labels: in count mode a 0 row draws a flat bar (visible
+    with a border colour) and a "0" label. Chosen over a separate curve data.frame built in `.plot()`
+    (`tapply()` over the levels, like the frequency table), as easier to extend to per-facet curves.
+  - Drawing: one point per bar at its horizontal centre (height = cumulative %), joined by segments,
+    starting at the first bar (Minitab), not from 0 at the left edge. No % labels on the points.
+  - Vertical bars only: disabled with `horizontal`.
+  - The `pareto` CheckBox is a child of `order_decreasing` (kept there rather than in "Plot Options", user's
+    decision): jamovi then lays "Decreasing" out as a group (CSS `titled-group`, 5px extra margin), so it
+    sits lower than "None"/"Increasing", as "Percent" does under "Count". Giving "Increasing" an empty
+    `children: []` to match was tried and looked worse in jamovi: dropped.
+  - `yTicks`/`yGridLines` apply to the main (left) axis only, not to the secondary % axis. `yHideAxis`
+    should hide both (`axis.line.y.right`/`axis.ticks.y.right` inherit from `vijHideAxis()`'s
+    `axis.line.y`/`axis.ticks.y`, unless a theme sets them: to check on the 4 jamovi themes). A manual
+    y range below the total (100% or N) cuts the curve (`coord_cartesian()` clips): accepted, the user
+    chose the range; the secondary axis follows the left one.
 - **Lumping of small categories** ("Group categories below X%", or top n): `forcats::fct_lump_prop()`/
   `fct_lump_n()` (`fct_lump()` itself is superseded), with `w = .COUNTS` and a translated
   `other_level`. `NA` is not lumped (stays "(Missing)"). Sorting by `fct_infreq()` would rank the

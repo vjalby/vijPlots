@@ -729,6 +729,64 @@ test_that("barplot: lumped categories and groups plot", {
     expect_plot_snapshot("barplot-lump", testPlot)
 })
 
+test_that("barplot: Pareto curve, cumulative proportions in bar order", {
+    r <- lumpBarplot(columns = NULL, order = "decreasing", pareto = TRUE)
+    expect_equal(as.character(r$plot$state$x), c("a", "b", "c", "d", "e", NA))
+    expect_equal(r$plot$state$.CUM, c(50, 80, 86, 91, 95, 100) / 100)
+    # "Other", then the missing values, last
+    r <- lumpBarplot(columns = NULL, order = "decreasing", pareto = TRUE, lumpRows = TRUE)
+    expect_equal(as.character(r$plot$state$x), c("a", "b", "Other", NA))
+    expect_equal(r$plot$state$.CUM, c(50, 80, 95, 100) / 100)
+})
+
+test_that("barplot: Pareto curve stays flat on an empty category, with no bar or label on it", {
+    data <- data.frame(x = factor(c(rep("a", 5), rep("b", 3), NA, NA), levels = c("a", "b", "z")))
+    for (yaxis in c("count", "percent")) {
+        r <- vijPlots::barplot(data = data, rows = "x", columns = NULL, facet = NULL, counts = NULL, ignoreNA = FALSE,
+                               order = "decreasing", pareto = TRUE, yaxis = yaxis, showLabels = TRUE)
+        expect_equal(r$plot$state$.CUM, c(0.5, 0.8, 0.8, 1))
+        plot <- renderedPlot(r)
+        curve <- ggplot2::layer_data(plot, 2)
+        expect_equal(curve$x, 1:4)
+        expect_equal(curve$y / max(curve$y), c(0.5, 0.8, 0.8, 1))
+        expect_equal(as.numeric(ggplot2::layer_data(plot, 1)$x), c(1, 2, 4))  # bars: no z
+        expect_equal(as.numeric(ggplot2::layer_data(plot, 4)$x), c(1, 2, 4))  # labels: no z
+    }
+})
+
+test_that("barplot: no Pareto curve outside its conditions", {
+    noCurve <- function(..., pareto = TRUE) expect_false(".CUM" %in% names(lumpBarplot(pareto = pareto, ...)$plot$state))
+    noCurve(columns = NULL, order = "none")
+    noCurve(columns = "g", order = "decreasing")
+    noCurve(columns = NULL, order = "decreasing", barType = "stack")
+    noCurve(columns = NULL, order = "decreasing", horizontal = TRUE)
+    noCurve(columns = NULL, order = "decreasing", pareto = FALSE)
+    r <- vijPlots::barplot(data = testData, rows = "species", columns = NULL, facet = "island", counts = NULL,
+                           order = "decreasing", pareto = TRUE, yaxis = "percent")
+    expect_false(".CUM" %in% names(r$plot$state))
+})
+
+test_that("barplot: Pareto curve on a count axis, with a secondary % axis", {
+    r <- lumpBarplot(columns = NULL, order = "decreasing", pareto = TRUE)
+    plot <- renderedPlot(r)
+    curve <- ggplot2::layer_data(plot, 2)
+    expect_equal(curve$y, c(50, 80, 86, 91, 95, 100))
+    expect_false(inherits(plot$scales$get_scales("y")$secondary.axis, "waiver"))
+    expect_plot_snapshot("barplot-pareto-count", r$plot)
+})
+
+test_that("barplot: a variable named .CUM is rejected only with the Pareto curve", {
+    data <- lumpData
+    names(data)[names(data) == "x"] <- ".CUM"
+    r <- vijPlots::barplot(data = data, rows = ".CUM", columns = NULL, facet = NULL, counts = NULL, order = "decreasing")
+    expect_false(is.null(r$plot$state))
+    expect_error(
+        vijPlots::barplot(data = data, rows = ".CUM", columns = NULL, facet = NULL, counts = NULL, order = "decreasing",
+                          pareto = TRUE),
+        "reserved name"
+    )
+})
+
 test_that("barplot: frequency table with variables named facetLevel and outerLevel", {
     run <- function(data, columns, facet) do.call(vijPlots::barplot, list(data = data, rows = "species", columns = columns,
                                                                           facet = facet, counts = NULL, frequencyTable = TRUE))

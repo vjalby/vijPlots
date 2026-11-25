@@ -69,6 +69,7 @@ The module is available in the **Plots** tab.
 
 - Pie Chart: option to combine the small categories into an "Other" category (automatically or below a given proportion), with its own label and color
 - Bar Plot: option to combine the small categories of the category axis and/or the group into an "Other" category (automatically or below a given proportion), with its own label and color
+- Bar Plot: Pareto curve option (cumulative percentage over the bars sorted in decreasing order, with a secondary % axis in count mode)
 - Q-Q & P-P Plots: with a grouping variable, the data are now standardized and the distribution parameters estimated within each group (they were computed on all the data, so groups were compared to a pooled distribution)
 - Mosaic Plot: the Pearson residuals now include the missing values kept as a category (when "Ignore missing values" is unchecked)
 - Scatter Plot: "Free scales" option for facets

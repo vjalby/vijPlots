@@ -31,6 +31,9 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 else
                     fixed_width <- fixed_width + 100
             }
+            # Secondary % axis of the Pareto curve
+            if (private$.paretoCurve() && self$options$yaxis == "count")
+                fixed_width <- fixed_width + 50
             # Set the image dimensions
             image <- self$results$plot
             if (is.null(image[['setSize2']])) { # jamovi < 2.7.16
@@ -58,6 +61,11 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             else
                 list(outer = self$options$rows, inner = self$options$columns)
         },
+        .paretoCurve = function() {
+            # Decreasing order, vertical bars, no group, not stacked, no facet
+            self$options$pareto && self$options$order == "decreasing" && is.null(self$options$columns) &&
+                self$options$barType != "stack" && !self$options$horizontal && is.null(self$options$facet)
+        },
         .run = function() {
             if (is.null(self$options$rows))
                 return()
@@ -66,7 +74,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             categoryName <- self$options$rows
 
             # ".COUNTS" is the column name used for the weights
-            vijCheckReservedNames(self, varNames, ".COUNTS")
+            vijCheckReservedNames(self, varNames, c(".COUNTS", if (private$.paretoCurve()) ".CUM"))
 
             weighted <- vijWeightedData(self, varNames, countsName = self$options$counts,
                                         ignoreNA = self$options$ignoreNA)
@@ -90,8 +98,10 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             # Sum the counts per combination of variables: the state is saved into the .omv,
-            # so store one row per bar/slice rather than one row per case
-            plotData <- dplyr::count(weighted$data, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS")
+            # so store one row per bar/slice rather than one row per case.
+            # Pareto curve: empty levels (shown on the axis) get a 0 row, removed from the bars in .plot()
+            plotData <- dplyr::count(weighted$data, dplyr::pick(dplyr::all_of(varNames)), wt = .data[[".COUNTS"]], name = ".COUNTS",
+                                     .drop = !private$.paretoCurve())
 
             # Sort the categories by overall count
             if (self$options$order == "decreasing")
@@ -106,6 +116,12 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 blockNames <- private$.tableBlocks()
                 vijFrequencyTable(self, plotData, inner = blockNames$inner,
                                   outer = blockNames$outer, facet = self$options$facet, nMissing = weighted$nMissing)
+            }
+
+            # Pareto curve: cumulative proportion, in bar order ("Other", then NA last)
+            if (private$.paretoCurve()) {
+                plotData <- plotData[order(plotData[[categoryName]], na.last = TRUE), ]
+                plotData$.CUM <- cumsum(plotData$.COUNTS) / sum(plotData$.COUNTS)
             }
 
             # "lumped" attribute (names of the lumped variables) passed to plot to set the "Other" color
@@ -208,7 +224,8 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     byVar <- categoryVar
             }
 
-            plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!xVar, fill = !!fillVar, by = !!byVar, weight = .data[[".COUNTS"]]))
+            # Bars and labels without the 0 rows of the empty levels (added in .run() for the Pareto curve only)
+            plot <- ggplot2::ggplot(plotData[plotData$.COUNTS > 0, ], ggplot2::aes(x = !!xVar, fill = !!fillVar, by = !!byVar, weight = .data[[".COUNTS"]]))
 
             #### Bars ####
 
@@ -224,6 +241,17 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- plot + geomBar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, fill = oneColorOfPalette)
                 else
                     plot <- plot + geomBar(ggplot2::aes(y = ggplot2::after_stat(prop)), stat = ggstats::StatProp, show.legend = TRUE)
+            }
+
+            #### Pareto curve ####
+
+            paretoCurve <- private$.paretoCurve()
+            if (paretoCurve) {
+                # Cumulative proportion, times the total count on a count axis (secondary % axis below)
+                cumFactor <- if (yaxis == "count") sum(plotData$.COUNTS) else 1
+                curveAes <- ggplot2::aes(x = !!categoryVar, y = .data[[".CUM"]] * !!cumFactor, group = 1)
+                plot <- plot + ggplot2::geom_line(curveAes, data = plotData, inherit.aes = FALSE, linewidth = 0.8, color = "black") +
+                    ggplot2::geom_point(curveAes, data = plotData, inherit.aes = FALSE, size = 2.5, color = "black")
             }
 
             #### Labels ####
@@ -306,6 +334,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 plot <- plot + ggplot2::guides(fill = "none")
 
             # Axis labels and scales
+            percentFormat <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
             if (yaxis == "count") {
                 yLab <- .("Count")
                 yScaleFactor <- 1
@@ -313,7 +342,7 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 yLab <- .("Percent")
                 yScaleFactor <- 100
-                labelFnct <- scales::label_percent(suffix = ' %', decimal.mark = self$options[['decSymbol']])
+                labelFnct <- percentFormat
             }
 
             # Show unused levels (if checked in data/var setting)
@@ -344,12 +373,15 @@ barplotClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             valueRangeAuto <- if (self$options$horizontal) self$options$xAxisRangeType == "auto" else self$options$yAxisRangeType == "auto"
             expand_arg <- if (valueRangeAuto) ggplot2::expansion(mult = c(expandLow, expandHigh)) else ggplot2::waiver()
 
+            # Secondary % axis of the Pareto curve on a count axis
+            secAxis <- if (paretoCurve && yaxis == "count") ggplot2::sec_axis(~ . / cumFactor, name = .("Cumulative %"), labels = percentFormat) else ggplot2::waiver()
+
             if (self$options$horizontal && self$options$xTicks > 0) {
-                plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$xTicks + 1), labels = labelFnct, expand = expand_arg, sec.axis = secAxis)
             } else if (!self$options$horizontal && self$options$yTicks > 0) {
-                plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg)
+                plot <- plot + ggplot2::scale_y_continuous(breaks = scales::breaks_extended(self$options$yTicks + 1), labels = labelFnct, expand = expand_arg, sec.axis = secAxis)
             } else {
-                plot <- plot + ggplot2::scale_y_continuous(labels = labelFnct, expand = expand_arg)
+                plot <- plot + ggplot2::scale_y_continuous(labels = labelFnct, expand = expand_arg, sec.axis = secAxis)
             }
 
             # facet

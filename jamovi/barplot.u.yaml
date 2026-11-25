@@ -128,6 +128,10 @@ children:
                 name: order_decreasing
                 optionName: order
                 optionPart: decreasing
+                children:
+                  - type: CheckBox
+                    name: pareto
+                    enable: (order_decreasing && !columns && !barType_stack && !horizontal && !facet)
   - type: CollapseBox
     label: Plot Options
     collapsed: true

@@ -74,6 +74,11 @@ options:
           name:  none
       default: none
 
+    - name: pareto
+      title: Pareto curve
+      type: Bool
+      default: false
+
     - name: frequencyTable
       title: "Frequency table"
       type: Bool

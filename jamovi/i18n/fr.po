@@ -1999,6 +1999,7 @@ msgstr "Tableau croisé (% des observations)"
 msgid "Crosstab (% of responses)"
 msgstr "Tableau croisé (% des réponses)"
 
+#: R/barplot.b.R
 #: R/multcorresp.b.R
 #: barplot/results/frequencies.columns.title
 #: corresp/results/eigenvalues.columns.title
@@ -4561,6 +4562,10 @@ msgstr "Valeurs des paramètres"
 #: qqplot/ui[3].label
 msgid "Parameter Values"
 msgstr "Valeurs des paramètres"
+
+#: barplot/options/pareto.title
+msgid "Pareto curve"
+msgstr "Courbe de Pareto"
 
 #: principal/options/rotation/parsimax.title
 msgid "Parsimax"

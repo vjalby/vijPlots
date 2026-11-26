@@ -456,12 +456,13 @@ are passed explicitly (user's preference), `self` is only used for `self$data`, 
 
 ### Dependency graph has soft/transitive requirements
 
-Several `Imports:` in `DESCRIPTION` aren't called directly (`pkg::fun()`) anywhere in `R/` — they're
-required at runtime by another dependency and would break at render time if removed:
-`fitdistrplus` (used internally by `ggh4x::stat_theodensity`, called from `histogram.b.R`) and
-`labelled` (an optional dependency of `ggstats::gglikert_data()`, checked via
-`rlang::check_installed("labelled")`, called from `likertplot.b.R`). Before removing an
-Import that looks unused by a plain grep, check whether the package that *is* called depends on it.
+An `Import` in `DESCRIPTION` may not be called directly (`pkg::fun()`) anywhere in `R/` yet be
+required at runtime by another dependency, and would break at render time if removed: `labelled`
+(an optional dependency of `ggstats::gglikert_data()`, checked via
+`rlang::check_installed("labelled")`, called from `likertplot.b.R`). The compiler installs the
+`Imports` of dependencies, not their `Suggests`, so such a package must be declared here. Before
+removing an Import that looks unused by a plain grep, check whether the package that *is* called
+depends on it. (`fitdistrplus` was in this list, for `ggh4x::stat_theodensity()`: dropped 2026-11-26.)
 (`GPArotation` used to be in this list — `principal.b.R` called it indirectly via
 `getFromNamespace()` — but as of 2026-08-23 it's called directly as `GPArotation::Varimax()` etc.
 in a `switch()`, so it's grep-visible like any normal import.)
@@ -475,7 +476,7 @@ as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports
 in `lollipop.b.R`. It was still installed transitively via `FactoMineR` (→ car → pbkrtest → doBy →
 forecast) until `FactoMineR` was dropped (2026-11-26); no remaining Import pulls it in.
 
-### Module size (findings of 2026-11-21; `ggpp`, `qqplotr`, `FactoMineR` and `ggforce` dropped)
+### Module size (findings of 2026-11-21; `ggpp`, `qqplotr`, `FactoMineR`, `ggforce`, `fitdistrplus` dropped)
 
 The 1.4.1 `.jmo` is 26.3 MiB compressed, 80 % bundled packages (jamovi's own `jmv` already provides
 `ca`, `psych`, `GPArotation`, `car`, `emmeans`: those aren't bundled). Main groups: `FactoMineR` and
@@ -541,6 +542,16 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
 - **`ggforce` dropped (2026-11-26):** used only for the legacy PCA's unit circle, now drawn as in
   vijMulti: `geom_polygon()` on 721 points (`sin`/`cos`), as `geom_circle(n = 720)` did; snapshots
   unchanged. Frees `ggforce`, `tweenr`, `polyclip`, `systemfonts` (no other Import needs them).
+- **`fitdistrplus` dropped (2026-11-26):** 4.0 MiB, declared only for `histogram`'s normal curve
+  (`ggh4x::stat_theodensity()`, which lists it in `Suggests`). The curve is now
+  `geom_line(stat = private$.statNormalDensity())`, a `StatDensity` child copying ggh4x 0.3.1's
+  `compute_group()` with the closed-form MLE (mean, `sqrt((n - 1) / n) * sd`). fitdistrplus starts its
+  `optim()` there and returns it (sd ≤ 1e-15 relative apart on 2000 samples); `layer_data()` equal to
+  ggh4x (≤ 3e-15) with group, stack, facets, count and density; snapshots unchanged. One deliberate
+  difference: a group whose values are all equal gets no curve (fitdistrplus's optimizer returned
+  sd = 10% of |mean|, or 0.1, a meaningless curve). `ggh4x` stays, for `mosaic`'s
+  `facetted_pos_scales()` (no ggplot2 equivalent). `ggdist` (`raincloud`'s `stat_halfeye()`, 4.3 MiB with
+  `distributional`) could be ported too, but exactly reproducing its bounded density is more work.
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed

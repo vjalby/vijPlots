@@ -177,13 +177,13 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
 
 				if (is.null(groupVar)) {
-                    plot <- plot + ggh4x::stat_theodensity(
-                        mapping = normalCurveAes, na.rm = TRUE, color = 'red',
+                    plot <- plot + ggplot2::geom_line(
+                        mapping = normalCurveAes, stat = private$.statNormalDensity(), na.rm = TRUE, color = 'red',
                         linewidth = lineSize, linetype = lineType
                     )
                 } else {
-                    plot <- plot + ggh4x::stat_theodensity(
-                        mapping = normalCurveAes, na.rm = TRUE,
+                    plot <- plot + ggplot2::geom_line(
+                        mapping = normalCurveAes, stat = private$.statNormalDensity(), na.rm = TRUE,
                         linewidth = lineSize, linetype = lineType,
                         position = self$options$groupingN, show.legend = !legendAsSquare
                     )
@@ -338,6 +338,22 @@ histogramClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
 
             list(vline, label)
+        },
+        .statNormalDensity = function() {
+            # Normal curve fitted by maximum likelihood, as ggh4x::stat_theodensity() did through fitdistrplus
+            ggplot2::ggproto("StatNormalDensity", ggplot2::StatDensity,
+                setup_params = function(data, params) params,
+                compute_group = function(data, scales, n = 512) {
+                    x <- data$x[!is.na(data$x)]
+                    nx <- length(data$x)
+                    sdMle <- if (nx < 2) 0 else sqrt((nx - 1) / nx) * stats::sd(x)
+                    if (sdMle == 0)
+                        return(data.frame(x = NA_real_, density = NA_real_, scaled = NA_real_, count = NA_real_, n = NA_integer_))
+                    range <- scales$x$dimension()
+                    xseq <- seq(range[1], range[2], length.out = n)
+                    dens <- stats::dnorm(xseq, mean = mean(x), sd = sdMle)
+                    data.frame(x = xseq, density = dens, scaled = dens / max(dens), count = dens * nx, n = nx)
+                })
         }
     )
 )

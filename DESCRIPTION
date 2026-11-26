@@ -12,11 +12,11 @@ Description: Main statistical charts for continuous variables (Histogram, Box pl
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-### labelled, fitdistrplus: not called directly, but required at runtime by ggstats/ggh4x respectively
+### labelled: not called directly, but required at runtime by ggstats
 Imports: jmvcore (>= 0.8.5), R6, utils, stats, grDevices, psych, MASS, tidyr, 
          dplyr (>= 1.1.0), tibble, tidyselect,  forcats, grid, rlang, ggplot2, scales (>= 1.4.0),
          ggstats, ggh4x, ggdist, ggrepel, qqconf, robustbase,
-         GPArotation, labelled, fitdistrplus, withr
+         GPArotation, labelled, withr
 Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

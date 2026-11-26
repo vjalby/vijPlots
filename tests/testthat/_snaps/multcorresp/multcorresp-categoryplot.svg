@@ -50,10 +50,10 @@
 <text x='218.09' y='491.77' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.05px' lengthAdjust='spacingAndGlyphs'>European</text>
 <text x='177.25' y='263.76' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.01px' lengthAdjust='spacingAndGlyphs'>Small</text>
 <text x='329.26' y='446.24' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
-<text x='535.74' y='191.18' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Large</text>
+<text x='535.74' y='191.27' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Large</text>
 <text x='171.78' y='396.38' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='34.69px' lengthAdjust='spacingAndGlyphs'>Sporty</text>
 <text x='351.93' y='391.85' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Family</text>
-<text x='266.78' y='98.56' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
+<text x='266.82' y='98.55' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
 <line x1='130.70' y1='336.13' x2='554.69' y2='336.13' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <line x1='279.85' y1='517.04' x2='279.85' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <rect x='130.70' y='64.93' width='423.99' height='452.11' style='stroke-width: 2.13;' />

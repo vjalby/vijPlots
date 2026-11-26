@@ -38,17 +38,17 @@
 <polygon points='88.25,455.30 92.08,461.93 84.42,461.93 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
 <polygon points='579.48,81.06 583.31,87.69 575.65,87.69 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
 <polygon points='330.39,454.94 334.22,461.57 326.56,461.57 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
-<text x='339.92' y='455.07' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='91.40px' lengthAdjust='spacingAndGlyphs'>Senior Managers</text>
+<text x='339.99' y='455.12' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='91.40px' lengthAdjust='spacingAndGlyphs'>Senior Managers</text>
 <text x='284.53' y='421.55' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='89.40px' lengthAdjust='spacingAndGlyphs'>Junior Managers</text>
 <text x='412.20' y='423.34' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='97.40px' lengthAdjust='spacingAndGlyphs'>Senior Employees</text>
 <text x='321.38' y='404.34' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='95.40px' lengthAdjust='spacingAndGlyphs'>Junior Employees</text>
-<text x='415.51' y='383.04' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Secretaries</text>
+<text x='415.54' y='383.01' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Secretaries</text>
 <text x='687.07' y='491.88' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='28.69px' lengthAdjust='spacingAndGlyphs'>None</text>
-<text x='311.91' y='332.13' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='26.02px' lengthAdjust='spacingAndGlyphs'>Light</text>
+<text x='312.12' y='332.11' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='26.02px' lengthAdjust='spacingAndGlyphs'>Light</text>
 <text x='190.49' y='385.99' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
-<text x='79.51' y='472.62' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='34.03px' lengthAdjust='spacingAndGlyphs'>Heavy</text>
+<text x='79.58' y='472.58' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='34.03px' lengthAdjust='spacingAndGlyphs'>Heavy</text>
 <text x='567.04' y='98.42' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='58.04px' lengthAdjust='spacingAndGlyphs'>No Alcohol</text>
-<text x='317.98' y='472.23' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='39.36px' lengthAdjust='spacingAndGlyphs'>Alcohol</text>
+<text x='317.98' y='472.17' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='39.36px' lengthAdjust='spacingAndGlyphs'>Alcohol</text>
 <line x1='58.88' y1='414.81' x2='705.06' y2='414.81' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <line x1='360.08' y1='517.04' x2='360.08' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <rect x='58.88' y='64.93' width='646.18' height='452.11' style='stroke-width: 2.13;' />

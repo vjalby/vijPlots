@@ -51,21 +51,21 @@
 <circle cx='296.74' cy='285.20' r='2.65' style='stroke-width: 1.03; stroke: none; fill: #4CA552;' />
 <circle cx='292.16' cy='410.37' r='2.65' style='stroke-width: 1.03; stroke: none; fill: #D25050;' />
 <circle cx='339.54' cy='257.20' r='2.65' style='stroke-width: 1.03; stroke: none; fill: #D25050;' />
-<text x='418.09' y='389.06' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='50.70px' lengthAdjust='spacingAndGlyphs'>American</text>
-<text x='255.17' y='336.63' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.06px' lengthAdjust='spacingAndGlyphs'>Japanese</text>
-<text x='274.78' y='304.72' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.05px' lengthAdjust='spacingAndGlyphs'>European</text>
-<text x='249.76' y='352.26' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.01px' lengthAdjust='spacingAndGlyphs'>Small</text>
-<text x='356.67' y='292.63' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
-<text x='477.55' y='491.75' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Large</text>
+<text x='417.96' y='389.05' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='50.70px' lengthAdjust='spacingAndGlyphs'>American</text>
+<text x='255.16' y='336.69' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.06px' lengthAdjust='spacingAndGlyphs'>Japanese</text>
+<text x='274.77' y='304.70' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.05px' lengthAdjust='spacingAndGlyphs'>European</text>
+<text x='249.79' y='352.39' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.01px' lengthAdjust='spacingAndGlyphs'>Small</text>
+<text x='356.80' y='292.68' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
+<text x='477.44' y='491.72' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Large</text>
 <text x='203.66' y='347.49' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='34.69px' lengthAdjust='spacingAndGlyphs'>Sporty</text>
-<text x='379.75' y='331.00' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Family</text>
-<text x='301.43' y='446.30' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
-<text x='366.93' y='98.50' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='84.72px' lengthAdjust='spacingAndGlyphs'>Single with Kids</text>
-<text x='397.18' y='361.02' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='92.04px' lengthAdjust='spacingAndGlyphs'>Married with Kids</text>
-<text x='235.86' y='399.56' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='33.36px' lengthAdjust='spacingAndGlyphs'>Single</text>
-<text x='285.84' y='280.49' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='40.68px' lengthAdjust='spacingAndGlyphs'>Married</text>
-<text x='298.28' y='405.69' text-anchor='middle' style='font-size: 12.00px; fill: #D25050; font-family: sans;' textLength='26.01px' lengthAdjust='spacingAndGlyphs'>Male</text>
-<text x='333.44' y='270.16' text-anchor='middle' style='font-size: 12.00px; fill: #D25050; font-family: sans;' textLength='40.02px' lengthAdjust='spacingAndGlyphs'>Female</text>
+<text x='379.73' y='331.10' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Family</text>
+<text x='301.54' y='446.14' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
+<text x='367.09' y='98.45' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='84.72px' lengthAdjust='spacingAndGlyphs'>Single with Kids</text>
+<text x='397.10' y='361.02' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='92.04px' lengthAdjust='spacingAndGlyphs'>Married with Kids</text>
+<text x='235.96' y='399.37' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='33.36px' lengthAdjust='spacingAndGlyphs'>Single</text>
+<text x='285.83' y='280.50' text-anchor='middle' style='font-size: 12.00px; fill: #4CA552; font-family: sans;' textLength='40.68px' lengthAdjust='spacingAndGlyphs'>Married</text>
+<text x='298.36' y='405.64' text-anchor='middle' style='font-size: 12.00px; fill: #D25050; font-family: sans;' textLength='26.01px' lengthAdjust='spacingAndGlyphs'>Male</text>
+<text x='333.37' y='270.24' text-anchor='middle' style='font-size: 12.00px; fill: #D25050; font-family: sans;' textLength='40.02px' lengthAdjust='spacingAndGlyphs'>Female</text>
 <line x1='182.71' y1='341.74' x2='498.02' y2='341.74' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <line x1='313.39' y1='517.04' x2='313.39' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <rect x='182.71' y='64.93' width='315.31' height='452.11' style='stroke-width: 2.13;' />

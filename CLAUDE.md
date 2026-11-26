@@ -93,7 +93,7 @@ build dir + `<app>/Contents/Resources/modules/base/R` + `.../jmv/R`, `CI=true` s
 can't match, `test_dir(package = "vijPlots", load_package = "installed")`). Known differences there,
 not vijPlots bugs: `likertplot`'s Mann-Whitney p-values (R 4.6's `wilcox.test()` computes exact
 p-values with ties, R 4.5 warns and uses the normal approximation; the tests' expected values are
-R 4.6's), `corresp`'s eigenvalues (FactoMineR 2.11 vs 2.16, legacy analysis), and an `is.ggproto()`
+R 4.6's), and an `is.ggproto()`
 deprecation warning raised by ggh4x 0.3.0's `facetted_pos_scales()` in `mosaic` facets.
 
 ## Architecture
@@ -472,14 +472,14 @@ call `Hmisc::smean.*()` under the hood, so `barchart.b.R`'s error bars now use i
 `ggplot2::mean_se()` (Hmisc-free). Don't reintroduce `ggplot2::mean_cl_*`/`mean_sdl`/`median_hilow`
 as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports`. Likewise
 `colorspace` was dropped (2026-10-04) in favour of `scales::col_mix()` (needs `scales >= 1.4.0`)
-in `lollipop.b.R` — note it's still installed transitively via `FactoMineR` (→ car → pbkrtest →
-doBy → forecast) for as long as `FactoMineR` stays an Import.
+in `lollipop.b.R`. It was still installed transitively via `FactoMineR` (→ car → pbkrtest → doBy →
+forecast) until `FactoMineR` was dropped (2026-11-26); no remaining Import pulls it in.
 
-### Module size (findings of 2026-11-21; `ggpp` and `qqplotr` dropped)
+### Module size (findings of 2026-11-21; `ggpp`, `qqplotr` and `FactoMineR` dropped)
 
 The 1.4.1 `.jmo` is 26.3 MiB compressed, 80 % bundled packages (jamovi's own `jmv` already provides
 `ca`, `psych`, `GPArotation`, `car`, `emmeans`: those aren't bundled). Main groups: `FactoMineR` and
-its closure (`DT`, `crosstalk`...) 5.8 MiB, legacy CA/MCA only; `qqplotr` 6.2 MiB, of which 4.5 MiB
+its closure (`DT`, `crosstalk`...) 5.8 MiB, legacy CA/MCA only, now dropped; `qqplotr` 6.2 MiB, of which 4.5 MiB
 is `opdisDownsampling` and its closure (`pracma`, `foreach`...), called only with `down.sample`, which
 `qqplot` never passes (`qqconf`: "ell" bands, `robustbase`: "ts" bands, both needed), now dropped; `labelled` 2.8
 MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::gglikert_data()`; `ggpp`
@@ -495,8 +495,10 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   ggrepel's per-label `nudge_x = 0.2 * x / r`, `nudge_y = 0.01 * y / r` (`r` floored at 1e-5): same
   positions, except that a variable exactly at the origin is no longer nudged. Checked visually by the
   user in jamovi 28 (2026-11-21). The rebuilt `.jmo` went from 26.58 to 24.37 MiB.
-- **Not done (user's decisions, 2026-11-21):** porting the legacy CA/MCA to `ca` like vijMulti (options
-  and results have diverged, old documents re-run on jamovi 28); vendoring the used part of `qqplotr`
+- **Not done (user's decisions, 2026-11-21, confirmed 2026-11-26):** porting the legacy CA/MCA to `ca`
+  like vijMulti, or copying vijMulti's analyses (results differ: axis signs, inertia table, Burt
+  observation coordinates, and the MCA coordinates saved into the data set; old documents re-run on
+  jamovi 28, so they would change silently; the aim is to keep old documents as they were); vendoring the used part of `qqplotr`
   into vijPlots (a 248-line draft matched `qqplotr` exactly on 480 cases, but too much code to maintain
   for the gain; superseded by the lighter replacement below). An upstream fix wouldn't help soon: jamovi freezes package versions per major release
   (2.7 bundles qqplotr 0.0.6, 28 bundles 0.0.7).
@@ -517,6 +519,24 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   message), with `qqconf` (`00refs.yaml`: its JSS article). The rebuilt `.jmo` went from 24.37 to 19.43
   MiB (`opdisDownsampling` and its closure gone). Tests with jamovi 2.7.41's R: only the known
   differences listed under "Building and testing for jamovi 2.7".
+- **`FactoMineR` replaced (2026-11-26; user's decision):** `R/legacyFactoMineR.R` holds FactoMineR 2.14's
+  code (GPL >= 2, credited), reduced to what the legacy `corresp`/`multcorresp` call: `vijLegacyCA()`,
+  `vijLegacyMCA()`, `vijLegacySvd()` (`svd.triplet()`), `vijLegacyDisjunctive()` (`tab.disjonctif()`,
+  whose C code is rewritten in base R). Goal: old documents give exactly the same results, bugs
+  included, so don't "fix" or modernise it. Besides removed branches, only rewrites of equal result
+  (`fct.eta2()` without its NA filter, `tryCatch()` for `tryCatch.W.E()`, elements renamed by name);
+  one theoretical difference: when both `svd(X)` and `svd(t(X))` fail, FactoMineR's buggy `eigen()`
+  fallback returns `NA`s, the port errors ("Unable to compute..."). Results also no longer hold `svd`,
+  `call$X`, `v.test`... (unread; smaller `.omv` states). Checked bit-identical to FactoMineR 2.14 on 27
+  cases (CA: supplementary rows/columns, weighted table, null eigenvalue, contTable mode; MCA: Indicator
+  and Burt, 0-3 supplementary variables, duplicate and `y`/`n` levels, odd names, n = 4, `poison`, `tea`)
+  and to 2.11 (jamovi 2.7) up to 1e-16 on supplementary eta2. Shipped `.jmo`s had 2.14 (jamovi 28) and
+  2.11 (jamovi 2.7), but the tests had been recorded with 2.16 (local library), which keeps only `ncp`
+  eigenvalues: the two `corresp` inertia tests were corrected to 2.14's full table, and 14 snapshots
+  re-recorded (ggrepel labels moved by <= 0.2 px), byte-identical to those of FactoMineR 2.14. Freed
+  11.5 MiB uncompressed (`DT`, `FactoMineR`, `crosstalk`, `lazyeval`, `scatterplot3d`, `multcompView`,
+  `ellipse`, `leaps`, `flashClust`). The `factominer` reference and the help messages ("based on
+  FactoMineR") are kept.
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed

@@ -46,14 +46,14 @@
 <circle cx='368.32' cy='378.88' r='2.65' style='stroke-width: 1.03; stroke: none; fill: #E8B453;' />
 <circle cx='268.35' cy='85.48' r='2.65' style='stroke-width: 1.03; stroke: none; fill: #E8B453;' />
 <text x='432.73' y='338.54' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='50.70px' lengthAdjust='spacingAndGlyphs'>American</text>
-<text x='155.21' y='314.69' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.06px' lengthAdjust='spacingAndGlyphs'>Japanese</text>
+<text x='155.18' y='314.53' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.06px' lengthAdjust='spacingAndGlyphs'>Japanese</text>
 <text x='201.49' y='491.72' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.05px' lengthAdjust='spacingAndGlyphs'>European</text>
 <text x='153.54' y='263.81' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.01px' lengthAdjust='spacingAndGlyphs'>Small</text>
 <text x='331.79' y='446.37' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
 <text x='577.52' y='191.36' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Large</text>
-<text x='131.21' y='387.49' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='34.69px' lengthAdjust='spacingAndGlyphs'>Sporty</text>
-<text x='358.63' y='391.78' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Family</text>
-<text x='258.76' y='98.41' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
+<text x='131.19' y='387.49' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='34.69px' lengthAdjust='spacingAndGlyphs'>Sporty</text>
+<text x='358.62' y='391.78' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Family</text>
+<text x='258.74' y='98.42' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
 <line x1='98.83' y1='336.13' x2='596.57' y2='336.13' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <line x1='273.92' y1='517.04' x2='273.92' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <rect x='98.83' y='64.93' width='497.74' height='452.11' style='stroke-width: 2.13;' />

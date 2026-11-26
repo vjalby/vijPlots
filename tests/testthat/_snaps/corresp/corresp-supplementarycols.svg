@@ -38,17 +38,17 @@
 <polygon points='676.14,111.99 679.97,118.62 672.31,118.62 ' style='stroke-width: 1.03; stroke: none; fill: #FF0000;' />
 <polygon points='332.21,492.07 336.03,498.70 328.38,498.70 ' style='stroke-width: 1.03; stroke: none; fill: #A9A9A9;' />
 <polygon points='441.94,213.03 445.77,219.66 438.11,219.66 ' style='stroke-width: 1.03; stroke: none; fill: #A9A9A9;' />
-<text x='361.23' y='132.05' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='91.40px' lengthAdjust='spacingAndGlyphs'>Senior Managers</text>
-<text x='634.42' y='98.28' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='89.40px' lengthAdjust='spacingAndGlyphs'>Junior Managers</text>
-<text x='121.18' y='256.38' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='97.40px' lengthAdjust='spacingAndGlyphs'>Senior Employees</text>
-<text x='637.45' y='285.29' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='95.40px' lengthAdjust='spacingAndGlyphs'>Junior Employees</text>
-<text x='271.88' y='299.72' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Secretaries</text>
-<text x='86.93' y='225.40' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='28.69px' lengthAdjust='spacingAndGlyphs'>None</text>
-<text x='524.81' y='341.93' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='26.02px' lengthAdjust='spacingAndGlyphs'>Light</text>
-<text x='581.96' y='268.47' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
-<text x='663.93' y='129.29' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='34.03px' lengthAdjust='spacingAndGlyphs'>Heavy</text>
-<text x='320.04' y='509.36' text-anchor='middle' style='font-size: 12.00px; fill: #A9A9A9; font-family: sans;' textLength='66.05px' lengthAdjust='spacingAndGlyphs'>No Alcohol *</text>
-<text x='454.20' y='212.88' text-anchor='middle' style='font-size: 12.00px; fill: #A9A9A9; font-family: sans;' textLength='47.37px' lengthAdjust='spacingAndGlyphs'>Alcohol *</text>
+<text x='361.28' y='132.02' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='91.40px' lengthAdjust='spacingAndGlyphs'>Senior Managers</text>
+<text x='634.71' y='98.35' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='89.40px' lengthAdjust='spacingAndGlyphs'>Junior Managers</text>
+<text x='121.18' y='256.35' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='97.40px' lengthAdjust='spacingAndGlyphs'>Senior Employees</text>
+<text x='637.27' y='285.41' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='95.40px' lengthAdjust='spacingAndGlyphs'>Junior Employees</text>
+<text x='271.83' y='299.77' text-anchor='middle' style='font-size: 12.00px; fill: #0000FF; font-family: sans;' textLength='60.70px' lengthAdjust='spacingAndGlyphs'>Secretaries</text>
+<text x='87.03' y='225.48' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='28.69px' lengthAdjust='spacingAndGlyphs'>None</text>
+<text x='524.78' y='341.96' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='26.02px' lengthAdjust='spacingAndGlyphs'>Light</text>
+<text x='582.01' y='268.45' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
+<text x='663.98' y='129.25' text-anchor='middle' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='34.03px' lengthAdjust='spacingAndGlyphs'>Heavy</text>
+<text x='320.06' y='509.32' text-anchor='middle' style='font-size: 12.00px; fill: #A9A9A9; font-family: sans;' textLength='66.05px' lengthAdjust='spacingAndGlyphs'>No Alcohol *</text>
+<text x='454.16' y='212.92' text-anchor='middle' style='font-size: 12.00px; fill: #A9A9A9; font-family: sans;' textLength='47.37px' lengthAdjust='spacingAndGlyphs'>Alcohol *</text>
 <line x1='68.88' y1='250.70' x2='705.06' y2='250.70' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <line x1='428.86' y1='517.04' x2='428.86' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <rect x='68.88' y='64.93' width='636.17' height='452.11' style='stroke-width: 2.13;' />

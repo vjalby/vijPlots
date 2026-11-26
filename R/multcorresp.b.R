@@ -142,7 +142,7 @@ multcorrespClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 private$.saveCoordinates(res$ind$stdcoord, "standard")
         },
         .mca = function(data, method, nd, supcol, rowlabels = NULL, rownames = NULL) {
-            res <- FactoMineR::MCA(data, method = method, ncp = 999, quali.sup = supcol, graph = FALSE)
+            res <- vijLegacyMCA(data, method = method, ncp = 999, quali.sup = supcol)
             res$nd.max <- nrow(res$eig)
             if (nd > res$nd.max)
                 return(res)

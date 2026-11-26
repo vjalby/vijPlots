@@ -431,7 +431,7 @@ correspClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             biplot$setState(res)
         },
         .ca = function(contingencyTable, ncp = 2, row.sup = NULL, col.sup = NULL, norm = "principal") {
-            res <- FactoMineR::CA(contingencyTable, ncp = ncp, row.sup = row.sup, col.sup = col.sup, graph = FALSE)
+            res <- vijLegacyCA(contingencyTable, ncp = ncp, row.sup = row.sup, col.sup = col.sup)
             res$sv <- sqrt(res$eig[,1]) # singular values
             res$eig[,2:3] <- res$eig[,2:3] / 100
             res$col$contrib <- res$col$contrib / 100

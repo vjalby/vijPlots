@@ -48,16 +48,16 @@
 <polygon points='283.66,336.64 287.22,342.82 280.09,342.82 ' style='stroke-width: 1.03; stroke: none; fill: #4CA552;' />
 <polygon points='246.63,324.11 250.20,330.29 243.07,330.29 ' style='stroke-width: 1.03; stroke: none; fill: #4CA552;' />
 <text x='412.21' y='340.21' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='50.70px' lengthAdjust='spacingAndGlyphs'>American</text>
-<text x='172.52' y='315.38' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.06px' lengthAdjust='spacingAndGlyphs'>Japanese</text>
+<text x='172.47' y='315.40' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.06px' lengthAdjust='spacingAndGlyphs'>Japanese</text>
 <text x='211.78' y='491.66' text-anchor='middle' style='font-size: 12.00px; fill: #79A6EA; font-family: sans;' textLength='52.05px' lengthAdjust='spacingAndGlyphs'>European</text>
 <text x='171.04' y='263.55' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.01px' lengthAdjust='spacingAndGlyphs'>Small</text>
-<text x='323.13' y='448.79' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
+<text x='323.08' y='448.76' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='42.69px' lengthAdjust='spacingAndGlyphs'>Medium</text>
 <text x='533.94' y='191.13' text-anchor='middle' style='font-size: 12.00px; fill: #A8A8A8; font-family: sans;' textLength='30.69px' lengthAdjust='spacingAndGlyphs'>Large</text>
 <text x='164.52' y='397.39' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='34.69px' lengthAdjust='spacingAndGlyphs'>Sporty</text>
 <text x='345.09' y='394.39' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='35.34px' lengthAdjust='spacingAndGlyphs'>Family</text>
-<text x='263.66' y='98.48' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
+<text x='263.65' y='98.46' text-anchor='middle' style='font-size: 12.00px; fill: #E8B453; font-family: sans;' textLength='28.00px' lengthAdjust='spacingAndGlyphs'>Work</text>
 <text x='275.26' y='353.79' text-anchor='middle' style='font-size: 12.00px; font-style: italic; fill: #4CA552; font-family: sans;' textLength='24.68px' lengthAdjust='spacingAndGlyphs'>Own</text>
-<text x='254.93' y='323.58' text-anchor='middle' style='font-size: 12.00px; font-style: italic; fill: #4CA552; font-family: sans;' textLength='25.35px' lengthAdjust='spacingAndGlyphs'>Rent</text>
+<text x='254.92' y='323.57' text-anchor='middle' style='font-size: 12.00px; font-style: italic; fill: #4CA552; font-family: sans;' textLength='25.35px' lengthAdjust='spacingAndGlyphs'>Rent</text>
 <line x1='123.16' y1='337.31' x2='552.89' y2='337.31' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <line x1='273.46' y1='517.04' x2='273.46' y2='64.93' style='stroke-width: 1.55; stroke-dasharray: 8.28,8.28; stroke-linecap: butt;' />
 <rect x='123.16' y='64.93' width='429.73' height='452.11' style='stroke-width: 2.13;' />

@@ -222,9 +222,12 @@ principalClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             # Reference lines
             plot <- plot + ggplot2::geom_hline(yintercept = 0, linetype = 2) + ggplot2::geom_vline(xintercept = 0, linetype = 2)
-            # Unit circle
-            if (self$options$stdVariables && plotType == "var" && !self$options$stdLoadings)
-                plot <- plot + ggforce::geom_circle(ggplot2::aes(x0 = 0, y0 = 0, r = 1), linewidth = 0.2, n = 720)
+            # Unit circle, drawn as ggforce::geom_circle(n = 720) did (same SVG output)
+            if (self$options$stdVariables && plotType == "var" && !self$options$stdLoadings) {
+                angle <- seq(0, 2 * pi, length.out = 721)
+                plot <- plot + ggplot2::geom_polygon(data = data.frame(x = sin(angle), y = cos(angle)), ggplot2::aes(x = x, y = y),
+                                                     fill = NA, colour = "black", linewidth = 0.2, lineend = "round")
+            }
 
             #### Obs Plot ####
 

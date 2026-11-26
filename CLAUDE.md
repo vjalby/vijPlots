@@ -475,7 +475,7 @@ as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports
 in `lollipop.b.R`. It was still installed transitively via `FactoMineR` (→ car → pbkrtest → doBy →
 forecast) until `FactoMineR` was dropped (2026-11-26); no remaining Import pulls it in.
 
-### Module size (findings of 2026-11-21; `ggpp`, `qqplotr` and `FactoMineR` dropped)
+### Module size (findings of 2026-11-21; `ggpp`, `qqplotr`, `FactoMineR` and `ggforce` dropped)
 
 The 1.4.1 `.jmo` is 26.3 MiB compressed, 80 % bundled packages (jamovi's own `jmv` already provides
 `ca`, `psych`, `GPArotation`, `car`, `emmeans`: those aren't bundled). Main groups: `FactoMineR` and
@@ -483,7 +483,7 @@ its closure (`DT`, `crosstalk`...) 5.8 MiB, legacy CA/MCA only, now dropped; `qq
 is `opdisDownsampling` and its closure (`pracma`, `foreach`...), called only with `down.sample`, which
 `qqplot` never passes (`qqconf`: "ell" bands, `robustbase`: "ts" bands, both needed), now dropped; `labelled` 2.8
 MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::gglikert_data()`; `ggpp`
-2.2 MiB (with `xts`, `lubridate`, `timechange`, `polynom`), now dropped; `ggforce` 1.2 MiB, legacy PCA only.
+2.2 MiB (with `xts`, `lubridate`, `timechange`, `polynom`), now dropped; `ggforce` 1.2 MiB, legacy PCA only, now dropped.
 - **`ggpp` dropped (2026-11-21):** its positions were only a ggplot2 position plus a horizontal nudge.
   `raincloud`'s `position_jitternudge(nudge.from = "jittered")` and `boxplot`'s `position_dodgenudge()`
   (outlier labels, several variables + group) are now `vijNudgePosition(ggplot2::position_jitter(...) /
@@ -535,8 +535,12 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   eigenvalues: the two `corresp` inertia tests were corrected to 2.14's full table, and 14 snapshots
   re-recorded (ggrepel labels moved by <= 0.2 px), byte-identical to those of FactoMineR 2.14. Freed
   11.5 MiB uncompressed (`DT`, `FactoMineR`, `crosstalk`, `lazyeval`, `scatterplot3d`, `multcompView`,
-  `ellipse`, `leaps`, `flashClust`). The `factominer` reference and the help messages ("based on
+  `ellipse`, `leaps`, `flashClust`). The rebuilt `.jmo` went from 19.43 to about 13.5 MiB, checked
+  by the user in jamovi 28 (2026-11-26): half the 26.5 MiB of 1.4.x. The `factominer` reference and the help messages ("based on
   FactoMineR") are kept.
+- **`ggforce` dropped (2026-11-26):** used only for the legacy PCA's unit circle, now drawn as in
+  vijMulti: `geom_polygon()` on 721 points (`sin`/`cos`), as `geom_circle(n = 720)` did; snapshots
+  unchanged. Frees `ggforce`, `tweenr`, `polyclip`, `systemfonts` (no other Import needs them).
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed

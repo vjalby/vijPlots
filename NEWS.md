@@ -9,6 +9,11 @@
 * Mosaic Plot: the Pearson residuals now include the missing values kept as a category (when "Ignore missing values" is unchecked)
 * Scatter Plot: "Group shapes" now supports up to 18 groups (instead of 11)
 * Scatter Plot: "Free scales" option for facets
+* Q-Q & P-P Plots: "One plot per group" option (one facet per group instead of colors)
+* Q-Q & P-P Plots: the bootstrap and tail-sensitive bands are now reproducible (they changed at every redraw)
+* Q-Q & P-P Plots: a warning is shown when the tail-sensitive band is used with a non-Normal distribution
+* Raincloud Plot: the density clouds are now drawn by vijPlots (slightly different look at the ends of the data; no cloud for a group with a single value)
+* Lighter module (10.6 MB instead of 26.5 MB): several dependencies (qqplotr, ggpp, FactoMineR, ggforce, fitdistrplus, ggdist) replaced by built-in code
 
 # vijPlots 1.4.0 (2026-11-08)
 

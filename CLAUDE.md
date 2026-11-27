@@ -503,6 +503,22 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   into vijPlots (a 248-line draft matched `qqplotr` exactly on 480 cases, but too much code to maintain
   for the gain; superseded by the lighter replacement below). An upstream fix wouldn't help soon: jamovi freezes package versions per major release
   (2.7 bundles qqplotr 0.0.6, 28 bundles 0.0.7).
+- **`robustbase` kept (user's decision, 2026-11-27):** 1.0 MiB compressed with `DEoptimR`, used only by
+  `qqplot`'s "ts" band (`s_Qn()[[1]]` is the median; `Qn(finite.corr = FALSE)` = 2.21914 × the
+  `choose(n %/% 2 + 1, 2)`-th smallest |xi - xj|). A 3-line `dist()` version matched robustbase (≤ 5e-8) but is
+  O(n²): the band (1000 simulations) took 10 s at n = 2000 vs 1.5 s; the O(n log n) Croux-Rousseeuw port
+  (~60 lines) was judged not worth 10% of the `.jmo`. `finite.corr = TRUE` was also considered and rejected:
+  bands wider for small n (+15% at n = 10, +3% at 50), coverage unchanged (the simulation calibrates on the
+  same estimator), and old documents would change. Still bundled besides: `ggh4x` (0.7, `mosaic`),
+  `qqconf` (0.5, ELL band), and `labelled` with its closure (`haven`, `readr`, `vroom`, `tzdb`, `bit64`,
+  `bit`, `clipr`: 2.8 MiB).
+- **`labelled` kept (user's decision, 2026-11-27):** a `Suggests` of ggstats used only by `gglikert_data()`
+  (`rlang::check_installed()`, then `var_label()`, overridden by our `variable_labels`, and `to_factor()`, a
+  no-op on our factors). Copying `gglikert_data()` alone doesn't help (`gglikert()`/`gglikert_stacked()` call
+  ggstats' own); dropping it means porting all three (~320 lines with `.prop_higher()`/`.prop_lower()`) or
+  drawing the plot from ggstats' exported pieces. Not done: `likertplot` is one of the most used analyses,
+  with no equivalent in other modules, and must stay very stable. Faking the package (stub `labelled`,
+  `assignInNamespace()`) is out: it would affect every module in jamovi's shared R session.
 - **`qqplotr` replaced (2026-11-22; user's decision):** no ggproto, no `qqplotr` in `Imports`. `.run()`
   computes each group's points, reference line and band (`private$.qqData()`/`.qqGroup()`/`.distFun()`:
   pure, adapted from qqplotr 0.0.7's stats, ELL band from `qqconf::get_qq_band()`, "ts" with
@@ -555,7 +571,13 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   `stat_halfeye()` is now `private$.cloud()`, a `geom_ribbon(orientation = "y")` (outline on the outer edge
   only) on `private$.statCloud()`: `stats::density()` over each group's own range, n = 501, Sheather-Jones
   `bw.SJ(method = "dpi")` as ggdist (`bw.nrd0()` when it errors, "sample is too sparse" on heavily tied
-  data), same placement (base at `-justification`, height `0.9 * width`, scaled by each group's max).
+  data), same placement (base at `-justification`, height `0.9 * width`), same scaling: `after_stat()` sees
+  the whole layer, so `max(density)` is the largest density of all clouds (ggdist's `normalize = "all"`).
+  A tiny, tight group (2-4 close values: peak about 10 vs 2 for 40 normal values) therefore squashes every
+  other cloud; frequent with "Ignore missing values" unchecked, the missing groups being small. Relative
+  heights checked identical to ggdist's (≤ 0.1%) on such data: not a regression of the port. Kept as is
+  (user's decision, 2026-11-27): scaling each cloud to its own max (ggdist's `"groups"`) was offered and
+  declined, as heights would no longer compare the groups' concentration.
   Differences, compared side by side in jamovi by the user: no boundary correction (ggdist's "cdf" bounder
   and reflection), so the cloud tapers towards the data's ends instead of staying high; with groups
   overlapped (`groupTwo`) the outline is opaque (`after_scale`/`stage()` alpha for the colour failed on

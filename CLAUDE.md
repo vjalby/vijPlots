@@ -563,7 +563,8 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   cloud (ggdist: a spike). `histogram`'s density curve (`geom_density()`, nrd0, not trimmed) was left as is.
   An exact port (bounded density, normalisation, outline alpha: about 90 lines, pixel-identical in 25 of 31
   cases) was rejected as too heavy. The `slab_color` aesthetic/scale/guide went with it; the 14 snapshots
-  were re-recorded. Frees `ggdist`, `distributional`, `numDeriv`, `quadprog` (about 5 MiB uncompressed).
+  were re-recorded. Frees `ggdist`, `distributional`, `numDeriv`, `quadprog` (about 5 MiB uncompressed):
+  the rebuilt `.jmo` is 10.6 MiB (11 121 400 bytes, checked by the user, 2026-11-27), against 26.5 for 1.4.x.
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed
@@ -667,8 +668,11 @@ p-values in sorted order), and gave a table/plot mismatch with `reverseLikert`. 
 (ordered factor + `"values"` attribute, per variable), so `tidyUp` puts them on one sorted scale, and
 `reverseLikert` needs no special case. Without `tidyUp` (unchecked by default), partial levels keep the
 first-appearance order, as ordinal factors always did: accepted by the user, not a bug to fix again.
-`tests/testthat/test-likertlevels.R` (kept, user's decision; 704 tests, order checks skipped without `tidyUp`) covers
-partial, non-continuous, negative and zero-less levels, as integers and as labelled ordinal factors.
+`tests/testthat/test-likertlevels.R` (kept, user's decision; order checks skipped without `tidyUp`) covers
+partial, non-continuous, negative and zero-less levels, as integers and as labelled ordinal factors. Reduced on
+2026-11-27 (user's decision) from 1760 tests (45 s) to 432 (17 s): 6 level sets instead of 11 (each complete set
+dropped for its partial variant, "nested" and "low first" too), `toInteger` varied for factors only (integers go
+through the conversion either way), one count check per run instead of one per level.
 
 Two review findings left as they are (user's decisions, 2026-11-05), not bugs to fix again:
 - With "Ignore missing groups", levels answered only by the excluded rows stay in the plot and table (empty),

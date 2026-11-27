@@ -179,8 +179,7 @@ test_that("raincloud: missing values are labelled (Missing) on the axis and in t
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off())
     print(r$plot)
-    # ggdist warns about the tiny NA x group2 subgroups (bandwidth fallback): unrelated to labels
-    built <- suppressWarnings(ggplot2::ggplot_build(ggplot2::last_plot()))
+    built <- expect_no_warning(ggplot2::ggplot_build(ggplot2::last_plot()))
     # NA group 1 on the x-axis
     xLabels <- built$layout$panel_params[[1]]$x$get_labels()
     expect_true("(Missing)" %in% xLabels)
@@ -188,7 +187,7 @@ test_that("raincloud: missing values are labelled (Missing) on the axis and in t
     # NA group 2 in the legend, the same labels on the merged fill and colour scales
     for (aes in c("fill", "colour"))
         expect_equal(built$plot$scales$get_scales(aes)$get_labels(), c("A", "B", "C", "(Missing)"))
-    # a single legend (fill, colour and slab_color still merged, size and slab_color hidden)
+    # a single legend (fill and colour merged, size hidden)
     gt <- ggplot2::ggplot_gtable(built)
     guideBox <- gt$grobs[[which(gt$layout$name == "guide-box-right")]]
     expect_equal(sum(grepl("^guides", guideBox$layout$name)), 1)

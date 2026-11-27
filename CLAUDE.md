@@ -476,7 +476,7 @@ as `stat_summary(fun.data = ...)` anywhere without re-adding `Hmisc` to `Imports
 in `lollipop.b.R`. It was still installed transitively via `FactoMineR` (→ car → pbkrtest → doBy →
 forecast) until `FactoMineR` was dropped (2026-11-26); no remaining Import pulls it in.
 
-### Module size (findings of 2026-11-21; `ggpp`, `qqplotr`, `FactoMineR`, `ggforce`, `fitdistrplus` dropped)
+### Module size (findings of 2026-11-21; `ggpp`, `qqplotr`, `FactoMineR`, `ggforce`, `fitdistrplus`, `ggdist` dropped)
 
 The 1.4.1 `.jmo` is 26.3 MiB compressed, 80 % bundled packages (jamovi's own `jmv` already provides
 `ca`, `psych`, `GPArotation`, `car`, `emmeans`: those aren't bundled). Main groups: `FactoMineR` and
@@ -550,8 +550,20 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
   ggh4x (≤ 3e-15) with group, stack, facets, count and density; snapshots unchanged. One deliberate
   difference: a group whose values are all equal gets no curve (fitdistrplus's optimizer returned
   sd = 10% of |mean|, or 0.1, a meaningless curve). `ggh4x` stays, for `mosaic`'s
-  `facetted_pos_scales()` (no ggplot2 equivalent). `ggdist` (`raincloud`'s `stat_halfeye()`, 4.3 MiB with
-  `distributional`) could be ported too, but exactly reproducing its bounded density is more work.
+  `facetted_pos_scales()` (no ggplot2 equivalent).
+- **`ggdist` dropped (2026-11-27; user's decision, a slightly different look accepted):** `raincloud`'s
+  `stat_halfeye()` is now `private$.cloud()`, a `geom_ribbon(orientation = "y")` (outline on the outer edge
+  only) on `private$.statCloud()`: `stats::density()` over each group's own range, n = 501, Sheather-Jones
+  `bw.SJ(method = "dpi")` as ggdist (`bw.nrd0()` when it errors, "sample is too sparse" on heavily tied
+  data), same placement (base at `-justification`, height `0.9 * width`, scaled by each group's max).
+  Differences, compared side by side in jamovi by the user: no boundary correction (ggdist's "cdf" bounder
+  and reflection), so the cloud tapers towards the data's ends instead of staying high; with groups
+  overlapped (`groupTwo`) the outline is opaque (`after_scale`/`stage()` alpha for the colour failed on
+  ggplot2 3.5.2) and groups are drawn in level order (ggdist: reversed); a group with a single value has no
+  cloud (ggdist: a spike). `histogram`'s density curve (`geom_density()`, nrd0, not trimmed) was left as is.
+  An exact port (bounded density, normalisation, outline alpha: about 90 lines, pixel-identical in 25 of 31
+  cases) was rejected as too heavy. The `slab_color` aesthetic/scale/guide went with it; the 14 snapshots
+  were re-recorded. Frees `ggdist`, `distributional`, `numDeriv`, `quadprog` (about 5 MiB uncompressed).
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed

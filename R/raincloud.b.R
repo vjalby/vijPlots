@@ -116,20 +116,18 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 1, y = !!aVar))
                     plot <- plot + ggplot2::geom_boxplot(width = 0.05, outlier.shape = NA, fill = oneColorOfPalette)
                     plot <- plot + ggplot2::geom_point(position = jitter_nudge, size=1.2)
-                    plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.25,-0.25), width = 0.2, .width = 0,
-                                                        point_color = NA, slab_color = "black", slab_linewidth = 0.5, fill = oneColorOfPalette)
+                    plot <- plot + private$.cloud(rainSide, ifrev(1.25,-0.25), 0.2, colour = "black", linewidth = 0.5, fill = oneColorOfPalette)
                     plot <- plot + ggplot2::guides(fill = "none")
                 } else {
                     # B: GroupTwo only (overlapped)
-                    # show.legend needed to display unused colors, guide size & slab_color needed to hide extra legends
+                    # show.legend needed to display unused colors, guide size needed to hide an extra legend
                     jitter_nudge <- vijNudgePosition(ggplot2::position_jitter(width = 0.02, height = 0, seed = 42),
                                                      x = ifrev(+0.05,-0.05))
-                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 1, y = !!aVar, fill = !!groupTwo, color = !!groupTwo, slab_color = !!groupTwo))
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = 1, y = !!aVar, fill = !!groupTwo, color = !!groupTwo))
                     plot <- plot + ggplot2::geom_boxplot(position = boxplotPosition, width = boxplotWidth, outlier.shape = NA, color="black", alpha = boxplotAlpha, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                     plot <- plot + ggplot2::geom_point(ggplot2::aes(color = !!groupTwo), position = jitter_nudge, size=1.2, show.legend = FALSE)
-                    plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.1,-0.1), width = 0.3, .width = 0, point_color=NA,
-                                                        slab_alpha = alphaC, slab_linewidth = 0.8, show.legend = FALSE)
-                    plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)), size = "none", slab_color = "none")
+                    plot <- plot + private$.cloud(rainSide, ifrev(1.1,-0.1), 0.3, alpha = alphaC, linewidth = 0.8, show.legend = FALSE)
+                    plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)), size = "none")
                 }
                 plot <- plot + ggplot2::labs(x = "") + ggplot2::scale_x_continuous(breaks = NULL)
             } else {
@@ -140,13 +138,11 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     if (self$options$singleColor) {
                         plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupOne, y = !!aVar))
                         plot <- plot + ggplot2::geom_boxplot(position = ggplot2::position_nudge(), width = 0.09, outlier.shape = NA, fill = oneColorOfPalette)
-                        plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.30,-0.30), width = 0.3, .width = 0,
-                                                            point_color = NA, slab_color = "black", fill = oneColorOfPalette, slab_linewidth = 0.5)
+                        plot <- plot + private$.cloud(rainSide, ifrev(1.30,-0.30), 0.3, colour = "black", fill = oneColorOfPalette, linewidth = 0.5)
                     } else {
                         plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupOne, y = !!aVar, fill = !!groupOne))
                         plot <- plot + ggplot2::geom_boxplot(position = ggplot2::position_nudge(), width = 0.09, outlier.shape = NA)
-                        plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.30,-0.30), width = 0.3, .width = 0,
-                                                            point_color = NA, slab_color = "black", slab_linewidth = 0.5)
+                        plot <- plot + private$.cloud(rainSide, ifrev(1.30,-0.30), 0.3, colour = "black", linewidth = 0.5)
                     }
                     plot <- plot + ggplot2::geom_point(position = jitter_nudge, size=1.2) + ggplot2::guides(fill = "none")
 
@@ -155,12 +151,11 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # D: GroupOne and GroupTwo (side-by-side and overlapped)
                     jitter_nudge <- vijNudgePosition(ggplot2::position_jitter(width = 0.05, height = 0, seed = 42),
                                                      x = ifrev(+0.15,-0.15))
-                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupOne, y = !!aVar, fill =  !!groupTwo, color = !!groupTwo, slab_color = !!groupTwo))
+                    plot <- ggplot2::ggplot(plotData, ggplot2::aes(x = !!groupOne, y = !!aVar, fill =  !!groupTwo, color = !!groupTwo))
                     plot <- plot + ggplot2::geom_boxplot(position = boxplotPosition, width = boxplotWidth2, outlier.shape = NA, color = "black", alpha = boxplotAlpha, key_glyph = ggplot2::draw_key_rect, show.legend = TRUE)
                     plot <- plot + ggplot2::geom_point(ggplot2::aes(color = !!groupTwo), position = jitter_nudge, size=1.2, show.legend = FALSE)
-                    plot <- plot + ggdist::stat_halfeye(side = rainSide, justification = ifrev(1.30,-0.30), width = 0.3, .width = 0, point_color = NA,
-                                                     slab_alpha = alphaC, slab_linewidth = 0.8, show.legend = FALSE)
-                    plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)), size = "none", slab_color = "none")
+                    plot <- plot + private$.cloud(rainSide, ifrev(1.30,-0.30), 0.3, alpha = alphaC, linewidth = 0.8, show.legend = FALSE)
+                    plot <- plot + ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(alpha = 1)), size = "none")
                 }
                 plot <- plot + ggplot2::scale_x_discrete(drop = FALSE, labels = labelNA) # keep unused levels
             }
@@ -168,8 +163,7 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### Colors and axes ####
             # Theme and colors
             plot <- plot + ggtheme + vijColorScale(self$options$colorPalette, "color", theme, drop = FALSE, labels = labelNA) +
-                                    vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA) +
-                                    vijColorScale(self$options$colorPalette, "slab_color", theme, drop = FALSE, labels = labelNA)
+                                    vijColorScale(self$options$colorPalette, "fill", theme, drop = FALSE, labels = labelNA)
 
             # Grid lines (value axis only)
             plot <- plot + vijGridLines(self$options$theme,
@@ -208,5 +202,30 @@ raincloudClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             vijDebugPlot(self, plot)
 
             return(plot)
+        },
+        .cloud = function(side, justification, width, ...) {
+            # Half-density cloud, drawn like ggdist::stat_halfeye() (base at -justification, height 0.9 * width)
+            h <- 0.9 * width
+            if (side == "right")
+                mapping <- ggplot2::aes(xmin = ggplot2::after_stat(x - !!justification * !!h),
+                                        xmax = ggplot2::after_stat(x + (density / max(density) - !!justification) * !!h))
+            else
+                mapping <- ggplot2::aes(xmin = ggplot2::after_stat(x - (density / max(density) - 1 + !!justification) * !!h),
+                                        xmax = ggplot2::after_stat(x + (1 - !!justification) * !!h))
+            ggplot2::geom_ribbon(mapping, stat = private$.statCloud(), orientation = "y",
+                                 outline.type = if (side == "right") "upper" else "lower", ...)
+        },
+        .statCloud = function() {
+            # Density of each group over its own range; no cloud for a single value
+            ggplot2::ggproto("StatCloud", ggplot2::Stat,
+                required_aes = c("x", "y"),
+                compute_group = function(data, scales) {
+                    if (length(unique(data$y)) < 2)
+                        return(data.frame())
+                    # Sheather-Jones "dpi" bandwidth, as ggdist::stat_halfeye(); nrd0 when it fails
+                    bw <- tryCatch(stats::bw.SJ(data$y, method = "dpi"), error = function(e) stats::bw.nrd0(data$y))
+                    d <- stats::density(data$y, bw = bw, n = 501, from = min(data$y), to = max(data$y))
+                    data.frame(y = d$x, density = d$y)
+                })
         })
 )

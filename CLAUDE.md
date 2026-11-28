@@ -119,6 +119,15 @@ All 18 analyses are additionally registered in `jamovi/0000.yaml` (title, menu p
 vijPlots`). To scaffold a new analysis, see `build.R` for the `jmvtools::addAnalysis(name=...,
 title=...)` pattern used for the existing ones.
 
+**Ribbon icon** (2026-11-28): `jamovi/icons/vijPlots.svg` (formerly `icon/vijPlots.svg`, the icon jamovi
+itself bundles since 2.7.19), declared by `menuIcons: vijPlots: icons/vijPlots.svg` in `0000.yaml`
+(key = the `menuGroup`; the `hidden` group needs none). This is jamovi's new procedure for module-supplied
+icons, ignored until jamovi supports it. The SVG was hand-cleaned (5.6 KB -> 669 bytes, same look:
+renders checked pixel-identical): plain shapes in the 74×44 `viewBox`, no transforms, no `DOCTYPE` or
+editor metadata. Its pastel filled style and colours differ from jamovi's guidelines (white fill, 2-4
+unit strokes, palette `#6B9DE8`/`#E6AC40`/`#9F9F9F`): kept for now (user's decision). To check after
+the next build: that the compiler keeps the `menuIcons` key in `0000.yaml`.
+
 ### Shared utilities (`R/utils.R`, `R/utilsPlots.R`)
 
 `R/utils.R` and `tests/testthat/test-utils.R` are **identical in vijPlots and vijMulti** (split
@@ -590,8 +599,8 @@ MiB (`haven`, `readr`, `vroom`, `tzdb`), needed unconditionally by `ggstats::ggl
 - **Compiler side (jamovi-compiler 0.3.5):** the example `.omv` files are bundled twice (copied to
   `data/` for jamovi, and installed by `R CMD INSTALL`, run without `--no-data`, into `R/vijPlots/data/`:
   every module with datasets, `jmv` included), and `--no-data` is ignored for dependencies installed
-  as binaries (macOS/Windows), so `opdisDownsampling/data/` (3.5 MB) ships too. A bug report was
-  drafted for the user (not posted by Claude). The compiler also copies the whole
+  as binaries (macOS/Windows), so `opdisDownsampling/data/` (3.5 MB) ships too. Reported by the user
+  to jamovi (2026-11), no fix yet (probably known, not trivial to fix). The compiler also copies the whole
   `build/R*-arm64-macos` folder into the module: delete it before rebuilding after dropping an Import,
   or the old packages stay in the `.jmo`.
 
@@ -859,8 +868,8 @@ unless jamovi's stance changes. What was learnt, should a font or theme ever com
   the family: snapshots don't show the font.
 - **Themes.** A complete theme added *after* `ggtheme` replaces jamovi's theme and keeps its palette
   scales. `jmvcore::theme_*(16)[[1]]` gives a jamovi theme regardless of the preferences;
-  `jmvcore::theme_spss()` still calls `element_rect(size =)` (deprecation warning, jmvcore 28.3 and GitHub
-  main; a bug report was drafted for the user, not posted by Claude). ggplot2 themes need `base_size =
+  `jmvcore::theme_spss()` still calls `element_rect(size =)` (deprecation warning, jmvcore 28.3; reported by
+  the user, fixed upstream on 2026-11, not released yet: probably jamovi 28.19). ggplot2 themes need `base_size =
   16` (line widths, ticks and margins derive from it; text sizes are all set by
   `vijTitleAndLabelFormat()`) and jamovi's 15 pt `plot.margin`. Near-duplicates at size 16: Classic ≈
   jamovi, Gray ≈ Hadley (`theme_hadley` is `theme_gray()` with jamovi's margins), Minimal ≈ Minimal
@@ -869,7 +878,8 @@ unless jamovi's stance changes. What was learnt, should a font or theme ever com
   size was considered: redundant with the per-element sizes every module already exposes (`barplot`:
   title, subtitle, caption, axis titles and labels, legend, facets, value labels), and the displayed
   sizes would no longer be the real ones (14 × 120 % = 16.8).
-- **Background colour, `ink`/`paper` (findings of 2026-11-21, nothing done).** ggplot2 4.0's themes take
+- **Background colour, `ink`/`paper`: abandoned (user's decision, 2026-11-27)**, like the theme option
+  (a per-analysis appearance setting); findings of 2026-11-21 kept for reference. ggplot2 4.0's themes take
   `ink`/`paper`/`accent` (derived colours: grid, panel, strips, layer defaults), absent from ggplot2 3.5
   (jamovi 2.7) and from `jmvcore::theme_*()`. In 3.5 the same can be done element by element
   (`plot.background`, `panel.background`, `legend.background`, `legend.key`, `strip.background`; derived
@@ -879,9 +889,9 @@ unless jamovi's stance changes. What was learnt, should a font or theme ever com
   (`minApp: 28.14.0`) and jmvtools 28.17+ to compile (installed: 28.4). The generated `.h.R` calls
   `jmvcore::OptionColor`, which jamovi 28.17's bundled jmvcore 28.3 has but jamovi 2.7.41's jmvcore
   2.7.35 hasn't, nor the jmvcore "28.3" of the R library (same number, older build: tests would need
-  it updated): one Color option would break the whole analysis on 2.7. To revisit with the end of
-  jamovi 2.7 support; meanwhile a `String` option holding a colour name or hex code (checked with
-  `grDevices::col2rgb()`) would work on both.
+  it updated): one Color option would break the whole analysis on 2.7 (true of any
+  Color option, not just a background one); a `String` option holding a colour name or hex code
+  (checked with `grDevices::col2rgb()`) works on both.
 - **Transparent background: impossible from the module.** The white comes from jamovi's graphics
   device, not from ggplot2: the exported SVG starts with a `<rect>` larger than the `viewBox`
   filled in white, identical with and without a transparent `plot.background` (tested on

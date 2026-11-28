@@ -20,6 +20,8 @@ description: >-
   <p>The module is available in the <strong>Plots</strong> tab.</p> <p>Project
   source (and changelog) is available at <a
   href="https://github.com/vjalby/vijPlots" target="_blank">Github</a>.</p>
+menuIcons:
+  vijPlots: icons/vijPlots.svg
 analyses:
   - title: Histogram
     name: histogram

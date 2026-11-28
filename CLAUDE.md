@@ -124,9 +124,17 @@ itself bundles since 2.7.19), declared by `menuIcons: vijPlots: icons/vijPlots.s
 (key = the `menuGroup`; the `hidden` group needs none). This is jamovi's new procedure for module-supplied
 icons, ignored until jamovi supports it. The SVG was hand-cleaned (5.6 KB -> 669 bytes, same look:
 renders checked pixel-identical): plain shapes in the 74×44 `viewBox`, no transforms, no `DOCTYPE` or
-editor metadata. Its pastel filled style and colours differ from jamovi's guidelines (white fill, 2-4
-unit strokes, palette `#6B9DE8`/`#E6AC40`/`#9F9F9F`): kept for now (user's decision). To check after
-the next build: that the compiler keeps the `menuIcons` key in `0000.yaml`.
+editor metadata. Its colours are those jamovi gave it in its own copy (`client/assets/analysis-vijplots.svg`,
+added 2026-01-30): blue `#879BD9`, red `#D98787`, green `#99BF9B` (the pie's yellow slice turned green),
+close to the red/green of the other Plots icons (`#DE8787`, `#ABCCAB`), so the ribbon looks the same once
+jamovi uses the module's icon (user's decision, 2026-11-28). Its filled style differs from the guidelines
+(white fill, 2-4 unit strokes): kept, like jmvbar/jmvhist, flat fills too (their `#DE8787` border on
+`#E39A9A` is barely visible). Lighter fills or coloured borders (as `comparePlots`) were considered: not done.
+jamovi's first implementation (commit `f1db386`, 2026-11-28, after 28.19) won't show it yet: its
+`analysetab.css` rule `[data-name="vijplots"]` (bundled icon) outranks the module's `--module-icon`
+("jamovi's icons win"), and only the Analyses tab passes module icons, not `plotstab.ts` (vijPlots is
+`category: plots`). Harmless, the two icons being identical; recheck when jamovi releases it. To check after the next build: that the compiler keeps the
+`menuIcons` key in `0000.yaml`.
 
 ### Shared utilities (`R/utils.R`, `R/utilsPlots.R`)
 
